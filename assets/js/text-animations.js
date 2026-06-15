@@ -692,15 +692,23 @@
         bootstrap();
     }
 
-    // Suporte ao evento de init do Elementor
-    $(window).on('elementor/frontend/init', function () {
-        if (typeof elementorFrontend !== 'undefined') {
-            if (elementorFrontend.isEditMode && elementorFrontend.isEditMode()) return;
-            elementorFrontend.hooks.addAction(
-                'frontend/element_ready/global',
-                processElement
-            );
+    // Suporte ao evento de init do Elementor.
+    // Se elementorFrontend já inicializou (scripts no footer carregam tarde),
+    // registra o hook diretamente; caso contrário, aguarda o evento.
+    if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
+        if (!(elementorFrontend.isEditMode && elementorFrontend.isEditMode())) {
+            elementorFrontend.hooks.addAction('frontend/element_ready/global', processElement);
         }
-    });
+    } else {
+        $(window).on('elementor/frontend/init', function () {
+            if (typeof elementorFrontend !== 'undefined') {
+                if (elementorFrontend.isEditMode && elementorFrontend.isEditMode()) return;
+                elementorFrontend.hooks.addAction(
+                    'frontend/element_ready/global',
+                    processElement
+                );
+            }
+        });
+    }
 
 })(typeof jQuery !== 'undefined' ? jQuery : function (fn) { document.addEventListener('DOMContentLoaded', fn); });

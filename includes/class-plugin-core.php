@@ -51,23 +51,25 @@ final class Plugin_Core {
 
 	public function enqueue_frontend_assets(): void {
 
-		if ( ! function_exists( 'elementor_load_plugin_textdomain' ) ) {
-			return; // Only enqueue when Elementor is active.
+		// Elementor já foi verificado em pta_init(); esta checagem é apenas
+		// uma salvaguarda extra para evitar erros em contextos inesperados.
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
+			return;
 		}
 
-		// ── Vendor: GSAP 3.12 (core) ──────────────────────────────────────────
+		// ── Vendor: GSAP 3.12 (local) ─────────────────────────────────────────
 		wp_enqueue_script(
 			'pta-gsap',
-			'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
+			PTA_URL . 'assets/js/vendor/gsap.min.js',
 			[],
 			'3.12.5',
 			true
 		);
 
-		// ── Vendor: Anime.js 3.2 ─────────────────────────────────────────────
+		// ── Vendor: Anime.js 3.2 (local) ─────────────────────────────────────
 		wp_enqueue_script(
 			'pta-animejs',
-			'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js',
+			PTA_URL . 'assets/js/vendor/anime.min.js',
 			[],
 			'3.2.1',
 			true
