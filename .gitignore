@@ -1,0 +1,41 @@
+# Ignore node_modules (caso venha a usar ferramentas de build)
+node_modules/
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+build/
+*.min.js.map
+*.min.css.map
+
+# WordPress specific
+wp-config.php
+wp-content/uploads/
+
+# Composer
+vendor/
+composer.lock
+
+# PHPUnit
+phpunit.xml
+.phpunit.result.cache
+tests/
+
+# Coverage
+coverage/
+*.coverage
+
+# Logs
+*.log

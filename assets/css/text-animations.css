@@ -1,0 +1,79 @@
+/**
+ * Text Animations for Elementor — Estilos Base
+ *
+ * Fornece resets e helpers visuais necessários para o correto
+ * funcionamento das animações no frontend.
+ *
+ * @package PTA
+ * @version 1.0.0
+ */
+
+/* ─── Reset global de unidades animadas ───────────────────────────────────── */
+
+.pta-char,
+.pta-word,
+.pta-line {
+    display: inline-block;
+    will-change: transform, opacity;
+    /* Evita colapso do texto ao manipular transform */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Wrapper de linha: overflow hidden para efeitos de clip/mask */
+.pta-line-wrap {
+    overflow: hidden;
+    display: block;
+    line-height: inherit;
+}
+
+/* ─── Perspectiva para animações 3D ──────────────────────────────────────── */
+
+[data-pta-animation="gs-5"] .elementor-widget-container,
+[data-pta-animation="ml-6"] .elementor-widget-container {
+    perspective: 600px;
+}
+
+/* ─── Overflow hidden no container para Clip Reveal (gs-2) ──────────────── */
+
+[data-pta-animation="gs-2"] .pta-char,
+[data-pta-animation="gs-2"] .pta-word,
+[data-pta-animation="gs-2"] .pta-line {
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+/* ─── Garante que elementos com data-pta não mostrem flash ───────────────── */
+
+[data-pta-enable="1"] .pta-char,
+[data-pta-enable="1"] .pta-word,
+[data-pta-enable="1"] .pta-line {
+    opacity: 0; /* Valor inicial antes do JS assumir o controle */
+}
+
+/* ─── Garante que elementos com data-ptac não mostrem flash ──────────────── */
+
+/* Os filhos serão ocultados via GSAP.set() no JS */
+/* Este bloco serve de fallback para conexões lentas */
+[data-ptac-enable="1"] > .elementor-widget,
+[data-ptac-enable="1"] > .elementor-column,
+[data-ptac-enable="1"] > .e-con > .e-con-inner > *,
+[data-ptac-enable="1"] > .e-con > * {
+    /* JS assume o controle de opacity via GSAP */
+    will-change: transform, opacity;
+}
+
+/* ─── Utilitário: desabilita animações para usuários que preferem ─────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .pta-char,
+    .pta-word,
+    .pta-line,
+    [data-ptac-enable="1"] > * {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+}
