@@ -669,9 +669,8 @@
     function bootstrap() {
         waitForLibs(function () {
 
-            // Elementor: não ativa dentro do editor
+            // Elementor: ativa tanto no frontend quanto no preview do editor
             if (typeof elementorFrontend !== 'undefined') {
-                if (elementorFrontend.isEditMode && elementorFrontend.isEditMode()) return;
                 elementorFrontend.hooks.addAction(
                     'frontend/element_ready/global',
                     processElement
@@ -696,13 +695,10 @@
     // Se elementorFrontend já inicializou (scripts no footer carregam tarde),
     // registra o hook diretamente; caso contrário, aguarda o evento.
     if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
-        if (!(elementorFrontend.isEditMode && elementorFrontend.isEditMode())) {
-            elementorFrontend.hooks.addAction('frontend/element_ready/global', processElement);
-        }
+        elementorFrontend.hooks.addAction('frontend/element_ready/global', processElement);
     } else {
         $(window).on('elementor/frontend/init', function () {
             if (typeof elementorFrontend !== 'undefined') {
-                if (elementorFrontend.isEditMode && elementorFrontend.isEditMode()) return;
                 elementorFrontend.hooks.addAction(
                     'frontend/element_ready/global',
                     processElement

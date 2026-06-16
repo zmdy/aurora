@@ -20,6 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Text_Animation_Controls {
 
+	/** @var array Evita duplo processamento do before_render para o mesmo elemento. */
+	private $rendered_ids = [];
+
 	public function __construct() {
 		// ── Adiciona seção de controles na aba Avançado (widgets) ─────────────
 		add_action(
@@ -29,9 +32,17 @@ class Text_Animation_Controls {
 			2
 		);
 
-		// ── Injeta data-* no wrapper do elemento no frontend ──────────────────
+		// ── Injeta data-* no wrapper — hook genérico (sections, containers) ───
 		add_action(
 			'elementor/frontend/element/before_render',
+			[ $this, 'before_render' ]
+		);
+
+		// ── Injeta data-* no wrapper — hook específico de widgets ─────────────
+		// Necessário em versões do Elementor onde element/before_render não
+		// é disparado para widgets durante a renderização no frontend.
+		add_action(
+			'elementor/frontend/widget/before_render',
 			[ $this, 'before_render' ]
 		);
 	}
@@ -274,6 +285,15 @@ class Text_Animation_Controls {
 	 * @param Element_Base $element  Instância do elemento.
 	 */
 	public function before_render( Element_Base $element ): void {
+
+		// Evita processar o mesmo elemento duas vezes (ambos os hooks podem disparar).
+		$id = $element->get_id();
+		if ( $id && isset( $this->rendered_ids[ $id ] ) ) {
+			return;
+		}
+		if ( $id ) {
+			$this->rendered_ids[ $id ] = true;
+		}
 
 		$settings = $element->get_settings_for_display();
 

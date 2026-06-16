@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Children_Animation_Controls {
 
-	/** Evita que o callback seja registrado mais de uma vez por elemento. */
-	private array $registered_hooks = [];
+	/** @var array Evita duplo processamento do before_render para o mesmo elemento. */
+	private $rendered_ids = [];
 
 	public function __construct() {
 		// ── Widgets ───────────────────────────────────────────────────────────
@@ -248,6 +248,15 @@ class Children_Animation_Controls {
 	 * @param Element_Base $element  Instância do elemento.
 	 */
 	public function before_render( Element_Base $element ): void {
+
+		// Evita processar o mesmo elemento duas vezes.
+		$id = $element->get_id();
+		if ( $id && isset( $this->rendered_ids[ $id ] ) ) {
+			return;
+		}
+		if ( $id ) {
+			$this->rendered_ids[ $id ] = true;
+		}
 
 		$settings = $element->get_settings_for_display();
 

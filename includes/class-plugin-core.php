@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Plugin_Core {
 
 	/** @var Plugin_Core|null */
-	private static ?Plugin_Core $_instance = null;
+	private static $_instance = null;
 
 	public static function instance(): Plugin_Core {
 		if ( null === self::$_instance ) {

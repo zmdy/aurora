@@ -37,7 +37,7 @@ define( 'PTA_MIN_ELEMENTOR', '3.0.0' );
 /**
  * Load the plugin after all plugins have loaded.
  */
-function pta_init(): void {
+function pta_init() {
 
 	// PHP version check.
 	if ( version_compare( PHP_VERSION, PTA_MIN_PHP, '<' ) ) {
@@ -65,7 +65,7 @@ add_action( 'plugins_loaded', 'PTA\pta_init' );
 
 // ── Admin Notices ─────────────────────────────────────────────────────────────
 
-function pta_notice_php_version(): void {
+function pta_notice_php_version() {
 	printf(
 		'<div class="notice notice-error"><p><strong>Text Animations for Elementor</strong>: requer PHP %s ou superior. Versão atual: %s.</p></div>',
 		esc_html( PTA_MIN_PHP ),
@@ -73,11 +73,11 @@ function pta_notice_php_version(): void {
 	);
 }
 
-function pta_notice_elementor_missing(): void {
+function pta_notice_elementor_missing() {
 	echo '<div class="notice notice-error"><p><strong>Text Animations for Elementor</strong>: requer o plugin Elementor instalado e ativado.</p></div>';
 }
 
-function pta_notice_elementor_version(): void {
+function pta_notice_elementor_version() {
 	printf(
 		'<div class="notice notice-error"><p><strong>Text Animations for Elementor</strong>: requer Elementor %s ou superior.</p></div>',
 		esc_html( PTA_MIN_ELEMENTOR )
