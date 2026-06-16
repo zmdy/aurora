@@ -515,12 +515,86 @@
     var ptaInstances = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
 
     /**
-     * Lê os data-attributes do wrapper e retorna um objeto de opções.
+     * Lê o data-settings nativo do Elementor (presente quando os controles
+     * são marcados como `frontend_available`). É a fonte mais confiável
+     * dentro do editor: é montado pelo próprio JS do Elementor a partir do
+     * model em tempo real, sem depender do PHP re-renderizar o widget —
+     * o que nem sempre ocorre (widgets com Content Template em JS, como o
+     * Heading, podem nunca disparar before_render de novo ao mudar um
+     * controle no painel).
      *
-     * @param {DOMStringMap} ds
+     * @param {HTMLElement} wrapper
+     * @returns {Object|null}
+     */
+    function readElementorSettings(wrapper) {
+        var raw = wrapper.getAttribute('data-settings');
+        if (!raw) return null;
+        try {
+            var parsed = JSON.parse(raw);
+            if (parsed && typeof parsed.pta_text_enable !== 'undefined') return parsed;
+        } catch (e) { /* JSON inválido, ignora */ }
+        return null;
+    }
+
+    /**
+     * Normaliza um valor de slider do Elementor ({size, unit}, número ou string).
+     *
+     * @param {*}      val
+     * @param {number} fallback
+     * @returns {number}
+     */
+    function sizeOf(val, fallback) {
+        if (val && typeof val === 'object' && typeof val.size !== 'undefined') {
+            var fromObj = parseFloat(val.size);
+            return isNaN(fromObj) ? fallback : fromObj;
+        }
+        var num = parseFloat(val);
+        return isNaN(num) ? fallback : num;
+    }
+
+    /**
+     * Verifica se a animação de texto está habilitada, priorizando o
+     * data-settings nativo do Elementor (editor) e usando o data-pta-enable
+     * (renderizado pelo PHP) como fallback no frontend.
+     *
+     * @param {HTMLElement} wrapper
+     * @returns {boolean}
+     */
+    function isTextAnimationEnabled(wrapper) {
+        var settings = readElementorSettings(wrapper);
+        if (settings) return settings.pta_text_enable === 'yes';
+        return !!(wrapper.dataset && wrapper.dataset.ptaEnable === '1');
+    }
+
+    /**
+     * Lê as opções de animação de um wrapper, priorizando o data-settings
+     * nativo do Elementor e usando os data-pta-* (PHP) como fallback.
+     *
+     * @param {HTMLElement} wrapper
      * @returns {Object}
      */
-    function parseOpts(ds) {
+    function parseOpts(wrapper) {
+        var settings = readElementorSettings(wrapper);
+
+        if (settings) {
+            var library = settings.pta_text_library || 'gsap';
+            return {
+                library   : library,
+                animation : library === 'gsap'
+                    ? (settings.pta_text_animation_gsap || 'gs-1')
+                    : (settings.pta_text_animation_anime || 'ml-1'),
+                splitBy   : settings.pta_text_split_by || 'chars',
+                duration  : sizeOf(settings.pta_text_duration, 800),
+                delay     : sizeOf(settings.pta_text_delay, 0),
+                stagger   : sizeOf(settings.pta_text_stagger, 30),
+                trigger   : settings.pta_text_trigger || 'scroll',
+                threshold : sizeOf(settings.pta_text_threshold, 20) / 100,
+                replay    : settings.pta_text_replay === 'yes',
+            };
+        }
+
+        // Fallback: data-pta-* (renderizado pelo PHP no frontend real)
+        var ds = wrapper.dataset;
         return {
             library   : ds.ptaLibrary   || 'gsap',
             animation : ds.ptaAnimation || 'gs-1',
@@ -581,7 +655,7 @@
     function initTextAnimation(wrapper) {
         if (ptaInstances && ptaInstances.has(wrapper)) return;
 
-        var opts   = parseOpts(wrapper.dataset);
+        var opts   = parseOpts(wrapper);
         var textEl = getTextTarget(wrapper);
 
         // Guarda texto original (necessário para scramble)
@@ -645,8 +719,8 @@
 
     function processElement($scope) {
         var wrapper = ($scope && $scope[0]) ? $scope[0] : $scope;
-        if (!wrapper || !wrapper.dataset) return;
-        if (wrapper.dataset.ptaEnable !== '1') return;
+        if (!wrapper) return;
+        if (!isTextAnimationEnabled(wrapper)) return;
         // Pequeno delay para garantir que o DOM foi completamente renderizado
         setTimeout(function () { initTextAnimation(wrapper); }, 80);
     }

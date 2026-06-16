@@ -19,12 +19,92 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Lê os data-ptac-* do wrapper e retorna um objeto de opções.
+     * Lê o data-settings nativo do Elementor (controles `frontend_available`).
+     * Fonte mais confiável dentro do editor — montada pelo JS do Elementor a
+     * partir do model em tempo real, sem depender de before_render do PHP
+     * disparar de novo a cada mudança de configuração no painel.
      *
-     * @param {DOMStringMap} ds
+     * @param {HTMLElement} wrapper
+     * @returns {Object|null}
+     */
+    function readElementorSettings(wrapper) {
+        var raw = wrapper.getAttribute('data-settings');
+        if (!raw) return null;
+        try {
+            var parsed = JSON.parse(raw);
+            if (parsed && typeof parsed.pta_children_enable !== 'undefined') return parsed;
+        } catch (e) { /* JSON inválido, ignora */ }
+        return null;
+    }
+
+    /**
+     * Normaliza um valor de slider do Elementor ({size, unit}, número ou string).
+     *
+     * @param {*}      val
+     * @param {number} fallback
+     * @returns {number}
+     */
+    function sizeOf(val, fallback) {
+        if (val && typeof val === 'object' && typeof val.size !== 'undefined') {
+            var fromObj = parseFloat(val.size);
+            return isNaN(fromObj) ? fallback : fromObj;
+        }
+        var num = parseFloat(val);
+        return isNaN(num) ? fallback : num;
+    }
+
+    /**
+     * Sanitiza um seletor CSS (mesma whitelist usada no PHP), pois o valor
+     * lido de data-settings vem direto do model, sem a sanitização que o
+     * before_render aplica no frontend.
+     *
+     * @param {string} raw
+     * @returns {string}
+     */
+    function sanitizeSelector(raw) {
+        var selector = (raw || '').replace(/[^a-zA-Z0-9_\-.\s,:#>+~[\]=^$*|()]/g, '');
+        return selector || '.elementor-widget';
+    }
+
+    /**
+     * Verifica se a animação de filhos está habilitada, priorizando o
+     * data-settings nativo do Elementor (editor) e usando data-ptac-enable
+     * (renderizado pelo PHP) como fallback no frontend.
+     *
+     * @param {HTMLElement} wrapper
+     * @returns {boolean}
+     */
+    function isChildrenAnimationEnabled(wrapper) {
+        var settings = readElementorSettings(wrapper);
+        if (settings) return settings.pta_children_enable === 'yes';
+        return !!(wrapper.dataset && wrapper.dataset.ptacEnable === '1');
+    }
+
+    /**
+     * Lê as opções de animação de filhos, priorizando o data-settings nativo
+     * do Elementor e usando os data-ptac-* (PHP) como fallback.
+     *
+     * @param {HTMLElement} wrapper
      * @returns {Object}
      */
-    function parseChildrenOpts(ds) {
+    function parseChildrenOpts(wrapper) {
+        var settings = readElementorSettings(wrapper);
+
+        if (settings) {
+            return {
+                animation : settings.pta_children_animation || 'fade-up',
+                selector  : sanitizeSelector(settings.pta_children_selector),
+                duration  : sizeOf(settings.pta_children_duration, 600),
+                delay     : sizeOf(settings.pta_children_delay, 0),
+                stagger   : sizeOf(settings.pta_children_stagger, 150),
+                trigger   : settings.pta_children_trigger || 'scroll',
+                threshold : sizeOf(settings.pta_children_threshold, 15) / 100,
+                replay    : settings.pta_children_replay === 'yes',
+            };
+        }
+
+        // Fallback: data-ptac-* (renderizado pelo PHP no frontend real)
+        var ds = wrapper.dataset;
         return {
             animation : ds.ptacAnimation || 'fade-up',
             selector  : ds.ptacSelector  || '.elementor-widget',
@@ -227,7 +307,7 @@
         if (ptacInstances && ptacInstances.has(wrapper)) return;
         if (typeof gsap === 'undefined') return;
 
-        var opts     = parseChildrenOpts(wrapper.dataset);
+        var opts     = parseChildrenOpts(wrapper);
         var children = getChildren(wrapper, opts.selector);
 
         if (children.length === 0) return;
@@ -278,8 +358,8 @@
 
     function processChildrenElement($scope) {
         var wrapper = ($scope && $scope[0]) ? $scope[0] : $scope;
-        if (!wrapper || !wrapper.dataset) return;
-        if (wrapper.dataset.ptacEnable !== '1') return;
+        if (!wrapper) return;
+        if (!isChildrenAnimationEnabled(wrapper)) return;
         // Delay ligeiramente maior que o text-animations para evitar conflito
         setTimeout(function () { initChildrenAnimation(wrapper); }, 120);
     }

@@ -85,12 +85,13 @@ class Children_Animation_Controls {
 		$element->add_control(
 			'pta_children_enable',
 			[
-				'label'        => esc_html__( 'Animar Elementos Filhos', 'pta' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Sim', 'pta' ),
-				'label_off'    => esc_html__( 'Não', 'pta' ),
-				'return_value' => 'yes',
-				'default'      => '',
+				'label'              => esc_html__( 'Animar Elementos Filhos', 'pta' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Sim', 'pta' ),
+				'label_off'          => esc_html__( 'Não', 'pta' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'frontend_available' => true,
 			]
 		);
 
@@ -114,6 +115,7 @@ class Children_Animation_Controls {
 					'bounce-in'  => esc_html__( 'Bounce In',   'pta' ),
 				],
 				'condition' => [ 'pta_children_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -127,6 +129,7 @@ class Children_Animation_Controls {
 				'placeholder' => '.elementor-widget, .elementor-icon-list-item',
 				'description' => esc_html__( 'Seletor CSS para identificar os elementos filhos a animar. Padrão: .elementor-widget', 'pta' ),
 				'condition'   => [ 'pta_children_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -145,6 +148,7 @@ class Children_Animation_Controls {
 				],
 				'default'   => [ 'size' => 600 ],
 				'condition' => [ 'pta_children_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -163,6 +167,7 @@ class Children_Animation_Controls {
 				],
 				'default'   => [ 'size' => 0 ],
 				'condition' => [ 'pta_children_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -181,6 +186,7 @@ class Children_Animation_Controls {
 				],
 				'default'   => [ 'size' => 150 ],
 				'condition' => [ 'pta_children_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -196,6 +202,7 @@ class Children_Animation_Controls {
 					'load'   => esc_html__( 'Carregar a página', 'pta' ),
 				],
 				'condition' => [ 'pta_children_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -217,6 +224,7 @@ class Children_Animation_Controls {
 					'pta_children_enable'  => 'yes',
 					'pta_children_trigger' => 'scroll',
 				],
+				'frontend_available' => true,
 			]
 		);
 
@@ -234,6 +242,7 @@ class Children_Animation_Controls {
 					'pta_children_enable'  => 'yes',
 					'pta_children_trigger' => 'scroll',
 				],
+				'frontend_available' => true,
 			]
 		);
 

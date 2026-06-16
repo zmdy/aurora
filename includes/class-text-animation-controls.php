@@ -69,12 +69,13 @@ class Text_Animation_Controls {
 		$element->add_control(
 			'pta_text_enable',
 			[
-				'label'        => esc_html__( 'Habilitar Animação de Texto', 'pta' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Sim', 'pta' ),
-				'label_off'    => esc_html__( 'Não', 'pta' ),
-				'return_value' => 'yes',
-				'default'      => '',
+				'label'              => esc_html__( 'Habilitar Animação de Texto', 'pta' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Sim', 'pta' ),
+				'label_off'          => esc_html__( 'Não', 'pta' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'frontend_available' => true,
 			]
 		);
 
@@ -82,14 +83,15 @@ class Text_Animation_Controls {
 		$element->add_control(
 			'pta_text_library',
 			[
-				'label'     => esc_html__( 'Biblioteca', 'pta' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'gsap',
-				'options'   => [
+				'label'              => esc_html__( 'Biblioteca', 'pta' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'gsap',
+				'options'            => [
 					'gsap'    => esc_html__( 'GSAP', 'pta' ),
 					'animejs' => esc_html__( 'Anime.js', 'pta' ),
 				],
-				'condition' => [ 'pta_text_enable' => 'yes' ],
+				'condition'          => [ 'pta_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -116,6 +118,7 @@ class Text_Animation_Controls {
 					'pta_text_enable'  => 'yes',
 					'pta_text_library' => 'gsap',
 				],
+				'frontend_available' => true,
 			]
 		);
 
@@ -142,6 +145,7 @@ class Text_Animation_Controls {
 					'pta_text_enable'  => 'yes',
 					'pta_text_library' => 'animejs',
 				],
+				'frontend_available' => true,
 			]
 		);
 
@@ -161,6 +165,7 @@ class Text_Animation_Controls {
 					'pta_text_enable'       => 'yes',
 					'pta_text_animation_gsap!' => 'gs-3', // Scramble ignora split
 				],
+				'frontend_available' => true,
 			]
 		);
 
@@ -179,6 +184,7 @@ class Text_Animation_Controls {
 				],
 				'default'    => [ 'size' => 800 ],
 				'condition'  => [ 'pta_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -197,6 +203,7 @@ class Text_Animation_Controls {
 				],
 				'default'   => [ 'size' => 0 ],
 				'condition' => [ 'pta_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -218,6 +225,7 @@ class Text_Animation_Controls {
 					'pta_text_enable'       => 'yes',
 					'pta_text_animation_gsap!' => 'gs-3',
 				],
+				'frontend_available' => true,
 			]
 		);
 
@@ -233,6 +241,7 @@ class Text_Animation_Controls {
 					'load'   => esc_html__( 'Carregar a página', 'pta' ),
 				],
 				'condition' => [ 'pta_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
@@ -254,6 +263,7 @@ class Text_Animation_Controls {
 					'pta_text_enable'   => 'yes',
 					'pta_text_trigger'  => 'scroll',
 				],
+				'frontend_available' => true,
 			]
 		);
 
@@ -271,6 +281,7 @@ class Text_Animation_Controls {
 					'pta_text_enable'  => 'yes',
 					'pta_text_trigger' => 'scroll',
 				],
+				'frontend_available' => true,
 			]
 		);
 
