@@ -511,31 +511,6 @@
     // LÓGICA CENTRAL
     // ─────────────────────────────────────────────────────────────────────────
 
-    /** @type {WeakMap<HTMLElement, boolean>} */
-    var ptaInstances = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
-
-    /**
-     * Lê o data-settings nativo do Elementor (presente quando os controles
-     * são marcados como `frontend_available`). É a fonte mais confiável
-     * dentro do editor: é montado pelo próprio JS do Elementor a partir do
-     * model em tempo real, sem depender do PHP re-renderizar o widget —
-     * o que nem sempre ocorre (widgets com Content Template em JS, como o
-     * Heading, podem nunca disparar before_render de novo ao mudar um
-     * controle no painel).
-     *
-     * @param {HTMLElement} wrapper
-     * @returns {Object|null}
-     */
-    function readElementorSettings(wrapper) {
-        var raw = wrapper.getAttribute('data-settings');
-        if (!raw) return null;
-        try {
-            var parsed = JSON.parse(raw);
-            if (parsed && typeof parsed.pta_text_enable !== 'undefined') return parsed;
-        } catch (e) { /* JSON inválido, ignora */ }
-        return null;
-    }
-
     /**
      * Normaliza um valor de slider do Elementor ({size, unit}, número ou string).
      *
@@ -553,47 +528,14 @@
     }
 
     /**
-     * Verifica se a animação de texto está habilitada, priorizando o
-     * data-settings nativo do Elementor (editor) e usando o data-pta-enable
-     * (renderizado pelo PHP) como fallback no frontend.
-     *
-     * @param {HTMLElement} wrapper
-     * @returns {boolean}
-     */
-    function isTextAnimationEnabled(wrapper) {
-        var settings = readElementorSettings(wrapper);
-        if (settings) return settings.pta_text_enable === 'yes';
-        return !!(wrapper.dataset && wrapper.dataset.ptaEnable === '1');
-    }
-
-    /**
-     * Lê as opções de animação de um wrapper, priorizando o data-settings
-     * nativo do Elementor e usando os data-pta-* (PHP) como fallback.
+     * Lê as opções de animação a partir dos data-pta-* (renderizados pelo PHP).
+     * Usado apenas como último recurso, quando o sistema de Frontend Handlers
+     * do Elementor não está disponível (ex.: versões muito antigas).
      *
      * @param {HTMLElement} wrapper
      * @returns {Object}
      */
-    function parseOpts(wrapper) {
-        var settings = readElementorSettings(wrapper);
-
-        if (settings) {
-            var library = settings.pta_text_library || 'gsap';
-            return {
-                library   : library,
-                animation : library === 'gsap'
-                    ? (settings.pta_text_animation_gsap || 'gs-1')
-                    : (settings.pta_text_animation_anime || 'ml-1'),
-                splitBy   : settings.pta_text_split_by || 'chars',
-                duration  : sizeOf(settings.pta_text_duration, 800),
-                delay     : sizeOf(settings.pta_text_delay, 0),
-                stagger   : sizeOf(settings.pta_text_stagger, 30),
-                trigger   : settings.pta_text_trigger || 'scroll',
-                threshold : sizeOf(settings.pta_text_threshold, 20) / 100,
-                replay    : settings.pta_text_replay === 'yes',
-            };
-        }
-
-        // Fallback: data-pta-* (renderizado pelo PHP no frontend real)
+    function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
             library   : ds.ptaLibrary   || 'gsap',
@@ -648,15 +590,31 @@
     }
 
     /**
-     * Inicializa a animação de texto de um wrapper.
+     * Inicializa (ou reinicializa) a animação de texto de um wrapper. Pode
+     * ser chamada várias vezes para o mesmo wrapper — por exemplo, quando o
+     * usuário altera um controle no painel do Elementor. Cada chamada
+     * restaura o HTML original do alvo antes de dividir de novo (o split é
+     * destrutivo) e substitui qualquer observer de uma execução anterior.
      *
      * @param {HTMLElement} wrapper
+     * @param {Object}      opts
      */
-    function initTextAnimation(wrapper) {
-        if (ptaInstances && ptaInstances.has(wrapper)) return;
-
-        var opts   = parseOpts(wrapper);
+    function initTextAnimation(wrapper, opts) {
         var textEl = getTextTarget(wrapper);
+
+        // Guarda (uma única vez) o HTML original do alvo, para poder
+        // restaurá-lo antes de cada reinicialização.
+        if (typeof textEl._ptaPristineHTML === 'undefined') {
+            textEl._ptaPristineHTML = textEl.innerHTML;
+        } else {
+            textEl.innerHTML = textEl._ptaPristineHTML;
+        }
+
+        // Cancela qualquer observer de uma inicialização anterior.
+        if (wrapper._ptaObserver) {
+            wrapper._ptaObserver.disconnect();
+            wrapper._ptaObserver = null;
+        }
 
         // Guarda texto original (necessário para scramble)
         textEl._ptaOriginal = textEl.innerText || textEl.textContent;
@@ -705,24 +663,30 @@
             }, { threshold: opts.threshold });
 
             observer.observe(wrapper);
+            wrapper._ptaObserver = observer;
         } else {
             // Dispara imediatamente ao carregar
             trigger();
         }
-
-        if (ptaInstances) ptaInstances.set(wrapper, true);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // INTEGRAÇÃO ELEMENTOR
-    // ─────────────────────────────────────────────────────────────────────────
-
-    function processElement($scope) {
-        var wrapper = ($scope && $scope[0]) ? $scope[0] : $scope;
-        if (!wrapper) return;
-        if (!isTextAnimationEnabled(wrapper)) return;
-        // Pequeno delay para garantir que o DOM foi completamente renderizado
-        setTimeout(function () { initTextAnimation(wrapper); }, 80);
+    /**
+     * Desfaz a animação de texto de um wrapper, restaurando o HTML original
+     * (usado quando o controle "Habilitar Animação de Texto" é desligado
+     * dinamicamente no editor).
+     *
+     * @param {HTMLElement} wrapper
+     */
+    function teardownTextAnimation(wrapper) {
+        if (wrapper._ptaObserver) {
+            wrapper._ptaObserver.disconnect();
+            wrapper._ptaObserver = null;
+        }
+        var textEl = getTextTarget(wrapper);
+        if (textEl && typeof textEl._ptaPristineHTML !== 'undefined') {
+            textEl.innerHTML = textEl._ptaPristineHTML;
+            textEl.style.opacity = '';
+        }
     }
 
     function waitForLibs(callback) {
@@ -740,21 +704,107 @@
         }, step);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // INTEGRAÇÃO ELEMENTOR — FRONTEND HANDLER
+    // ─────────────────────────────────────────────────────────────────────────
+    //
+    // `frontend/element_ready` dispara apenas UMA VEZ por elemento, na sua
+    // primeira renderização — não dispara de novo quando um controle é
+    // alterado no painel do editor. Para refletir mudanças instantaneamente
+    // no preview (sem precisar recarregar o iframe), usamos a API oficial de
+    // Frontend Handlers do Elementor: onElementChange() é chamado a cada
+    // alteração de controle marcado como `frontend_available`.
+    // Veja: https://developers.elementor.com/docs/editor-controls/frontend-available/
+
+    /**
+     * Registra o PTATextAnimationHandler junto ao Elementor.
+     * Retorna `false` se a API de Frontend Handlers não estiver disponível
+     * (ex.: versões muito antigas do Elementor).
+     *
+     * @returns {boolean}
+     */
+    function registerHandler() {
+        if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
+            return false;
+        }
+
+        function PTATextAnimationHandler() {
+            elementorModules.frontend.handlers.Base.apply(this, arguments);
+        }
+
+        PTATextAnimationHandler.prototype = Object.create(elementorModules.frontend.handlers.Base.prototype);
+        PTATextAnimationHandler.prototype.constructor = PTATextAnimationHandler;
+
+        PTATextAnimationHandler.prototype.isEnabled = function () {
+            return this.getElementSettings('pta_text_enable') === 'yes';
+        };
+
+        PTATextAnimationHandler.prototype.getOpts = function () {
+            var library = this.getElementSettings('pta_text_library') || 'gsap';
+            return {
+                library   : library,
+                animation : library === 'gsap'
+                    ? (this.getElementSettings('pta_text_animation_gsap') || 'gs-1')
+                    : (this.getElementSettings('pta_text_animation_anime') || 'ml-1'),
+                splitBy   : this.getElementSettings('pta_text_split_by') || 'chars',
+                duration  : sizeOf(this.getElementSettings('pta_text_duration'), 800),
+                delay     : sizeOf(this.getElementSettings('pta_text_delay'), 0),
+                stagger   : sizeOf(this.getElementSettings('pta_text_stagger'), 30),
+                trigger   : this.getElementSettings('pta_text_trigger') || 'scroll',
+                threshold : sizeOf(this.getElementSettings('pta_text_threshold'), 20) / 100,
+                replay    : this.getElementSettings('pta_text_replay') === 'yes',
+            };
+        };
+
+        PTATextAnimationHandler.prototype.runAnimation = function () {
+            var wrapper = this.$element[0];
+            if (!this.isEnabled()) {
+                teardownTextAnimation(wrapper);
+                return;
+            }
+            var opts = this.getOpts();
+            setTimeout(function () { initTextAnimation(wrapper, opts); }, 80);
+        };
+
+        PTATextAnimationHandler.prototype.onInit = function () {
+            elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
+            this.runAnimation();
+        };
+
+        PTATextAnimationHandler.prototype.onElementChange = function (propertyName) {
+            if (propertyName.indexOf('pta_text_') === 0) {
+                this.runAnimation();
+            }
+        };
+
+        elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
+            elementorFrontend.elementsHandler.addHandler(PTATextAnimationHandler, { $element: $element });
+        });
+
+        return true;
+    }
+
     function bootstrap() {
         waitForLibs(function () {
 
-            // Elementor: ativa tanto no frontend quanto no preview do editor
-            if (typeof elementorFrontend !== 'undefined') {
-                elementorFrontend.hooks.addAction(
-                    'frontend/element_ready/global',
-                    processElement
-                );
+            var handlerRegistered = false;
+
+            if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
+                handlerRegistered = registerHandler();
+            } else if (typeof elementorFrontend !== 'undefined') {
+                $(window).on('elementor/frontend/init', function () {
+                    registerHandler();
+                });
+                handlerRegistered = true; // tratado pelo evento acima
             }
 
-            // Fallback: escaneia todos os elementos da página
-            document.querySelectorAll('[data-pta-enable="1"]').forEach(function (el) {
-                setTimeout(function () { initTextAnimation(el); }, 80);
-            });
+            // Fallback: nenhum Elementor JS disponível — varre a página
+            // usando os data-pta-* renderizados pelo PHP no frontend real.
+            if (!handlerRegistered) {
+                document.querySelectorAll('[data-pta-enable="1"]').forEach(function (el) {
+                    setTimeout(function () { initTextAnimation(el, parseOptsFromDataset(el)); }, 80);
+                });
+            }
         });
     }
 
@@ -763,22 +813,6 @@
         document.addEventListener('DOMContentLoaded', bootstrap);
     } else {
         bootstrap();
-    }
-
-    // Suporte ao evento de init do Elementor.
-    // Se elementorFrontend já inicializou (scripts no footer carregam tarde),
-    // registra o hook diretamente; caso contrário, aguarda o evento.
-    if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
-        elementorFrontend.hooks.addAction('frontend/element_ready/global', processElement);
-    } else {
-        $(window).on('elementor/frontend/init', function () {
-            if (typeof elementorFrontend !== 'undefined') {
-                elementorFrontend.hooks.addAction(
-                    'frontend/element_ready/global',
-                    processElement
-                );
-            }
-        });
     }
 
 })(typeof jQuery !== 'undefined' ? jQuery : function (fn) { document.addEventListener('DOMContentLoaded', fn); });

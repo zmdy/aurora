@@ -19,25 +19,6 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Lê o data-settings nativo do Elementor (controles `frontend_available`).
-     * Fonte mais confiável dentro do editor — montada pelo JS do Elementor a
-     * partir do model em tempo real, sem depender de before_render do PHP
-     * disparar de novo a cada mudança de configuração no painel.
-     *
-     * @param {HTMLElement} wrapper
-     * @returns {Object|null}
-     */
-    function readElementorSettings(wrapper) {
-        var raw = wrapper.getAttribute('data-settings');
-        if (!raw) return null;
-        try {
-            var parsed = JSON.parse(raw);
-            if (parsed && typeof parsed.pta_children_enable !== 'undefined') return parsed;
-        } catch (e) { /* JSON inválido, ignora */ }
-        return null;
-    }
-
-    /**
      * Normaliza um valor de slider do Elementor ({size, unit}, número ou string).
      *
      * @param {*}      val
@@ -55,8 +36,8 @@
 
     /**
      * Sanitiza um seletor CSS (mesma whitelist usada no PHP), pois o valor
-     * lido de data-settings vem direto do model, sem a sanitização que o
-     * before_render aplica no frontend.
+     * lido das configurações do Elementor vem direto do model, sem a
+     * sanitização que o before_render aplica no frontend.
      *
      * @param {string} raw
      * @returns {string}
@@ -67,43 +48,14 @@
     }
 
     /**
-     * Verifica se a animação de filhos está habilitada, priorizando o
-     * data-settings nativo do Elementor (editor) e usando data-ptac-enable
-     * (renderizado pelo PHP) como fallback no frontend.
-     *
-     * @param {HTMLElement} wrapper
-     * @returns {boolean}
-     */
-    function isChildrenAnimationEnabled(wrapper) {
-        var settings = readElementorSettings(wrapper);
-        if (settings) return settings.pta_children_enable === 'yes';
-        return !!(wrapper.dataset && wrapper.dataset.ptacEnable === '1');
-    }
-
-    /**
-     * Lê as opções de animação de filhos, priorizando o data-settings nativo
-     * do Elementor e usando os data-ptac-* (PHP) como fallback.
+     * Lê as opções de animação de filhos a partir dos data-ptac-*
+     * (renderizados pelo PHP). Usado apenas como último recurso, quando o
+     * sistema de Frontend Handlers do Elementor não está disponível.
      *
      * @param {HTMLElement} wrapper
      * @returns {Object}
      */
-    function parseChildrenOpts(wrapper) {
-        var settings = readElementorSettings(wrapper);
-
-        if (settings) {
-            return {
-                animation : settings.pta_children_animation || 'fade-up',
-                selector  : sanitizeSelector(settings.pta_children_selector),
-                duration  : sizeOf(settings.pta_children_duration, 600),
-                delay     : sizeOf(settings.pta_children_delay, 0),
-                stagger   : sizeOf(settings.pta_children_stagger, 150),
-                trigger   : settings.pta_children_trigger || 'scroll',
-                threshold : sizeOf(settings.pta_children_threshold, 15) / 100,
-                replay    : settings.pta_children_replay === 'yes',
-            };
-        }
-
-        // Fallback: data-ptac-* (renderizado pelo PHP no frontend real)
+    function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
             animation : ds.ptacAnimation || 'fade-up',
@@ -295,25 +247,30 @@
     // LÓGICA CENTRAL
     // ─────────────────────────────────────────────────────────────────────────
 
-    /** @type {WeakMap<HTMLElement, boolean>} */
-    var ptacInstances = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
-
     /**
-     * Inicializa a animação stagger de filhos para um wrapper.
+     * Inicializa (ou reinicializa) a animação stagger de filhos de um wrapper.
+     * Pode ser chamada várias vezes para o mesmo wrapper — por exemplo, quando
+     * o usuário altera um controle no painel do Elementor — pois substitui
+     * qualquer observer/estado de uma inicialização anterior.
      *
      * @param {HTMLElement} wrapper
+     * @param {Object}      opts
      */
-    function initChildrenAnimation(wrapper) {
-        if (ptacInstances && ptacInstances.has(wrapper)) return;
+    function initChildrenAnimation(wrapper, opts) {
         if (typeof gsap === 'undefined') return;
 
-        var opts     = parseChildrenOpts(wrapper);
         var children = getChildren(wrapper, opts.selector);
+
+        // Cancela qualquer observer de uma inicialização anterior.
+        if (wrapper._ptacObserver) {
+            wrapper._ptacObserver.disconnect();
+            wrapper._ptacObserver = null;
+        }
 
         if (children.length === 0) return;
 
         // Estado inicial: filhos invisíveis
-        gsap.set(children, { opacity: 0 });
+        gsap.set(children, { clearProps: 'all', opacity: 0 });
 
         var played = false;
 
@@ -345,23 +302,27 @@
             }, { threshold: opts.threshold });
 
             observer.observe(wrapper);
+            wrapper._ptacObserver = observer;
         } else {
             trigger();
         }
-
-        if (ptacInstances) ptacInstances.set(wrapper, true);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // INTEGRAÇÃO ELEMENTOR
-    // ─────────────────────────────────────────────────────────────────────────
-
-    function processChildrenElement($scope) {
-        var wrapper = ($scope && $scope[0]) ? $scope[0] : $scope;
-        if (!wrapper) return;
-        if (!isChildrenAnimationEnabled(wrapper)) return;
-        // Delay ligeiramente maior que o text-animations para evitar conflito
-        setTimeout(function () { initChildrenAnimation(wrapper); }, 120);
+    /**
+     * Desfaz a animação de filhos de um wrapper (usado quando o controle
+     * "Animar Elementos Filhos" é desligado dinamicamente no editor).
+     *
+     * @param {HTMLElement} wrapper
+     */
+    function teardownChildrenAnimation(wrapper) {
+        if (wrapper._ptacObserver) {
+            wrapper._ptacObserver.disconnect();
+            wrapper._ptacObserver = null;
+        }
+        var children = Array.from(wrapper.children);
+        if (typeof gsap !== 'undefined' && children.length) {
+            gsap.set(children, { clearProps: 'all' });
+        }
     }
 
     function waitForGsap(callback) {
@@ -377,20 +338,103 @@
         }, step);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // INTEGRAÇÃO ELEMENTOR — FRONTEND HANDLER
+    // ─────────────────────────────────────────────────────────────────────────
+    //
+    // `frontend/element_ready` dispara apenas UMA VEZ por elemento, na sua
+    // primeira renderização — não dispara de novo quando um controle é
+    // alterado no painel do editor. Para refletir mudanças instantaneamente
+    // no preview (sem precisar recarregar o iframe), usamos a API oficial de
+    // Frontend Handlers do Elementor: onElementChange() é chamado a cada
+    // alteração de controle marcado como `frontend_available`.
+    // Veja: https://developers.elementor.com/docs/editor-controls/frontend-available/
+
+    /**
+     * Registra o PTAChildrenAnimationHandler junto ao Elementor.
+     * Retorna `false` se a API de Frontend Handlers não estiver disponível
+     * (ex.: versões muito antigas do Elementor).
+     *
+     * @returns {boolean}
+     */
+    function registerHandler() {
+        if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
+            return false;
+        }
+
+        function PTAChildrenAnimationHandler() {
+            elementorModules.frontend.handlers.Base.apply(this, arguments);
+        }
+
+        PTAChildrenAnimationHandler.prototype = Object.create(elementorModules.frontend.handlers.Base.prototype);
+        PTAChildrenAnimationHandler.prototype.constructor = PTAChildrenAnimationHandler;
+
+        PTAChildrenAnimationHandler.prototype.isEnabled = function () {
+            return this.getElementSettings('pta_children_enable') === 'yes';
+        };
+
+        PTAChildrenAnimationHandler.prototype.getOpts = function () {
+            return {
+                animation : this.getElementSettings('pta_children_animation') || 'fade-up',
+                selector  : sanitizeSelector(this.getElementSettings('pta_children_selector')),
+                duration  : sizeOf(this.getElementSettings('pta_children_duration'), 600),
+                delay     : sizeOf(this.getElementSettings('pta_children_delay'), 0),
+                stagger   : sizeOf(this.getElementSettings('pta_children_stagger'), 150),
+                trigger   : this.getElementSettings('pta_children_trigger') || 'scroll',
+                threshold : sizeOf(this.getElementSettings('pta_children_threshold'), 15) / 100,
+                replay    : this.getElementSettings('pta_children_replay') === 'yes',
+            };
+        };
+
+        PTAChildrenAnimationHandler.prototype.runAnimation = function () {
+            var wrapper = this.$element[0];
+            if (!this.isEnabled()) {
+                teardownChildrenAnimation(wrapper);
+                return;
+            }
+            var opts = this.getOpts();
+            setTimeout(function () { initChildrenAnimation(wrapper, opts); }, 120);
+        };
+
+        PTAChildrenAnimationHandler.prototype.onInit = function () {
+            elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
+            this.runAnimation();
+        };
+
+        PTAChildrenAnimationHandler.prototype.onElementChange = function (propertyName) {
+            if (propertyName.indexOf('pta_children_') === 0) {
+                this.runAnimation();
+            }
+        };
+
+        elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
+            elementorFrontend.elementsHandler.addHandler(PTAChildrenAnimationHandler, { $element: $element });
+        });
+
+        return true;
+    }
+
     function bootstrap() {
         waitForGsap(function () {
 
-            if (typeof elementorFrontend !== 'undefined') {
-                elementorFrontend.hooks.addAction(
-                    'frontend/element_ready/global',
-                    processChildrenElement
-                );
+            var handlerRegistered = false;
+
+            if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
+                handlerRegistered = registerHandler();
+            } else if (typeof elementorFrontend !== 'undefined') {
+                $(window).on('elementor/frontend/init', function () {
+                    registerHandler();
+                });
+                handlerRegistered = true; // tratado pelo evento acima
             }
 
-            // Fallback: escaneia página toda
-            document.querySelectorAll('[data-ptac-enable="1"]').forEach(function (el) {
-                setTimeout(function () { initChildrenAnimation(el); }, 120);
-            });
+            // Fallback: nenhum Elementor JS disponível — varre a página
+            // usando os data-ptac-* renderizados pelo PHP no frontend real.
+            if (!handlerRegistered) {
+                document.querySelectorAll('[data-ptac-enable="1"]').forEach(function (el) {
+                    setTimeout(function () { initChildrenAnimation(el, parseOptsFromDataset(el)); }, 120);
+                });
+            }
         });
     }
 
@@ -398,21 +442,6 @@
         document.addEventListener('DOMContentLoaded', bootstrap);
     } else {
         bootstrap();
-    }
-
-    // Se elementorFrontend já inicializou (scripts no footer carregam tarde),
-    // registra o hook diretamente; caso contrário, aguarda o evento.
-    if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
-        elementorFrontend.hooks.addAction('frontend/element_ready/global', processChildrenElement);
-    } else {
-        $(window).on('elementor/frontend/init', function () {
-            if (typeof elementorFrontend !== 'undefined') {
-                elementorFrontend.hooks.addAction(
-                    'frontend/element_ready/global',
-                    processChildrenElement
-                );
-            }
-        });
     }
 
 })(typeof jQuery !== 'undefined' ? jQuery : function (fn) { document.addEventListener('DOMContentLoaded', fn); });

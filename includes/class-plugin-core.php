@@ -76,10 +76,13 @@ final class Plugin_Core {
 		);
 
 		// ── Text animations ───────────────────────────────────────────────────
+		// Depende de 'elementor-frontend' para garantir que elementorFrontend/
+		// elementorModules já existam quando este script registra seu Frontend
+		// Handler (onInit/onElementChange) — necessário para o preview live no editor.
 		wp_enqueue_script(
 			'pta-text-animations',
 			PTA_URL . 'assets/js/text-animations.js',
-			[ 'jquery', 'pta-gsap', 'pta-animejs' ],
+			[ 'jquery', 'pta-gsap', 'pta-animejs', 'elementor-frontend' ],
 			PTA_VERSION,
 			true
 		);
@@ -88,7 +91,7 @@ final class Plugin_Core {
 		wp_enqueue_script(
 			'pta-children-animations',
 			PTA_URL . 'assets/js/children-animations.js',
-			[ 'jquery', 'pta-gsap' ],
+			[ 'jquery', 'pta-gsap', 'elementor-frontend' ],
 			PTA_VERSION,
 			true
 		);
