@@ -600,7 +600,9 @@
      * @param {Object}      opts
      */
     function initTextAnimation(wrapper, opts) {
+        console.log('[PTA:text] initTextAnimation()', { wrapper: wrapper, opts: opts });
         var textEl = getTextTarget(wrapper);
+        console.log('[PTA:text] textEl encontrado ->', textEl, 'texto:', (textEl.innerText || textEl.textContent || '').slice(0, 40));
 
         // Guarda (uma única vez) o HTML original do alvo, para poder
         // restaurá-lo antes de cada reinicialização.
@@ -725,6 +727,7 @@
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
+            console.log('[PTA:text] elementorModules.frontend.handlers ainda não disponível.');
             return false;
         }
 
@@ -758,49 +761,71 @@
 
         PTATextAnimationHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
-            if (!this.isEnabled()) {
+            var enabled = this.isEnabled();
+            console.log('[PTA:text] runAnimation()', { wrapper: wrapper, enabled: enabled });
+            if (!enabled) {
                 teardownTextAnimation(wrapper);
                 return;
             }
             var opts = this.getOpts();
+            console.log('[PTA:text] opts ->', opts);
             setTimeout(function () { initTextAnimation(wrapper, opts); }, 80);
         };
 
         PTATextAnimationHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
+            console.log('[PTA:text] onInit()', this.$element[0]);
             this.runAnimation();
         };
 
         PTATextAnimationHandler.prototype.onElementChange = function (propertyName) {
+            console.log('[PTA:text] onElementChange()', propertyName);
             if (propertyName.indexOf('pta_text_') === 0) {
                 this.runAnimation();
             }
         };
 
         elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
+            console.log('[PTA:text] frontend/element_ready/global ->', $element);
             elementorFrontend.elementsHandler.addHandler(PTATextAnimationHandler, { $element: $element });
         });
 
+        console.log('[PTA:text] Handler registrado com sucesso.');
         return true;
     }
 
     function bootstrap() {
+        console.log('[PTA:text] bootstrap() iniciado.');
         waitForLibs(function () {
+            console.log('[PTA:text] waitForLibs resolvido. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
+            console.log('[PTA:text] elementorFrontend?', typeof elementorFrontend !== 'undefined', 'isInit?', typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit);
 
             var handlerRegistered = false;
 
-            if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
+            // `hooks.addAction()` é seguro de chamar a qualquer momento — NÃO
+            // depende de `elementorFrontend.isInit` ser true. O callback só
+            // executa de fato quando o Elementor disparar `frontend/element_ready`,
+            // isso sim ocorre depois do init real. Por isso tentamos registrar
+            // IMEDIATAMENTE (isInit pode nunca aparecer truthy dentro do iframe
+            // de preview do editor, e esperar por isso travava o registro).
+            if (typeof elementorFrontend !== 'undefined') {
                 handlerRegistered = registerHandler();
-            } else if (typeof elementorFrontend !== 'undefined') {
+            }
+
+            if (!handlerRegistered && typeof elementorFrontend !== 'undefined') {
+                console.log('[PTA:text] Não registrado ainda — aguardando evento elementor/frontend/init como fallback...');
                 $(window).on('elementor/frontend/init', function () {
-                    registerHandler();
+                    console.log('[PTA:text] evento elementor/frontend/init disparado.');
+                    if (!handlerRegistered) {
+                        handlerRegistered = registerHandler();
+                    }
                 });
-                handlerRegistered = true; // tratado pelo evento acima
             }
 
             // Fallback: nenhum Elementor JS disponível — varre a página
             // usando os data-pta-* renderizados pelo PHP no frontend real.
-            if (!handlerRegistered) {
+            if (typeof elementorFrontend === 'undefined') {
+                console.log('[PTA:text] Elementor JS indisponível — usando fallback via data-pta-*.');
                 document.querySelectorAll('[data-pta-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initTextAnimation(el, parseOptsFromDataset(el)); }, 80);
                 });

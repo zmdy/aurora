@@ -257,9 +257,14 @@
      * @param {Object}      opts
      */
     function initChildrenAnimation(wrapper, opts) {
-        if (typeof gsap === 'undefined') return;
+        console.log('[PTA:children] initChildrenAnimation()', { wrapper: wrapper, opts: opts });
+        if (typeof gsap === 'undefined') {
+            console.log('[PTA:children] gsap indisponível, abortando.');
+            return;
+        }
 
         var children = getChildren(wrapper, opts.selector);
+        console.log('[PTA:children] children encontrados ->', children.length, children);
 
         // Cancela qualquer observer de uma inicialização anterior.
         if (wrapper._ptacObserver) {
@@ -359,6 +364,7 @@
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
+            console.log('[PTA:children] elementorModules.frontend.handlers ainda não disponível.');
             return false;
         }
 
@@ -388,49 +394,69 @@
 
         PTAChildrenAnimationHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
-            if (!this.isEnabled()) {
+            var enabled = this.isEnabled();
+            console.log('[PTA:children] runAnimation()', { wrapper: wrapper, enabled: enabled });
+            if (!enabled) {
                 teardownChildrenAnimation(wrapper);
                 return;
             }
             var opts = this.getOpts();
+            console.log('[PTA:children] opts ->', opts);
             setTimeout(function () { initChildrenAnimation(wrapper, opts); }, 120);
         };
 
         PTAChildrenAnimationHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
+            console.log('[PTA:children] onInit()', this.$element[0]);
             this.runAnimation();
         };
 
         PTAChildrenAnimationHandler.prototype.onElementChange = function (propertyName) {
+            console.log('[PTA:children] onElementChange()', propertyName);
             if (propertyName.indexOf('pta_children_') === 0) {
                 this.runAnimation();
             }
         };
 
         elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
+            console.log('[PTA:children] frontend/element_ready/global ->', $element);
             elementorFrontend.elementsHandler.addHandler(PTAChildrenAnimationHandler, { $element: $element });
         });
 
+        console.log('[PTA:children] Handler registrado com sucesso.');
         return true;
     }
 
     function bootstrap() {
+        console.log('[PTA:children] bootstrap() iniciado.');
         waitForGsap(function () {
+            console.log('[PTA:children] waitForGsap resolvido. gsap?', typeof gsap !== 'undefined');
+            console.log('[PTA:children] elementorFrontend?', typeof elementorFrontend !== 'undefined', 'isInit?', typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit);
 
             var handlerRegistered = false;
 
-            if (typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit) {
+            // `hooks.addAction()` é seguro de chamar a qualquer momento — NÃO
+            // depende de `elementorFrontend.isInit` ser true. Tentamos
+            // registrar IMEDIATAMENTE (isInit pode nunca aparecer truthy
+            // dentro do iframe de preview do editor).
+            if (typeof elementorFrontend !== 'undefined') {
                 handlerRegistered = registerHandler();
-            } else if (typeof elementorFrontend !== 'undefined') {
+            }
+
+            if (!handlerRegistered && typeof elementorFrontend !== 'undefined') {
+                console.log('[PTA:children] Não registrado ainda — aguardando evento elementor/frontend/init como fallback...');
                 $(window).on('elementor/frontend/init', function () {
-                    registerHandler();
+                    console.log('[PTA:children] evento elementor/frontend/init disparado.');
+                    if (!handlerRegistered) {
+                        handlerRegistered = registerHandler();
+                    }
                 });
-                handlerRegistered = true; // tratado pelo evento acima
             }
 
             // Fallback: nenhum Elementor JS disponível — varre a página
             // usando os data-ptac-* renderizados pelo PHP no frontend real.
-            if (!handlerRegistered) {
+            if (typeof elementorFrontend === 'undefined') {
+                console.log('[PTA:children] Elementor JS indisponível — usando fallback via data-ptac-*.');
                 document.querySelectorAll('[data-ptac-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initChildrenAnimation(el, parseOptsFromDataset(el)); }, 120);
                 });
