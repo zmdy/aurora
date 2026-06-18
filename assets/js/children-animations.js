@@ -1,10 +1,10 @@
 /**
- * Text Animations for Elementor — Frontend: Animação Stagger de Filhos
+ * Aurora for Elementor — Frontend: Animação Stagger de Filhos
  *
  * Aplica animações de entrada em sequência (stagger) aos elementos filhos
  * de qualquer container/section do Elementor.
  *
- * @package PTA
+ * @package Aurora
  * @version 1.0.0
  */
 
@@ -48,7 +48,7 @@
     }
 
     /**
-     * Lê as opções de animação de filhos a partir dos data-ptac-*
+     * Lê as opções de animação de filhos a partir dos data-aurora-children-*
      * (renderizados pelo PHP). Usado apenas como último recurso, quando o
      * sistema de Frontend Handlers do Elementor não está disponível.
      *
@@ -58,14 +58,14 @@
     function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
-            animation : ds.ptacAnimation || 'fade-up',
-            selector  : ds.ptacSelector  || '.elementor-widget',
-            duration  : parseInt(ds.ptacDuration,  10) || 600,
-            delay     : parseInt(ds.ptacDelay,     10) || 0,
-            stagger   : parseInt(ds.ptacStagger,   10) || 150,
-            trigger   : ds.ptacTrigger   || 'scroll',
-            threshold : parseFloat(ds.ptacThreshold) || 0.15,
-            replay    : ds.ptacReplay    === '1',
+            animation : ds.auroraChildrenAnimation || 'fade-up',
+            selector  : ds.auroraChildrenSelector  || '.elementor-widget',
+            duration  : parseInt(ds.auroraChildrenDuration,  10) || 600,
+            delay     : parseInt(ds.auroraChildrenDelay,     10) || 0,
+            stagger   : parseInt(ds.auroraChildrenStagger,   10) || 150,
+            trigger   : ds.auroraChildrenTrigger   || 'scroll',
+            threshold : parseFloat(ds.auroraChildrenThreshold) || 0.15,
+            replay    : ds.auroraChildrenReplay    === '1',
         };
     }
 
@@ -287,19 +287,19 @@
      * @param {Object}      opts
      */
     function initChildrenAnimation(wrapper, opts) {
-        console.log('[PTA:children] initChildrenAnimation()', { wrapper: wrapper, opts: opts });
+        console.log('[Aurora:children] initChildrenAnimation()', { wrapper: wrapper, opts: opts });
         if (typeof gsap === 'undefined') {
-            console.log('[PTA:children] gsap indisponível, abortando.');
+            console.log('[Aurora:children] gsap indisponível, abortando.');
             return;
         }
 
         var children = getChildren(wrapper, opts.selector);
-        console.log('[PTA:children] children encontrados ->', children.length, children);
+        console.log('[Aurora:children] children encontrados ->', children.length, children);
 
         // Cancela qualquer observer de uma inicialização anterior.
-        if (wrapper._ptacObserver) {
-            wrapper._ptacObserver.disconnect();
-            wrapper._ptacObserver = null;
+        if (wrapper._auroraChildrenObserver) {
+            wrapper._auroraChildrenObserver.disconnect();
+            wrapper._auroraChildrenObserver = null;
         }
 
         if (children.length === 0) return;
@@ -337,7 +337,7 @@
             }, { threshold: opts.threshold });
 
             observer.observe(wrapper);
-            wrapper._ptacObserver = observer;
+            wrapper._auroraChildrenObserver = observer;
         } else {
             trigger();
         }
@@ -350,9 +350,9 @@
      * @param {HTMLElement} wrapper
      */
     function teardownChildrenAnimation(wrapper) {
-        if (wrapper._ptacObserver) {
-            wrapper._ptacObserver.disconnect();
-            wrapper._ptacObserver = null;
+        if (wrapper._auroraChildrenObserver) {
+            wrapper._auroraChildrenObserver.disconnect();
+            wrapper._auroraChildrenObserver = null;
         }
         var children = Array.from(wrapper.children);
         if (typeof gsap !== 'undefined' && children.length) {
@@ -386,7 +386,7 @@
     // Veja: https://developers.elementor.com/docs/editor-controls/frontend-available/
 
     /**
-     * Registra o PTAChildrenAnimationHandler junto ao Elementor.
+     * Registra o AuroraChildrenAnimationHandler junto ao Elementor.
      * Retorna `false` se a API de Frontend Handlers não estiver disponível
      * (ex.: versões muito antigas do Elementor).
      *
@@ -394,7 +394,7 @@
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
-            console.log('[PTA:children] elementorModules.frontend.handlers ainda não disponível.');
+            console.log('[Aurora:children] elementorModules.frontend.handlers ainda não disponível.');
             return false;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
@@ -402,66 +402,66 @@
             // existir antes de .hooks ser anexado (caso do editor), e sem
             // essa guarda o addAction() abaixo lançaria um TypeError não
             // capturado, abortando todo o script (fallback/polling/bootstrap).
-            console.log('[PTA:children] elementorFrontend.hooks ainda não disponível.');
+            console.log('[Aurora:children] elementorFrontend.hooks ainda não disponível.');
             return false;
         }
 
-        function PTAChildrenAnimationHandler() {
+        function AuroraChildrenAnimationHandler() {
             elementorModules.frontend.handlers.Base.apply(this, arguments);
         }
 
-        PTAChildrenAnimationHandler.prototype = Object.create(elementorModules.frontend.handlers.Base.prototype);
-        PTAChildrenAnimationHandler.prototype.constructor = PTAChildrenAnimationHandler;
+        AuroraChildrenAnimationHandler.prototype = Object.create(elementorModules.frontend.handlers.Base.prototype);
+        AuroraChildrenAnimationHandler.prototype.constructor = AuroraChildrenAnimationHandler;
 
-        PTAChildrenAnimationHandler.prototype.isEnabled = function () {
-            return this.getElementSettings('pta_children_enable') === 'yes';
+        AuroraChildrenAnimationHandler.prototype.isEnabled = function () {
+            return this.getElementSettings('aurora_children_enable') === 'yes';
         };
 
-        PTAChildrenAnimationHandler.prototype.getOpts = function () {
+        AuroraChildrenAnimationHandler.prototype.getOpts = function () {
             return {
-                animation : this.getElementSettings('pta_children_animation') || 'fade-up',
-                selector  : sanitizeSelector(this.getElementSettings('pta_children_selector')),
-                duration  : sizeOf(this.getElementSettings('pta_children_duration'), 600),
-                delay     : sizeOf(this.getElementSettings('pta_children_delay'), 0),
-                stagger   : sizeOf(this.getElementSettings('pta_children_stagger'), 150),
-                trigger   : this.getElementSettings('pta_children_trigger') || 'scroll',
-                threshold : sizeOf(this.getElementSettings('pta_children_threshold'), 15) / 100,
-                replay    : this.getElementSettings('pta_children_replay') === 'yes',
+                animation : this.getElementSettings('aurora_children_animation') || 'fade-up',
+                selector  : sanitizeSelector(this.getElementSettings('aurora_children_selector')),
+                duration  : sizeOf(this.getElementSettings('aurora_children_duration'), 600),
+                delay     : sizeOf(this.getElementSettings('aurora_children_delay'), 0),
+                stagger   : sizeOf(this.getElementSettings('aurora_children_stagger'), 150),
+                trigger   : this.getElementSettings('aurora_children_trigger') || 'scroll',
+                threshold : sizeOf(this.getElementSettings('aurora_children_threshold'), 15) / 100,
+                replay    : this.getElementSettings('aurora_children_replay') === 'yes',
             };
         };
 
-        PTAChildrenAnimationHandler.prototype.runAnimation = function () {
+        AuroraChildrenAnimationHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
             var enabled = this.isEnabled();
-            console.log('[PTA:children] runAnimation()', { wrapper: wrapper, enabled: enabled });
+            console.log('[Aurora:children] runAnimation()', { wrapper: wrapper, enabled: enabled });
             if (!enabled) {
                 teardownChildrenAnimation(wrapper);
                 return;
             }
             var opts = this.getOpts();
-            console.log('[PTA:children] opts ->', opts);
+            console.log('[Aurora:children] opts ->', opts);
             setTimeout(function () { initChildrenAnimation(wrapper, opts); }, 120);
         };
 
-        PTAChildrenAnimationHandler.prototype.onInit = function () {
+        AuroraChildrenAnimationHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
-            console.log('[PTA:children] onInit()', this.$element[0]);
+            console.log('[Aurora:children] onInit()', this.$element[0]);
             this.runAnimation();
         };
 
-        PTAChildrenAnimationHandler.prototype.onElementChange = function (propertyName) {
-            console.log('[PTA:children] onElementChange()', propertyName);
-            if (propertyName.indexOf('pta_children_') === 0) {
+        AuroraChildrenAnimationHandler.prototype.onElementChange = function (propertyName) {
+            console.log('[Aurora:children] onElementChange()', propertyName);
+            if (propertyName.indexOf('aurora_children_') === 0) {
                 this.runAnimation();
             }
         };
 
         elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
-            console.log('[PTA:children] frontend/element_ready/global ->', $element);
-            elementorFrontend.elementsHandler.addHandler(PTAChildrenAnimationHandler, { $element: $element });
+            console.log('[Aurora:children] frontend/element_ready/global ->', $element);
+            elementorFrontend.elementsHandler.addHandler(AuroraChildrenAnimationHandler, { $element: $element });
         });
 
-        console.log('[PTA:children] Handler registrado com sucesso.');
+        console.log('[Aurora:children] Handler registrado com sucesso.');
         return true;
     }
 
@@ -476,23 +476,23 @@
     // (polling de no mínimo 80ms) antes de registrar o hook fazia perdermos
     // esse disparo pra sempre. Por isso o registro agora é síncrono, no
     // momento em que este arquivo é avaliado.
-    var ptacHandlerRegistered = false;
+    var auroraChildrenHandlerRegistered = false;
 
     function tryRegisterHandlerNow() {
-        if (ptacHandlerRegistered) {
+        if (auroraChildrenHandlerRegistered) {
             return true;
         }
         if (typeof elementorFrontend === 'undefined') {
             return false;
         }
-        ptacHandlerRegistered = registerHandler();
-        return ptacHandlerRegistered;
+        auroraChildrenHandlerRegistered = registerHandler();
+        return auroraChildrenHandlerRegistered;
     }
 
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        console.log('[PTA:children] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
+        console.log('[Aurora:children] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
         $(window).on('elementor/frontend/init', function () {
-            console.log('[PTA:children] evento elementor/frontend/init disparado.');
+            console.log('[Aurora:children] evento elementor/frontend/init disparado.');
             tryRegisterHandlerNow();
         });
         (function poll() {
@@ -507,15 +507,15 @@
     }
 
     function bootstrap() {
-        console.log('[PTA:children] bootstrap() iniciado.');
+        console.log('[Aurora:children] bootstrap() iniciado.');
         waitForGsap(function () {
-            console.log('[PTA:children] waitForGsap resolvido. gsap?', typeof gsap !== 'undefined');
+            console.log('[Aurora:children] waitForGsap resolvido. gsap?', typeof gsap !== 'undefined');
 
             // Fallback: nenhum Elementor JS disponível — varre a página
-            // usando os data-ptac-* renderizados pelo PHP no frontend real.
+            // usando os data-aurora-children-* renderizados pelo PHP no frontend real.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[PTA:children] Elementor JS indisponível — usando fallback via data-ptac-*.');
-                document.querySelectorAll('[data-ptac-enable="1"]').forEach(function (el) {
+                console.log('[Aurora:children] Elementor JS indisponível — usando fallback via data-aurora-children-*.');
+                document.querySelectorAll('[data-aurora-children-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initChildrenAnimation(el, parseOptsFromDataset(el)); }, 120);
                 });
             }

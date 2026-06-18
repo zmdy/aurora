@@ -1,6 +1,8 @@
-# Text Animations for Elementor
+# Aurora for Elementor
 
-> A WordPress plugin that adds **advanced text animations** (GSAP + Anime.js) and **staggered children element animations** to the **Advanced** tab of Elementor — no code required, straight from the panel.
+> Color and motion, unleashed.
+
+The open-source Swiss Army knife for Elementor design. Aurora adds **advanced text animations** (GSAP + Anime.js) and **staggered children element animations** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
 
 ---
 
@@ -8,9 +10,9 @@
 
 ### 🔤 Module 1 — Text Animation
 
-Available on **any Elementor widget** (Heading, Text Editor, Button, etc.) via **Advanced → ✨ Text Animation (PTA)**.
+Available on **any Elementor widget** (Heading, Text Editor, Button, etc.) via **Advanced → ✨ Text Animation (Aurora)**.
 
-Automatically splits text content into **characters**, **words**, or **lines** and applies one of 20 available animations, triggered on scroll or on page load.
+Automatically splits text content into **characters**, **words**, or **lines** and applies one of **24 available animations**, triggered on scroll or on page load.
 
 | # | Library | Name | Effect |
 |---|---------|------|--------|
@@ -34,6 +36,10 @@ Automatically splits text content into **characters**, **words**, or **lines** a
 | ml-8 | Anime.js | Blur Reveal | Blurred → sharp |
 | ml-9 | Anime.js | Skew In | Skews then snaps into position |
 | ml-10 | Anime.js | Explosion | Large scale → normal |
+| ml-11 | Anime.js | Native Split (Letters) | Native Anime.js v4 text splitter, per letter |
+| ml-12 | Anime.js | Clip Wrap (Words) | Masked reveal per word |
+| ml-13 | Anime.js | Echo Clone (Letters) | Cloned trailing echo per letter |
+| ml-14 | Anime.js | Native Scramble | Native Anime.js v4 scramble effect |
 
 **Available controls per animation:**
 - Library (GSAP / Anime.js)
@@ -50,7 +56,7 @@ Automatically splits text content into **characters**, **words**, or **lines** a
 
 ### 🎬 Module 2 — Animate Children Elements
 
-Available on **Sections, Columns, Containers, and Widgets** via **Advanced → 🎬 Animate Children (PTA)**.
+Available on **Sections, Columns, Containers, and Widgets** via **Advanced → 🎬 Animate Children Elements (Aurora)**.
 
 Applies an entrance animation in cascade (stagger) to each child element, one after the other, with a configurable delay.
 
@@ -94,11 +100,13 @@ Applies an entrance animation in cascade (stagger) to each child element, one af
 1. Clone this repository inside `wp-content/plugins/`:
 
 ```bash
-git clone https://github.com/your-username/plugin-text-animations.git \
-  wp-content/plugins/plugin-text-animations
+git clone https://github.com/your-username/aurora-for-elementor.git \
+  wp-content/plugins/aurora-for-elementor
 ```
 
 2. Activate the plugin from the WordPress dashboard
+
+> **Upgrading from "Text Animations for Elementor"?** Aurora renamed its Elementor control IDs and `data-*` attributes. Deactivate the old plugin, install Aurora, and reconfigure animations on any page that used the previous version — saved values won't carry over automatically.
 
 ---
 
@@ -111,25 +119,26 @@ git clone https://github.com/your-username/plugin-text-animations.git \
 | Elementor | 3.0+ |
 | Elementor Pro | Not required |
 
-Animation libraries are loaded automatically via CDN:
-- **GSAP 3.12** — [cdnjs.cloudflare.com](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js)
-- **Anime.js 3.2** — [cdnjs.cloudflare.com](https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js)
+Animation libraries are bundled with the plugin (no CDN dependency):
+- **GSAP 3.12.5** — `assets/js/vendor/gsap.min.js`
+- **Anime.js 4.4.1** — `assets/js/vendor/anime.min.js`
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-plugin-text-animations/
-├── plugin-text-animations.php                  ← Main bootstrap file
+aurora-for-elementor/
+├── aurora-for-elementor.php                    ← Main bootstrap file
 ├── includes/
 │   ├── class-plugin-core.php                   ← Singleton: loads modules & assets
 │   ├── class-text-animation-controls.php       ← Text animation controls
 │   └── class-children-animation-controls.php   ← Children animation controls
 ├── assets/
 │   ├── js/
-│   │   ├── text-animations.js                  ← 20 animations (GSAP + Anime.js)
-│   │   └── children-animations.js              ← Children stagger (GSAP)
+│   │   ├── text-animations.js                  ← 24 animations (GSAP + Anime.js)
+│   │   ├── children-animations.js              ← Children stagger (GSAP)
+│   │   └── vendor/                             ← Bundled GSAP & Anime.js
 │   └── css/
 │       └── text-animations.css                 ← Base styles & helpers
 ├── LICENSE
@@ -143,12 +152,14 @@ plugin-text-animations/
 1. **PHP registers controls** in the Elementor Advanced tab via hooks:
    - `elementor/element/common/section_effects/after_section_end`
    - `elementor/element/section/section_effects/after_section_end`
+   - `elementor/element/column/section_effects/after_section_end`
    - `elementor/element/container/section_effects/after_section_end`
 
 2. **PHP injects `data-*` attributes** onto the element wrapper via:
    - `elementor/frontend/element/before_render`
+   - `elementor/frontend/widget/before_render`
 
-3. **JavaScript** detects elements by `data-pta-enable="1"` / `data-ptac-enable="1"`, uses `IntersectionObserver` to trigger animations on scroll, and applies effects via GSAP or Anime.js.
+3. **JavaScript** detects elements by `data-aurora-enable="1"` / `data-aurora-children-enable="1"`, registers an Elementor Frontend Handler for live preview in the editor, uses `IntersectionObserver` to trigger animations on scroll, and applies effects via GSAP or Anime.js.
 
 ---
 

@@ -1,18 +1,18 @@
 /**
- * Text Animations for Elementor — Estilos Base
+ * Aurora for Elementor — Estilos Base
  *
  * Fornece resets e helpers visuais necessários para o correto
  * funcionamento das animações no frontend.
  *
- * @package PTA
+ * @package Aurora
  * @version 1.0.0
  */
 
 /* ─── Reset global de unidades animadas ───────────────────────────────────── */
 
-.pta-char,
-.pta-word,
-.pta-line {
+.aurora-char,
+.aurora-word,
+.aurora-line {
     display: inline-block;
     will-change: transform, opacity;
     /* Evita colapso do texto ao manipular transform */
@@ -21,7 +21,7 @@
 }
 
 /* Wrapper de linha: overflow hidden para efeitos de clip/mask */
-.pta-line-wrap {
+.aurora-line-wrap {
     overflow: hidden;
     display: block;
     line-height: inherit;
@@ -29,36 +29,36 @@
 
 /* ─── Perspectiva para animações 3D ──────────────────────────────────────── */
 
-[data-pta-animation="gs-5"] .elementor-widget-container,
-[data-pta-animation="ml-6"] .elementor-widget-container {
+[data-aurora-animation="gs-5"] .elementor-widget-container,
+[data-aurora-animation="ml-6"] .elementor-widget-container {
     perspective: 600px;
 }
 
 /* ─── Overflow hidden no container para Clip Reveal (gs-2) ──────────────── */
 
-[data-pta-animation="gs-2"] .pta-char,
-[data-pta-animation="gs-2"] .pta-word,
-[data-pta-animation="gs-2"] .pta-line {
+[data-aurora-animation="gs-2"] .aurora-char,
+[data-aurora-animation="gs-2"] .aurora-word,
+[data-aurora-animation="gs-2"] .aurora-line {
     overflow: hidden;
     vertical-align: bottom;
 }
 
-/* ─── Garante que elementos com data-pta não mostrem flash ───────────────── */
+/* ─── Garante que elementos com data-aurora não mostrem flash ───────────────── */
 
-[data-pta-enable="1"] .pta-char,
-[data-pta-enable="1"] .pta-word,
-[data-pta-enable="1"] .pta-line {
+[data-aurora-enable="1"] .aurora-char,
+[data-aurora-enable="1"] .aurora-word,
+[data-aurora-enable="1"] .aurora-line {
     opacity: 0; /* Valor inicial antes do JS assumir o controle */
 }
 
-/* ─── Garante que elementos com data-ptac não mostrem flash ──────────────── */
+/* ─── Garante que elementos com data-aurora-children não mostrem flash ───────────── */
 
 /* Os filhos serão ocultados via GSAP.set() no JS */
 /* Este bloco serve de fallback para conexões lentas */
-[data-ptac-enable="1"] > .elementor-widget,
-[data-ptac-enable="1"] > .elementor-column,
-[data-ptac-enable="1"] > .e-con > .e-con-inner > *,
-[data-ptac-enable="1"] > .e-con > * {
+[data-aurora-children-enable="1"] > .elementor-widget,
+[data-aurora-children-enable="1"] > .elementor-column,
+[data-aurora-children-enable="1"] > .e-con > .e-con-inner > *,
+[data-aurora-children-enable="1"] > .e-con > * {
     /* JS assume o controle de opacity via GSAP */
     will-change: transform, opacity;
 }
@@ -66,10 +66,10 @@
 /* ─── Utilitário: desabilita animações para usuários que preferem ─────────── */
 
 @media (prefers-reduced-motion: reduce) {
-    .pta-char,
-    .pta-word,
-    .pta-line,
-    [data-ptac-enable="1"] > * {
+    .aurora-char,
+    .aurora-word,
+    .aurora-line,
+    [data-aurora-children-enable="1"] > * {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;

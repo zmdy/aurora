@@ -2,10 +2,10 @@
 /**
  * Plugin Core — carrega os módulos e registra os assets.
  *
- * @package PTA
+ * @package Aurora
  */
 
-namespace PTA;
+namespace Aurora;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -34,8 +34,8 @@ final class Plugin_Core {
 	// ── Modules ────────────────────────────────────────────────────────────────
 
 	private function load_modules(): void {
-		require_once PTA_PATH . 'includes/class-text-animation-controls.php';
-		require_once PTA_PATH . 'includes/class-children-animation-controls.php';
+		require_once AURORA_PATH . 'includes/class-text-animation-controls.php';
+		require_once AURORA_PATH . 'includes/class-children-animation-controls.php';
 
 		new Text_Animation_Controls();
 		new Children_Animation_Controls();
@@ -51,7 +51,7 @@ final class Plugin_Core {
 
 	public function enqueue_frontend_assets(): void {
 
-		// Elementor já foi verificado em pta_init(); esta checagem é apenas
+		// Elementor já foi verificado em aurora_init(); esta checagem é apenas
 		// uma salvaguarda extra para evitar erros em contextos inesperados.
 		if ( ! class_exists( '\Elementor\Plugin' ) ) {
 			return;
@@ -59,8 +59,8 @@ final class Plugin_Core {
 
 		// ── Vendor: GSAP 3.12 (local) ─────────────────────────────────────────
 		wp_enqueue_script(
-			'pta-gsap',
-			PTA_URL . 'assets/js/vendor/gsap.min.js',
+			'aurora-gsap',
+			AURORA_URL . 'assets/js/vendor/gsap.min.js',
 			[],
 			'3.12.5',
 			true
@@ -68,8 +68,8 @@ final class Plugin_Core {
 
 		// ── Vendor: Anime.js 4.4 (local, UMD global)─────────────────────────────────────
 		wp_enqueue_script(
-			'pta-animejs',
-			PTA_URL . 'assets/js/vendor/anime.min.js',
+			'aurora-animejs',
+			AURORA_URL . 'assets/js/vendor/anime.min.js',
 			[],
 			'4.4.1',
 			true
@@ -80,28 +80,28 @@ final class Plugin_Core {
 		// elementorModules já existam quando este script registra seu Frontend
 		// Handler (onInit/onElementChange) — necessário para o preview live no editor.
 		wp_enqueue_script(
-			'pta-text-animations',
-			PTA_URL . 'assets/js/text-animations.js',
-			[ 'jquery', 'pta-gsap', 'pta-animejs', 'elementor-frontend' ],
-			PTA_VERSION,
+			'aurora-text-animations',
+			AURORA_URL . 'assets/js/text-animations.js',
+			[ 'jquery', 'aurora-gsap', 'aurora-animejs', 'elementor-frontend' ],
+			AURORA_VERSION,
 			true
 		);
 
 		// ── Children animations ───────────────────────────────────────────────
 		wp_enqueue_script(
-			'pta-children-animations',
-			PTA_URL . 'assets/js/children-animations.js',
-			[ 'jquery', 'pta-gsap', 'elementor-frontend' ],
-			PTA_VERSION,
+			'aurora-children-animations',
+			AURORA_URL . 'assets/js/children-animations.js',
+			[ 'jquery', 'aurora-gsap', 'elementor-frontend' ],
+			AURORA_VERSION,
 			true
 		);
 
 		// ── Styles ────────────────────────────────────────────────────────────
 		wp_enqueue_style(
-			'pta-text-animations',
-			PTA_URL . 'assets/css/text-animations.css',
+			'aurora-text-animations',
+			AURORA_URL . 'assets/css/text-animations.css',
 			[],
-			PTA_VERSION
+			AURORA_VERSION
 		);
 	}
 }

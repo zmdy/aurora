@@ -1,10 +1,10 @@
 /**
- * Text Animations for Elementor — Frontend: Animações de Texto
+ * Aurora for Elementor — Frontend: Animações de Texto
  *
  * Suporta 20 animações (10 GSAP + 10 Anime.js) com split por letras,
  * palavras ou linhas, disparadas por IntersectionObserver ou page load.
  *
- * @package PTA
+ * @package Aurora
  * @version 1.0.0
  */
 
@@ -73,7 +73,7 @@
 
             Array.from(word).forEach(function (char) {
                 var span           = document.createElement('span');
-                span.className     = 'pta-char';
+                span.className     = 'aurora-char';
                 span.style.cssText = 'display:inline-block;will-change:transform,opacity;';
                 span.textContent   = char;
                 wordWrap.appendChild(span);
@@ -107,7 +107,7 @@
 
         return text.split(/\s+/).filter(Boolean).map(function (word, i, arr) {
             var span           = document.createElement('span');
-            span.className     = 'pta-word';
+            span.className     = 'aurora-word';
             span.style.cssText = 'display:inline-block;will-change:transform,opacity;';
             span.setAttribute('aria-hidden', 'true');
             span.textContent   = word + (i < arr.length - 1 ? '\u00a0' : '');
@@ -153,11 +153,11 @@
         Object.keys(lineMap).sort(function (a, b) { return a - b; }).forEach(function (top) {
             var lineWrap       = document.createElement('div');
             lineWrap.style.cssText = 'overflow:hidden;display:block;';
-            lineWrap.className = 'pta-line-wrap';
+            lineWrap.className = 'aurora-line-wrap';
 
             var lineInner       = document.createElement('div');
             lineInner.style.cssText = 'display:inline-block;will-change:transform,opacity;';
-            lineInner.className = 'pta-line';
+            lineInner.className = 'aurora-line';
             lineInner.setAttribute('aria-hidden', 'true');
 
             lineMap[top].forEach(function (s) { lineInner.appendChild(s); });
@@ -269,7 +269,7 @@
 
         // gs-3 — Scramble Text  (opera no elemento-pai, não nos units)
         'gs-3': function (units, opts, textEl) {
-            var original = textEl._ptaOriginal || textEl.innerText;
+            var original = textEl._auroraOriginal || textEl.innerText;
             textEl.style.opacity = '0';
             // Restore the element (removes split)
             textEl.innerHTML = '';
@@ -421,14 +421,14 @@
      * @returns {Object} TextSplitter
      */
     function resplitNative(textEl, settings) {
-        if (textEl._ptaSplitInstance && typeof textEl._ptaSplitInstance.revert === 'function') {
-            textEl._ptaSplitInstance.revert();
-            textEl._ptaSplitInstance = null;
-        } else if (typeof textEl._ptaPristineHTML !== 'undefined') {
-            textEl.innerHTML = textEl._ptaPristineHTML;
+        if (textEl._auroraSplitInstance && typeof textEl._auroraSplitInstance.revert === 'function') {
+            textEl._auroraSplitInstance.revert();
+            textEl._auroraSplitInstance = null;
+        } else if (typeof textEl._auroraPristineHTML !== 'undefined') {
+            textEl.innerHTML = textEl._auroraPristineHTML;
         }
         var split = anime.splitText(textEl, settings);
-        textEl._ptaSplitInstance = split;
+        textEl._auroraSplitInstance = split;
         return split;
     }
 
@@ -621,7 +621,7 @@
     }
 
     /**
-     * Lê as opções de animação a partir dos data-pta-* (renderizados pelo PHP).
+     * Lê as opções de animação a partir dos data-aurora-* (renderizados pelo PHP).
      * Usado apenas como último recurso, quando o sistema de Frontend Handlers
      * do Elementor não está disponível (ex.: versões muito antigas).
      *
@@ -631,15 +631,15 @@
     function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
-            library   : ds.ptaLibrary   || 'gsap',
-            animation : ds.ptaAnimation || 'gs-1',
-            splitBy   : ds.ptaSplitBy   || 'chars',
-            duration  : parseInt(ds.ptaDuration,  10) || 800,
-            delay     : parseInt(ds.ptaDelay,     10) || 0,
-            stagger   : parseInt(ds.ptaStagger,   10) || 30,
-            trigger   : ds.ptaTrigger   || 'scroll',
-            threshold : parseFloat(ds.ptaThreshold)  || 0.2,
-            replay    : ds.ptaReplay    === '1',
+            library   : ds.auroraLibrary   || 'gsap',
+            animation : ds.auroraAnimation || 'gs-1',
+            splitBy   : ds.auroraSplitBy   || 'chars',
+            duration  : parseInt(ds.auroraDuration,  10) || 800,
+            delay     : parseInt(ds.auroraDelay,     10) || 0,
+            stagger   : parseInt(ds.auroraStagger,   10) || 30,
+            trigger   : ds.auroraTrigger   || 'scroll',
+            threshold : parseFloat(ds.auroraThreshold)  || 0.2,
+            replay    : ds.auroraReplay    === '1',
         };
     }
 
@@ -705,26 +705,26 @@
      * @param {Object}      opts
      */
     function initTextAnimation(wrapper, opts) {
-        console.log('[PTA:text] initTextAnimation()', { wrapper: wrapper, opts: opts });
+        console.log('[Aurora:text] initTextAnimation()', { wrapper: wrapper, opts: opts });
         var textEl = getTextTarget(wrapper);
-        console.log('[PTA:text] textEl encontrado ->', textEl, 'texto:', (textEl.innerText || textEl.textContent || '').slice(0, 40));
+        console.log('[Aurora:text] textEl encontrado ->', textEl, 'texto:', (textEl.innerText || textEl.textContent || '').slice(0, 40));
 
         // Guarda (uma única vez) o HTML original do alvo, para poder
         // restaurá-lo antes de cada reinicialização.
-        if (typeof textEl._ptaPristineHTML === 'undefined') {
-            textEl._ptaPristineHTML = textEl.innerHTML;
+        if (typeof textEl._auroraPristineHTML === 'undefined') {
+            textEl._auroraPristineHTML = textEl.innerHTML;
         } else {
-            textEl.innerHTML = textEl._ptaPristineHTML;
+            textEl.innerHTML = textEl._auroraPristineHTML;
         }
 
         // Cancela qualquer observer de uma inicialização anterior.
-        if (wrapper._ptaObserver) {
-            wrapper._ptaObserver.disconnect();
-            wrapper._ptaObserver = null;
+        if (wrapper._auroraObserver) {
+            wrapper._auroraObserver.disconnect();
+            wrapper._auroraObserver = null;
         }
 
         // Guarda texto original (necessário para scramble)
-        textEl._ptaOriginal = textEl.innerText || textEl.textContent;
+        textEl._auroraOriginal = textEl.innerText || textEl.textContent;
 
         // Divisão do texto (não aplica para animações self-managed, que
         // fazem seu próprio split/scramble — ver SELF_MANAGED_ANIMATIONS)
@@ -772,7 +772,7 @@
             }, { threshold: opts.threshold });
 
             observer.observe(wrapper);
-            wrapper._ptaObserver = observer;
+            wrapper._auroraObserver = observer;
         } else {
             // Dispara imediatamente ao carregar
             trigger();
@@ -787,15 +787,15 @@
      * @param {HTMLElement} wrapper
      */
     function teardownTextAnimation(wrapper) {
-        if (wrapper._ptaObserver) {
-            wrapper._ptaObserver.disconnect();
-            wrapper._ptaObserver = null;
+        if (wrapper._auroraObserver) {
+            wrapper._auroraObserver.disconnect();
+            wrapper._auroraObserver = null;
         }
         var textEl = getTextTarget(wrapper);
-        if (textEl && typeof textEl._ptaPristineHTML !== 'undefined') {
-            textEl.innerHTML = textEl._ptaPristineHTML;
+        if (textEl && typeof textEl._auroraPristineHTML !== 'undefined') {
+            textEl.innerHTML = textEl._auroraPristineHTML;
             textEl.style.opacity = '';
-            textEl._ptaSplitInstance = null;
+            textEl._auroraSplitInstance = null;
         }
     }
 
@@ -827,7 +827,7 @@
     // Veja: https://developers.elementor.com/docs/editor-controls/frontend-available/
 
     /**
-     * Registra o PTATextAnimationHandler junto ao Elementor.
+     * Registra o AuroraTextAnimationHandler junto ao Elementor.
      * Retorna `false` se a API de Frontend Handlers não estiver disponível
      * (ex.: versões muito antigas do Elementor).
      *
@@ -835,7 +835,7 @@
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
-            console.log('[PTA:text] elementorModules.frontend.handlers ainda não disponível.');
+            console.log('[Aurora:text] elementorModules.frontend.handlers ainda não disponível.');
             return false;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
@@ -844,70 +844,70 @@
             // frontend real). Sem essa checagem, addAction() abaixo lançaria
             // um TypeError não capturado que abortaria todo o restante do
             // script — incluindo o fallback de polling e o bootstrap().
-            console.log('[PTA:text] elementorFrontend.hooks ainda não disponível.');
+            console.log('[Aurora:text] elementorFrontend.hooks ainda não disponível.');
             return false;
         }
 
-        function PTATextAnimationHandler() {
+        function AuroraTextAnimationHandler() {
             elementorModules.frontend.handlers.Base.apply(this, arguments);
         }
 
-        PTATextAnimationHandler.prototype = Object.create(elementorModules.frontend.handlers.Base.prototype);
-        PTATextAnimationHandler.prototype.constructor = PTATextAnimationHandler;
+        AuroraTextAnimationHandler.prototype = Object.create(elementorModules.frontend.handlers.Base.prototype);
+        AuroraTextAnimationHandler.prototype.constructor = AuroraTextAnimationHandler;
 
-        PTATextAnimationHandler.prototype.isEnabled = function () {
-            return this.getElementSettings('pta_text_enable') === 'yes';
+        AuroraTextAnimationHandler.prototype.isEnabled = function () {
+            return this.getElementSettings('aurora_text_enable') === 'yes';
         };
 
-        PTATextAnimationHandler.prototype.getOpts = function () {
-            var library = this.getElementSettings('pta_text_library') || 'gsap';
+        AuroraTextAnimationHandler.prototype.getOpts = function () {
+            var library = this.getElementSettings('aurora_text_library') || 'gsap';
             return {
                 library   : library,
                 animation : library === 'gsap'
-                    ? (this.getElementSettings('pta_text_animation_gsap') || 'gs-1')
-                    : (this.getElementSettings('pta_text_animation_anime') || 'ml-1'),
-                splitBy   : this.getElementSettings('pta_text_split_by') || 'chars',
-                duration  : sizeOf(this.getElementSettings('pta_text_duration'), 800),
-                delay     : sizeOf(this.getElementSettings('pta_text_delay'), 0),
-                stagger   : sizeOf(this.getElementSettings('pta_text_stagger'), 30),
-                trigger   : this.getElementSettings('pta_text_trigger') || 'scroll',
-                threshold : sizeOf(this.getElementSettings('pta_text_threshold'), 20) / 100,
-                replay    : this.getElementSettings('pta_text_replay') === 'yes',
+                    ? (this.getElementSettings('aurora_text_animation_gsap') || 'gs-1')
+                    : (this.getElementSettings('aurora_text_animation_anime') || 'ml-1'),
+                splitBy   : this.getElementSettings('aurora_text_split_by') || 'chars',
+                duration  : sizeOf(this.getElementSettings('aurora_text_duration'), 800),
+                delay     : sizeOf(this.getElementSettings('aurora_text_delay'), 0),
+                stagger   : sizeOf(this.getElementSettings('aurora_text_stagger'), 30),
+                trigger   : this.getElementSettings('aurora_text_trigger') || 'scroll',
+                threshold : sizeOf(this.getElementSettings('aurora_text_threshold'), 20) / 100,
+                replay    : this.getElementSettings('aurora_text_replay') === 'yes',
             };
         };
 
-        PTATextAnimationHandler.prototype.runAnimation = function () {
+        AuroraTextAnimationHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
             var enabled = this.isEnabled();
-            console.log('[PTA:text] runAnimation()', { wrapper: wrapper, enabled: enabled });
+            console.log('[Aurora:text] runAnimation()', { wrapper: wrapper, enabled: enabled });
             if (!enabled) {
                 teardownTextAnimation(wrapper);
                 return;
             }
             var opts = this.getOpts();
-            console.log('[PTA:text] opts ->', opts);
+            console.log('[Aurora:text] opts ->', opts);
             setTimeout(function () { initTextAnimation(wrapper, opts); }, 80);
         };
 
-        PTATextAnimationHandler.prototype.onInit = function () {
+        AuroraTextAnimationHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
-            console.log('[PTA:text] onInit()', this.$element[0]);
+            console.log('[Aurora:text] onInit()', this.$element[0]);
             this.runAnimation();
         };
 
-        PTATextAnimationHandler.prototype.onElementChange = function (propertyName) {
-            console.log('[PTA:text] onElementChange()', propertyName);
-            if (propertyName.indexOf('pta_text_') === 0) {
+        AuroraTextAnimationHandler.prototype.onElementChange = function (propertyName) {
+            console.log('[Aurora:text] onElementChange()', propertyName);
+            if (propertyName.indexOf('aurora_text_') === 0) {
                 this.runAnimation();
             }
         };
 
         elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
-            console.log('[PTA:text] frontend/element_ready/global ->', $element);
-            elementorFrontend.elementsHandler.addHandler(PTATextAnimationHandler, { $element: $element });
+            console.log('[Aurora:text] frontend/element_ready/global ->', $element);
+            elementorFrontend.elementsHandler.addHandler(AuroraTextAnimationHandler, { $element: $element });
         });
 
-        console.log('[PTA:text] Handler registrado com sucesso.');
+        console.log('[Aurora:text] Handler registrado com sucesso.');
         return true;
     }
 
@@ -927,23 +927,23 @@
     // o evento ANTES do nosso hook existir — perdendo-o para sempre. Por isso,
     // a tentativa de registro agora roda de forma síncrona, fora de qualquer
     // espera, no exato momento em que este arquivo é avaliado pelo navegador.
-    var ptaHandlerRegistered = false;
+    var auroraHandlerRegistered = false;
 
     function tryRegisterHandlerNow() {
-        if (ptaHandlerRegistered) {
+        if (auroraHandlerRegistered) {
             return true;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks) {
             return false;
         }
-        ptaHandlerRegistered = registerHandler();
-        return ptaHandlerRegistered;
+        auroraHandlerRegistered = registerHandler();
+        return auroraHandlerRegistered;
     }
 
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        console.log('[PTA:text] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
+        console.log('[Aurora:text] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
         $(window).on('elementor/frontend/init', function () {
-            console.log('[PTA:text] evento elementor/frontend/init disparado.');
+            console.log('[Aurora:text] evento elementor/frontend/init disparado.');
             tryRegisterHandlerNow();
         });
         (function poll() {
@@ -958,15 +958,15 @@
     }
 
     function bootstrap() {
-        console.log('[PTA:text] bootstrap() iniciado.');
+        console.log('[Aurora:text] bootstrap() iniciado.');
         waitForLibs(function () {
-            console.log('[PTA:text] waitForLibs resolvido. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
+            console.log('[Aurora:text] waitForLibs resolvido. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
 
             // Fallback: nenhum Elementor JS disponível — varre a página
-            // usando os data-pta-* renderizados pelo PHP no frontend real.
+            // usando os data-aurora-* renderizados pelo PHP no frontend real.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[PTA:text] Elementor JS indisponível — usando fallback via data-pta-*.');
-                document.querySelectorAll('[data-pta-enable="1"]').forEach(function (el) {
+                console.log('[Aurora:text] Elementor JS indisponível — usando fallback via data-aurora-*.');
+                document.querySelectorAll('[data-aurora-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initTextAnimation(el, parseOptsFromDataset(el)); }, 80);
                 });
             }

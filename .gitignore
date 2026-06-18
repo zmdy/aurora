@@ -43,3 +43,7 @@ coverage/
 # Tests
 _tests/
 *.zip
+
+# Rebrand leftovers (sandbox couldn't unlink these — safe to delete manually)
+*.bak
+throwaway_test.txt
