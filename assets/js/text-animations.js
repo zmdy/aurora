@@ -235,14 +235,17 @@
 
         // gs-1 — Fade Up
         'gs-1': function (units, opts) {
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : 60,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { y: 60, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-2 — Clip Reveal (sobe de baixo, mascarado)
@@ -251,14 +254,17 @@
                 u.parentElement.style.overflow = 'hidden';
                 u.style.display = 'inline-block';
             });
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : '110%',
-                opacity  : 0,
-                ease     : 'power4.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { y: '110%', opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : '0%',
+                    opacity  : 1,
+                    ease     : 'power4.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-3 — Scramble Text  (opera no elemento-pai, não nos units)
@@ -273,75 +279,93 @@
 
         // gs-4 — Elastic Bounce
         'gs-4': function (units, opts) {
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : 60,
-                opacity  : 0,
-                ease     : 'elastic.out(1, 0.4)',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { y: 60, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'elastic.out(1, 0.4)',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-5 — 3D Flip Y
         'gs-5': function (units, opts) {
             gsap.set(units, { transformPerspective: 600 });
-            gsap.from(units, {
-                duration  : opts.duration / 1000,
-                delay     : opts.delay / 1000,
-                rotationY : 90,
-                opacity   : 0,
-                ease      : 'power3.out',
-                stagger   : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { rotationY: 90, opacity: 0 },
+                {
+                    duration  : opts.duration / 1000,
+                    delay     : opts.delay / 1000,
+                    rotationY : 0,
+                    opacity   : 1,
+                    ease      : 'power3.out',
+                    stagger   : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-6 — Slide In (from left)
         'gs-6': function (units, opts) {
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                x        : -80,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { x: -80, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    x        : 0,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-7 — Scale Up
         'gs-7': function (units, opts) {
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                scale    : 0,
-                opacity  : 0,
-                ease     : 'back.out(1.7)',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { scale: 0, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    scale    : 1,
+                    opacity  : 1,
+                    ease     : 'back.out(1.7)',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-8 — Wave (deslocamento Y senoidal por índice)
         'gs-8': function (units, opts) {
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : function (i) { return Math.sin(i * 0.9) * 45; },
-                opacity  : 0,
-                ease     : 'power2.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { y: function (i) { return Math.sin(i * 0.9) * 45; }, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'power2.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-9 — Bounce Drop (cai de cima com bounce)
         'gs-9': function (units, opts) {
-            gsap.from(units, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : -80,
-                opacity  : 0,
-                ease     : 'bounce.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(units,
+                { y: -80, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'bounce.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // gs-10 — Glitch (sacudidas rápidas + estabiliza)

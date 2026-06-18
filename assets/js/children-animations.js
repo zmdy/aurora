@@ -120,85 +120,106 @@
 
         // Fade Up
         'fade-up': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : 50,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { y: 50, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Fade Down
         'fade-down': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : -50,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { y: -50, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Fade In (apenas opacidade)
         'fade-in': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                opacity  : 0,
-                ease     : 'power2.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    opacity  : 1,
+                    ease     : 'power2.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Slide da Esquerda
         'slide-left': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                x        : -80,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { x: -80, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    x        : 0,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Slide da Direita
         'slide-right': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                x        : 80,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { x: 80, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    x        : 0,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Zoom In
         'zoom-in': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                scale    : 0.65,
-                opacity  : 0,
-                ease     : 'back.out(1.7)',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { scale: 0.65, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    scale    : 1,
+                    opacity  : 1,
+                    ease     : 'back.out(1.7)',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Zoom Out (começa grande e encolhe)
         'zoom-out': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                scale    : 1.35,
-                opacity  : 0,
-                ease     : 'power3.out',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { scale: 1.35, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    scale    : 1,
+                    opacity  : 1,
+                    ease     : 'power3.out',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Flip Up (rotação 3D no eixo X)
@@ -207,39 +228,48 @@
                 transformPerspective : 800,
                 transformOrigin      : 'center bottom',
             });
-            gsap.from(children, {
-                duration  : opts.duration / 1000,
-                delay     : opts.delay / 1000,
-                rotationX : 80,
-                opacity   : 0,
-                ease      : 'power3.out',
-                stagger   : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { rotationX: 80, opacity: 0 },
+                {
+                    duration  : opts.duration / 1000,
+                    delay     : opts.delay / 1000,
+                    rotationX : 0,
+                    opacity   : 1,
+                    ease      : 'power3.out',
+                    stagger   : opts.stagger / 1000,
+                }
+            );
         },
 
         // Rotate In (rotação Z + fade)
         'rotate-in': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                rotation : -20,
-                scale    : 0.8,
-                opacity  : 0,
-                ease     : 'back.out(1.4)',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { rotation: -20, scale: 0.8, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    rotation : 0,
+                    scale    : 1,
+                    opacity  : 1,
+                    ease     : 'back.out(1.4)',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
 
         // Bounce In (sobe com bounce)
         'bounce-in': function (children, opts) {
-            gsap.from(children, {
-                duration : opts.duration / 1000,
-                delay    : opts.delay / 1000,
-                y        : 70,
-                opacity  : 0,
-                ease     : 'elastic.out(1, 0.5)',
-                stagger  : opts.stagger / 1000,
-            });
+            gsap.fromTo(children,
+                { y: 70, opacity: 0 },
+                {
+                    duration : opts.duration / 1000,
+                    delay    : opts.delay / 1000,
+                    y        : 0,
+                    opacity  : 1,
+                    ease     : 'elastic.out(1, 0.5)',
+                    stagger  : opts.stagger / 1000,
+                }
+            );
         },
     };
 
