@@ -39,3 +39,7 @@ coverage/
 
 # Logs
 *.log
+
+# Tests
+_tests/
+*.zip

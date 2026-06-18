@@ -367,6 +367,14 @@
             console.log('[PTA:children] elementorModules.frontend.handlers ainda não disponível.');
             return false;
         }
+        if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
+            // Mesma checagem de text-animations.js: elementorFrontend pode
+            // existir antes de .hooks ser anexado (caso do editor), e sem
+            // essa guarda o addAction() abaixo lançaria um TypeError não
+            // capturado, abortando todo o script (fallback/polling/bootstrap).
+            console.log('[PTA:children] elementorFrontend.hooks ainda não disponível.');
+            return false;
+        }
 
         function PTAChildrenAnimationHandler() {
             elementorModules.frontend.handlers.Base.apply(this, arguments);
@@ -427,31 +435,51 @@
         return true;
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // REGISTRO DO HOOK — o MAIS CEDO possível, de forma síncrona
+    // ─────────────────────────────────────────────────────────────────────────
+    //
+    // Mesma lógica e mesmo motivo de text-animations.js: `hooks.addAction()`
+    // não depende do GSAP estar carregado nem de `isInit`. No frontend real
+    // (fora do editor) `frontend/element_ready` dispara só UMA VEZ por
+    // elemento, rápido depois do load da página — esperar `waitForGsap()`
+    // (polling de no mínimo 80ms) antes de registrar o hook fazia perdermos
+    // esse disparo pra sempre. Por isso o registro agora é síncrono, no
+    // momento em que este arquivo é avaliado.
+    var ptacHandlerRegistered = false;
+
+    function tryRegisterHandlerNow() {
+        if (ptacHandlerRegistered) {
+            return true;
+        }
+        if (typeof elementorFrontend === 'undefined') {
+            return false;
+        }
+        ptacHandlerRegistered = registerHandler();
+        return ptacHandlerRegistered;
+    }
+
+    if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
+        console.log('[PTA:children] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
+        $(window).on('elementor/frontend/init', function () {
+            console.log('[PTA:children] evento elementor/frontend/init disparado.');
+            tryRegisterHandlerNow();
+        });
+        (function poll() {
+            var tries = 0;
+            var timer = setInterval(function () {
+                tries++;
+                if (tryRegisterHandlerNow() || tries > 50) {
+                    clearInterval(timer);
+                }
+            }, 100);
+        })();
+    }
+
     function bootstrap() {
         console.log('[PTA:children] bootstrap() iniciado.');
         waitForGsap(function () {
             console.log('[PTA:children] waitForGsap resolvido. gsap?', typeof gsap !== 'undefined');
-            console.log('[PTA:children] elementorFrontend?', typeof elementorFrontend !== 'undefined', 'isInit?', typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit);
-
-            var handlerRegistered = false;
-
-            // `hooks.addAction()` é seguro de chamar a qualquer momento — NÃO
-            // depende de `elementorFrontend.isInit` ser true. Tentamos
-            // registrar IMEDIATAMENTE (isInit pode nunca aparecer truthy
-            // dentro do iframe de preview do editor).
-            if (typeof elementorFrontend !== 'undefined') {
-                handlerRegistered = registerHandler();
-            }
-
-            if (!handlerRegistered && typeof elementorFrontend !== 'undefined') {
-                console.log('[PTA:children] Não registrado ainda — aguardando evento elementor/frontend/init como fallback...');
-                $(window).on('elementor/frontend/init', function () {
-                    console.log('[PTA:children] evento elementor/frontend/init disparado.');
-                    if (!handlerRegistered) {
-                        handlerRegistered = registerHandler();
-                    }
-                });
-            }
 
             // Fallback: nenhum Elementor JS disponível — varre a página
             // usando os data-ptac-* renderizados pelo PHP no frontend real.

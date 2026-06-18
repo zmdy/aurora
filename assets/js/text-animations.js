@@ -372,68 +372,96 @@
     };
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ANIMAÇÕES ANIME.JS  (ml-1 … ml-10)
+    // ANIMAÇÕES ANIME.JS v4  (ml-1 … ml-14)
     // ─────────────────────────────────────────────────────────────────────────
+    //
+    // v3 → v4: `anime({targets, ...})` tornou-se `anime.animate(targets, {...})`,
+    // `easing` foi renomeado para `ease` e os nomes de easing perderam o
+    // prefixo "ease" (easeOutExpo → outExpo). Callbacks de delay no formato
+    // function(el, i) continuam compatíveis sem alterações.
+    //
+    // ml-11 … ml-14 usam as novas APIs nativas de texto do Anime.js v4
+    // (anime.splitText() e anime.scrambleText()) e por isso são "self-managed"
+    // (ver SELF_MANAGED_ANIMATIONS): fazem seu próprio split/scramble em
+    // textEl em vez de usar os `units` genéricos pré-divididos pelo splitText()
+    // deste arquivo.
+
+    /**
+     * (Re)executa o split nativo do Anime.js v4, revertendo qualquer split
+     * anterior do mesmo elemento antes de dividir de novo. Necessário para
+     * suportar "Repetir ao re-entrar na viewport" sem dividir um DOM que já
+     * foi dividido (o que duplicaria/corromperia o conteúdo).
+     *
+     * @param {HTMLElement} textEl
+     * @param {Object}      settings  Settings de anime.splitText()
+     * @returns {Object} TextSplitter
+     */
+    function resplitNative(textEl, settings) {
+        if (textEl._ptaSplitInstance && typeof textEl._ptaSplitInstance.revert === 'function') {
+            textEl._ptaSplitInstance.revert();
+            textEl._ptaSplitInstance = null;
+        } else if (typeof textEl._ptaPristineHTML !== 'undefined') {
+            textEl.innerHTML = textEl._ptaPristineHTML;
+        }
+        var split = anime.splitText(textEl, settings);
+        textEl._ptaSplitInstance = split;
+        return split;
+    }
 
     var animeAnimations = {
 
         // ml-1 — Float Up
         'ml-1': function (units, opts) {
-            anime({
-                targets  : units,
+            anime.animate(units, {
                 translateY: [60, 0],
-                opacity  : [0, 1],
-                duration : opts.duration,
-                delay    : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing   : 'easeOutExpo',
+                opacity   : [0, 1],
+                duration  : opts.duration,
+                delay     : function (el, i) { return opts.delay + i * opts.stagger; },
+                ease      : 'outExpo',
             });
         },
 
         // ml-2 — Scale In
         'ml-2': function (units, opts) {
-            anime({
-                targets  : units,
+            anime.animate(units, {
                 scale    : [0.2, 1],
                 opacity  : [0, 1],
                 duration : opts.duration,
                 delay    : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing   : 'easeOutBack',
+                ease     : 'outBack',
             });
         },
 
         // ml-3 — Drop Down
         'ml-3': function (units, opts) {
-            anime({
-                targets   : units,
+            anime.animate(units, {
                 translateY: [-60, 0],
                 opacity   : [0, 1],
                 duration  : opts.duration,
                 delay     : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing    : 'easeOutExpo',
+                ease      : 'outExpo',
             });
         },
 
         // ml-4 — Slide From Right
         'ml-4': function (units, opts) {
-            anime({
-                targets   : units,
+            anime.animate(units, {
                 translateX: [80, 0],
                 opacity   : [0, 1],
                 duration  : opts.duration,
                 delay     : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing    : 'easeOutExpo',
+                ease      : 'outExpo',
             });
         },
 
         // ml-5 — Wave (translateY senoidal por índice)
         'ml-5': function (units, opts) {
-            anime({
-                targets   : units,
+            anime.animate(units, {
                 translateY: function (el, i) { return [Math.sin(i * 0.85) * 40, 0]; },
                 opacity   : [0, 1],
                 duration  : opts.duration,
                 delay     : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing    : 'easeOutSine',
+                ease      : 'outSine',
             });
         },
 
@@ -444,27 +472,25 @@
                 u.style.transformStyle   = 'preserve-3d';
                 u.style.backfaceVisibility = 'hidden';
             });
-            anime({
-                targets : units,
+            anime.animate(units, {
                 rotateX : [90, 0],
                 opacity : [0, 1],
                 duration: opts.duration,
                 delay   : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing  : 'easeOutExpo',
+                ease    : 'outExpo',
             });
         },
 
         // ml-7 — Typewriter (aparece letra por letra, sem transição)
         'ml-7': function (units, opts) {
-            anime({
-                targets : units,
+            anime.animate(units, {
                 opacity : [0, 1],
                 duration: 1,
                 delay   : function (el, i) {
                     // stagger maior para simular digitação
                     return opts.delay + i * Math.max(opts.stagger, 60);
                 },
-                easing  : 'linear',
+                ease    : 'linear',
             });
         },
 
@@ -472,37 +498,80 @@
         'ml-8': function (units, opts) {
             // Inicia com blur
             units.forEach(function (u) { u.style.filter = 'blur(14px)'; });
-            anime({
-                targets : units,
+            anime.animate(units, {
                 filter  : ['blur(14px)', 'blur(0px)'],
                 opacity : [0, 1],
                 duration: opts.duration,
                 delay   : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing  : 'easeOutQuart',
+                ease    : 'outQuart',
             });
         },
 
         // ml-9 — Skew In
         'ml-9': function (units, opts) {
-            anime({
-                targets  : units,
+            anime.animate(units, {
                 skewX    : [-35, 0],
                 opacity  : [0, 1],
                 duration : opts.duration,
                 delay    : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing   : 'easeOutExpo',
+                ease     : 'outExpo',
             });
         },
 
         // ml-10 — Explosion (escala grande → normal)
         'ml-10': function (units, opts) {
-            anime({
-                targets  : units,
+            anime.animate(units, {
                 scale    : [4, 1],
                 opacity  : [0, 1],
                 duration : opts.duration,
                 delay    : function (el, i) { return opts.delay + i * opts.stagger; },
-                easing   : 'easeOutExpo',
+                ease     : 'outExpo',
+            });
+        },
+
+        // ml-11 — Split Nativo (letras divididas via anime.splitText())
+        'ml-11': function (units, opts, textEl) {
+            textEl.style.opacity = '1';
+            var split = resplitNative(textEl, { chars: true });
+            anime.animate(split.chars, {
+                translateY: [40, 0],
+                opacity   : [0, 1],
+                duration  : opts.duration,
+                delay     : function (el, i) { return opts.delay + i * opts.stagger; },
+                ease      : 'outExpo',
+            });
+        },
+
+        // ml-12 — Clip Wrap (palavras mascaradas via parâmetro wrap:'clip')
+        'ml-12': function (units, opts, textEl) {
+            textEl.style.opacity = '1';
+            var split = resplitNative(textEl, { words: { wrap: 'clip' } });
+            anime.animate(split.words, {
+                translateY: ['100%', '0%'],
+                duration  : opts.duration,
+                delay     : function (el, i) { return opts.delay + i * opts.stagger; },
+                ease      : 'outExpo',
+            });
+        },
+
+        // ml-13 — Clone Eco (cada letra clonada via parâmetro clone, efeito de eco/profundidade)
+        'ml-13': function (units, opts, textEl) {
+            textEl.style.opacity = '1';
+            var split = resplitNative(textEl, { chars: { wrap: 'clip', clone: 'bottom' } });
+            anime.animate(split.chars, {
+                translateY: ['-100%', '0%'],
+                duration  : opts.duration,
+                delay     : function (el, i) { return opts.delay + i * opts.stagger; },
+                ease      : 'outExpo',
+            });
+        },
+
+        // ml-14 — Scramble Nativo (anime.scrambleText(), revela com efeito hacker)
+        'ml-14': function (units, opts, textEl) {
+            textEl.style.opacity = '1';
+            anime.animate(textEl, {
+                innerHTML: anime.scrambleText({ duration: opts.duration }),
+                delay    : opts.delay,
             });
         },
     };
@@ -570,6 +639,18 @@
     }
 
     /**
+     * Animações que gerenciam seu próprio DOM/split (não usam os `units`
+     * genéricos pré-divididos por splitText() neste arquivo). Cada uma é
+     * responsável por restaurar/esconder o textEl e revelar seu próprio
+     * conteúdo dentro da função de animação correspondente.
+     */
+    var SELF_MANAGED_ANIMATIONS = ['gs-3', 'ml-11', 'ml-12', 'ml-13', 'ml-14'];
+
+    function isSelfManaged(animation) {
+        return SELF_MANAGED_ANIMATIONS.indexOf(animation) !== -1;
+    }
+
+    /**
      * Executa a animação de acordo com biblioteca e tipo.
      *
      * @param {HTMLElement[]} units
@@ -585,7 +666,7 @@
             if (fn) fn(units, opts, textEl);
         } else if (lib === 'animejs' && typeof anime !== 'undefined') {
             var fn2 = animeAnimations[anim];
-            if (fn2) fn2(units, opts);
+            if (fn2) fn2(units, opts, textEl);
         }
     }
 
@@ -621,14 +702,16 @@
         // Guarda texto original (necessário para scramble)
         textEl._ptaOriginal = textEl.innerText || textEl.textContent;
 
-        // Divisão do texto (não aplica para scramble gs-3)
+        // Divisão do texto (não aplica para animações self-managed, que
+        // fazem seu próprio split/scramble — ver SELF_MANAGED_ANIMATIONS)
         var units = [];
-        if (opts.animation !== 'gs-3') {
+        if (!isSelfManaged(opts.animation)) {
             units = splitText(textEl, opts.splitBy);
             // Estado inicial: invisível
             units.forEach(function (u) { u.style.opacity = '0'; });
         } else {
-            // Scramble: mantém texto mas esconde o elemento
+            // Self-managed: mantém texto mas esconde o elemento; a própria
+            // função de animação (ml-11..14, gs-3) reexibe ao tocar.
             textEl.style.opacity = '0';
         }
 
@@ -637,7 +720,7 @@
         function trigger() {
             if (played && !opts.replay) return;
             played = true;
-            if (opts.animation !== 'gs-3') {
+            if (!isSelfManaged(opts.animation)) {
                 units.forEach(function (u) { u.style.opacity = '0'; }); // Reset antes de re-animar
             }
             playAnimation(units, opts, textEl);
@@ -645,7 +728,7 @@
 
         function reset() {
             played = false;
-            if (opts.animation === 'gs-3') {
+            if (isSelfManaged(opts.animation)) {
                 textEl.style.opacity = '0';
             } else {
                 resetUnits(units, opts);
@@ -688,6 +771,7 @@
         if (textEl && typeof textEl._ptaPristineHTML !== 'undefined') {
             textEl.innerHTML = textEl._ptaPristineHTML;
             textEl.style.opacity = '';
+            textEl._ptaSplitInstance = null;
         }
     }
 
@@ -728,6 +812,15 @@
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
             console.log('[PTA:text] elementorModules.frontend.handlers ainda não disponível.');
+            return false;
+        }
+        if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
+            // elementorFrontend já existe, mas .hooks ainda não foi anexado
+            // (acontece no editor, onde a ordem de inicialização difere do
+            // frontend real). Sem essa checagem, addAction() abaixo lançaria
+            // um TypeError não capturado que abortaria todo o restante do
+            // script — incluindo o fallback de polling e o bootstrap().
+            console.log('[PTA:text] elementorFrontend.hooks ainda não disponível.');
             return false;
         }
 
@@ -794,33 +887,56 @@
         return true;
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // REGISTRO DO HOOK — o MAIS CEDO possível, de forma síncrona
+    // ─────────────────────────────────────────────────────────────────────────
+    //
+    // `elementorFrontend.hooks.addAction()` não depende de gsap/anime estarem
+    // carregados, nem de `isInit`/DOM pronto — só precisa que o objeto
+    // `elementorModules`/`elementorFrontend` já exista, o que é garantido pela
+    // dependência 'elementor-frontend' deste script (ela executa ANTES desta
+    // linha). No frontend real (fora do editor) o Elementor pode disparar
+    // `frontend/element_ready` para cada widget muito rapidamente após o load
+    // da página — e esse evento só dispara UMA VEZ por elemento. O antigo
+    // código só tentava registrar o hook depois de `waitForLibs()` (um polling
+    // de no mínimo 80ms), o que era tempo suficiente para o Elementor disparar
+    // o evento ANTES do nosso hook existir — perdendo-o para sempre. Por isso,
+    // a tentativa de registro agora roda de forma síncrona, fora de qualquer
+    // espera, no exato momento em que este arquivo é avaliado pelo navegador.
+    var ptaHandlerRegistered = false;
+
+    function tryRegisterHandlerNow() {
+        if (ptaHandlerRegistered) {
+            return true;
+        }
+        if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks) {
+            return false;
+        }
+        ptaHandlerRegistered = registerHandler();
+        return ptaHandlerRegistered;
+    }
+
+    if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
+        console.log('[PTA:text] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
+        $(window).on('elementor/frontend/init', function () {
+            console.log('[PTA:text] evento elementor/frontend/init disparado.');
+            tryRegisterHandlerNow();
+        });
+        (function poll() {
+            var tries = 0;
+            var timer = setInterval(function () {
+                tries++;
+                if (tryRegisterHandlerNow() || tries > 50) {
+                    clearInterval(timer);
+                }
+            }, 100);
+        })();
+    }
+
     function bootstrap() {
         console.log('[PTA:text] bootstrap() iniciado.');
         waitForLibs(function () {
             console.log('[PTA:text] waitForLibs resolvido. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
-            console.log('[PTA:text] elementorFrontend?', typeof elementorFrontend !== 'undefined', 'isInit?', typeof elementorFrontend !== 'undefined' && elementorFrontend.isInit);
-
-            var handlerRegistered = false;
-
-            // `hooks.addAction()` é seguro de chamar a qualquer momento — NÃO
-            // depende de `elementorFrontend.isInit` ser true. O callback só
-            // executa de fato quando o Elementor disparar `frontend/element_ready`,
-            // isso sim ocorre depois do init real. Por isso tentamos registrar
-            // IMEDIATAMENTE (isInit pode nunca aparecer truthy dentro do iframe
-            // de preview do editor, e esperar por isso travava o registro).
-            if (typeof elementorFrontend !== 'undefined') {
-                handlerRegistered = registerHandler();
-            }
-
-            if (!handlerRegistered && typeof elementorFrontend !== 'undefined') {
-                console.log('[PTA:text] Não registrado ainda — aguardando evento elementor/frontend/init como fallback...');
-                $(window).on('elementor/frontend/init', function () {
-                    console.log('[PTA:text] evento elementor/frontend/init disparado.');
-                    if (!handlerRegistered) {
-                        handlerRegistered = registerHandler();
-                    }
-                });
-            }
 
             // Fallback: nenhum Elementor JS disponível — varre a página
             // usando os data-pta-* renderizados pelo PHP no frontend real.

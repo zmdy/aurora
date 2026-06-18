@@ -140,6 +140,10 @@ class Text_Animation_Controls {
 					'ml-8'  => esc_html__( 'Blur Reveal',    'pta' ),
 					'ml-9'  => esc_html__( 'Skew In',        'pta' ),
 					'ml-10' => esc_html__( 'Explosion',      'pta' ),
+					'ml-11' => esc_html__( 'Split Nativo (Letras)', 'pta' ),
+					'ml-12' => esc_html__( 'Clip Wrap (Palavras)',  'pta' ),
+					'ml-13' => esc_html__( 'Clone Eco (Letras)',    'pta' ),
+					'ml-14' => esc_html__( 'Scramble Nativo',       'pta' ),
 				],
 				'condition' => [
 					'pta_text_enable'  => 'yes',

@@ -66,12 +66,12 @@ final class Plugin_Core {
 			true
 		);
 
-		// ── Vendor: Anime.js 3.2 (local) ─────────────────────────────────────
+		// ── Vendor: Anime.js 4.4 (local, UMD global)─────────────────────────────────────
 		wp_enqueue_script(
 			'pta-animejs',
 			PTA_URL . 'assets/js/vendor/anime.min.js',
 			[],
-			'3.2.1',
+			'4.4.1',
 			true
 		);
 
