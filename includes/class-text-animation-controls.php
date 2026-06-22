@@ -60,7 +60,7 @@ class Text_Animation_Controls {
 		$element->start_controls_section(
 			'aurora_text_section',
 			[
-				'label' => esc_html__( '✨ Animação de Texto (Aurora)', 'aurora-for-elementor' ),
+				'label' => esc_html__( 'Animação de Texto', 'aurora-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			]
 		);

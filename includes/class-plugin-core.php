@@ -45,6 +45,7 @@ final class Plugin_Core {
 
 	private function register_hooks(): void {
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_assets' ] );
+		add_action( 'elementor/editor/after_enqueue_styles', [ $this, 'enqueue_editor_assets' ] );
 	}
 
 	// ── Asset Enqueue ─────────────────────────────────────────────────────────
@@ -100,6 +101,19 @@ final class Plugin_Core {
 		wp_enqueue_style(
 			'aurora-text-animations',
 			AURORA_URL . 'assets/css/text-animations.css',
+			[],
+			AURORA_VERSION
+		);
+	}
+
+	/**
+	 * Estilos exclusivos do painel do editor do Elementor — usados para
+	 * trocar o ícone padrão das seções Aurora pelos ícones de marca.
+	 */
+	public function enqueue_editor_assets(): void {
+		wp_enqueue_style(
+			'aurora-editor',
+			AURORA_URL . 'assets/css/editor.css',
 			[],
 			AURORA_VERSION
 		);

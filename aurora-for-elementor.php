@@ -1,14 +1,15 @@
 <?php
 /**
  * Plugin Name:       Aurora for Elementor
- * Plugin URI:        https://github.com/your-repo/aurora-for-elementor
+ * Plugin URI:        https://github.com/zmdy/aurora
  * Description:       The open-source Swiss Army knife for Elementor design. Advanced text & children animations (GSAP + Anime.js), multi-stop gradients and more — color and motion, unleashed.
- * Version:           2.0.0
+ * Version:           0.1
  * Requires at least: 5.9
  * Requires PHP:      7.4
- * Author:            Your Name
- * License:           MIT
- * License URI:       https://opensource.org/licenses/MIT
+ * Author:            Aurora
+ * Author URI:        https://github.com/zmdy/aurora
+ * License:           GPL v3
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       aurora-for-elementor
  * Domain Path:       /languages
  *
@@ -24,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-define( 'AURORA_VERSION',      '2.0.0' );
+define( 'AURORA_VERSION',      '0.1' );
 define( 'AURORA_FILE',         __FILE__ );
 define( 'AURORA_PATH',         plugin_dir_path( __FILE__ ) );
 define( 'AURORA_URL',          plugin_dir_url( __FILE__ ) );

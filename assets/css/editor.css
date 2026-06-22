@@ -1,0 +1,34 @@
+/**
+ * Aurora for Elementor — estilos exclusivos do editor.
+ * Substitui o ícone padrão das seções "Animação de Texto" e
+ * "Animar Elementos Filhos" pelos ícones de marca da Aurora.
+ *
+ * O Elementor identifica a seção via atributo data-collapse_id no
+ * elemento .elementor-panel-heading-toggle, que é sempre o irmão
+ * anterior de .elementor-panel-heading-title — por isso usamos o
+ * seletor de irmão adjacente (+) abaixo em vez de uma classe.
+ *
+ * @package Aurora
+ */
+
+.elementor-panel-heading-toggle[data-collapse_id="aurora_text_section"] + .elementor-panel-heading-title::before,
+.elementor-panel-heading-toggle[data-collapse_id="aurora_children_section"] + .elementor-panel-heading-title::before {
+	content: '';
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	margin-right: 6px;
+	vertical-align: middle;
+	border-radius: 4px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}
+
+.elementor-panel-heading-toggle[data-collapse_id="aurora_text_section"] + .elementor-panel-heading-title::before {
+	background-image: url('../branding/icons/aurora_icon_green_module_animate_text.svg');
+}
+
+.elementor-panel-heading-toggle[data-collapse_id="aurora_children_section"] + .elementor-panel-heading-title::before {
+	background-image: url('../branding/icons/aurora_icon_green_module_animate_children.svg');
+}

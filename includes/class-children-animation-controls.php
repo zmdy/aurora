@@ -76,7 +76,7 @@ class Children_Animation_Controls {
 		$element->start_controls_section(
 			'aurora_children_section',
 			[
-				'label' => esc_html__( '🎬 Animar Elementos Filhos (Aurora)', 'aurora-for-elementor' ),
+				'label' => esc_html__( 'Animar Elementos Filhos', 'aurora-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			]
 		);
