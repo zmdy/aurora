@@ -3,6 +3,9 @@
  * Text Animation Controls — injeta controles na aba Avançado de todos
  * os widgets do Elementor e adiciona os data-attributes no frontend.
  *
+ * Implementa apenas o que é específico deste módulo; o encanamento
+ * comum (hooks, deduplicação, montagem da seção) vive em Animation_Module.
+ *
  * @package Aurora
  */
 
@@ -18,52 +21,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Registra os controles de animação de texto e injeta atributos no render.
  */
-class Text_Animation_Controls {
+class Text_Animation_Controls extends Animation_Module {
 
-	/** @var array Evita duplo processamento do before_render para o mesmo elemento. */
-	private $rendered_ids = [];
+	protected function get_section_id(): string {
+		return 'aurora_text_section';
+	}
 
-	public function __construct() {
-		// ── Adiciona seção de controles na aba Avançado (widgets) ─────────────
-		add_action(
-			'elementor/element/common/section_effects/after_section_end',
-			[ $this, 'add_controls' ],
-			10,
-			2
-		);
+	protected function get_section_label(): string {
+		return __( 'Animação de Texto', 'aurora-for-elementor' );
+	}
 
-		// ── Injeta data-* no wrapper — hook genérico (sections, containers) ───
-		add_action(
+	/**
+	 * Além do hook genérico (sections, containers), também escuta o hook
+	 * específico de widgets — necessário em versões do Elementor onde
+	 * element/before_render não é disparado para widgets no frontend.
+	 */
+	protected function get_render_hooks(): array {
+		return [
 			'elementor/frontend/element/before_render',
-			[ $this, 'before_render' ]
-		);
-
-		// ── Injeta data-* no wrapper — hook específico de widgets ─────────────
-		// Necessário em versões do Elementor onde element/before_render não
-		// é disparado para widgets durante a renderização no frontend.
-		add_action(
 			'elementor/frontend/widget/before_render',
-			[ $this, 'before_render' ]
-		);
+		];
 	}
 
 	// ── Controles ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Adiciona a seção "Animação de Texto" à aba Avançado.
+	 * Campos da seção "Animação de Texto".
 	 *
 	 * @param Element_Base $element  Instância do elemento.
-	 * @param array        $args     Argumentos da seção.
 	 */
-	public function add_controls( Element_Base $element, array $args ): void {
-
-		$element->start_controls_section(
-			'aurora_text_section',
-			[
-				'label' => esc_html__( 'Animação de Texto', 'aurora-for-elementor' ),
-				'tab'   => Controls_Manager::TAB_ADVANCED,
-			]
-		);
+	protected function register_fields( Element_Base $element ): void {
 
 		// ── Habilitar ─────────────────────────────────────────────────────────
 		$element->add_control(
@@ -288,32 +275,21 @@ class Text_Animation_Controls {
 				'frontend_available' => true,
 			]
 		);
-
-		$element->end_controls_section();
 	}
 
 	// ── Render Attributes ─────────────────────────────────────────────────────
 
 	/**
-	 * Injeta data-attributes no wrapper do widget antes de renderizar.
+	 * Converte as configurações salvas nos data-attributes do wrapper.
+	 * Retorna array vazio quando a animação está desabilitada.
 	 *
-	 * @param Element_Base $element  Instância do elemento.
+	 * @param array $settings  Configurações do elemento.
+	 * @return array<string, string>
 	 */
-	public function before_render( Element_Base $element ): void {
-
-		// Evita processar o mesmo elemento duas vezes (ambos os hooks podem disparar).
-		$id = $element->get_id();
-		if ( $id && isset( $this->rendered_ids[ $id ] ) ) {
-			return;
-		}
-		if ( $id ) {
-			$this->rendered_ids[ $id ] = true;
-		}
-
-		$settings = $element->get_settings_for_display();
+	protected function get_render_attributes( array $settings ): array {
 
 		if ( empty( $settings['aurora_text_enable'] ) || 'yes' !== $settings['aurora_text_enable'] ) {
-			return;
+			return [];
 		}
 
 		$library   = $settings['aurora_text_library'] ?? 'gsap';
@@ -321,20 +297,17 @@ class Text_Animation_Controls {
 			? ( $settings['aurora_text_animation_gsap'] ?? 'gs-1' )
 			: ( $settings['aurora_text_animation_anime'] ?? 'ml-1' );
 
-		$element->add_render_attribute(
-			'_wrapper',
-			[
-				'data-aurora-enable'    => '1',
-				'data-aurora-library'   => esc_attr( $library ),
-				'data-aurora-animation' => esc_attr( $animation ),
-				'data-aurora-split-by'  => esc_attr( $settings['aurora_text_split_by'] ?? 'chars' ),
-				'data-aurora-duration'  => esc_attr( $settings['aurora_text_duration']['size'] ?? 800 ),
-				'data-aurora-delay'     => esc_attr( $settings['aurora_text_delay']['size'] ?? 0 ),
-				'data-aurora-stagger'   => esc_attr( $settings['aurora_text_stagger']['size'] ?? 30 ),
-				'data-aurora-trigger'   => esc_attr( $settings['aurora_text_trigger'] ?? 'scroll' ),
-				'data-aurora-threshold' => esc_attr( ( $settings['aurora_text_threshold']['size'] ?? 20 ) / 100 ),
-				'data-aurora-replay'    => ( 'yes' === ( $settings['aurora_text_replay'] ?? '' ) ) ? '1' : '0',
-			]
-		);
+		return [
+			'data-aurora-enable'    => '1',
+			'data-aurora-library'   => esc_attr( $library ),
+			'data-aurora-animation' => esc_attr( $animation ),
+			'data-aurora-split-by'  => esc_attr( $settings['aurora_text_split_by'] ?? 'chars' ),
+			'data-aurora-duration'  => esc_attr( $settings['aurora_text_duration']['size'] ?? 800 ),
+			'data-aurora-delay'     => esc_attr( $settings['aurora_text_delay']['size'] ?? 0 ),
+			'data-aurora-stagger'   => esc_attr( $settings['aurora_text_stagger']['size'] ?? 30 ),
+			'data-aurora-trigger'   => esc_attr( $settings['aurora_text_trigger'] ?? 'scroll' ),
+			'data-aurora-threshold' => esc_attr( ( $settings['aurora_text_threshold']['size'] ?? 20 ) / 100 ),
+			'data-aurora-replay'    => ( 'yes' === ( $settings['aurora_text_replay'] ?? '' ) ) ? '1' : '0',
+		];
 	}
 }

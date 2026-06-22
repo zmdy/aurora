@@ -58,8 +58,23 @@ function aurora_init() {
 		return;
 	}
 
+	// Autoload de Aurora\Foo_Bar => includes/class-foo-bar.php. Permite que
+	// novos módulos sejam adicionados sem editar nenhum require_once aqui.
+	spl_autoload_register(
+		function ( $class ) {
+			$prefix = __NAMESPACE__ . '\\';
+			if ( 0 !== strpos( $class, $prefix ) ) {
+				return;
+			}
+			$name = substr( $class, strlen( $prefix ) );
+			$file = AURORA_PATH . 'includes/class-' . strtolower( str_replace( '_', '-', $name ) ) . '.php';
+			if ( file_exists( $file ) ) {
+				require $file;
+			}
+		}
+	);
+
 	// Load core.
-	require_once AURORA_PATH . 'includes/class-plugin-core.php';
 	Plugin_Core::instance();
 }
 add_action( 'plugins_loaded', 'Aurora\aurora_init' );

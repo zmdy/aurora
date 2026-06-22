@@ -3,6 +3,9 @@
  * Children Animation Controls — injeta controles de animação staggered
  * de elementos filhos na aba Avançado de todos os elementos do Elementor.
  *
+ * Implementa apenas o que é específico deste módulo; o encanamento
+ * comum (hooks, deduplicação, montagem da seção) vive em Animation_Module.
+ *
  * @package Aurora
  */
 
@@ -18,68 +21,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Registra os controles "Animar Elementos Filhos" e injeta atributos no render.
  */
-class Children_Animation_Controls {
+class Children_Animation_Controls extends Animation_Module {
 
-	/** @var array Evita duplo processamento do before_render para o mesmo elemento. */
-	private $rendered_ids = [];
+	protected function get_section_id(): string {
+		return 'aurora_children_section';
+	}
 
-	public function __construct() {
-		// ── Widgets ───────────────────────────────────────────────────────────
-		add_action(
-			'elementor/element/common/section_effects/after_section_end',
-			[ $this, 'add_controls' ],
-			20, // priority 20 para ficar depois do text animation (10)
-			2
-		);
+	protected function get_section_label(): string {
+		return __( 'Animar Elementos Filhos', 'aurora-for-elementor' );
+	}
 
-		// ── Section (layout element) ──────────────────────────────────────────
-		add_action(
-			'elementor/element/section/section_effects/after_section_end',
-			[ $this, 'add_controls' ],
-			10,
-			2
-		);
-
-		// ── Column ────────────────────────────────────────────────────────────
-		add_action(
-			'elementor/element/column/section_effects/after_section_end',
-			[ $this, 'add_controls' ],
-			10,
-			2
-		);
-
-		// ── Container (Flexbox Container — Elementor 3.16+) ───────────────────
-		add_action(
-			'elementor/element/container/section_effects/after_section_end',
-			[ $this, 'add_controls' ],
-			10,
-			2
-		);
-
-		// ── Render attributes ─────────────────────────────────────────────────
-		add_action(
-			'elementor/frontend/element/before_render',
-			[ $this, 'before_render' ]
-		);
+	/**
+	 * Este módulo atua em widgets, sections, columns e containers —
+	 * diferente do padrão (só widgets) usado pela maioria dos módulos.
+	 */
+	protected function get_controls_hooks(): array {
+		return [
+			// priority 20 para ficar depois do text animation (10) nos widgets.
+			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 20 ],
+			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 10 ],
+		];
 	}
 
 	// ── Controles ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Adiciona a seção "Animar Elementos Filhos" à aba Avançado.
+	 * Campos da seção "Animar Elementos Filhos".
 	 *
 	 * @param Element_Base $element  Instância do elemento.
-	 * @param array        $args     Argumentos da seção.
 	 */
-	public function add_controls( Element_Base $element, array $args ): void {
-
-		$element->start_controls_section(
-			'aurora_children_section',
-			[
-				'label' => esc_html__( 'Animar Elementos Filhos', 'aurora-for-elementor' ),
-				'tab'   => Controls_Manager::TAB_ADVANCED,
-			]
-		);
+	protected function register_fields( Element_Base $element ): void {
 
 		// ── Habilitar ─────────────────────────────────────────────────────────
 		$element->add_control(
@@ -245,32 +218,21 @@ class Children_Animation_Controls {
 				'frontend_available' => true,
 			]
 		);
-
-		$element->end_controls_section();
 	}
 
 	// ── Render Attributes ─────────────────────────────────────────────────────
 
 	/**
-	 * Injeta data-attributes no wrapper do elemento antes de renderizar.
+	 * Converte as configurações salvas nos data-attributes do wrapper.
+	 * Retorna array vazio quando a animação está desabilitada.
 	 *
-	 * @param Element_Base $element  Instância do elemento.
+	 * @param array $settings  Configurações do elemento.
+	 * @return array<string, string>
 	 */
-	public function before_render( Element_Base $element ): void {
-
-		// Evita processar o mesmo elemento duas vezes.
-		$id = $element->get_id();
-		if ( $id && isset( $this->rendered_ids[ $id ] ) ) {
-			return;
-		}
-		if ( $id ) {
-			$this->rendered_ids[ $id ] = true;
-		}
-
-		$settings = $element->get_settings_for_display();
+	protected function get_render_attributes( array $settings ): array {
 
 		if ( empty( $settings['aurora_children_enable'] ) || 'yes' !== $settings['aurora_children_enable'] ) {
-			return;
+			return [];
 		}
 
 		// Sanitize o seletor CSS (permite apenas caracteres válidos).
@@ -278,19 +240,16 @@ class Children_Animation_Controls {
 		$selector     = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_selector );
 		$selector     = $selector ?: '.elementor-widget';
 
-		$element->add_render_attribute(
-			'_wrapper',
-			[
-				'data-aurora-children-enable'    => '1',
-				'data-aurora-children-animation' => esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' ),
-				'data-aurora-children-selector'  => esc_attr( $selector ),
-				'data-aurora-children-duration'  => esc_attr( $settings['aurora_children_duration']['size'] ?? 600 ),
-				'data-aurora-children-delay'     => esc_attr( $settings['aurora_children_delay']['size'] ?? 0 ),
-				'data-aurora-children-stagger'   => esc_attr( $settings['aurora_children_stagger']['size'] ?? 150 ),
-				'data-aurora-children-trigger'   => esc_attr( $settings['aurora_children_trigger'] ?? 'scroll' ),
-				'data-aurora-children-threshold' => esc_attr( ( $settings['aurora_children_threshold']['size'] ?? 15 ) / 100 ),
-				'data-aurora-children-replay'    => ( 'yes' === ( $settings['aurora_children_replay'] ?? '' ) ) ? '1' : '0',
-			]
-		);
+		return [
+			'data-aurora-children-enable'    => '1',
+			'data-aurora-children-animation' => esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' ),
+			'data-aurora-children-selector'  => esc_attr( $selector ),
+			'data-aurora-children-duration'  => esc_attr( $settings['aurora_children_duration']['size'] ?? 600 ),
+			'data-aurora-children-delay'     => esc_attr( $settings['aurora_children_delay']['size'] ?? 0 ),
+			'data-aurora-children-stagger'   => esc_attr( $settings['aurora_children_stagger']['size'] ?? 150 ),
+			'data-aurora-children-trigger'   => esc_attr( $settings['aurora_children_trigger'] ?? 'scroll' ),
+			'data-aurora-children-threshold' => esc_attr( ( $settings['aurora_children_threshold']['size'] ?? 15 ) / 100 ),
+			'data-aurora-children-replay'    => ( 'yes' === ( $settings['aurora_children_replay'] ?? '' ) ) ? '1' : '0',
+		];
 	}
 }
