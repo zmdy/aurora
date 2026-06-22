@@ -69,10 +69,38 @@ final class Asset_Manager {
 			true
 		);
 
+		// ── Gradient module ───────────────────────────────────────────────────
+		// Não depende de GSAP/Anime.js — todo o efeito (estático ou animado,
+		// mesh/loop) é resolvido em CSS puro injetado pelo próprio script.
+		wp_enqueue_script(
+			'aurora-gradient-module',
+			AURORA_URL . 'assets/js/gradient-module.js',
+			[ 'jquery', 'elementor-frontend' ],
+			AURORA_VERSION,
+			true
+		);
+
 		// ── Styles ────────────────────────────────────────────────────────────
 		wp_enqueue_style(
 			'aurora-text-animations',
 			AURORA_URL . 'assets/css/text-animations.css',
+			[],
+			AURORA_VERSION
+		);
+
+		wp_enqueue_style(
+			'aurora-gradient-module',
+			AURORA_URL . 'assets/css/gradient-module.css',
+			[],
+			AURORA_VERSION
+		);
+
+		// ── Glassmorphism module ──────────────────────────────────────────────
+		// Sem JS — o efeito é um único atributo `style` calculado em PHP.
+		// Esta folha cobre apenas o fallback para navegadores sem backdrop-filter.
+		wp_enqueue_style(
+			'aurora-glass-module',
+			AURORA_URL . 'assets/css/glass-module.css',
 			[],
 			AURORA_VERSION
 		);

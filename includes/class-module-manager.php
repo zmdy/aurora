@@ -25,6 +25,8 @@ final class Module_Manager {
 	private static $modules = [
 		Text_Animation_Controls::class,
 		Children_Animation_Controls::class,
+		Gradient_Controls::class,
+		Glassmorphism_Controls::class,
 	];
 
 	/**

@@ -67,10 +67,16 @@ abstract class Animation_Module {
 	 * data-attributes a serem injetados no wrapper. Deve retornar um
 	 * array vazio quando o módulo estiver desabilitado para o elemento.
 	 *
-	 * @param array $settings Configurações do elemento.
+	 * O segundo parâmetro é opcional (compatível com módulos existentes
+	 * que não precisam dele) — módulos que atuam de forma diferente
+	 * dependendo do tipo de elemento (ex.: fundo em containers vs. texto
+	 * em widgets) podem usá-lo para inspecionar $element->get_name().
+	 *
+	 * @param array             $settings Configurações do elemento.
+	 * @param Element_Base|null $element  Instância do elemento (opcional).
 	 * @return array<string, string> Mapa de data-attributes.
 	 */
-	abstract protected function get_render_attributes( array $settings ): array;
+	abstract protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array;
 
 	// ── Hooks (sobrescrevíveis) ──────────────────────────────────────────────────
 
@@ -98,15 +104,33 @@ abstract class Animation_Module {
 		return [ 'elementor/frontend/element/before_render' ];
 	}
 
+	/**
+	 * Permite que um módulo só apareça em determinados tipos de elemento
+	 * (ex.: só em section/column/container/heading/text-editor). Por
+	 * padrão, o módulo aparece em qualquer elemento que dispare um dos
+	 * hooks de get_controls_hooks() — mesmo comportamento de antes desta
+	 * checagem existir.
+	 *
+	 * @param Element_Base $element Instância do elemento.
+	 */
+	protected function applies_to_element( Element_Base $element ): bool {
+		return true;
+	}
+
 	// ── Encanamento comum ────────────────────────────────────────────────────────
 
 	/**
-	 * Monta a seção de controles na aba Avançado.
+	 * Monta a seção de controles na aba Avançado — mas só para os
+	 * elementos em que applies_to_element() retornar true.
 	 *
 	 * @param Element_Base $element Instância do elemento.
 	 * @param array        $args    Argumentos da seção (não utilizados aqui).
 	 */
 	final public function add_controls( Element_Base $element, array $args ): void {
+
+		if ( ! $this->applies_to_element( $element ) ) {
+			return;
+		}
 
 		$element->start_controls_section(
 			$this->get_section_id(),
@@ -139,7 +163,7 @@ abstract class Animation_Module {
 		}
 
 		$settings   = $element->get_settings_for_display();
-		$attributes = $this->get_render_attributes( $settings );
+		$attributes = $this->get_render_attributes( $settings, $element );
 
 		if ( empty( $attributes ) ) {
 			return;

@@ -1,0 +1,19 @@
+/**
+ * Aurora for Elementor — Módulo de Glassmorphism: fallback
+ *
+ * O efeito principal (fundo translúcido, blur, saturação, borda) é
+ * resolvido inteiramente por um atributo `style` calculado em PHP
+ * (ver Glassmorphism_Controls::get_render_attributes) — não há JS
+ * neste módulo. Este arquivo cobre apenas o caso em que o navegador
+ * não suporta `backdrop-filter`: sem o blur, o fundo semi-transparente
+ * isolado ficaria com baixo contraste, então aumentamos a opacidade
+ * para preservar legibilidade.
+ *
+ * @package Aurora
+ */
+
+@supports not ( (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) ) {
+	.aurora-glass-active {
+		background-color: rgba(255, 255, 255, 0.55) !important;
+	}
+}
