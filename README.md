@@ -1,14 +1,32 @@
-# Aurora for Elementor
+<div align="center">
+  <img src="assets/branding/aurora_animated_logo.svg" alt="Aurora Logo" width="150" />
 
-> Color and motion, unleashed.
+  <p><strong>The open-source Swiss Army knife for Elementor design.</strong></p>
+  <!-- Badges -->
+  <img src="https://img.shields.io/badge/WordPress-21759B.svg?style=for-the-badge&logo=WordPress&logoColor=white" alt="WordPress">
+  <img src="https://img.shields.io/badge/Elementor-92003B.svg?style=for-the-badge&logo=Elementor&logoColor=white" alt="Elementor" />
+  <img src="https://img.shields.io/badge/Anime.js-000000.svg?style=for-the-badge&logo=animedotjs&logoColor=white" alt="Anime.JS">
+  <img src="https://img.shields.io/badge/GSAP-0AE448.svg?style=for-the-badge&logo=GSAP&logoColor=white" alt="GSAP">
+  <img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
+  <img src="https://img.shields.io/badge/License-GPL_v3-blue?style=for-the-badge" alt="GPL License" />
+</div>
 
-The open-source Swiss Army knife for Elementor design. Aurora adds **advanced text animations** (GSAP + Anime.js) and **staggered children element animations** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
+Aurora adds **advanced text animations** (GSAP + Anime.js) and **staggered children element animations** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
 
 ---
 
-## ✨ Features
+<h2 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_blue_features.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
+  Features
+</h2>
 
-### 🔤 Module 1 — Text Animation
+<h3 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_green_module_animate_text.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
+  Module 1 — Text Animation
+</h3>
 
 Available on **any Elementor widget** (Heading, Text Editor, Button, etc.) via **Advanced → ✨ Text Animation (Aurora)**.
 
@@ -54,7 +72,10 @@ Automatically splits text content into **characters**, **words**, or **lines** a
 
 ---
 
-### 🎬 Module 2 — Animate Children Elements
+<h3 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_green_module_animate_children.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
+  Module 2 — Animate Children Elements
+</h3>
 
 Available on **Sections, Columns, Containers, and Widgets** via **Advanced → 🎬 Animate Children Elements (Aurora)**.
 
@@ -86,7 +107,10 @@ Applies an entrance animation in cascade (stagger) to each child element, one af
 
 ---
 
-## 📦 Installation
+<h2 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_blue_install.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
+  Installation
+</h2>
 
 ### Via ZIP upload
 
@@ -100,17 +124,18 @@ Applies an entrance animation in cascade (stagger) to each child element, one af
 1. Clone this repository inside `wp-content/plugins/`:
 
 ```bash
-git clone https://github.com/your-username/aurora-for-elementor.git \
+git clone https://github.com/zmdy/aurora \
   wp-content/plugins/aurora-for-elementor
 ```
 
 2. Activate the plugin from the WordPress dashboard
 
-> **Upgrading from "Text Animations for Elementor"?** Aurora renamed its Elementor control IDs and `data-*` attributes. Deactivate the old plugin, install Aurora, and reconfigure animations on any page that used the previous version — saved values won't carry over automatically.
-
 ---
 
-## 🔧 Requirements
+<h2 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_blue_specs.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
+  Project Specs
+</h2>
 
 | Requirement | Minimum version |
 |-------------|----------------|
@@ -123,9 +148,8 @@ Animation libraries are bundled with the plugin (no CDN dependency):
 - **GSAP 3.12.5** — `assets/js/vendor/gsap.min.js`
 - **Anime.js 4.4.1** — `assets/js/vendor/anime.min.js`
 
----
 
-## 🗂️ Project Structure
+### Project Structure
 
 ```
 aurora-for-elementor/
@@ -145,9 +169,8 @@ aurora-for-elementor/
 └── README.md
 ```
 
----
 
-## 🛠️ How it works
+### How it works
 
 1. **PHP registers controls** in the Elementor Advanced tab via hooks:
    - `elementor/element/common/section_effects/after_section_end`
@@ -161,24 +184,22 @@ aurora-for-elementor/
 
 3. **JavaScript** detects elements by `data-aurora-enable="1"` / `data-aurora-children-enable="1"`, registers an Elementor Frontend Handler for live preview in the editor, uses `IntersectionObserver` to trigger animations on scroll, and applies effects via GSAP or Anime.js.
 
----
+## 💡 Inspiration
 
-## 🔒 Security & Accessibility
+- [Moving Letters — Tobias Ahlin](https://tobiasahlin.com/moving-letters/)
+- [GSAP — GreenSock](https://gsap.com/)
+- [Anime.js](https://animejs.com/)
+- [Animation Addons for Elementor](https://animation-addons.com/)
 
-- Children CSS selector is sanitized via regex in PHP
-- All attributes are escaped with `esc_attr()`
-- Split text elements receive `aria-label` with the original content and `aria-hidden="true"` on individual spans
-- Full `prefers-reduced-motion` support via CSS media query
-
----
-
-## 📝 License
-
-This project is distributed under the [MIT License](./LICENSE).
 
 ---
 
-## 🤝 Contributing
+<h2 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_blue_contributing.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
+  Contributing
+</h2>
+
+This project is distributed under the [GPL License](./LICENSE).
 
 Pull requests are welcome! For major changes, please open an Issue first to discuss what you'd like to change.
 
@@ -188,10 +209,4 @@ Pull requests are welcome! For major changes, please open an Issue first to disc
 4. Push to the branch (`git push origin feature/new-animation`)
 5. Open a Pull Request
 
----
-
-## 💡 Inspiration
-
-- [Moving Letters — Tobias Ahlin](https://tobiasahlin.com/moving-letters/)
-- [GSAP — GreenSock](https://gsap.com/)
-- [Anime.js](https://animejs.com/)
+[![Feito no Brasil](https://selo.feitonobrasil.dev.br/pt-br/colorido/1x.svg)](https://feitonobrasil.dev.br)
