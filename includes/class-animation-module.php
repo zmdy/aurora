@@ -67,10 +67,13 @@ abstract class Animation_Module {
 	 * data-attributes a serem injetados no wrapper. Deve retornar um
 	 * array vazio quando o módulo estiver desabilitado para o elemento.
 	 *
-	 * O segundo parâmetro é opcional (compatível com módulos existentes
-	 * que não precisam dele) — módulos que atuam de forma diferente
-	 * dependendo do tipo de elemento (ex.: fundo em containers vs. texto
-	 * em widgets) podem usá-lo para inspecionar $element->get_name().
+	 * O segundo parâmetro é opcional (não precisa ser usado) — mas o PHP
+	 * exige que toda classe que sobrescreve este método declare a MESMA
+	 * assinatura completa (mesmo número de parâmetros), mesmo que apenas
+	 * para ignorá-lo; omitir o parâmetro causa um Fatal error de
+	 * "Declaration must be compatible". Módulos que atuam de forma
+	 * diferente dependendo do tipo de elemento (ex.: fundo em containers
+	 * vs. texto em widgets) podem usá-lo para inspecionar $element->get_name().
 	 *
 	 * @param array             $settings Configurações do elemento.
 	 * @param Element_Base|null $element  Instância do elemento (opcional).

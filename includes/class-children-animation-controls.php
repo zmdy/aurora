@@ -226,10 +226,11 @@ class Children_Animation_Controls extends Animation_Module {
 	 * Converte as configurações salvas nos data-attributes do wrapper.
 	 * Retorna array vazio quando a animação está desabilitada.
 	 *
-	 * @param array $settings  Configurações do elemento.
+	 * @param array             $settings  Configurações do elemento.
+	 * @param Element_Base|null $element   Não utilizado neste módulo.
 	 * @return array<string, string>
 	 */
-	protected function get_render_attributes( array $settings ): array {
+	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {
 
 		if ( empty( $settings['aurora_children_enable'] ) || 'yes' !== $settings['aurora_children_enable'] ) {
 			return [];
