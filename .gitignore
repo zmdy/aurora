@@ -25,7 +25,6 @@ wp-config.php
 wp-content/uploads/
 
 # Composer
-vendor/
 composer.lock
 
 # PHPUnit
