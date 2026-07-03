@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aurora for Elementor\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-03 16:50+0000\n"
+"POT-Creation-Date: 2026-07-03 17:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -183,6 +183,9 @@ msgid "On containers, applies to the background. On Heading/Text Editor, applies
 msgstr ""
 
 msgid "Page load"
+msgstr ""
+
+msgid "Pan (sliding gradient)"
 msgstr ""
 
 msgid "Position (%)"

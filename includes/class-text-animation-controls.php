@@ -23,12 +23,32 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Text_Animation_Controls extends Animation_Module {
 
+	/** Structural elements where this module must NOT appear — see applies_to_element(). */
+	const UNSUPPORTED_ELEMENTS = [ 'section', 'column', 'container' ];
+
 	protected function get_section_id(): string {
 		return 'aurora_text_section';
 	}
 
 	protected function get_section_label(): string {
 		return __( 'Text Animation', 'aurora-for-elementor' );
+	}
+
+	/**
+	 * Only appears on actual widgets (Heading, Text Editor, Button, etc.),
+	 * matching the "Available on any Elementor widget" behavior described
+	 * in the README. The base class only registers this module on the
+	 * "common" hook (shared by every element type, including structural
+	 * ones), so without this override the section would also show up on
+	 * Section/Column/Container. That's not just cosmetic: getTextTarget()
+	 * falls back to the wrapper itself when no known text selector
+	 * matches, and splitText() then wipes the wrapper's innerHTML to
+	 * rebuild it from its flattened text — which would destroy every
+	 * widget nested inside a structural element if the module were
+	 * mistakenly enabled there.
+	 */
+	protected function applies_to_element( Element_Base $element ): bool {
+		return ! in_array( $element->get_name(), self::UNSUPPORTED_ELEMENTS, true );
 	}
 
 	/**

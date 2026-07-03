@@ -151,9 +151,21 @@ abstract class Animation_Module {
 	 * Injects the module's data-attributes into the wrapper, only once per
 	 * element, and only when the module is enabled for it.
 	 *
+	 * Also re-checks applies_to_element() here, not just in add_controls().
+	 * A module's applies_to_element() rule can change between plugin
+	 * versions (e.g. a module gets scoped away from structural elements);
+	 * without this check, an element that still has a stale "enabled"
+	 * setting saved from before that change would keep rendering the
+	 * module's attributes on the frontend even though its controls no
+	 * longer appear in the editor panel for that element type.
+	 *
 	 * @param Element_Base $element Element instance.
 	 */
 	final public function before_render( Element_Base $element ): void {
+
+		if ( ! $this->applies_to_element( $element ) ) {
+			return;
+		}
 
 		// Prevents processing the same element twice (multiple hooks can fire).
 		$id = $element->get_id();

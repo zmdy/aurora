@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aurora for Elementor\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-03 16:50+0000\n"
-"PO-Revision-Date: 2026-07-03 16:50+0000\n"
+"POT-Creation-Date: 2026-07-03 17:10+0000\n"
+"PO-Revision-Date: 2026-07-03 17:10+0000\n"
 "Last-Translator: Aurora <aurora@example.com>\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -189,6 +189,9 @@ msgstr "Em containers, aplica no fundo. Em Heading/Text Editor, aplica na cor do
 
 msgid "Page load"
 msgstr "Carregar a página"
+
+msgid "Pan (sliding gradient)"
+msgstr "Pan (gradiente deslizante)"
 
 msgid "Position (%)"
 msgstr "Posição (%)"
