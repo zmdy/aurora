@@ -27,6 +27,7 @@ final class Module_Manager {
 		Children_Animation_Controls::class,
 		Gradient_Controls::class,
 		Glassmorphism_Controls::class,
+		Cursor_Follow_Controls::class,
 	];
 
 	/**

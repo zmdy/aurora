@@ -70,11 +70,23 @@ final class Asset_Manager {
 		);
 
 		// ── Gradient module ───────────────────────────────────────────────────
-		// Doesn't depend on GSAP/Anime.js — the whole effect (static or animated,
-		// mesh/loop) is resolved in pure CSS injected by the script itself.
+		// Doesn't depend on GSAP/Anime.js — the whole effect (static, animated,
+		// mesh/loop, or the mouse-follow spotlight) is resolved in pure CSS
+		// (or a live inline style, for the spotlight) driven by the script itself.
 		wp_enqueue_script(
 			'aurora-gradient-module',
 			AURORA_URL . 'assets/js/gradient-module.js',
+			[ 'jquery', 'elementor-frontend' ],
+			AURORA_VERSION,
+			true
+		);
+
+		// ── Cursor Follow module ──────────────────────────────────────────────
+		// No external dependency beyond 'elementor-frontend' for the Frontend
+		// Handler — the dot/ring pair and its mouse tracking are plain DOM/CSS.
+		wp_enqueue_script(
+			'aurora-cursor-follow',
+			AURORA_URL . 'assets/js/cursor-follow.js',
 			[ 'jquery', 'elementor-frontend' ],
 			AURORA_VERSION,
 			true
@@ -101,6 +113,14 @@ final class Asset_Manager {
 		wp_enqueue_style(
 			'aurora-glass-module',
 			AURORA_URL . 'assets/css/glass-module.css',
+			[],
+			AURORA_VERSION
+		);
+
+		// ── Cursor Follow module ──────────────────────────────────────────────
+		wp_enqueue_style(
+			'aurora-cursor-follow',
+			AURORA_URL . 'assets/css/cursor-follow.css',
 			[],
 			AURORA_VERSION
 		);

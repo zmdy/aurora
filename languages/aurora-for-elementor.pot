@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aurora for Elementor\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-03 17:10+0000\n"
+"POT-Creation-Date: 2026-07-03 17:32+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,6 +15,63 @@ msgid "3D Flip"
 msgstr ""
 
 msgid "Angle (degrees)"
+msgstr ""
+
+msgid "CSS selector for elements that should grow/highlight the ring on hover (images, galleries, etc.)."
+msgstr ""
+
+msgid "CSS selector for elements that should shrink/highlight the ring on hover (links, buttons, etc.)."
+msgstr ""
+
+msgid "Cursor Follow"
+msgstr ""
+
+msgid "Dot Color"
+msgstr ""
+
+msgid "Dot Size (px)"
+msgstr ""
+
+msgid "Enable Cursor Follow"
+msgstr ""
+
+msgid "Follow Mouse (Spotlight)"
+msgstr ""
+
+msgid "How long the outer ring takes to catch up with the dot. The dot itself always tracks the mouse instantly."
+msgstr ""
+
+msgid "Image Elements Selector"
+msgstr ""
+
+msgid "Image Hover Scale"
+msgstr ""
+
+msgid "Interactive Elements Selector"
+msgstr ""
+
+msgid "Interactive Hover Scale"
+msgstr ""
+
+msgid "Recenters the gradient on the cursor position as it moves over the element, instead of a fixed center."
+msgstr ""
+
+msgid "Replaces the native cursor with a two-part custom cursor (dot + trailing ring) while the pointer is inside this element."
+msgstr ""
+
+msgid "Resting size of the trailing ring, before any hover scaling is applied."
+msgstr ""
+
+msgid "Ring Color"
+msgstr ""
+
+msgid "Ring Size (px)"
+msgstr ""
+
+msgid "Spotlight Radius (px)"
+msgstr ""
+
+msgid "Trail Delay (ms)"
 msgstr ""
 
 msgid "Animate Children Elements"

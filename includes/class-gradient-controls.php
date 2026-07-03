@@ -134,6 +134,55 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
+		// ── Follow mouse (spotlight) ─────────────────────────────────────────
+		// Recenters the radial gradient on the live cursor position instead
+		// of a fixed point — e.g. the "spotlight" background used behind a
+		// footer/hero, where `radial-gradient(circle {r}px at {x}% {y}%, ...)`
+		// is recomputed on every mousemove. Only meaningful for "radial"
+		// (linear has no center point, and conic's rotation reads oddly when
+		// paired with a moving center), and mutually exclusive with the
+		// time-based Animate option below — see gradient-module.js.
+		$element->add_control(
+			'aurora_gradient_follow_mouse',
+			[
+				'label'              => esc_html__( 'Follow Mouse (Spotlight)', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'description'        => esc_html__( 'Recenters the gradient on the cursor position as it moves over the element, instead of a fixed center.', 'aurora-for-elementor' ),
+				'condition'          => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'radial',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Spotlight radius ──────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_spotlight_radius',
+			[
+				'label'     => esc_html__( 'Spotlight Radius (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 50,
+						'max'  => 1600,
+						'step' => 10,
+					],
+				],
+				'default'   => [ 'size' => 600 ],
+				'condition' => [
+					'aurora_gradient_enable'       => 'yes',
+					'aurora_gradient_type'         => 'radial',
+					'aurora_gradient_follow_mouse' => 'yes',
+				],
+				'frontend_available' => true,
+			]
+		);
+
 		// ── Colors (repeater, 3+) ─────────────────────────────────────────────
 		$repeater = new Repeater();
 
@@ -189,6 +238,9 @@ class Gradient_Controls extends Animation_Module {
 		);
 
 		// ── Animate ───────────────────────────────────────────────────────────
+		// Hidden while Follow Mouse is on: one drives the gradient from a
+		// timer (CSS @keyframes), the other from live cursor position — the
+		// two aren't meant to run at once (see get_render_attributes()).
 		$element->add_control(
 			'aurora_gradient_animate',
 			[
@@ -198,7 +250,10 @@ class Gradient_Controls extends Animation_Module {
 				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
-				'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
+				'condition'          => [
+					'aurora_gradient_enable'       => 'yes',
+					'aurora_gradient_follow_mouse!' => 'yes',
+				],
 				'frontend_available' => true,
 			]
 		);
@@ -226,8 +281,9 @@ class Gradient_Controls extends Animation_Module {
 					'loop' => esc_html__( 'Color Loop (hue rotation)', 'aurora-for-elementor' ),
 				],
 				'condition' => [
-					'aurora_gradient_enable'  => 'yes',
-					'aurora_gradient_animate' => 'yes',
+					'aurora_gradient_enable'        => 'yes',
+					'aurora_gradient_animate'       => 'yes',
+					'aurora_gradient_follow_mouse!' => 'yes',
 				],
 				'frontend_available' => true,
 			]
@@ -248,8 +304,9 @@ class Gradient_Controls extends Animation_Module {
 				],
 				'default'            => [ 'size' => 8 ],
 				'condition'          => [
-					'aurora_gradient_enable'  => 'yes',
-					'aurora_gradient_animate' => 'yes',
+					'aurora_gradient_enable'        => 'yes',
+					'aurora_gradient_animate'       => 'yes',
+					'aurora_gradient_follow_mouse!' => 'yes',
 				],
 				'frontend_available' => true,
 			]
@@ -298,15 +355,25 @@ class Gradient_Controls extends Animation_Module {
 		$style = $settings['aurora_gradient_animation_style'] ?? 'mesh';
 		$style = in_array( $style, [ 'mesh', 'loop' ], true ) ? $style : 'mesh';
 
+		// Follow Mouse only applies to radial gradients (see register_fields())
+		// and always wins over the time-based Animate option if a stale
+		// "yes" is still saved on it — the two update the background in
+		// incompatible ways (one from a CSS @keyframes loop, the other from
+		// a mousemove listener), so JS should never try to run both.
+		$follow_mouse = 'radial' === $type && 'yes' === ( $settings['aurora_gradient_follow_mouse'] ?? '' );
+		$animate      = ! $follow_mouse && 'yes' === ( $settings['aurora_gradient_animate'] ?? '' );
+
 		return [
-			'data-aurora-gradient-enable'  => '1',
-			'data-aurora-gradient-target'  => esc_attr( $target ),
-			'data-aurora-gradient-type'    => esc_attr( $type ),
-			'data-aurora-gradient-angle'   => esc_attr( (int) ( $settings['aurora_gradient_angle']['size'] ?? 135 ) ),
-			'data-aurora-gradient-stops'   => esc_attr( wp_json_encode( $stops ) ),
-			'data-aurora-gradient-animate' => ( 'yes' === ( $settings['aurora_gradient_animate'] ?? '' ) ) ? '1' : '0',
-			'data-aurora-gradient-style'   => esc_attr( $style ),
-			'data-aurora-gradient-speed'   => esc_attr( max( 1, (int) ( $settings['aurora_gradient_speed']['size'] ?? 8 ) ) ),
+			'data-aurora-gradient-enable'           => '1',
+			'data-aurora-gradient-target'           => esc_attr( $target ),
+			'data-aurora-gradient-type'             => esc_attr( $type ),
+			'data-aurora-gradient-angle'            => esc_attr( (int) ( $settings['aurora_gradient_angle']['size'] ?? 135 ) ),
+			'data-aurora-gradient-stops'            => esc_attr( wp_json_encode( $stops ) ),
+			'data-aurora-gradient-animate'          => $animate ? '1' : '0',
+			'data-aurora-gradient-style'            => esc_attr( $style ),
+			'data-aurora-gradient-speed'            => esc_attr( max( 1, (int) ( $settings['aurora_gradient_speed']['size'] ?? 8 ) ) ),
+			'data-aurora-gradient-follow-mouse'     => $follow_mouse ? '1' : '0',
+			'data-aurora-gradient-spotlight-radius' => esc_attr( max( 50, (int) ( $settings['aurora_gradient_spotlight_radius']['size'] ?? 600 ) ) ),
 		];
 	}
 }

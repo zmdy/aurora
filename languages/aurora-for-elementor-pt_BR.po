@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aurora for Elementor\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-03 17:10+0000\n"
-"PO-Revision-Date: 2026-07-03 17:10+0000\n"
+"POT-Creation-Date: 2026-07-03 17:32+0000\n"
+"PO-Revision-Date: 2026-07-03 17:32+0000\n"
 "Last-Translator: Aurora <aurora@example.com>\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -21,6 +21,63 @@ msgstr "3D Flip"
 
 msgid "Angle (degrees)"
 msgstr "Ângulo (graus)"
+
+msgid "CSS selector for elements that should grow/highlight the ring on hover (images, galleries, etc.)."
+msgstr "Seletor CSS para elementos que devem crescer/destacar o anel ao passar o mouse (imagens, galerias, etc.)."
+
+msgid "CSS selector for elements that should shrink/highlight the ring on hover (links, buttons, etc.)."
+msgstr "Seletor CSS para elementos que devem encolher/destacar o anel ao passar o mouse (links, botões, etc.)."
+
+msgid "Cursor Follow"
+msgstr "Cursor Interativo"
+
+msgid "Dot Color"
+msgstr "Cor do Ponto"
+
+msgid "Dot Size (px)"
+msgstr "Tamanho do Ponto (px)"
+
+msgid "Enable Cursor Follow"
+msgstr "Habilitar Cursor Interativo"
+
+msgid "Follow Mouse (Spotlight)"
+msgstr "Seguir o Mouse (Spotlight)"
+
+msgid "How long the outer ring takes to catch up with the dot. The dot itself always tracks the mouse instantly."
+msgstr "Quanto tempo o anel externo leva para alcançar o ponto. O ponto em si sempre acompanha o mouse instantaneamente."
+
+msgid "Image Elements Selector"
+msgstr "Seletor de Elementos de Imagem"
+
+msgid "Image Hover Scale"
+msgstr "Escala ao Passar sobre Imagem"
+
+msgid "Interactive Elements Selector"
+msgstr "Seletor de Elementos Interativos"
+
+msgid "Interactive Hover Scale"
+msgstr "Escala ao Passar sobre Interativo"
+
+msgid "Recenters the gradient on the cursor position as it moves over the element, instead of a fixed center."
+msgstr "Recentraliza o gradiente na posição do cursor conforme ele se move sobre o elemento, em vez de um centro fixo."
+
+msgid "Replaces the native cursor with a two-part custom cursor (dot + trailing ring) while the pointer is inside this element."
+msgstr "Substitui o cursor nativo por um cursor personalizado de duas partes (ponto + anel que segue) enquanto o ponteiro estiver dentro deste elemento."
+
+msgid "Resting size of the trailing ring, before any hover scaling is applied."
+msgstr "Tamanho de repouso do anel, antes de qualquer escala de hover ser aplicada."
+
+msgid "Ring Color"
+msgstr "Cor do Anel"
+
+msgid "Ring Size (px)"
+msgstr "Tamanho do Anel (px)"
+
+msgid "Spotlight Radius (px)"
+msgstr "Raio do Spotlight (px)"
+
+msgid "Trail Delay (ms)"
+msgstr "Atraso do Rastro (ms)"
 
 msgid "Animate Children Elements"
 msgstr "Animar Elementos Filhos"

@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/License-GPL_v3-blue?style=for-the-badge" alt="GPL License" />
 </div>
 
-Aurora adds **advanced text animations** (GSAP + Anime.js) and **staggered children element animations** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
+Aurora adds **advanced text animations** (GSAP + Anime.js), **staggered children element animations**, **multi-stop gradients** (including a mouse-following spotlight), **glassmorphism**, and a **custom cursor follow effect** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
 
 ---
 
@@ -107,6 +107,59 @@ Applies an entrance animation in cascade (stagger) to each child element, one af
 
 ---
 
+<h3 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_green_module_gradient.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
+  Module 3 — Gradient
+</h3>
+
+Available on **Sections, Columns, Containers** (as a background) and on **Heading / Text Editor** widgets (as a text-fill) via **Advanced → 🌈 Gradient (Aurora)**.
+
+Multi-stop gradients (3 or more colors, each with its own position) in linear, radial, or conic form, with three optional motion modes:
+
+| Mode | Effect |
+|------|--------|
+| Static | No motion — a plain multi-stop gradient |
+| Mesh (backgrounds) / Pan (text) | Backgrounds get drifting blurred color blobs; text gets a sliding gradient (background-clip:text can't render blurred blob layers) |
+| Color Loop | Continuous hue-rotation cycle |
+| **Follow Mouse (Spotlight)** | Radial-only: recenters the gradient on the live cursor position as it moves over the element — the same "spotlight" effect used behind a hero or footer background |
+
+**Available controls:**
+- Type (Linear / Radial / Conic)
+- Angle (linear/conic)
+- Gradient colors (repeater, min. 3, each with its own position %)
+- Follow Mouse toggle + spotlight radius (px) — radial only
+- Animate toggle + Animation Style (Mesh/Pan or Color Loop) + Cycle Duration (s) — hidden while Follow Mouse is active, since the two drive the background in incompatible ways (one from a timer, the other from the cursor)
+
+---
+
+<h3 style="display: flex; align-items: center;">
+  <img src="./assets/branding/icons/aurora_icon_green_module_glassmorphism.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
+  Module 4 — Glassmorphism
+</h3>
+
+Available on the **Image** widget and on **Sections, Columns, Containers** via **Advanced → 🧊 Glassmorphism (Aurora)**.
+
+A translucent, blurred "frosted glass" background — glass color, background opacity, blur intensity, saturation, border opacity, and border radius — resolved entirely in PHP into a single inline `style` attribute, with a CSS fallback for browsers without `backdrop-filter` support. No JavaScript involved.
+
+---
+
+<h3 style="display: flex; align-items: center;">
+  Module 5 — Cursor Follow
+</h3>
+
+Available on **any Elementor element** (widgets, Sections, Columns, Containers) via **Advanced → 🖱️ Cursor Follow (Aurora)**.
+
+Replaces the native cursor with a two-part custom cursor — an inner dot that tracks the mouse instantly and an outer ring that trails behind it — while the pointer is inside the element it's enabled on ("zone"). Zones can be nested (e.g. a hero section zone with a button zone inside it); the innermost one under the cursor wins. Interactive elements (links, buttons) and images each get their own configurable hover scale and highlight color, matching a common pattern from modern agency/portfolio sites.
+
+**Available controls:**
+- Dot color, ring color
+- Dot size (px), ring resting size (px)
+- Trail delay (ms) — how long the ring takes to catch up with the dot
+- Interactive elements selector (default `a, button, .cursor-pointer`) + hover scale
+- Image elements selector (default `img, .zoom-target`) + hover scale
+
+---
+
 <h2 style="display: flex; align-items: center;">
   <img src="./assets/branding/icons/aurora_icon_blue_install.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
   Installation
@@ -156,15 +209,26 @@ aurora-for-elementor/
 ├── aurora-for-elementor.php                    ← Main bootstrap file
 ├── includes/
 │   ├── class-plugin-core.php                   ← Singleton: loads modules & assets
-│   ├── class-text-animation-controls.php       ← Text animation controls
-│   └── class-children-animation-controls.php   ← Children animation controls
+│   ├── class-animation-module.php              ← Shared base class for every module
+│   ├── class-module-manager.php                ← Module registry
+│   ├── class-asset-manager.php                 ← Frontend/editor asset enqueueing
+│   ├── class-text-animation-controls.php       ← Module 1: Text Animation
+│   ├── class-children-animation-controls.php   ← Module 2: Animate Children Elements
+│   ├── class-gradient-controls.php             ← Module 3: Gradient (incl. Follow Mouse)
+│   ├── class-glassmorphism-controls.php        ← Module 4: Glassmorphism
+│   └── class-cursor-follow-controls.php        ← Module 5: Cursor Follow
 ├── assets/
 │   ├── js/
 │   │   ├── text-animations.js                  ← 24 animations (GSAP + Anime.js)
 │   │   ├── children-animations.js              ← Children stagger (GSAP)
+│   │   ├── gradient-module.js                  ← Gradient rendering + mouse tracking
+│   │   ├── cursor-follow.js                    ← Dot/ring cursor + zone tracking
 │   │   └── vendor/                             ← Bundled GSAP & Anime.js
 │   └── css/
-│       └── text-animations.css                 ← Base styles & helpers
+│       ├── text-animations.css                 ← Base styles & helpers
+│       ├── gradient-module.css                 ← Gradient base styles
+│       ├── glass-module.css                    ← Glassmorphism fallback
+│       └── cursor-follow.css                   ← Cursor Follow base styles
 ├── languages/
 │   ├── aurora-for-elementor.pot                ← Translation template
 │   ├── aurora-for-elementor-pt_BR.po           ← Portuguese (Brazil) translation
@@ -189,7 +253,7 @@ English is the plugin's default language. A Portuguese (Brazil) translation is b
    - `elementor/frontend/element/before_render`
    - `elementor/frontend/widget/before_render`
 
-3. **JavaScript** detects elements by `data-aurora-enable="1"` / `data-aurora-children-enable="1"`, registers an Elementor Frontend Handler for live preview in the editor, uses `IntersectionObserver` to trigger animations on scroll, and applies effects via GSAP or Anime.js.
+3. **JavaScript** detects elements by their `data-aurora-*-enable="1"` attribute, registers an Elementor Frontend Handler per module for live preview in the editor, and applies effects via GSAP/Anime.js (animations), `IntersectionObserver` (scroll triggers), or a live `mousemove` listener (the Gradient module's Follow Mouse spotlight and the Cursor Follow module's dot/ring tracking).
 
 ## 💡 Inspiration
 
