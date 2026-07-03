@@ -1,12 +1,12 @@
 <?php
 /**
- * Animation_Module — classe base abstrata para os módulos de animação.
+ * Animation_Module — abstract base class for the animation modules.
  *
- * Centraliza tudo que é comum a qualquer módulo Aurora: registro dos
- * hooks do Elementor, deduplicação do before_render por ID de elemento
- * e o fluxo de montagem da seção de controles na aba Avançado. Um novo
- * módulo só precisa estender esta classe e implementar os 4 métodos
- * abstratos abaixo — todo o "encanamento" já está pronto aqui.
+ * Centralizes everything that's common to any Aurora module: registering
+ * Elementor hooks, deduplicating before_render per element ID, and the
+ * flow for assembling the controls section in the Advanced tab. A new
+ * module only needs to extend this class and implement the 4 abstract
+ * methods below — all the "plumbing" is already handled here.
  *
  * @package Aurora
  */
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 abstract class Animation_Module {
 
-	/** @var array Evita duplo processamento do before_render para o mesmo elemento. */
+	/** @var array Prevents double-processing before_render for the same element. */
 	private $rendered_ids = [];
 
 	public function __construct() {
@@ -41,53 +41,53 @@ abstract class Animation_Module {
 		}
 	}
 
-	// ── Contrato do módulo ──────────────────────────────────────────────────────
+	// ── Module contract ──────────────────────────────────────────────────────
 
 	/**
-	 * ID único da seção de controles (primeiro argumento de start_controls_section).
+	 * Unique ID of the controls section (first argument of start_controls_section).
 	 */
 	abstract protected function get_section_id(): string;
 
 	/**
-	 * Rótulo exibido no painel Avançado do Elementor (já traduzido, sem escape).
+	 * Label shown in the Elementor Advanced panel (already translated, unescaped).
 	 */
 	abstract protected function get_section_label(): string;
 
 	/**
-	 * Registra os add_control() específicos do módulo. Não precisa chamar
-	 * start_controls_section()/end_controls_section() — isso já é feito
-	 * por add_controls() abaixo.
+	 * Registers the module-specific add_control() calls. No need to call
+	 * start_controls_section()/end_controls_section() — that's already
+	 * handled by add_controls() below.
 	 *
-	 * @param Element_Base $element Instância do elemento.
+	 * @param Element_Base $element Element instance.
 	 */
 	abstract protected function register_fields( Element_Base $element ): void;
 
 	/**
-	 * Converte as configurações salvas (get_settings_for_display) nos
-	 * data-attributes a serem injetados no wrapper. Deve retornar um
-	 * array vazio quando o módulo estiver desabilitado para o elemento.
+	 * Converts the saved settings (get_settings_for_display) into the
+	 * data-attributes to be injected into the wrapper. Must return an
+	 * empty array when the module is disabled for the element.
 	 *
-	 * O segundo parâmetro é opcional (não precisa ser usado) — mas o PHP
-	 * exige que toda classe que sobrescreve este método declare a MESMA
-	 * assinatura completa (mesmo número de parâmetros), mesmo que apenas
-	 * para ignorá-lo; omitir o parâmetro causa um Fatal error de
-	 * "Declaration must be compatible". Módulos que atuam de forma
-	 * diferente dependendo do tipo de elemento (ex.: fundo em containers
-	 * vs. texto em widgets) podem usá-lo para inspecionar $element->get_name().
+	 * The second parameter is optional (doesn't need to be used) — but PHP
+	 * requires every class overriding this method to declare the SAME full
+	 * signature (same number of parameters), even if only to ignore it;
+	 * omitting the parameter causes a Fatal error of "Declaration must be
+	 * compatible". Modules that behave differently depending on the element
+	 * type (e.g. background on containers vs. text on widgets) can use it
+	 * to inspect $element->get_name().
 	 *
-	 * @param array             $settings Configurações do elemento.
-	 * @param Element_Base|null $element  Instância do elemento (opcional).
-	 * @return array<string, string> Mapa de data-attributes.
+	 * @param array             $settings Element settings.
+	 * @param Element_Base|null $element  Element instance (optional).
+	 * @return array<string, string> Map of data-attributes.
 	 */
 	abstract protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array;
 
-	// ── Hooks (sobrescrevíveis) ──────────────────────────────────────────────────
+	// ── Hooks (overridable) ──────────────────────────────────────────────────
 
 	/**
-	 * Hooks do Elementor usados para injetar a seção de controles, com
-	 * prioridade opcional. Por padrão, a seção aparece só na aba Avançado
-	 * dos widgets — módulos que também atuam em section/column/container
-	 * devem sobrescrever este método.
+	 * Elementor hooks used to inject the controls section, with an
+	 * optional priority. By default, the section only appears in the
+	 * Advanced tab of widgets — modules that also act on
+	 * section/column/container must override this method.
 	 *
 	 * @return array<int, array{hook: string, priority?: int}>
 	 */
@@ -98,8 +98,8 @@ abstract class Animation_Module {
 	}
 
 	/**
-	 * Hooks do Elementor usados para injetar os data-attributes no
-	 * wrapper antes da renderização.
+	 * Elementor hooks used to inject the data-attributes into the
+	 * wrapper before rendering.
 	 *
 	 * @return string[]
 	 */
@@ -108,26 +108,25 @@ abstract class Animation_Module {
 	}
 
 	/**
-	 * Permite que um módulo só apareça em determinados tipos de elemento
-	 * (ex.: só em section/column/container/heading/text-editor). Por
-	 * padrão, o módulo aparece em qualquer elemento que dispare um dos
-	 * hooks de get_controls_hooks() — mesmo comportamento de antes desta
-	 * checagem existir.
+	 * Lets a module appear only on certain element types (e.g. only on
+	 * section/column/container/heading/text-editor). By default, the
+	 * module appears on any element that triggers one of the hooks from
+	 * get_controls_hooks() — same behavior as before this check existed.
 	 *
-	 * @param Element_Base $element Instância do elemento.
+	 * @param Element_Base $element Element instance.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
 		return true;
 	}
 
-	// ── Encanamento comum ────────────────────────────────────────────────────────
+	// ── Shared plumbing ────────────────────────────────────────────────────────
 
 	/**
-	 * Monta a seção de controles na aba Avançado — mas só para os
-	 * elementos em que applies_to_element() retornar true.
+	 * Assembles the controls section in the Advanced tab — but only for
+	 * elements where applies_to_element() returns true.
 	 *
-	 * @param Element_Base $element Instância do elemento.
-	 * @param array        $args    Argumentos da seção (não utilizados aqui).
+	 * @param Element_Base $element Element instance.
+	 * @param array        $args    Section arguments (unused here).
 	 */
 	final public function add_controls( Element_Base $element, array $args ): void {
 
@@ -149,14 +148,14 @@ abstract class Animation_Module {
 	}
 
 	/**
-	 * Injeta os data-attributes do módulo no wrapper, uma única vez por
-	 * elemento, e só quando o módulo estiver habilitado para ele.
+	 * Injects the module's data-attributes into the wrapper, only once per
+	 * element, and only when the module is enabled for it.
 	 *
-	 * @param Element_Base $element Instância do elemento.
+	 * @param Element_Base $element Element instance.
 	 */
 	final public function before_render( Element_Base $element ): void {
 
-		// Evita processar o mesmo elemento duas vezes (múltiplos hooks podem disparar).
+		// Prevents processing the same element twice (multiple hooks can fire).
 		$id = $element->get_id();
 		if ( $id && isset( $this->rendered_ids[ $id ] ) ) {
 			return;

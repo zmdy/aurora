@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Core — ponto de entrada do plugin. Apenas inicializa o
- * Asset_Manager (assets de frontend/editor) e o Module_Manager
- * (módulos de animação) — toda a lógica concreta vive nas próprias
- * classes especializadas.
+ * Plugin Core — the plugin's entry point. It only bootstraps the
+ * Asset_Manager (frontend/editor assets) and the Module_Manager
+ * (animation modules) — all the concrete logic lives in the
+ * specialized classes themselves.
  *
  * @package Aurora
  */
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Singleton que orquestra todo o plugin.
+ * Singleton that orchestrates the whole plugin.
  */
 final class Plugin_Core {
 

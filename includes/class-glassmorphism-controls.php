@@ -1,16 +1,16 @@
 <?php
 /**
- * Glassmorphism Controls — efeito de vidro (blur + transparência) para
- * imagens e containers: background translúcido, backdrop-filter com
- * blur/saturação e borda sutil.
+ * Glassmorphism Controls — glass effect (blur + transparency) for
+ * images and containers: translucent background, backdrop-filter with
+ * blur/saturation, and a subtle border.
  *
- * Implementa apenas o que é específico deste módulo; o encanamento
- * comum (hooks, deduplicação, montagem da seção) vive em Animation_Module.
+ * Implements only what's specific to this module; the shared plumbing
+ * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
- * Diferente dos demais módulos, este não depende de JS no frontend —
- * todo o efeito é resolvido em um único atributo `style` calculado em
- * PHP, já que blur/transparência/borda não precisam de animação nem de
- * leitura de DOM em tempo de execução.
+ * Unlike the other modules, this one doesn't rely on frontend JS —
+ * the whole effect is resolved into a single `style` attribute computed
+ * in PHP, since blur/transparency/border don't need animation or
+ * runtime DOM reads.
  *
  * @package Aurora
  */
@@ -25,11 +25,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registra os controles de "Glassmorphism" e injeta o style no render.
+ * Registers the "Glassmorphism" controls and injects the style on render.
  */
 class Glassmorphism_Controls extends Animation_Module {
 
-	/** Elementos onde este módulo aparece: imagens e containers. */
+	/** Elements where this module appears: images and containers. */
 	const SUPPORTED_ELEMENTS = [ 'image', 'section', 'column', 'container' ];
 
 	protected function get_section_id(): string {
@@ -41,15 +41,16 @@ class Glassmorphism_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Só aparece no widget Image e nos elementos estruturais.
+	 * Only appears on the Image widget and on structural elements.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
 		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
 	/**
-	 * Precisa do hook "common" (widgets) além dos estruturais — applies_to_element()
-	 * filtra para que a seção só apareça de fato no widget Image.
+	 * Needs the "common" hook (widgets) in addition to the structural ones —
+	 * applies_to_element() filters so the section only actually shows up on
+	 * the Image widget.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
@@ -67,34 +68,34 @@ class Glassmorphism_Controls extends Animation_Module {
 		];
 	}
 
-	// ── Controles ─────────────────────────────────────────────────────────────
+	// ── Controls ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Campos da seção "Glassmorphism".
+	 * Fields of the "Glassmorphism" section.
 	 *
-	 * @param Element_Base $element Instância do elemento.
+	 * @param Element_Base $element Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
-		// ── Habilitar ─────────────────────────────────────────────────────────
+		// ── Enable ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_glass_enable',
 			[
-				'label'              => esc_html__( 'Habilitar Glassmorphism', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Enable Glassmorphism', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Cor do vidro ──────────────────────────────────────────────────────
+		// ── Glass color ───────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_glass_tint',
 			[
-				'label'              => esc_html__( 'Cor do Vidro', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Glass Color', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::COLOR,
 				'default'            => '#ffffff',
 				'condition'          => [ 'aurora_glass_enable' => 'yes' ],
@@ -102,11 +103,11 @@ class Glassmorphism_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Opacidade do fundo ────────────────────────────────────────────────
+		// ── Background opacity ────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_glass_opacity',
 			[
-				'label'     => esc_html__( 'Opacidade do Fundo (%)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Background Opacity (%)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -125,7 +126,7 @@ class Glassmorphism_Controls extends Animation_Module {
 		$element->add_control(
 			'aurora_glass_blur',
 			[
-				'label'     => esc_html__( 'Intensidade do Blur (px)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Blur Intensity (px)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -140,11 +141,11 @@ class Glassmorphism_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Saturação ─────────────────────────────────────────────────────────
+		// ── Saturation ────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_glass_saturate',
 			[
-				'label'     => esc_html__( 'Saturação (%)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Saturation (%)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -154,17 +155,17 @@ class Glassmorphism_Controls extends Animation_Module {
 					],
 				],
 				'default'            => [ 'size' => 180 ],
-				'description'        => esc_html__( 'Aumenta a saturação do que aparece atrás do vidro — efeito clássico de glassmorphism.', 'aurora-for-elementor' ),
+				'description'        => esc_html__( 'Increases the saturation of what appears behind the glass — the classic glassmorphism effect.', 'aurora-for-elementor' ),
 				'condition'          => [ 'aurora_glass_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Opacidade da borda ────────────────────────────────────────────────
+		// ── Border opacity ────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_glass_border_opacity',
 			[
-				'label'     => esc_html__( 'Opacidade da Borda (%)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Border Opacity (%)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -179,11 +180,11 @@ class Glassmorphism_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Raio da borda ─────────────────────────────────────────────────────
+		// ── Border radius ─────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_glass_radius',
 			[
-				'label'     => esc_html__( 'Raio da Borda (px)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Border Radius (px)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -202,12 +203,12 @@ class Glassmorphism_Controls extends Animation_Module {
 	// ── Render Attributes ─────────────────────────────────────────────────────
 
 	/**
-	 * Converte as configurações salvas em um único atributo `style` (mais a
-	 * classe de apoio usada pelo fallback de @supports). Retorna array vazio
-	 * quando o efeito está desabilitado.
+	 * Converts the saved settings into a single `style` attribute (plus the
+	 * support class used by the @supports fallback). Returns an empty array
+	 * when the effect is disabled.
 	 *
-	 * @param array             $settings Configurações do elemento.
-	 * @param Element_Base|null $element  Não utilizado neste módulo.
+	 * @param array             $settings Element settings.
+	 * @param Element_Base|null $element  Unused in this module.
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {
@@ -247,10 +248,10 @@ class Glassmorphism_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Converte uma cor hex (#rgb ou #rrggbb) em [r, g, b]. Faz fallback
-	 * para branco se a cor for inválida.
+	 * Converts a hex color (#rgb or #rrggbb) into [r, g, b]. Falls back
+	 * to white if the color is invalid.
 	 *
-	 * @param string $hex Cor em formato hexadecimal.
+	 * @param string $hex Color in hexadecimal format.
 	 * @return array{0:int, 1:int, 2:int}
 	 */
 	private function hex_to_rgb( string $hex ): array {

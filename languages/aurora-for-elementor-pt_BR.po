@@ -1,0 +1,272 @@
+# Portuguese (Brazil) translation for Aurora for Elementor
+# Copyright (C) 2026 Aurora for Elementor
+# This file is distributed under the GPL v3.
+msgid ""
+msgstr ""
+"Project-Id-Version: Aurora for Elementor\n"
+"Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
+"POT-Creation-Date: 2026-07-03 16:50+0000\n"
+"PO-Revision-Date: 2026-07-03 16:50+0000\n"
+"Last-Translator: Aurora <aurora@example.com>\n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Domain: aurora-for-elementor\n"
+
+msgid "3D Flip"
+msgstr "3D Flip"
+
+msgid "Angle (degrees)"
+msgstr "Ângulo (graus)"
+
+msgid "Animate Children Elements"
+msgstr "Animar Elementos Filhos"
+
+msgid "Animate Gradient"
+msgstr "Animar Gradiente"
+
+msgid "Animation Style"
+msgstr "Estilo da Animação"
+
+msgid "Animation Type"
+msgstr "Tipo de Animação"
+
+msgid "Anime.js"
+msgstr "Anime.js"
+
+msgid "Background Opacity (%)"
+msgstr "Opacidade do Fundo (%)"
+
+msgid "Blur Intensity (px)"
+msgstr "Intensidade do Blur (px)"
+
+msgid "Blur Reveal"
+msgstr "Blur Reveal"
+
+msgid "Border Opacity (%)"
+msgstr "Opacidade da Borda (%)"
+
+msgid "Border Radius (px)"
+msgstr "Raio da Borda (px)"
+
+msgid "Bounce Drop"
+msgstr "Bounce Drop"
+
+msgid "Bounce In"
+msgstr "Bounce In"
+
+msgid "CSS selector used to identify the child elements to animate. Default: .elementor-widget"
+msgstr "Seletor CSS para identificar os elementos filhos a animar. Padrão: .elementor-widget"
+
+msgid "Characters"
+msgstr "Letras"
+
+msgid "Children CSS Selector"
+msgstr "Seletor CSS dos Filhos"
+
+msgid "Clip Reveal"
+msgstr "Clip Reveal"
+
+msgid "Clip Wrap (Words)"
+msgstr "Clip Wrap (Palavras)"
+
+msgid "Color"
+msgstr "Cor"
+
+msgid "Color Loop (hue rotation)"
+msgstr "Loop de Cor (rotação de matiz)"
+
+msgid "Conic"
+msgstr "Cônico"
+
+msgid "Cycle Duration (s)"
+msgstr "Duração do Ciclo (s)"
+
+msgid "Delay between children (ms)"
+msgstr "Delay entre filhos (ms)"
+
+msgid "Delay between units (ms)"
+msgstr "Delay entre unidades (ms)"
+
+msgid "Drop Down"
+msgstr "Drop Down"
+
+msgid "Duration (ms)"
+msgstr "Duração (ms)"
+
+msgid "Duration per child (ms)"
+msgstr "Duração por filho (ms)"
+
+msgid "Echo Clone (Letters)"
+msgstr "Clone Eco (Letras)"
+
+msgid "Elastic Bounce"
+msgstr "Elastic Bounce"
+
+msgid "Enable Glassmorphism"
+msgstr "Habilitar Glassmorphism"
+
+msgid "Enable Gradient"
+msgstr "Habilitar Gradiente"
+
+msgid "Enable Text Animation"
+msgstr "Habilitar Animação de Texto"
+
+msgid "Enter viewport (scroll)"
+msgstr "Entrar na viewport (scroll)"
+
+msgid "Explosion"
+msgstr "Explosion"
+
+msgid "Fade Down"
+msgstr "Fade Down"
+
+msgid "Fade In"
+msgstr "Fade In"
+
+msgid "Fade Up"
+msgstr "Fade Up"
+
+msgid "Flip Up"
+msgstr "Flip Up"
+
+msgid "Flip X"
+msgstr "Flip X"
+
+msgid "Float Up"
+msgstr "Float Up"
+
+msgid "GSAP"
+msgstr "GSAP"
+
+msgid "Glass Color"
+msgstr "Cor do Vidro"
+
+msgid "Glassmorphism"
+msgstr "Glassmorphism"
+
+msgid "Glitch"
+msgstr "Glitch"
+
+msgid "Gradient"
+msgstr "Gradiente"
+
+msgid "Gradient Colors (min. 3)"
+msgstr "Cores do Gradiente (mín. 3)"
+
+msgid "Increases the saturation of what appears behind the glass — the classic glassmorphism effect."
+msgstr "Aumenta a saturação do que aparece atrás do vidro — efeito clássico de glassmorphism."
+
+msgid "Initial delay (ms)"
+msgstr "Delay inicial (ms)"
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Linear"
+msgstr "Linear"
+
+msgid "Lines"
+msgstr "Linhas"
+
+msgid "Mesh (moving blobs)"
+msgstr "Mesh (blobs em movimento)"
+
+msgid "Native Scramble"
+msgstr "Scramble Nativo"
+
+msgid "Native Split (Letters)"
+msgstr "Split Nativo (Letras)"
+
+msgid "No"
+msgstr "Não"
+
+msgid "On containers, applies to the background. On Heading/Text Editor, applies to the text color."
+msgstr "Em containers, aplica no fundo. Em Heading/Text Editor, aplica na cor do texto."
+
+msgid "Page load"
+msgstr "Carregar a página"
+
+msgid "Position (%)"
+msgstr "Posição (%)"
+
+msgid "Radial"
+msgstr "Radial"
+
+msgid "Replay on re-entering viewport"
+msgstr "Repetir ao re-entrar na viewport"
+
+msgid "Rotate In"
+msgstr "Rotate In"
+
+msgid "Saturation (%)"
+msgstr "Saturação (%)"
+
+msgid "Scale In"
+msgstr "Scale In"
+
+msgid "Scale Up"
+msgstr "Scale Up"
+
+msgid "Scramble Text"
+msgstr "Scramble Text"
+
+msgid "Skew In"
+msgstr "Skew In"
+
+msgid "Slide From Right"
+msgstr "Slide From Right"
+
+msgid "Slide In"
+msgstr "Slide In"
+
+msgid "Slide Left"
+msgstr "Slide Esquerda"
+
+msgid "Slide Right"
+msgstr "Slide Direita"
+
+msgid "Split by"
+msgstr "Dividir por"
+
+msgid "Text Animation"
+msgstr "Animação de Texto"
+
+msgid "Trigger on"
+msgstr "Disparar ao"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Typewriter"
+msgstr "Typewriter"
+
+msgid "Visibility threshold (%)"
+msgstr "Visibilidade para disparar (%)"
+
+msgid "Wave"
+msgstr "Wave"
+
+msgid "Words"
+msgstr "Palavras"
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "Zoom In"
+msgstr "Zoom In"
+
+msgid "Zoom Out"
+msgstr "Zoom Out"
+
+msgid "requires Elementor %s or higher."
+msgstr "requer Elementor %s ou superior."
+
+msgid "requires PHP %1$s or higher. Current version: %2$s."
+msgstr "requer PHP %1$s ou superior. Versão atual: %2$s."
+
+msgid "requires the Elementor plugin to be installed and activated."
+msgstr "requer o plugin Elementor instalado e ativado."

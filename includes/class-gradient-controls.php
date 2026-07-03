@@ -1,11 +1,11 @@
 <?php
 /**
- * Gradient Controls — gradientes multi-stop (3+ cores) em containers
- * (fundo) e nos widgets Heading/Text Editor (texto), com opção de
- * animação em "mesh" (blobs com blur) ou "loop" (rotação de matiz).
+ * Gradient Controls — multi-stop gradients (3+ colors) on containers
+ * (background) and on the Heading/Text Editor widgets (text), with an
+ * optional "mesh" (blurred blobs) or "loop" (hue rotation) animation.
  *
- * Implementa apenas o que é específico deste módulo; o encanamento
- * comum (hooks, deduplicação, montagem da seção) vive em Animation_Module.
+ * Implements only what's specific to this module; the shared plumbing
+ * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
  * @package Aurora
  */
@@ -21,14 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registra os controles de "Gradiente" e injeta os data-attributes no render.
+ * Registers the "Gradient" controls and injects the data-attributes on render.
  */
 class Gradient_Controls extends Animation_Module {
 
-	/** Elementos onde este módulo aparece: fundo em estruturais, texto nos 2 widgets. */
+	/** Elements where this module appears: background on structural elements, text on the 2 widgets. */
 	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container', 'heading', 'text-editor' ];
 
-	/** Widgets onde o gradiente é aplicado como text-fill em vez de fundo. */
+	/** Widgets where the gradient is applied as a text-fill instead of a background. */
 	const TEXT_ELEMENTS = [ 'heading', 'text-editor' ];
 
 	protected function get_section_id(): string {
@@ -36,19 +36,20 @@ class Gradient_Controls extends Animation_Module {
 	}
 
 	protected function get_section_label(): string {
-		return __( 'Gradiente', 'aurora-for-elementor' );
+		return __( 'Gradient', 'aurora-for-elementor' );
 	}
 
 	/**
-	 * Só aparece em containers (fundo) e nos widgets Heading/Text Editor (texto).
+	 * Only appears on containers (background) and on the Heading/Text Editor widgets (text).
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
 		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
 	/**
-	 * Precisa do hook "common" (widgets) além dos estruturais — applies_to_element()
-	 * filtra para que a seção só apareça de fato em Heading/Text Editor.
+	 * Needs the "common" hook (widgets) in addition to the structural ones —
+	 * applies_to_element() filters so the section only actually shows up on
+	 * Heading/Text Editor.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
@@ -60,8 +61,8 @@ class Gradient_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Mesmo motivo do Text_Animation_Controls: garante que widgets (Heading,
-	 * Text Editor) também recebam os atributos no frontend.
+	 * Same reason as Text_Animation_Controls: ensures widgets (Heading,
+	 * Text Editor) also receive the attributes on the frontend.
 	 */
 	protected function get_render_hooks(): array {
 		return [
@@ -70,52 +71,52 @@ class Gradient_Controls extends Animation_Module {
 		];
 	}
 
-	// ── Controles ─────────────────────────────────────────────────────────────
+	// ── Controls ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Campos da seção "Gradiente".
+	 * Fields of the "Gradient" section.
 	 *
-	 * @param Element_Base $element Instância do elemento.
+	 * @param Element_Base $element Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
-		// ── Habilitar ─────────────────────────────────────────────────────────
+		// ── Enable ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_enable',
 			[
-				'label'              => esc_html__( 'Habilitar Gradiente', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Enable Gradient', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
-				'description'        => esc_html__( 'Em containers, aplica no fundo. Em Heading/Text Editor, aplica na cor do texto.', 'aurora-for-elementor' ),
+				'description'        => esc_html__( 'On containers, applies to the background. On Heading/Text Editor, applies to the text color.', 'aurora-for-elementor' ),
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Tipo ──────────────────────────────────────────────────────────────
+		// ── Type ──────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_type',
 			[
-				'label'              => esc_html__( 'Tipo', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Type', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SELECT,
 				'default'            => 'linear',
 				'options'            => [
 					'linear' => esc_html__( 'Linear', 'aurora-for-elementor' ),
 					'radial' => esc_html__( 'Radial', 'aurora-for-elementor' ),
-					'conic'  => esc_html__( 'Cônico', 'aurora-for-elementor' ),
+					'conic'  => esc_html__( 'Conic', 'aurora-for-elementor' ),
 				],
 				'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Ângulo ────────────────────────────────────────────────────────────
+		// ── Angle ─────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_angle',
 			[
-				'label'     => esc_html__( 'Ângulo (graus)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Angle (degrees)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -133,13 +134,13 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Cores (repeater, 3+) ──────────────────────────────────────────────
+		// ── Colors (repeater, 3+) ─────────────────────────────────────────────
 		$repeater = new Repeater();
 
 		$repeater->add_control(
 			'color',
 			[
-				'label'   => esc_html__( 'Cor', 'aurora-for-elementor' ),
+				'label'   => esc_html__( 'Color', 'aurora-for-elementor' ),
 				'type'    => Controls_Manager::COLOR,
 				'default' => '#0afbc1',
 			]
@@ -148,7 +149,7 @@ class Gradient_Controls extends Animation_Module {
 		$repeater->add_control(
 			'offset',
 			[
-				'label'   => esc_html__( 'Posição (%)', 'aurora-for-elementor' ),
+				'label'   => esc_html__( 'Position (%)', 'aurora-for-elementor' ),
 				'type'    => Controls_Manager::SLIDER,
 				'range'   => [
 					'px' => [
@@ -164,7 +165,7 @@ class Gradient_Controls extends Animation_Module {
 		$element->add_control(
 			'aurora_gradient_stops',
 			[
-				'label'              => esc_html__( 'Cores do Gradiente (mín. 3)', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Gradient Colors (min. 3)', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::REPEATER,
 				'fields'             => $repeater->get_controls(),
 				'default'            => [
@@ -187,14 +188,14 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Animar ────────────────────────────────────────────────────────────
+		// ── Animate ───────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_animate',
 			[
-				'label'              => esc_html__( 'Animar Gradiente', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Animate Gradient', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
 				'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
@@ -202,16 +203,16 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Estilo da animação ────────────────────────────────────────────────
+		// ── Animation style ───────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_animation_style',
 			[
-				'label'     => esc_html__( 'Estilo da Animação', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Animation Style', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'mesh',
 				'options'   => [
-					'mesh' => esc_html__( 'Mesh (blobs em movimento)', 'aurora-for-elementor' ),
-					'loop' => esc_html__( 'Loop de Cor (rotação de matiz)', 'aurora-for-elementor' ),
+					'mesh' => esc_html__( 'Mesh (moving blobs)', 'aurora-for-elementor' ),
+					'loop' => esc_html__( 'Color Loop (hue rotation)', 'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_gradient_enable'  => 'yes',
@@ -221,11 +222,11 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Velocidade ────────────────────────────────────────────────────────
+		// ── Speed ─────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_speed',
 			[
-				'label'     => esc_html__( 'Duração do Ciclo (s)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Cycle Duration (s)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -247,12 +248,12 @@ class Gradient_Controls extends Animation_Module {
 	// ── Render Attributes ─────────────────────────────────────────────────────
 
 	/**
-	 * Converte as configurações salvas nos data-attributes do wrapper.
-	 * Retorna array vazio quando o gradiente está desabilitado ou tem
-	 * menos de 2 cores válidas.
+	 * Converts the saved settings into the wrapper's data-attributes.
+	 * Returns an empty array when the gradient is disabled or has fewer
+	 * than 2 valid colors.
 	 *
-	 * @param array             $settings Configurações do elemento.
-	 * @param Element_Base|null $element  Instância do elemento (define fundo vs. texto).
+	 * @param array             $settings Element settings.
+	 * @param Element_Base|null $element  Element instance (defines background vs. text).
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {

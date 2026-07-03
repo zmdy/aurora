@@ -1,0 +1,267 @@
+# Copyright (C) 2026 Aurora for Elementor
+# This file is distributed under the GPL v3.
+msgid ""
+msgstr ""
+"Project-Id-Version: Aurora for Elementor\n"
+"Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
+"POT-Creation-Date: 2026-07-03 16:50+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Domain: aurora-for-elementor\n"
+
+msgid "3D Flip"
+msgstr ""
+
+msgid "Angle (degrees)"
+msgstr ""
+
+msgid "Animate Children Elements"
+msgstr ""
+
+msgid "Animate Gradient"
+msgstr ""
+
+msgid "Animation Style"
+msgstr ""
+
+msgid "Animation Type"
+msgstr ""
+
+msgid "Anime.js"
+msgstr ""
+
+msgid "Background Opacity (%)"
+msgstr ""
+
+msgid "Blur Intensity (px)"
+msgstr ""
+
+msgid "Blur Reveal"
+msgstr ""
+
+msgid "Border Opacity (%)"
+msgstr ""
+
+msgid "Border Radius (px)"
+msgstr ""
+
+msgid "Bounce Drop"
+msgstr ""
+
+msgid "Bounce In"
+msgstr ""
+
+msgid "CSS selector used to identify the child elements to animate. Default: .elementor-widget"
+msgstr ""
+
+msgid "Characters"
+msgstr ""
+
+msgid "Children CSS Selector"
+msgstr ""
+
+msgid "Clip Reveal"
+msgstr ""
+
+msgid "Clip Wrap (Words)"
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "Color Loop (hue rotation)"
+msgstr ""
+
+msgid "Conic"
+msgstr ""
+
+msgid "Cycle Duration (s)"
+msgstr ""
+
+msgid "Delay between children (ms)"
+msgstr ""
+
+msgid "Delay between units (ms)"
+msgstr ""
+
+msgid "Drop Down"
+msgstr ""
+
+msgid "Duration (ms)"
+msgstr ""
+
+msgid "Duration per child (ms)"
+msgstr ""
+
+msgid "Echo Clone (Letters)"
+msgstr ""
+
+msgid "Elastic Bounce"
+msgstr ""
+
+msgid "Enable Glassmorphism"
+msgstr ""
+
+msgid "Enable Gradient"
+msgstr ""
+
+msgid "Enable Text Animation"
+msgstr ""
+
+msgid "Enter viewport (scroll)"
+msgstr ""
+
+msgid "Explosion"
+msgstr ""
+
+msgid "Fade Down"
+msgstr ""
+
+msgid "Fade In"
+msgstr ""
+
+msgid "Fade Up"
+msgstr ""
+
+msgid "Flip Up"
+msgstr ""
+
+msgid "Flip X"
+msgstr ""
+
+msgid "Float Up"
+msgstr ""
+
+msgid "GSAP"
+msgstr ""
+
+msgid "Glass Color"
+msgstr ""
+
+msgid "Glassmorphism"
+msgstr ""
+
+msgid "Glitch"
+msgstr ""
+
+msgid "Gradient"
+msgstr ""
+
+msgid "Gradient Colors (min. 3)"
+msgstr ""
+
+msgid "Increases the saturation of what appears behind the glass — the classic glassmorphism effect."
+msgstr ""
+
+msgid "Initial delay (ms)"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Linear"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Mesh (moving blobs)"
+msgstr ""
+
+msgid "Native Scramble"
+msgstr ""
+
+msgid "Native Split (Letters)"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "On containers, applies to the background. On Heading/Text Editor, applies to the text color."
+msgstr ""
+
+msgid "Page load"
+msgstr ""
+
+msgid "Position (%)"
+msgstr ""
+
+msgid "Radial"
+msgstr ""
+
+msgid "Replay on re-entering viewport"
+msgstr ""
+
+msgid "Rotate In"
+msgstr ""
+
+msgid "Saturation (%)"
+msgstr ""
+
+msgid "Scale In"
+msgstr ""
+
+msgid "Scale Up"
+msgstr ""
+
+msgid "Scramble Text"
+msgstr ""
+
+msgid "Skew In"
+msgstr ""
+
+msgid "Slide From Right"
+msgstr ""
+
+msgid "Slide In"
+msgstr ""
+
+msgid "Slide Left"
+msgstr ""
+
+msgid "Slide Right"
+msgstr ""
+
+msgid "Split by"
+msgstr ""
+
+msgid "Text Animation"
+msgstr ""
+
+msgid "Trigger on"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Typewriter"
+msgstr ""
+
+msgid "Visibility threshold (%)"
+msgstr ""
+
+msgid "Wave"
+msgstr ""
+
+msgid "Words"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "Zoom In"
+msgstr ""
+
+msgid "Zoom Out"
+msgstr ""
+
+msgid "requires Elementor %s or higher."
+msgstr ""
+
+msgid "requires PHP %1$s or higher. Current version: %2$s."
+msgstr ""
+
+msgid "requires the Elementor plugin to be installed and activated."
+msgstr ""

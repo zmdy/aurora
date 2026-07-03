@@ -36,6 +36,20 @@ define( 'AURORA_MIN_ELEMENTOR', '3.0.0' );
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 
 /**
+ * Loads the plugin translations. English is the default (source) language
+ * used throughout the codebase; translation files (e.g. pt_BR) live in
+ * /languages and are loaded here via the standard WordPress i18n API.
+ */
+function aurora_load_textdomain() {
+	load_plugin_textdomain(
+		'aurora-for-elementor',
+		false,
+		dirname( plugin_basename( AURORA_FILE ) ) . '/languages'
+	);
+}
+add_action( 'init', 'Aurora\aurora_load_textdomain' );
+
+/**
  * Load the plugin after all plugins have loaded.
  */
 function aurora_init() {
@@ -58,8 +72,8 @@ function aurora_init() {
 		return;
 	}
 
-	// Autoload de Aurora\Foo_Bar => includes/class-foo-bar.php. Permite que
-	// novos módulos sejam adicionados sem editar nenhum require_once aqui.
+	// Autoloads Aurora\Foo_Bar => includes/class-foo-bar.php. Lets new
+	// modules be added without ever touching a require_once here.
 	spl_autoload_register(
 		function ( $class ) {
 			$prefix = __NAMESPACE__ . '\\';
@@ -83,19 +97,30 @@ add_action( 'plugins_loaded', 'Aurora\aurora_init' );
 
 function aurora_notice_php_version() {
 	printf(
-		'<div class="notice notice-error"><p><strong>Aurora for Elementor</strong>: requer PHP %s ou superior. Versão atual: %s.</p></div>',
-		esc_html( AURORA_MIN_PHP ),
-		esc_html( PHP_VERSION )
+		'<div class="notice notice-error"><p><strong>Aurora for Elementor</strong>: %s</p></div>',
+		sprintf(
+			/* translators: 1: minimum required PHP version, 2: currently installed PHP version. */
+			esc_html__( 'requires PHP %1$s or higher. Current version: %2$s.', 'aurora-for-elementor' ),
+			esc_html( AURORA_MIN_PHP ),
+			esc_html( PHP_VERSION )
+		)
 	);
 }
 
 function aurora_notice_elementor_missing() {
-	echo '<div class="notice notice-error"><p><strong>Aurora for Elementor</strong>: requer o plugin Elementor instalado e ativado.</p></div>';
+	printf(
+		'<div class="notice notice-error"><p><strong>Aurora for Elementor</strong>: %s</p></div>',
+		esc_html__( 'requires the Elementor plugin to be installed and activated.', 'aurora-for-elementor' )
+	);
 }
 
 function aurora_notice_elementor_version() {
 	printf(
-		'<div class="notice notice-error"><p><strong>Aurora for Elementor</strong>: requer Elementor %s ou superior.</p></div>',
-		esc_html( AURORA_MIN_ELEMENTOR )
+		'<div class="notice notice-error"><p><strong>Aurora for Elementor</strong>: %s</p></div>',
+		sprintf(
+			/* translators: %s: minimum required Elementor version. */
+			esc_html__( 'requires Elementor %s or higher.', 'aurora-for-elementor' ),
+			esc_html( AURORA_MIN_ELEMENTOR )
+		)
 	);
 }

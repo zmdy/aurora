@@ -1,26 +1,26 @@
 /**
- * Aurora for Elementor — Módulo de Gradiente: estilos base
+ * Aurora for Elementor — Gradient Module: base styles
  *
- * As regras específicas de cada instância (cores, posições, keyframes,
- * velocidade) são injetadas dinamicamente pelo gradient-module.js em
- * <style id="aurora-gradient-dynamic-styles">. Este arquivo só contém
- * o necessário para o efeito funcionar de forma previsível em qualquer
- * tema/elemento, e o guard de acessibilidade para movimento reduzido.
+ * The instance-specific rules (colors, positions, keyframes, speed)
+ * are injected dynamically by gradient-module.js into
+ * <style id="aurora-gradient-dynamic-styles">. This file only
+ * contains what's needed for the effect to work predictably on any
+ * theme/element, plus the reduced-motion accessibility guard.
  *
  * @package Aurora
  */
 
-/* Containers com gradiente animado: contexto de empilhamento isolado
-   para que o ::before (z-index:-1) nunca apareça acima do conteúdo,
-   e overflow:hidden para conter a camada de blobs com blur, que é
-   propositalmente maior que a área visível (inset negativo). */
+/* Containers with an animated gradient: an isolated stacking context
+   so the ::before (z-index:-1) never appears above the content, and
+   overflow:hidden to contain the blurred blob layer, which is
+   deliberately larger than the visible area (negative inset). */
 .aurora-gradient-host {
 	position: relative;
 	overflow: hidden;
 	isolation: isolate;
 }
 
-/* Texto com gradiente animado (Heading / Text Editor). */
+/* Text with an animated gradient (Heading / Text Editor). */
 .aurora-gradient-text {
 	background-repeat: no-repeat;
 }

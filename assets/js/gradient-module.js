@@ -1,14 +1,14 @@
 /**
- * Aurora for Elementor — Frontend: Módulo de Gradiente
+ * Aurora for Elementor — Frontend: Gradient Module
  *
- * Gradientes multi-stop (3+ cores) em containers (fundo) e nos widgets
- * Heading/Text Editor (texto), com animação opcional em "mesh" (blobs
- * com blur, mesma linguagem visual dos ícones da marca) ou "loop"
- * (rotação de matiz). Todo o efeito é resolvido via CSS — este arquivo
- * só lê os dados salvos (via Elementor Handler ou data-attributes) e
- * injeta uma folha de estilo dinâmica com o gradiente e, quando
- * animado, um @keyframes exclusivo por instância (cada elemento pode
- * ter cores/velocidade diferentes).
+ * Multi-stop gradients (3+ colors) on containers (background) and on
+ * the Heading/Text Editor widgets (text), with an optional "mesh"
+ * animation (blurred blobs, the same visual language as the brand
+ * icons) or "loop" (hue rotation). The whole effect is resolved via
+ * CSS — this file only reads the saved data (via the Elementor
+ * Handler or data-attributes) and injects a dynamic stylesheet with
+ * the gradient and, when animated, a per-instance @keyframes block
+ * (each element can have different colors/speed).
  *
  * @package Aurora
  * @version 1.0.0
@@ -21,14 +21,14 @@
     if (typeof $ === 'undefined') return;
 
     // ─────────────────────────────────────────────────────────────────────────
-    // UTILIDADES
+    // UTILITIES
     // ─────────────────────────────────────────────────────────────────────────
 
     var instanceCounter = 0;
 
     /**
-     * Retorna (criando se necessário) a tag <style> onde as regras
-     * dinâmicas de cada instância são acumuladas.
+     * Returns (creating if needed) the <style> tag where each instance's
+     * dynamic rules are accumulated.
      *
      * @returns {HTMLStyleElement}
      */
@@ -47,8 +47,8 @@
     }
 
     /**
-     * Lê um valor de controle do Elementor que pode vir como objeto
-     * `{size, unit}` (SLIDER) ou já como número/string solta.
+     * Reads an Elementor control value that may come as an object
+     * `{size, unit}` (SLIDER) or already as a plain number/string.
      *
      * @param {*} value
      * @param {number} fallback
@@ -64,8 +64,8 @@
     }
 
     /**
-     * Monta a string CSS do gradiente estático a partir do tipo, ângulo
-     * (linear/cônico) e das paradas de cor.
+     * Builds the static gradient CSS string from the type, angle
+     * (linear/conic), and color stops.
      *
      * @param {string} type   linear | radial | conic
      * @param {number} angle
@@ -92,8 +92,8 @@
     }
 
     /**
-     * Distribui um blob radial por cor ao redor de um círculo central —
-     * a base do efeito "mesh" usado no fundo de containers.
+     * Distributes one radial blob per color around a central circle —
+     * the basis of the "mesh" effect used for container backgrounds.
      *
      * @param {Array} stops [{color}]
      * @returns {{image: string, positions: Array<{x:number,y:number}>}}
@@ -136,14 +136,14 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // APLICAÇÃO DO EFEITO
+    // EFFECT APPLICATION
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Aplica o gradiente como fundo do elemento (containers). Estático:
-     * direto via inline style. Animado: via ::before isolado (z-index:-1
-     * dentro de um contexto de empilhamento próprio), para que blur ou
-     * hue-rotate nunca vazem para o conteúdo do container.
+     * Applies the gradient as the element's background (containers).
+     * Static: applied directly via inline style. Animated: via an
+     * isolated ::before (z-index:-1 inside its own stacking context),
+     * so that blur or hue-rotate never leaks into the container's content.
      *
      * @param {HTMLElement} el
      * @param {Object} data
@@ -194,11 +194,11 @@
     }
 
     /**
-     * Aplica o gradiente como text-fill no nó de texto real (Heading ou
-     * Text Editor) — precisa ser o próprio elemento de texto, já que
-     * background-clip:text não tem efeito no wrapper do Elementor.
+     * Applies the gradient as text-fill on the real text node (Heading
+     * or Text Editor) — has to be the text element itself, since
+     * background-clip:text has no effect on the Elementor wrapper.
      *
-     * @param {HTMLElement} textEl Nó já localizado (.elementor-heading-title / .elementor-text-editor)
+     * @param {HTMLElement} textEl Already-located node (.elementor-heading-title / .elementor-text-editor)
      * @param {Object} data
      * @param {number} id
      */
@@ -238,9 +238,10 @@
     }
 
     /**
-     * Ponto único de entrada: decide fundo vs. texto pela presença do
-     * nó de texto real dentro do wrapper — mais confiável do que confiar
-     * no tipo de elemento, e funciona igual no editor e no frontend.
+     * Single entry point: decides background vs. text based on the
+     * presence of the real text node inside the wrapper — more reliable
+     * than relying on the element type, and behaves the same in the
+     * editor and on the frontend.
      *
      * @param {HTMLElement} wrapper
      * @param {Object} data
@@ -259,8 +260,8 @@
     }
 
     /**
-     * Lê as opções a partir dos data-attributes — usado apenas no
-     * fallback de frontend puro (sem JS do Elementor disponível).
+     * Reads the options from the data-attributes — used only in the
+     * pure-frontend fallback (when Elementor's JS isn't available).
      *
      * @param {HTMLElement} el
      * @returns {Object}
@@ -277,15 +278,15 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // INTEGRAÇÃO ELEMENTOR — FRONTEND HANDLER
+    // ELEMENTOR INTEGRATION — FRONTEND HANDLER
     // ─────────────────────────────────────────────────────────────────────────
     //
-    // Mesmo padrão usado em text-animations.js / children-animations.js:
-    // onElementChange() reflete mudanças de controle instantaneamente no
-    // preview do editor; frontend/element_ready/global cobre a primeira
-    // renderização tanto no editor quanto no site real. Diferente do
-    // módulo de texto, este não depende de nenhuma lib externa — por
-    // isso não há waitForLibs()/polling de bibliotecas aqui.
+    // Same pattern used in text-animations.js / children-animations.js:
+    // onElementChange() reflects control changes instantly in the editor
+    // preview; frontend/element_ready/global covers the first render both
+    // in the editor and on the real site. Unlike the text module, this one
+    // doesn't depend on any external library — so there's no
+    // waitForLibs()/library polling here.
 
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
@@ -363,10 +364,10 @@
         return auroraGradientRegistered;
     }
 
-    // Registro síncrono, no exato momento em que o script é avaliado —
-    // mesmo motivo documentado em text-animations.js: no frontend real
-    // o Elementor pode disparar frontend/element_ready ANTES de qualquer
-    // callback assíncrono, e o evento só dispara uma vez por elemento.
+    // Synchronous registration, the exact moment the script is evaluated —
+    // same reason documented in text-animations.js: on the real frontend
+    // Elementor can fire frontend/element_ready BEFORE any async callback,
+    // and the event only fires once per element.
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
         $(window).on('elementor/frontend/init', function () {
             tryRegisterHandlerNow();
@@ -383,8 +384,8 @@
     }
 
     function bootstrap() {
-        // Fallback: nenhum Elementor JS disponível — varre a página usando
-        // os data-aurora-gradient-* renderizados pelo PHP no frontend real.
+        // Fallback: no Elementor JS available — scan the page using the
+        // data-aurora-gradient-* attributes rendered by PHP on the real frontend.
         if (typeof elementorFrontend === 'undefined') {
             document.querySelectorAll('[data-aurora-gradient-enable="1"]').forEach(function (el) {
                 applyGradient(el, parseOptsFromDataset(el));

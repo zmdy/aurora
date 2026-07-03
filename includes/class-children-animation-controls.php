@@ -1,10 +1,10 @@
 <?php
 /**
- * Children Animation Controls — injeta controles de animação staggered
- * de elementos filhos na aba Avançado de todos os elementos do Elementor.
+ * Children Animation Controls — injects staggered children-element
+ * animation controls into the Advanced tab of every Elementor element.
  *
- * Implementa apenas o que é específico deste módulo; o encanamento
- * comum (hooks, deduplicação, montagem da seção) vive em Animation_Module.
+ * Implements only what's specific to this module; the shared plumbing
+ * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
  * @package Aurora
  */
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registra os controles "Animar Elementos Filhos" e injeta atributos no render.
+ * Registers the "Animate Children Elements" controls and injects attributes on render.
  */
 class Children_Animation_Controls extends Animation_Module {
 
@@ -28,16 +28,16 @@ class Children_Animation_Controls extends Animation_Module {
 	}
 
 	protected function get_section_label(): string {
-		return __( 'Animar Elementos Filhos', 'aurora-for-elementor' );
+		return __( 'Animate Children Elements', 'aurora-for-elementor' );
 	}
 
 	/**
-	 * Este módulo atua em widgets, sections, columns e containers —
-	 * diferente do padrão (só widgets) usado pela maioria dos módulos.
+	 * This module acts on widgets, sections, columns and containers —
+	 * unlike the default (widgets only) used by most modules.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			// priority 20 para ficar depois do text animation (10) nos widgets.
+			// priority 20 so it comes after text animation (10) on widgets.
 			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 10 ],
@@ -45,42 +45,42 @@ class Children_Animation_Controls extends Animation_Module {
 		];
 	}
 
-	// ── Controles ─────────────────────────────────────────────────────────────
+	// ── Controls ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Campos da seção "Animar Elementos Filhos".
+	 * Fields of the "Animate Children Elements" section.
 	 *
-	 * @param Element_Base $element  Instância do elemento.
+	 * @param Element_Base $element  Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
-		// ── Habilitar ─────────────────────────────────────────────────────────
+		// ── Enable ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_enable',
 			[
-				'label'              => esc_html__( 'Animar Elementos Filhos', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Animate Children Elements', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Tipo de animação ──────────────────────────────────────────────────
+		// ── Animation type ────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_animation',
 			[
-				'label'     => esc_html__( 'Tipo de Animação', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'fade-up',
 				'options'   => [
 					'fade-up'    => esc_html__( 'Fade Up',      'aurora-for-elementor' ),
 					'fade-down'  => esc_html__( 'Fade Down',    'aurora-for-elementor' ),
 					'fade-in'    => esc_html__( 'Fade In',      'aurora-for-elementor' ),
-					'slide-left' => esc_html__( 'Slide Esquerda', 'aurora-for-elementor' ),
-					'slide-right'=> esc_html__( 'Slide Direita',  'aurora-for-elementor' ),
+					'slide-left' => esc_html__( 'Slide Left', 'aurora-for-elementor' ),
+					'slide-right'=> esc_html__( 'Slide Right',  'aurora-for-elementor' ),
 					'zoom-in'    => esc_html__( 'Zoom In',      'aurora-for-elementor' ),
 					'zoom-out'   => esc_html__( 'Zoom Out',     'aurora-for-elementor' ),
 					'flip-up'    => esc_html__( 'Flip Up',      'aurora-for-elementor' ),
@@ -92,25 +92,25 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Seletor dos filhos ────────────────────────────────────────────────
+		// ── Children selector ─────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_selector',
 			[
-				'label'       => esc_html__( 'Seletor CSS dos Filhos', 'aurora-for-elementor' ),
+				'label'       => esc_html__( 'Children CSS Selector', 'aurora-for-elementor' ),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => '.elementor-widget',
 				'placeholder' => '.elementor-widget, .elementor-icon-list-item',
-				'description' => esc_html__( 'Seletor CSS para identificar os elementos filhos a animar. Padrão: .elementor-widget', 'aurora-for-elementor' ),
+				'description' => esc_html__( 'CSS selector used to identify the child elements to animate. Default: .elementor-widget', 'aurora-for-elementor' ),
 				'condition'   => [ 'aurora_children_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Duração ───────────────────────────────────────────────────────────
+		// ── Duration ──────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_duration',
 			[
-				'label'     => esc_html__( 'Duração por filho (ms)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Duration per child (ms)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -125,11 +125,11 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Delay inicial ─────────────────────────────────────────────────────
+		// ── Initial delay ─────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_delay',
 			[
-				'label'     => esc_html__( 'Delay inicial (ms)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Initial delay (ms)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -144,11 +144,11 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Delay entre filhos (stagger) ──────────────────────────────────────
+		// ── Stagger delay between children ────────────────────────────────────
 		$element->add_control(
 			'aurora_children_stagger',
 			[
-				'label'     => esc_html__( 'Delay entre filhos (ms)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Delay between children (ms)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -163,16 +163,16 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Gatilho ───────────────────────────────────────────────────────────
+		// ── Trigger ───────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_trigger',
 			[
-				'label'     => esc_html__( 'Disparar ao', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Trigger on', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'scroll',
 				'options'   => [
-					'scroll' => esc_html__( 'Entrar na viewport (scroll)', 'aurora-for-elementor' ),
-					'load'   => esc_html__( 'Carregar a página', 'aurora-for-elementor' ),
+					'scroll' => esc_html__( 'Enter viewport (scroll)', 'aurora-for-elementor' ),
+					'load'   => esc_html__( 'Page load', 'aurora-for-elementor' ),
 				],
 				'condition' => [ 'aurora_children_enable' => 'yes' ],
 				'frontend_available' => true,
@@ -183,7 +183,7 @@ class Children_Animation_Controls extends Animation_Module {
 		$element->add_control(
 			'aurora_children_threshold',
 			[
-				'label'     => esc_html__( 'Visibilidade para disparar (%)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Visibility threshold (%)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -201,14 +201,14 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Repetir ───────────────────────────────────────────────────────────
+		// ── Replay ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_replay',
 			[
-				'label'        => esc_html__( 'Repetir ao re-entrar na viewport', 'aurora-for-elementor' ),
+				'label'        => esc_html__( 'Replay on re-entering viewport', 'aurora-for-elementor' ),
 				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'    => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'     => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'    => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value' => 'yes',
 				'default'      => '',
 				'condition'    => [
@@ -223,11 +223,11 @@ class Children_Animation_Controls extends Animation_Module {
 	// ── Render Attributes ─────────────────────────────────────────────────────
 
 	/**
-	 * Converte as configurações salvas nos data-attributes do wrapper.
-	 * Retorna array vazio quando a animação está desabilitada.
+	 * Converts the saved settings into the wrapper's data-attributes.
+	 * Returns an empty array when the animation is disabled.
 	 *
-	 * @param array             $settings  Configurações do elemento.
-	 * @param Element_Base|null $element   Não utilizado neste módulo.
+	 * @param array             $settings  Element settings.
+	 * @param Element_Base|null $element   Unused in this module.
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {
@@ -236,7 +236,7 @@ class Children_Animation_Controls extends Animation_Module {
 			return [];
 		}
 
-		// Sanitize o seletor CSS (permite apenas caracteres válidos).
+		// Sanitize the CSS selector (allow only valid characters).
 		$raw_selector = $settings['aurora_children_selector'] ?? '.elementor-widget';
 		$selector     = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_selector );
 		$selector     = $selector ?: '.elementor-widget';

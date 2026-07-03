@@ -1,40 +1,40 @@
 /**
- * Aurora for Elementor — Estilos Base
+ * Aurora for Elementor — Base Styles
  *
- * Fornece resets e helpers visuais necessários para o correto
- * funcionamento das animações no frontend.
+ * Provides the resets and visual helpers needed for the animations to
+ * work correctly on the frontend.
  *
  * @package Aurora
  * @version 1.0.0
  */
 
-/* ─── Reset global de unidades animadas ───────────────────────────────────── */
+/* ─── Global reset for animated units ─────────────────────────────────────── */
 
 .aurora-char,
 .aurora-word,
 .aurora-line {
     display: inline-block;
     will-change: transform, opacity;
-    /* Evita colapso do texto ao manipular transform */
+    /* Prevents text collapse when manipulating transform */
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
 
-/* Wrapper de linha: overflow hidden para efeitos de clip/mask */
+/* Line wrapper: overflow hidden for clip/mask effects */
 .aurora-line-wrap {
     overflow: hidden;
     display: block;
     line-height: inherit;
 }
 
-/* ─── Perspectiva para animações 3D ──────────────────────────────────────── */
+/* ─── Perspective for 3D animations ──────────────────────────────────────── */
 
 [data-aurora-animation="gs-5"] .elementor-widget-container,
 [data-aurora-animation="ml-6"] .elementor-widget-container {
     perspective: 600px;
 }
 
-/* ─── Overflow hidden no container para Clip Reveal (gs-2) ──────────────── */
+/* ─── Overflow hidden on the container for Clip Reveal (gs-2) ───────────── */
 
 [data-aurora-animation="gs-2"] .aurora-char,
 [data-aurora-animation="gs-2"] .aurora-word,
@@ -43,27 +43,27 @@
     vertical-align: bottom;
 }
 
-/* ─── Garante que elementos com data-aurora não mostrem flash ───────────────── */
+/* ─── Ensures elements with data-aurora don't flash ──────────────────────── */
 
 [data-aurora-enable="1"] .aurora-char,
 [data-aurora-enable="1"] .aurora-word,
 [data-aurora-enable="1"] .aurora-line {
-    opacity: 0; /* Valor inicial antes do JS assumir o controle */
+    opacity: 0; /* Initial value before JS takes over */
 }
 
-/* ─── Garante que elementos com data-aurora-children não mostrem flash ───────────── */
+/* ─── Ensures elements with data-aurora-children don't flash ────────────── */
 
-/* Os filhos serão ocultados via GSAP.set() no JS */
-/* Este bloco serve de fallback para conexões lentas */
+/* The children are hidden via GSAP.set() in JS */
+/* This block acts as a fallback for slow connections */
 [data-aurora-children-enable="1"] > .elementor-widget,
 [data-aurora-children-enable="1"] > .elementor-column,
 [data-aurora-children-enable="1"] > .e-con > .e-con-inner > *,
 [data-aurora-children-enable="1"] > .e-con > * {
-    /* JS assume o controle de opacity via GSAP */
+    /* JS takes over opacity control via GSAP */
     will-change: transform, opacity;
 }
 
-/* ─── Utilitário: desabilita animações para usuários que preferem ─────────── */
+/* ─── Utility: disables animations for users who prefer reduced motion ──── */
 
 @media (prefers-reduced-motion: reduce) {
     .aurora-char,

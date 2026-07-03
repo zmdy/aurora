@@ -1,14 +1,14 @@
 <?php
 /**
- * Module_Manager — registro central dos módulos de animação Aurora.
+ * Module_Manager — central registry of the Aurora animation modules.
  *
- * Para adicionar um novo módulo no futuro:
- *   1. Crie includes/class-{nome-do-modulo}.php com uma classe que
- *      estenda Animation_Module e implemente os 4 métodos abstratos.
- *   2. Acrescente a classe ao array $modules abaixo.
- * Nada mais precisa ser tocado — o autoload (registrado em
- * aurora-for-elementor.php) cuida do require, e o construtor de
- * Animation_Module cuida dos hooks do Elementor.
+ * To add a new module in the future:
+ *   1. Create includes/class-{module-name}.php with a class that
+ *      extends Animation_Module and implements the 4 abstract methods.
+ *   2. Add the class to the $modules array below.
+ * Nothing else needs to be touched — the autoloader (registered in
+ * aurora-for-elementor.php) takes care of the require, and the
+ * Animation_Module constructor takes care of the Elementor hooks.
  *
  * @package Aurora
  */
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class Module_Manager {
 
-	/** @var array<int, class-string<Animation_Module>> Módulos ativos do plugin. */
+	/** @var array<int, class-string<Animation_Module>> Active modules of the plugin. */
 	private static $modules = [
 		Text_Animation_Controls::class,
 		Children_Animation_Controls::class,
@@ -30,7 +30,7 @@ final class Module_Manager {
 	];
 
 	/**
-	 * Instancia todos os módulos registrados.
+	 * Instantiates all registered modules.
 	 */
 	public static function init(): void {
 		foreach ( self::$modules as $module_class ) {

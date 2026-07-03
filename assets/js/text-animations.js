@@ -1,8 +1,9 @@
 /**
- * Aurora for Elementor — Frontend: Animações de Texto
+ * Aurora for Elementor — Frontend: Text Animations
  *
- * Suporta 20 animações (10 GSAP + 10 Anime.js) com split por letras,
- * palavras ou linhas, disparadas por IntersectionObserver ou page load.
+ * Supports 24 animations (10 GSAP + 14 Anime.js) with split by
+ * characters, words, or lines, triggered by IntersectionObserver or
+ * on page load.
  *
  * @package Aurora
  * @version 1.0.0
@@ -15,12 +16,12 @@
     if (typeof $ === 'undefined') return;
 
     // ─────────────────────────────────────────────────────────────────────────
-    // UTILIDADES
+    // UTILITIES
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Retorna o primeiro elemento de texto significativo dentro do wrapper
-     * (respeita seletores nativos do Elementor).
+     * Returns the first meaningful text element inside the wrapper
+     * (respects Elementor's native selectors).
      *
      * @param {HTMLElement} wrapper
      * @returns {HTMLElement}
@@ -53,7 +54,7 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Divide o elemento em spans por caractere.
+     * Splits the element into spans by character.
      *
      * @param {HTMLElement} el
      * @returns {HTMLElement[]}
@@ -95,7 +96,7 @@
     }
 
     /**
-     * Divide o elemento em spans por palavra.
+     * Splits the element into spans by word.
      *
      * @param {HTMLElement} el
      * @returns {HTMLElement[]}
@@ -110,14 +111,14 @@
             span.className     = 'aurora-word';
             span.style.cssText = 'display:inline-block;will-change:transform,opacity;';
             span.setAttribute('aria-hidden', 'true');
-            span.textContent   = word + (i < arr.length - 1 ? '\u00a0' : '');
+            span.textContent   = word + (i < arr.length - 1 ? ' ' : '');
             el.appendChild(span);
             return span;
         });
     }
 
     /**
-     * Divide o elemento em spans por linha (mede offsetTop para agrupar).
+     * Splits the element into spans by line (measures offsetTop to group them).
      *
      * @param {HTMLElement} el
      * @returns {HTMLElement[]}
@@ -126,19 +127,19 @@
         var text = el.innerText || el.textContent;
         el.setAttribute('aria-label', text);
 
-        // Etapa 1: criar word spans temporários para medir quebra de linha
+        // Step 1: create temporary word spans to measure line breaks.
         var words = text.split(/\s+/).filter(Boolean);
         el.innerHTML = '';
 
         var wordSpans = words.map(function (word, i, arr) {
             var span       = document.createElement('span');
             span.style.cssText = 'display:inline-block;';
-            span.textContent = word + (i < arr.length - 1 ? '\u00a0' : '');
+            span.textContent = word + (i < arr.length - 1 ? ' ' : '');
             el.appendChild(span);
             return span;
         });
 
-        // Etapa 2: agrupar por offsetTop
+        // Step 2: group by offsetTop.
         var lineMap = {};
         wordSpans.forEach(function (span) {
             var top = Math.round(span.getBoundingClientRect().top);
@@ -146,7 +147,7 @@
             lineMap[top].push(span);
         });
 
-        // Etapa 3: reconstruir com wrappers de linha
+        // Step 3: rebuild with line wrappers.
         el.innerHTML = '';
         var lines = [];
 
@@ -170,7 +171,7 @@
     }
 
     /**
-     * Despacha o split correto de acordo com `by`.
+     * Dispatches the correct split according to `by`.
      *
      * @param {HTMLElement} el
      * @param {string} by  'chars' | 'words' | 'lines'
@@ -185,13 +186,13 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // EFEITO SCRAMBLE (implementação open-source)
+    // SCRAMBLE EFFECT (open-source implementation)
     // ─────────────────────────────────────────────────────────────────────────
 
     var SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
 
     /**
-     * Anima o texto de um elemento com efeito scramble/hacker.
+     * Animates an element's text with a scramble/hacker effect.
      *
      * @param {HTMLElement} el
      * @param {string}      finalText
@@ -228,7 +229,7 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ANIMAÇÕES GSAP  (gs-1 … gs-10)
+    // GSAP ANIMATIONS  (gs-1 … gs-10)
     // ─────────────────────────────────────────────────────────────────────────
 
     var gsapAnimations = {
@@ -248,7 +249,7 @@
             );
         },
 
-        // gs-2 — Clip Reveal (sobe de baixo, mascarado)
+        // gs-2 — Clip Reveal (rises from below, masked)
         'gs-2': function (units, opts) {
             units.forEach(function (u) {
                 u.parentElement.style.overflow = 'hidden';
@@ -267,7 +268,7 @@
             );
         },
 
-        // gs-3 — Scramble Text  (opera no elemento-pai, não nos units)
+        // gs-3 — Scramble Text  (operates on the parent element, not the units)
         'gs-3': function (units, opts, textEl) {
             var original = textEl._auroraOriginal || textEl.innerText;
             textEl.style.opacity = '0';
@@ -338,7 +339,7 @@
             );
         },
 
-        // gs-8 — Wave (deslocamento Y senoidal por índice)
+        // gs-8 — Wave (sinusoidal Y offset per index)
         'gs-8': function (units, opts) {
             gsap.fromTo(units,
                 { y: function (i) { return Math.sin(i * 0.9) * 45; }, opacity: 0 },
@@ -353,7 +354,7 @@
             );
         },
 
-        // gs-9 — Bounce Drop (cai de cima com bounce)
+        // gs-9 — Bounce Drop (drops from above with bounce)
         'gs-9': function (units, opts) {
             gsap.fromTo(units,
                 { y: -80, opacity: 0 },
@@ -368,7 +369,7 @@
             );
         },
 
-        // gs-10 — Glitch (sacudidas rápidas + estabiliza)
+        // gs-10 — Glitch (fast jitters then settles)
         'gs-10': function (units, opts) {
             var tl = gsap.timeline({ delay: opts.delay / 1000 });
 
@@ -396,28 +397,28 @@
     };
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ANIMAÇÕES ANIME.JS v4  (ml-1 … ml-14)
+    // ANIME.JS v4 ANIMATIONS  (ml-1 … ml-14)
     // ─────────────────────────────────────────────────────────────────────────
     //
-    // v3 → v4: `anime({targets, ...})` tornou-se `anime.animate(targets, {...})`,
-    // `easing` foi renomeado para `ease` e os nomes de easing perderam o
-    // prefixo "ease" (easeOutExpo → outExpo). Callbacks de delay no formato
-    // function(el, i) continuam compatíveis sem alterações.
+    // v3 → v4: `anime({targets, ...})` became `anime.animate(targets, {...})`,
+    // `easing` was renamed to `ease`, and easing names dropped the "ease"
+    // prefix (easeOutExpo → outExpo). Delay callbacks in the
+    // function(el, i) format remain compatible without changes.
     //
-    // ml-11 … ml-14 usam as novas APIs nativas de texto do Anime.js v4
-    // (anime.splitText() e anime.scrambleText()) e por isso são "self-managed"
-    // (ver SELF_MANAGED_ANIMATIONS): fazem seu próprio split/scramble em
-    // textEl em vez de usar os `units` genéricos pré-divididos pelo splitText()
-    // deste arquivo.
+    // ml-11 … ml-14 use Anime.js v4's new native text APIs
+    // (anime.splitText() and anime.scrambleText()) and are therefore
+    // "self-managed" (see SELF_MANAGED_ANIMATIONS): they do their own
+    // split/scramble on textEl instead of using the generic `units`
+    // pre-split by this file's splitText().
 
     /**
-     * (Re)executa o split nativo do Anime.js v4, revertendo qualquer split
-     * anterior do mesmo elemento antes de dividir de novo. Necessário para
-     * suportar "Repetir ao re-entrar na viewport" sem dividir um DOM que já
-     * foi dividido (o que duplicaria/corromperia o conteúdo).
+     * (Re)runs Anime.js v4's native split, reverting any previous split
+     * of the same element before splitting again. Needed to support
+     * "Replay on re-entering viewport" without splitting a DOM that's
+     * already been split (which would duplicate/corrupt the content).
      *
      * @param {HTMLElement} textEl
-     * @param {Object}      settings  Settings de anime.splitText()
+     * @param {Object}      settings  anime.splitText() settings
      * @returns {Object} TextSplitter
      */
     function resplitNative(textEl, settings) {
@@ -478,7 +479,7 @@
             });
         },
 
-        // ml-5 — Wave (translateY senoidal por índice)
+        // ml-5 — Wave (sinusoidal translateY per index)
         'ml-5': function (units, opts) {
             anime.animate(units, {
                 translateY: function (el, i) { return [Math.sin(i * 0.85) * 40, 0]; },
@@ -489,7 +490,7 @@
             });
         },
 
-        // ml-6 — Flip X (rotateX com perspectiva)
+        // ml-6 — Flip X (rotateX with perspective)
         'ml-6': function (units, opts) {
             units.forEach(function (u) {
                 u.style.transformOrigin  = 'center bottom';
@@ -505,13 +506,13 @@
             });
         },
 
-        // ml-7 — Typewriter (aparece letra por letra, sem transição)
+        // ml-7 — Typewriter (appears letter by letter, no transition)
         'ml-7': function (units, opts) {
             anime.animate(units, {
                 opacity : [0, 1],
                 duration: 1,
                 delay   : function (el, i) {
-                    // stagger maior para simular digitação
+                    // larger stagger to simulate typing
                     return opts.delay + i * Math.max(opts.stagger, 60);
                 },
                 ease    : 'linear',
@@ -520,7 +521,7 @@
 
         // ml-8 — Blur Reveal
         'ml-8': function (units, opts) {
-            // Inicia com blur
+            // Starts blurred
             units.forEach(function (u) { u.style.filter = 'blur(14px)'; });
             anime.animate(units, {
                 filter  : ['blur(14px)', 'blur(0px)'],
@@ -542,7 +543,7 @@
             });
         },
 
-        // ml-10 — Explosion (escala grande → normal)
+        // ml-10 — Explosion (large scale → normal)
         'ml-10': function (units, opts) {
             anime.animate(units, {
                 scale    : [4, 1],
@@ -553,7 +554,7 @@
             });
         },
 
-        // ml-11 — Split Nativo (letras divididas via anime.splitText())
+        // ml-11 — Native Split (letters split via anime.splitText())
         'ml-11': function (units, opts, textEl) {
             textEl.style.opacity = '1';
             var split = resplitNative(textEl, { chars: true });
@@ -566,7 +567,7 @@
             });
         },
 
-        // ml-12 — Clip Wrap (palavras mascaradas via parâmetro wrap:'clip')
+        // ml-12 — Clip Wrap (words masked via the wrap:'clip' parameter)
         'ml-12': function (units, opts, textEl) {
             textEl.style.opacity = '1';
             var split = resplitNative(textEl, { words: { wrap: 'clip' } });
@@ -578,7 +579,7 @@
             });
         },
 
-        // ml-13 — Clone Eco (cada letra clonada via parâmetro clone, efeito de eco/profundidade)
+        // ml-13 — Echo Clone (each letter cloned via the clone parameter, an echo/depth effect)
         'ml-13': function (units, opts, textEl) {
             textEl.style.opacity = '1';
             var split = resplitNative(textEl, { chars: { wrap: 'clip', clone: 'bottom' } });
@@ -590,7 +591,7 @@
             });
         },
 
-        // ml-14 — Scramble Nativo (anime.scrambleText(), revela com efeito hacker)
+        // ml-14 — Native Scramble (anime.scrambleText(), reveals with a hacker effect)
         'ml-14': function (units, opts, textEl) {
             textEl.style.opacity = '1';
             anime.animate(textEl, {
@@ -601,11 +602,11 @@
     };
 
     // ─────────────────────────────────────────────────────────────────────────
-    // LÓGICA CENTRAL
+    // CORE LOGIC
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Normaliza um valor de slider do Elementor ({size, unit}, número ou string).
+     * Normalizes an Elementor slider value ({size, unit}, number, or string).
      *
      * @param {*}      val
      * @param {number} fallback
@@ -621,9 +622,9 @@
     }
 
     /**
-     * Lê as opções de animação a partir dos data-aurora-* (renderizados pelo PHP).
-     * Usado apenas como último recurso, quando o sistema de Frontend Handlers
-     * do Elementor não está disponível (ex.: versões muito antigas).
+     * Reads the animation options from the data-aurora-* attributes
+     * (rendered by PHP). Used only as a last resort, when the Elementor
+     * Frontend Handlers system isn't available (e.g. very old versions).
      *
      * @param {HTMLElement} wrapper
      * @returns {Object}
@@ -644,7 +645,7 @@
     }
 
     /**
-     * Redefine visualmente os units para o estado inicial (antes da animação).
+     * Visually resets the units to their initial state (before the animation).
      *
      * @param {HTMLElement[]} units
      * @param {Object}        opts
@@ -656,17 +657,17 @@
             units.forEach(function (u) { u.style.opacity = '0'; });
         }
 
-        // Limpa filtros do blur reveal
+        // Clear the blur reveal filters.
         if (opts.animation === 'ml-8') {
             units.forEach(function (u) { u.style.filter = 'blur(14px)'; });
         }
     }
 
     /**
-     * Animações que gerenciam seu próprio DOM/split (não usam os `units`
-     * genéricos pré-divididos por splitText() neste arquivo). Cada uma é
-     * responsável por restaurar/esconder o textEl e revelar seu próprio
-     * conteúdo dentro da função de animação correspondente.
+     * Animations that manage their own DOM/split (they don't use the
+     * generic `units` pre-split by this file's splitText()). Each one
+     * is responsible for restoring/hiding textEl and revealing its own
+     * content inside the corresponding animation function.
      */
     var SELF_MANAGED_ANIMATIONS = ['gs-3', 'ml-11', 'ml-12', 'ml-13', 'ml-14'];
 
@@ -675,7 +676,7 @@
     }
 
     /**
-     * Executa a animação de acordo com biblioteca e tipo.
+     * Runs the animation according to library and type.
      *
      * @param {HTMLElement[]} units
      * @param {Object}        opts
@@ -695,11 +696,11 @@
     }
 
     /**
-     * Inicializa (ou reinicializa) a animação de texto de um wrapper. Pode
-     * ser chamada várias vezes para o mesmo wrapper — por exemplo, quando o
-     * usuário altera um controle no painel do Elementor. Cada chamada
-     * restaura o HTML original do alvo antes de dividir de novo (o split é
-     * destrutivo) e substitui qualquer observer de uma execução anterior.
+     * Initializes (or reinitializes) the text animation for a wrapper.
+     * Can be called multiple times for the same wrapper — for instance,
+     * when the user changes a control in the Elementor panel. Every call
+     * restores the target's original HTML before splitting again (the
+     * split is destructive) and replaces any observer from a previous run.
      *
      * @param {HTMLElement} wrapper
      * @param {Object}      opts
@@ -707,35 +708,35 @@
     function initTextAnimation(wrapper, opts) {
         console.log('[Aurora:text] initTextAnimation()', { wrapper: wrapper, opts: opts });
         var textEl = getTextTarget(wrapper);
-        console.log('[Aurora:text] textEl encontrado ->', textEl, 'texto:', (textEl.innerText || textEl.textContent || '').slice(0, 40));
+        console.log('[Aurora:text] textEl found ->', textEl, 'text:', (textEl.innerText || textEl.textContent || '').slice(0, 40));
 
-        // Guarda (uma única vez) o HTML original do alvo, para poder
-        // restaurá-lo antes de cada reinicialização.
+        // Store (only once) the target's original HTML, so it can be
+        // restored before each reinitialization.
         if (typeof textEl._auroraPristineHTML === 'undefined') {
             textEl._auroraPristineHTML = textEl.innerHTML;
         } else {
             textEl.innerHTML = textEl._auroraPristineHTML;
         }
 
-        // Cancela qualquer observer de uma inicialização anterior.
+        // Cancel any observer from a previous initialization.
         if (wrapper._auroraObserver) {
             wrapper._auroraObserver.disconnect();
             wrapper._auroraObserver = null;
         }
 
-        // Guarda texto original (necessário para scramble)
+        // Store the original text (needed for scramble).
         textEl._auroraOriginal = textEl.innerText || textEl.textContent;
 
-        // Divisão do texto (não aplica para animações self-managed, que
-        // fazem seu próprio split/scramble — ver SELF_MANAGED_ANIMATIONS)
+        // Text splitting (doesn't apply to self-managed animations, which
+        // do their own split/scramble — see SELF_MANAGED_ANIMATIONS).
         var units = [];
         if (!isSelfManaged(opts.animation)) {
             units = splitText(textEl, opts.splitBy);
-            // Estado inicial: invisível
+            // Initial state: invisible.
             units.forEach(function (u) { u.style.opacity = '0'; });
         } else {
-            // Self-managed: mantém texto mas esconde o elemento; a própria
-            // função de animação (ml-11..14, gs-3) reexibe ao tocar.
+            // Self-managed: keeps the text but hides the element; the
+            // animation function itself (ml-11..14, gs-3) reveals it when it runs.
             textEl.style.opacity = '0';
         }
 
@@ -745,7 +746,7 @@
             if (played && !opts.replay) return;
             played = true;
             if (!isSelfManaged(opts.animation)) {
-                units.forEach(function (u) { u.style.opacity = '0'; }); // Reset antes de re-animar
+                units.forEach(function (u) { u.style.opacity = '0'; }); // Reset before re-animating.
             }
             playAnimation(units, opts, textEl);
         }
@@ -774,15 +775,15 @@
             observer.observe(wrapper);
             wrapper._auroraObserver = observer;
         } else {
-            // Dispara imediatamente ao carregar
+            // Fires immediately on load.
             trigger();
         }
     }
 
     /**
-     * Desfaz a animação de texto de um wrapper, restaurando o HTML original
-     * (usado quando o controle "Habilitar Animação de Texto" é desligado
-     * dinamicamente no editor).
+     * Reverts the text animation of a wrapper, restoring the original HTML
+     * (used when the "Enable Text Animation" control is dynamically turned
+     * off in the editor).
      *
      * @param {HTMLElement} wrapper
      */
@@ -815,36 +816,37 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // INTEGRAÇÃO ELEMENTOR — FRONTEND HANDLER
+    // ELEMENTOR INTEGRATION — FRONTEND HANDLER
     // ─────────────────────────────────────────────────────────────────────────
     //
-    // `frontend/element_ready` dispara apenas UMA VEZ por elemento, na sua
-    // primeira renderização — não dispara de novo quando um controle é
-    // alterado no painel do editor. Para refletir mudanças instantaneamente
-    // no preview (sem precisar recarregar o iframe), usamos a API oficial de
-    // Frontend Handlers do Elementor: onElementChange() é chamado a cada
-    // alteração de controle marcado como `frontend_available`.
-    // Veja: https://developers.elementor.com/docs/editor-controls/frontend-available/
+    // `frontend/element_ready` only fires ONCE per element, on its first
+    // render — it doesn't fire again when a control is changed in the editor
+    // panel. To reflect changes instantly in the preview (without reloading
+    // the iframe), we use Elementor's official Frontend Handlers API:
+    // onElementChange() is called on every change of a control marked
+    // `frontend_available`.
+    // See: https://developers.elementor.com/docs/editor-controls/frontend-available/
 
     /**
-     * Registra o AuroraTextAnimationHandler junto ao Elementor.
-     * Retorna `false` se a API de Frontend Handlers não estiver disponível
-     * (ex.: versões muito antigas do Elementor).
+     * Registers the AuroraTextAnimationHandler with Elementor.
+     * Returns `false` if the Frontend Handlers API isn't available
+     * (e.g. very old Elementor versions).
      *
      * @returns {boolean}
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
-            console.log('[Aurora:text] elementorModules.frontend.handlers ainda não disponível.');
+            console.log('[Aurora:text] elementorModules.frontend.handlers not yet available.');
             return false;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
-            // elementorFrontend já existe, mas .hooks ainda não foi anexado
-            // (acontece no editor, onde a ordem de inicialização difere do
-            // frontend real). Sem essa checagem, addAction() abaixo lançaria
-            // um TypeError não capturado que abortaria todo o restante do
-            // script — incluindo o fallback de polling e o bootstrap().
-            console.log('[Aurora:text] elementorFrontend.hooks ainda não disponível.');
+            // elementorFrontend already exists, but .hooks hasn't been
+            // attached yet (happens in the editor, where the init order
+            // differs from the real frontend). Without this check,
+            // addAction() below would throw an uncaught TypeError that
+            // would abort the rest of the script — including the polling
+            // fallback and bootstrap().
+            console.log('[Aurora:text] elementorFrontend.hooks not yet available.');
             return false;
         }
 
@@ -907,26 +909,27 @@
             elementorFrontend.elementsHandler.addHandler(AuroraTextAnimationHandler, { $element: $element });
         });
 
-        console.log('[Aurora:text] Handler registrado com sucesso.');
+        console.log('[Aurora:text] Handler registered successfully.');
         return true;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // REGISTRO DO HOOK — o MAIS CEDO possível, de forma síncrona
+    // HOOK REGISTRATION — as EARLY as possible, synchronously
     // ─────────────────────────────────────────────────────────────────────────
     //
-    // `elementorFrontend.hooks.addAction()` não depende de gsap/anime estarem
-    // carregados, nem de `isInit`/DOM pronto — só precisa que o objeto
-    // `elementorModules`/`elementorFrontend` já exista, o que é garantido pela
-    // dependência 'elementor-frontend' deste script (ela executa ANTES desta
-    // linha). No frontend real (fora do editor) o Elementor pode disparar
-    // `frontend/element_ready` para cada widget muito rapidamente após o load
-    // da página — e esse evento só dispara UMA VEZ por elemento. O antigo
-    // código só tentava registrar o hook depois de `waitForLibs()` (um polling
-    // de no mínimo 80ms), o que era tempo suficiente para o Elementor disparar
-    // o evento ANTES do nosso hook existir — perdendo-o para sempre. Por isso,
-    // a tentativa de registro agora roda de forma síncrona, fora de qualquer
-    // espera, no exato momento em que este arquivo é avaliado pelo navegador.
+    // `elementorFrontend.hooks.addAction()` doesn't depend on gsap/anime
+    // being loaded, nor on `isInit`/DOM ready — it only needs the
+    // `elementorModules`/`elementorFrontend` object to already exist,
+    // which is guaranteed by this script's 'elementor-frontend' dependency
+    // (it runs BEFORE this line). On the real frontend (outside the editor)
+    // Elementor can fire `frontend/element_ready` for each widget very
+    // quickly after the page loads — and that event only fires ONCE per
+    // element. The old code only tried to register the hook after
+    // `waitForLibs()` (polling at a minimum of 80ms), which was enough
+    // time for Elementor to fire the event BEFORE our hook existed —
+    // losing it forever. That's why the registration attempt now runs
+    // synchronously, outside of any wait, the exact moment this file is
+    // evaluated by the browser.
     var auroraHandlerRegistered = false;
 
     function tryRegisterHandlerNow() {
@@ -941,9 +944,9 @@
     }
 
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        console.log('[Aurora:text] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
+        console.log('[Aurora:text] Not registered yet — waiting for the elementor/frontend/init event and polling as a fallback...');
         $(window).on('elementor/frontend/init', function () {
-            console.log('[Aurora:text] evento elementor/frontend/init disparado.');
+            console.log('[Aurora:text] elementor/frontend/init event fired.');
             tryRegisterHandlerNow();
         });
         (function poll() {
@@ -958,14 +961,14 @@
     }
 
     function bootstrap() {
-        console.log('[Aurora:text] bootstrap() iniciado.');
+        console.log('[Aurora:text] bootstrap() started.');
         waitForLibs(function () {
-            console.log('[Aurora:text] waitForLibs resolvido. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
+            console.log('[Aurora:text] waitForLibs resolved. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
 
-            // Fallback: nenhum Elementor JS disponível — varre a página
-            // usando os data-aurora-* renderizados pelo PHP no frontend real.
+            // Fallback: no Elementor JS available — scan the page using the
+            // data-aurora-* attributes rendered by PHP on the real frontend.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[Aurora:text] Elementor JS indisponível — usando fallback via data-aurora-*.');
+                console.log('[Aurora:text] Elementor JS unavailable — using data-aurora-* fallback.');
                 document.querySelectorAll('[data-aurora-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initTextAnimation(el, parseOptsFromDataset(el)); }, 80);
                 });
@@ -973,7 +976,7 @@
         });
     }
 
-    // Inicializa quando o DOM estiver pronto
+    // Initialize once the DOM is ready.
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', bootstrap);
     } else {

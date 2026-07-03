@@ -1,8 +1,8 @@
 /**
- * Aurora for Elementor — Frontend: Animação Stagger de Filhos
+ * Aurora for Elementor — Frontend: Children Stagger Animation
  *
- * Aplica animações de entrada em sequência (stagger) aos elementos filhos
- * de qualquer container/section do Elementor.
+ * Applies staggered entrance animations to the child elements of any
+ * Elementor container/section.
  *
  * @package Aurora
  * @version 1.0.0
@@ -15,11 +15,11 @@
     if (typeof $ === 'undefined') return;
 
     // ─────────────────────────────────────────────────────────────────────────
-    // PARSE DE OPÇÕES
+    // OPTION PARSING
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Normaliza um valor de slider do Elementor ({size, unit}, número ou string).
+     * Normalizes an Elementor slider value ({size, unit}, number, or string).
      *
      * @param {*}      val
      * @param {number} fallback
@@ -35,9 +35,10 @@
     }
 
     /**
-     * Sanitiza um seletor CSS (mesma whitelist usada no PHP), pois o valor
-     * lido das configurações do Elementor vem direto do model, sem a
-     * sanitização que o before_render aplica no frontend.
+     * Sanitizes a CSS selector (same whitelist used in PHP), since the
+     * value read from the Elementor settings comes straight from the
+     * model, without the sanitization that before_render applies on
+     * the frontend.
      *
      * @param {string} raw
      * @returns {string}
@@ -48,9 +49,9 @@
     }
 
     /**
-     * Lê as opções de animação de filhos a partir dos data-aurora-children-*
-     * (renderizados pelo PHP). Usado apenas como último recurso, quando o
-     * sistema de Frontend Handlers do Elementor não está disponível.
+     * Reads the children animation options from the data-aurora-children-*
+     * attributes (rendered by PHP). Used only as a last resort, when the
+     * Elementor Frontend Handlers system isn't available.
      *
      * @param {HTMLElement} wrapper
      * @returns {Object}
@@ -70,12 +71,13 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // SELEÇÃO DE FILHOS
+    // CHILDREN SELECTION
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Retorna os elementos filhos a animar, de acordo com o seletor configurado.
-     * Tenta múltiplos seletores fallback caso o seletor principal não retorne nada.
+     * Returns the child elements to animate, according to the configured
+     * selector. Tries multiple fallback selectors if the main selector
+     * returns nothing.
      *
      * @param {HTMLElement} wrapper
      * @param {string}      selector
@@ -84,7 +86,7 @@
     function getChildren(wrapper, selector) {
         var children = Array.from(wrapper.querySelectorAll(selector));
 
-        // Fallbacks progressivos
+        // Progressive fallbacks.
         if (children.length === 0) {
             var fallbacks = [
                 '.elementor-widget',
@@ -100,11 +102,11 @@
                 try {
                     children = Array.from(wrapper.querySelectorAll(fallbacks[i]));
                     if (children.length > 0) break;
-                } catch (e) { /* seletor inválido, continua */ }
+                } catch (e) { /* invalid selector, keep going */ }
             }
         }
 
-        // Último fallback: filhos diretos
+        // Last resort fallback: direct children.
         if (children.length === 0) {
             children = Array.from(wrapper.children);
         }
@@ -113,7 +115,7 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ANIMAÇÕES DE FILHOS  (GSAP)
+    // CHILDREN ANIMATIONS  (GSAP)
     // ─────────────────────────────────────────────────────────────────────────
 
     var childrenAnimations = {
@@ -148,7 +150,7 @@
             );
         },
 
-        // Fade In (apenas opacidade)
+        // Fade In (opacity only)
         'fade-in': function (children, opts) {
             gsap.fromTo(children,
                 { opacity: 0 },
@@ -162,7 +164,7 @@
             );
         },
 
-        // Slide da Esquerda
+        // Slide from the left
         'slide-left': function (children, opts) {
             gsap.fromTo(children,
                 { x: -80, opacity: 0 },
@@ -177,7 +179,7 @@
             );
         },
 
-        // Slide da Direita
+        // Slide from the right
         'slide-right': function (children, opts) {
             gsap.fromTo(children,
                 { x: 80, opacity: 0 },
@@ -207,7 +209,7 @@
             );
         },
 
-        // Zoom Out (começa grande e encolhe)
+        // Zoom Out (starts big and shrinks)
         'zoom-out': function (children, opts) {
             gsap.fromTo(children,
                 { scale: 1.35, opacity: 0 },
@@ -222,7 +224,7 @@
             );
         },
 
-        // Flip Up (rotação 3D no eixo X)
+        // Flip Up (3D rotation on the X axis)
         'flip-up': function (children, opts) {
             gsap.set(children, {
                 transformPerspective : 800,
@@ -241,7 +243,7 @@
             );
         },
 
-        // Rotate In (rotação Z + fade)
+        // Rotate In (Z rotation + fade)
         'rotate-in': function (children, opts) {
             gsap.fromTo(children,
                 { rotation: -20, scale: 0.8, opacity: 0 },
@@ -257,7 +259,7 @@
             );
         },
 
-        // Bounce In (sobe com bounce)
+        // Bounce In (rises with bounce)
         'bounce-in': function (children, opts) {
             gsap.fromTo(children,
                 { y: 70, opacity: 0 },
@@ -274,14 +276,14 @@
     };
 
     // ─────────────────────────────────────────────────────────────────────────
-    // LÓGICA CENTRAL
+    // CORE LOGIC
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Inicializa (ou reinicializa) a animação stagger de filhos de um wrapper.
-     * Pode ser chamada várias vezes para o mesmo wrapper — por exemplo, quando
-     * o usuário altera um controle no painel do Elementor — pois substitui
-     * qualquer observer/estado de uma inicialização anterior.
+     * Initializes (or reinitializes) the children stagger animation for a
+     * wrapper. Can be called multiple times for the same wrapper — for
+     * instance, when the user changes a control in the Elementor panel —
+     * since it replaces any observer/state from a previous initialization.
      *
      * @param {HTMLElement} wrapper
      * @param {Object}      opts
@@ -289,14 +291,14 @@
     function initChildrenAnimation(wrapper, opts) {
         console.log('[Aurora:children] initChildrenAnimation()', { wrapper: wrapper, opts: opts });
         if (typeof gsap === 'undefined') {
-            console.log('[Aurora:children] gsap indisponível, abortando.');
+            console.log('[Aurora:children] gsap unavailable, aborting.');
             return;
         }
 
         var children = getChildren(wrapper, opts.selector);
-        console.log('[Aurora:children] children encontrados ->', children.length, children);
+        console.log('[Aurora:children] children found ->', children.length, children);
 
-        // Cancela qualquer observer de uma inicialização anterior.
+        // Cancel any observer from a previous initialization.
         if (wrapper._auroraChildrenObserver) {
             wrapper._auroraChildrenObserver.disconnect();
             wrapper._auroraChildrenObserver = null;
@@ -304,7 +306,7 @@
 
         if (children.length === 0) return;
 
-        // Estado inicial: filhos invisíveis
+        // Initial state: children invisible.
         gsap.set(children, { clearProps: 'all', opacity: 0 });
 
         var played = false;
@@ -312,7 +314,7 @@
         function trigger() {
             if (played && !opts.replay) return;
             played = true;
-            // Reseta para estado inicial antes de re-animar
+            // Reset to the initial state before re-animating.
             gsap.set(children, { clearProps: 'all', opacity: 0 });
 
             var fn = childrenAnimations[opts.animation];
@@ -344,8 +346,9 @@
     }
 
     /**
-     * Desfaz a animação de filhos de um wrapper (usado quando o controle
-     * "Animar Elementos Filhos" é desligado dinamicamente no editor).
+     * Reverts the children animation of a wrapper (used when the
+     * "Animate Children Elements" control is dynamically turned off
+     * in the editor).
      *
      * @param {HTMLElement} wrapper
      */
@@ -374,35 +377,35 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // INTEGRAÇÃO ELEMENTOR — FRONTEND HANDLER
+    // ELEMENTOR INTEGRATION — FRONTEND HANDLER
     // ─────────────────────────────────────────────────────────────────────────
     //
-    // `frontend/element_ready` dispara apenas UMA VEZ por elemento, na sua
-    // primeira renderização — não dispara de novo quando um controle é
-    // alterado no painel do editor. Para refletir mudanças instantaneamente
-    // no preview (sem precisar recarregar o iframe), usamos a API oficial de
-    // Frontend Handlers do Elementor: onElementChange() é chamado a cada
-    // alteração de controle marcado como `frontend_available`.
-    // Veja: https://developers.elementor.com/docs/editor-controls/frontend-available/
+    // `frontend/element_ready` only fires ONCE per element, on its first
+    // render — it doesn't fire again when a control is changed in the editor
+    // panel. To reflect changes instantly in the preview (without reloading
+    // the iframe), we use Elementor's official Frontend Handlers API:
+    // onElementChange() is called on every change of a control marked
+    // `frontend_available`.
+    // See: https://developers.elementor.com/docs/editor-controls/frontend-available/
 
     /**
-     * Registra o AuroraChildrenAnimationHandler junto ao Elementor.
-     * Retorna `false` se a API de Frontend Handlers não estiver disponível
-     * (ex.: versões muito antigas do Elementor).
+     * Registers the AuroraChildrenAnimationHandler with Elementor.
+     * Returns `false` if the Frontend Handlers API isn't available
+     * (e.g. very old Elementor versions).
      *
      * @returns {boolean}
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
-            console.log('[Aurora:children] elementorModules.frontend.handlers ainda não disponível.');
+            console.log('[Aurora:children] elementorModules.frontend.handlers not yet available.');
             return false;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
-            // Mesma checagem de text-animations.js: elementorFrontend pode
-            // existir antes de .hooks ser anexado (caso do editor), e sem
-            // essa guarda o addAction() abaixo lançaria um TypeError não
-            // capturado, abortando todo o script (fallback/polling/bootstrap).
-            console.log('[Aurora:children] elementorFrontend.hooks ainda não disponível.');
+            // Same check as text-animations.js: elementorFrontend can exist
+            // before .hooks is attached (happens in the editor), and without
+            // this guard the addAction() call below would throw an
+            // uncaught TypeError, aborting the whole script (fallback/polling/bootstrap).
+            console.log('[Aurora:children] elementorFrontend.hooks not yet available.');
             return false;
         }
 
@@ -461,21 +464,21 @@
             elementorFrontend.elementsHandler.addHandler(AuroraChildrenAnimationHandler, { $element: $element });
         });
 
-        console.log('[Aurora:children] Handler registrado com sucesso.');
+        console.log('[Aurora:children] Handler registered successfully.');
         return true;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // REGISTRO DO HOOK — o MAIS CEDO possível, de forma síncrona
+    // HOOK REGISTRATION — as EARLY as possible, synchronously
     // ─────────────────────────────────────────────────────────────────────────
     //
-    // Mesma lógica e mesmo motivo de text-animations.js: `hooks.addAction()`
-    // não depende do GSAP estar carregado nem de `isInit`. No frontend real
-    // (fora do editor) `frontend/element_ready` dispara só UMA VEZ por
-    // elemento, rápido depois do load da página — esperar `waitForGsap()`
-    // (polling de no mínimo 80ms) antes de registrar o hook fazia perdermos
-    // esse disparo pra sempre. Por isso o registro agora é síncrono, no
-    // momento em que este arquivo é avaliado.
+    // Same logic and reason as text-animations.js: `hooks.addAction()`
+    // doesn't depend on GSAP being loaded or on `isInit`. On the real
+    // frontend (outside the editor) `frontend/element_ready` only fires
+    // ONCE per element, shortly after the page loads — waiting for
+    // `waitForGsap()` (polling at a minimum of 80ms) before registering
+    // the hook meant we'd miss that firing forever. That's why registration
+    // now happens synchronously, the moment this file is evaluated.
     var auroraChildrenHandlerRegistered = false;
 
     function tryRegisterHandlerNow() {
@@ -490,9 +493,9 @@
     }
 
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        console.log('[Aurora:children] Não registrado ainda — aguardando evento elementor/frontend/init e fazendo polling como fallback...');
+        console.log('[Aurora:children] Not registered yet — waiting for the elementor/frontend/init event and polling as a fallback...');
         $(window).on('elementor/frontend/init', function () {
-            console.log('[Aurora:children] evento elementor/frontend/init disparado.');
+            console.log('[Aurora:children] elementor/frontend/init event fired.');
             tryRegisterHandlerNow();
         });
         (function poll() {
@@ -507,14 +510,14 @@
     }
 
     function bootstrap() {
-        console.log('[Aurora:children] bootstrap() iniciado.');
+        console.log('[Aurora:children] bootstrap() started.');
         waitForGsap(function () {
-            console.log('[Aurora:children] waitForGsap resolvido. gsap?', typeof gsap !== 'undefined');
+            console.log('[Aurora:children] waitForGsap resolved. gsap?', typeof gsap !== 'undefined');
 
-            // Fallback: nenhum Elementor JS disponível — varre a página
-            // usando os data-aurora-children-* renderizados pelo PHP no frontend real.
+            // Fallback: no Elementor JS available — scan the page using the
+            // data-aurora-children-* attributes rendered by PHP on the real frontend.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[Aurora:children] Elementor JS indisponível — usando fallback via data-aurora-children-*.');
+                console.log('[Aurora:children] Elementor JS unavailable — using data-aurora-children-* fallback.');
                 document.querySelectorAll('[data-aurora-children-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initChildrenAnimation(el, parseOptsFromDataset(el)); }, 120);
                 });

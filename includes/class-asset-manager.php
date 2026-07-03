@@ -1,7 +1,7 @@
 <?php
 /**
- * Asset_Manager — registra e enfileira todos os assets do plugin
- * (frontend, preview live do editor, e painel do editor).
+ * Asset_Manager — registers and enqueues all of the plugin's assets
+ * (frontend, editor live preview, and editor panel).
  *
  * @package Aurora
  */
@@ -20,12 +20,12 @@ final class Asset_Manager {
 	}
 
 	/**
-	 * Scripts e estilos usados no frontend (e no preview live do editor).
+	 * Scripts and styles used on the frontend (and in the editor's live preview).
 	 */
 	public function enqueue_frontend_assets(): void {
 
-		// Elementor já foi verificado em aurora_init(); esta checagem é apenas
-		// uma salvaguarda extra para evitar erros em contextos inesperados.
+		// Elementor was already checked in aurora_init(); this check is just
+		// an extra safeguard against errors in unexpected contexts.
 		if ( ! class_exists( '\Elementor\Plugin' ) ) {
 			return;
 		}
@@ -49,9 +49,9 @@ final class Asset_Manager {
 		);
 
 		// ── Text animations ───────────────────────────────────────────────────
-		// Depende de 'elementor-frontend' para garantir que elementorFrontend/
-		// elementorModules já existam quando este script registra seu Frontend
-		// Handler (onInit/onElementChange) — necessário para o preview live no editor.
+		// Depends on 'elementor-frontend' to make sure elementorFrontend/
+		// elementorModules already exist when this script registers its Frontend
+		// Handler (onInit/onElementChange) — needed for the editor's live preview.
 		wp_enqueue_script(
 			'aurora-text-animations',
 			AURORA_URL . 'assets/js/text-animations.js',
@@ -70,8 +70,8 @@ final class Asset_Manager {
 		);
 
 		// ── Gradient module ───────────────────────────────────────────────────
-		// Não depende de GSAP/Anime.js — todo o efeito (estático ou animado,
-		// mesh/loop) é resolvido em CSS puro injetado pelo próprio script.
+		// Doesn't depend on GSAP/Anime.js — the whole effect (static or animated,
+		// mesh/loop) is resolved in pure CSS injected by the script itself.
 		wp_enqueue_script(
 			'aurora-gradient-module',
 			AURORA_URL . 'assets/js/gradient-module.js',
@@ -96,8 +96,8 @@ final class Asset_Manager {
 		);
 
 		// ── Glassmorphism module ──────────────────────────────────────────────
-		// Sem JS — o efeito é um único atributo `style` calculado em PHP.
-		// Esta folha cobre apenas o fallback para navegadores sem backdrop-filter.
+		// No JS — the effect is a single `style` attribute computed in PHP.
+		// This stylesheet only covers the fallback for browsers without backdrop-filter.
 		wp_enqueue_style(
 			'aurora-glass-module',
 			AURORA_URL . 'assets/css/glass-module.css',
@@ -107,8 +107,8 @@ final class Asset_Manager {
 	}
 
 	/**
-	 * Estilos exclusivos do painel do editor do Elementor — usados para
-	 * trocar o ícone padrão das seções Aurora pelos ícones de marca.
+	 * Styles used only in the Elementor editor panel — used to swap the
+	 * default icon of the Aurora sections for the brand icons.
 	 */
 	public function enqueue_editor_assets(): void {
 		wp_enqueue_style(

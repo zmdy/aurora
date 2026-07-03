@@ -1,10 +1,10 @@
 <?php
 /**
- * Text Animation Controls — injeta controles na aba Avançado de todos
- * os widgets do Elementor e adiciona os data-attributes no frontend.
+ * Text Animation Controls — injects controls into the Advanced tab of
+ * every Elementor widget and adds the data-attributes on the frontend.
  *
- * Implementa apenas o que é específico deste módulo; o encanamento
- * comum (hooks, deduplicação, montagem da seção) vive em Animation_Module.
+ * Implements only what's specific to this module; the shared plumbing
+ * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
  * @package Aurora
  */
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registra os controles de animação de texto e injeta atributos no render.
+ * Registers the text animation controls and injects attributes on render.
  */
 class Text_Animation_Controls extends Animation_Module {
 
@@ -28,13 +28,13 @@ class Text_Animation_Controls extends Animation_Module {
 	}
 
 	protected function get_section_label(): string {
-		return __( 'Animação de Texto', 'aurora-for-elementor' );
+		return __( 'Text Animation', 'aurora-for-elementor' );
 	}
 
 	/**
-	 * Além do hook genérico (sections, containers), também escuta o hook
-	 * específico de widgets — necessário em versões do Elementor onde
-	 * element/before_render não é disparado para widgets no frontend.
+	 * Besides the generic hook (sections, containers), also listens to the
+	 * widget-specific hook — needed in Elementor versions where
+	 * element/before_render isn't fired for widgets on the frontend.
 	 */
 	protected function get_render_hooks(): array {
 		return [
@@ -43,34 +43,34 @@ class Text_Animation_Controls extends Animation_Module {
 		];
 	}
 
-	// ── Controles ─────────────────────────────────────────────────────────────
+	// ── Controls ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Campos da seção "Animação de Texto".
+	 * Fields of the "Text Animation" section.
 	 *
-	 * @param Element_Base $element  Instância do elemento.
+	 * @param Element_Base $element  Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
-		// ── Habilitar ─────────────────────────────────────────────────────────
+		// ── Enable ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_enable',
 			[
-				'label'              => esc_html__( 'Habilitar Animação de Texto', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Enable Text Animation', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Biblioteca ────────────────────────────────────────────────────────
+		// ── Library ───────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_library',
 			[
-				'label'              => esc_html__( 'Biblioteca', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Library', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SELECT,
 				'default'            => 'gsap',
 				'options'            => [
@@ -82,11 +82,11 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Tipo de Animação — GSAP ───────────────────────────────────────────
+		// ── Animation Type — GSAP ─────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_animation_gsap',
 			[
-				'label'     => esc_html__( 'Tipo de Animação', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'gs-1',
 				'options'   => [
@@ -109,11 +109,11 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Tipo de Animação — Anime.js ───────────────────────────────────────
+		// ── Animation Type — Anime.js ─────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_animation_anime',
 			[
-				'label'     => esc_html__( 'Tipo de Animação', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'ml-1',
 				'options'   => [
@@ -127,10 +127,10 @@ class Text_Animation_Controls extends Animation_Module {
 					'ml-8'  => esc_html__( 'Blur Reveal',    'aurora-for-elementor' ),
 					'ml-9'  => esc_html__( 'Skew In',        'aurora-for-elementor' ),
 					'ml-10' => esc_html__( 'Explosion',      'aurora-for-elementor' ),
-					'ml-11' => esc_html__( 'Split Nativo (Letras)', 'aurora-for-elementor' ),
-					'ml-12' => esc_html__( 'Clip Wrap (Palavras)',  'aurora-for-elementor' ),
-					'ml-13' => esc_html__( 'Clone Eco (Letras)',    'aurora-for-elementor' ),
-					'ml-14' => esc_html__( 'Scramble Nativo',       'aurora-for-elementor' ),
+					'ml-11' => esc_html__( 'Native Split (Letters)', 'aurora-for-elementor' ),
+					'ml-12' => esc_html__( 'Clip Wrap (Words)',      'aurora-for-elementor' ),
+					'ml-13' => esc_html__( 'Echo Clone (Letters)',   'aurora-for-elementor' ),
+					'ml-14' => esc_html__( 'Native Scramble',        'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_text_enable'  => 'yes',
@@ -140,31 +140,31 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Dividir por ───────────────────────────────────────────────────────
+		// ── Split by ──────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_split_by',
 			[
-				'label'     => esc_html__( 'Dividir por', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Split by', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'chars',
 				'options'   => [
-					'chars' => esc_html__( 'Letras', 'aurora-for-elementor' ),
-					'words' => esc_html__( 'Palavras', 'aurora-for-elementor' ),
-					'lines' => esc_html__( 'Linhas', 'aurora-for-elementor' ),
+					'chars' => esc_html__( 'Characters', 'aurora-for-elementor' ),
+					'words' => esc_html__( 'Words', 'aurora-for-elementor' ),
+					'lines' => esc_html__( 'Lines', 'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_text_enable'       => 'yes',
-					'aurora_text_animation_gsap!' => 'gs-3', // Scramble ignora split
+					'aurora_text_animation_gsap!' => 'gs-3', // Scramble ignores split.
 				],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Duração ───────────────────────────────────────────────────────────
+		// ── Duration ──────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_duration',
 			[
-				'label'      => esc_html__( 'Duração (ms)', 'aurora-for-elementor' ),
+				'label'      => esc_html__( 'Duration (ms)', 'aurora-for-elementor' ),
 				'type'       => Controls_Manager::SLIDER,
 				'range'      => [
 					'px' => [
@@ -179,11 +179,11 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Delay inicial ─────────────────────────────────────────────────────
+		// ── Initial delay ─────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_delay',
 			[
-				'label'     => esc_html__( 'Delay inicial (ms)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Initial delay (ms)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -198,11 +198,11 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Delay entre unidades (stagger) ────────────────────────────────────
+		// ── Stagger delay between units ───────────────────────────────────────
 		$element->add_control(
 			'aurora_text_stagger',
 			[
-				'label'     => esc_html__( 'Delay entre unidades (ms)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Delay between units (ms)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -220,16 +220,16 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Gatilho ───────────────────────────────────────────────────────────
+		// ── Trigger ───────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_trigger',
 			[
-				'label'     => esc_html__( 'Disparar ao', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Trigger on', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'scroll',
 				'options'   => [
-					'scroll' => esc_html__( 'Entrar na viewport (scroll)', 'aurora-for-elementor' ),
-					'load'   => esc_html__( 'Carregar a página', 'aurora-for-elementor' ),
+					'scroll' => esc_html__( 'Enter viewport (scroll)', 'aurora-for-elementor' ),
+					'load'   => esc_html__( 'Page load', 'aurora-for-elementor' ),
 				],
 				'condition' => [ 'aurora_text_enable' => 'yes' ],
 				'frontend_available' => true,
@@ -240,7 +240,7 @@ class Text_Animation_Controls extends Animation_Module {
 		$element->add_control(
 			'aurora_text_threshold',
 			[
-				'label'     => esc_html__( 'Visibilidade para disparar (%)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Visibility threshold (%)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -258,14 +258,14 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Repetir ───────────────────────────────────────────────────────────
+		// ── Replay ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_replay',
 			[
-				'label'        => esc_html__( 'Repetir ao re-entrar na viewport', 'aurora-for-elementor' ),
+				'label'        => esc_html__( 'Replay on re-entering viewport', 'aurora-for-elementor' ),
 				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Sim', 'aurora-for-elementor' ),
-				'label_off'    => esc_html__( 'Não', 'aurora-for-elementor' ),
+				'label_on'     => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'    => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value' => 'yes',
 				'default'      => '',
 				'condition'    => [
@@ -280,11 +280,11 @@ class Text_Animation_Controls extends Animation_Module {
 	// ── Render Attributes ─────────────────────────────────────────────────────
 
 	/**
-	 * Converte as configurações salvas nos data-attributes do wrapper.
-	 * Retorna array vazio quando a animação está desabilitada.
+	 * Converts the saved settings into the wrapper's data-attributes.
+	 * Returns an empty array when the animation is disabled.
 	 *
-	 * @param array             $settings  Configurações do elemento.
-	 * @param Element_Base|null $element   Não utilizado neste módulo.
+	 * @param array             $settings  Element settings.
+	 * @param Element_Base|null $element   Unused in this module.
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {

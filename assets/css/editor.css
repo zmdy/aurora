@@ -1,12 +1,12 @@
 /**
- * Aurora for Elementor — estilos exclusivos do editor.
- * Substitui o ícone padrão das seções "Animação de Texto" e
- * "Animar Elementos Filhos" pelos ícones de marca da Aurora.
+ * Aurora for Elementor — editor-only styles.
+ * Replaces the default icon of the "Text Animation" and "Animate
+ * Children Elements" sections with the Aurora brand icons.
  *
- * O Elementor identifica a seção via atributo data-collapse_id no
- * elemento .elementor-panel-heading-toggle, que é sempre o irmão
- * anterior de .elementor-panel-heading-title — por isso usamos o
- * seletor de irmão adjacente (+) abaixo em vez de uma classe.
+ * Elementor identifies the section via the data-collapse_id attribute
+ * on the .elementor-panel-heading-toggle element, which is always the
+ * previous sibling of .elementor-panel-heading-title — that's why we
+ * use the adjacent-sibling selector (+) below instead of a class.
  *
  * @package Aurora
  */

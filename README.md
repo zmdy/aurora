@@ -165,10 +165,17 @@ aurora-for-elementor/
 │   │   └── vendor/                             ← Bundled GSAP & Anime.js
 │   └── css/
 │       └── text-animations.css                 ← Base styles & helpers
+├── languages/
+│   ├── aurora-for-elementor.pot                ← Translation template
+│   ├── aurora-for-elementor-pt_BR.po           ← Portuguese (Brazil) translation
+│   └── aurora-for-elementor-pt_BR.mo           ← Compiled Portuguese (Brazil) translation
 ├── LICENSE
 └── README.md
 ```
 
+### Translations
+
+English is the plugin's default language. A Portuguese (Brazil) translation is bundled in `languages/`, loaded automatically via the standard WordPress i18n API (`load_plugin_textdomain`) when the site's locale is `pt_BR`. To add another language, copy `languages/aurora-for-elementor.pot` to `languages/aurora-for-elementor-{locale}.po`, translate the strings, and compile it to a `.mo` file (e.g. with `msgfmt` or Poedit).
 
 ### How it works
 
