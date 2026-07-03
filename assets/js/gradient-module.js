@@ -27,23 +27,32 @@
     var instanceCounter = 0;
 
     /**
-     * Returns (creating if needed) the <style> tag where each instance's
-     * dynamic rules are accumulated.
+     * Returns (creating if needed) the dedicated <style> tag for a given
+     * target element (the background host or the text node), reusing it
+     * across re-runs instead of accumulating rules in a shared tag. Every
+     * settings change (color, angle, animate toggle, etc.) re-applies the
+     * gradient, and previously each re-run appended a brand new rule set
+     * to a single global <style> tag without ever removing the previous
+     * one — during an Elementor editor session (where onElementChange
+     * fires on every slider drag) this silently accumulated hundreds of
+     * orphaned @keyframes blocks. Using one tag per target element and
+     * overwriting its textContent keeps things bounded.
      *
+     * @param {HTMLElement} target
      * @returns {HTMLStyleElement}
      */
-    function getStyleTag() {
-        var tag = document.getElementById('aurora-gradient-dynamic-styles');
-        if (!tag) {
+    function getStyleTag(target) {
+        var tag = target._auroraGradientStyleTag;
+        if (!tag || !tag.isConnected) {
             tag = document.createElement('style');
-            tag.id = 'aurora-gradient-dynamic-styles';
+            target._auroraGradientStyleTag = tag;
             document.head.appendChild(tag);
         }
         return tag;
     }
 
-    function injectCss(css) {
-        getStyleTag().appendChild(document.createTextNode(css));
+    function injectCss(target, css) {
+        getStyleTag(target).textContent = css;
     }
 
     /**
@@ -155,6 +164,7 @@
         el.classList.remove('aurora-gradient-host');
         el.removeAttribute('data-aurora-gradient-instance');
         el.style.backgroundImage = '';
+        injectCss(el, '');
 
         if (!data.animate) {
             el.style.backgroundImage = gradientCss;
@@ -190,7 +200,7 @@
                 '100%{background-position:' + posBase + ';}}';
         }
 
-        injectCss(css);
+        injectCss(el, css);
     }
 
     /**
@@ -208,6 +218,7 @@
         textEl.classList.remove('aurora-gradient-text');
         textEl.removeAttribute('data-aurora-gradient-instance');
         textEl.style.backgroundSize = '';
+        injectCss(textEl, '');
 
         textEl.style.backgroundImage = gradientCss;
         textEl.style.webkitBackgroundClip = 'text';
@@ -234,14 +245,26 @@
                 '0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}';
         }
 
-        injectCss(css);
+        injectCss(textEl, css);
     }
 
     /**
-     * Single entry point: decides background vs. text based on the
-     * presence of the real text node inside the wrapper — more reliable
-     * than relying on the element type, and behaves the same in the
-     * editor and on the frontend.
+     * Single entry point: decides background vs. text using the
+     * `data-aurora-gradient-target` attribute that PHP already computed
+     * from the element's own type (class-gradient-controls.php,
+     * TEXT_ELEMENTS = heading/text-editor, everything else = background).
+     *
+     * This used to be re-derived here via `wrapper.querySelector(
+     * '.elementor-heading-title, .elementor-text-editor')`, which does a
+     * *deep* search of the wrapper's whole subtree. That misfired badly
+     * for the common case of a Section/Column/Container with a Heading
+     * or Text Editor widget nested somewhere inside it: enabling the
+     * background gradient on the container would instead find that
+     * unrelated nested widget's text node and apply the gradient to it
+     * as a text-fill, leaving the container itself without its
+     * background and silently corrupting an inner heading's styling.
+     * Trusting the PHP-computed attribute avoids the DOM search
+     * entirely and always matches the element's actual type.
      *
      * @param {HTMLElement} wrapper
      * @param {Object} data
@@ -250,9 +273,9 @@
         if (!data.stops || data.stops.length < 2) return;
 
         var id = ++instanceCounter;
-        var textEl = wrapper.querySelector('.elementor-heading-title, .elementor-text-editor');
 
-        if (textEl) {
+        if (wrapper.getAttribute('data-aurora-gradient-target') === 'text') {
+            var textEl = wrapper.querySelector('.elementor-heading-title, .elementor-text-editor') || wrapper;
             applyText(textEl, data, id);
         } else {
             applyBackground(wrapper, data, id);

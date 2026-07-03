@@ -204,6 +204,15 @@ class Gradient_Controls extends Animation_Module {
 		);
 
 		// ── Animation style ───────────────────────────────────────────────────
+		// The "mesh" value drives two different CSS effects depending on the
+		// target (see gradient-module.js applyBackground()/applyText()): a
+		// real moving-blobs mesh on backgrounds, but a simple background-
+		// position pan on text (background-clip:text can't render blurred
+		// ::before blob layers). The option label is adjusted per element
+		// type so it never promises a blob effect that won't actually show
+		// up when animating a Heading/Text Editor's text color.
+		$is_text_element = in_array( $element->get_name(), self::TEXT_ELEMENTS, true );
+
 		$element->add_control(
 			'aurora_gradient_animation_style',
 			[
@@ -211,7 +220,9 @@ class Gradient_Controls extends Animation_Module {
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'mesh',
 				'options'   => [
-					'mesh' => esc_html__( 'Mesh (moving blobs)', 'aurora-for-elementor' ),
+					'mesh' => $is_text_element
+						? esc_html__( 'Pan (sliding gradient)', 'aurora-for-elementor' )
+						: esc_html__( 'Mesh (moving blobs)', 'aurora-for-elementor' ),
 					'loop' => esc_html__( 'Color Loop (hue rotation)', 'aurora-for-elementor' ),
 				],
 				'condition' => [
