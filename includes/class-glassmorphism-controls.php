@@ -48,13 +48,17 @@ class Glassmorphism_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Needs the "common" hook (widgets) in addition to the structural ones —
-	 * applies_to_element() filters so the section only actually shows up on
-	 * the Image widget.
+	 * Uses a dedicated hook per supported element type instead of the
+	 * generic "common" one — in practice the "common" section_effects
+	 * hook doesn't reliably fire for the Image widget across Elementor
+	 * versions, which was silently hiding this section there (it only
+	 * ever showed up on Section/Column/Container). Every element type
+	 * this module supports now gets its own explicit hook, the same
+	 * pattern already proven to work for section/column/container.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 40 ],
+			[ 'hook' => 'elementor/element/image/section_effects/after_section_end', 'priority' => 30 ],
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 30 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 30 ],
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 30 ],

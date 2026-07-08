@@ -86,6 +86,32 @@ class Image_Effects_Controls extends Animation_Module {
 		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
+	/**
+	 * Uses a dedicated hook for the Image widget instead of the generic
+	 * "common" one — the "common" section_effects hook doesn't reliably
+	 * fire for the Image widget across Elementor versions (same issue
+	 * found and fixed in Glassmorphism_Controls), which was hiding this
+	 * entire section. Since this module only ever targets 'image', there's
+	 * no need for the catch-all "common" hook at all.
+	 */
+	protected function get_controls_hooks(): array {
+		return [
+			[ 'hook' => 'elementor/element/image/section_effects/after_section_end', 'priority' => 10 ],
+		];
+	}
+
+	/**
+	 * Same reasoning as Text_Animation_Controls/Gradient_Controls: ensures
+	 * the widget's before_render hook (in addition to the generic element
+	 * one) actually fires so the data-attributes make it onto the frontend.
+	 */
+	protected function get_render_hooks(): array {
+		return [
+			'elementor/frontend/element/before_render',
+			'elementor/frontend/widget/before_render',
+		];
+	}
+
 	// ── Controls ─────────────────────────────────────────────────────────────
 
 	/**
