@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/License-GPL_v3-blue?style=for-the-badge" alt="GPL License" />
 </div>
 
-Aurora adds **advanced text animations** (GSAP + Anime.js), **staggered children element animations**, **multi-stop gradients** (including a mouse-following spotlight), **glassmorphism**, and a **custom cursor follow effect** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
+Aurora adds **advanced text animations** (GSAP + Anime.js), **staggered children element animations**, **multi-stop gradients** (including a mouse-following spotlight), **glassmorphism**, a **custom cursor follow effect**, and an **advanced image effects module** (13 entrance/reveal animations + 7 hover effects, incl. Shine) to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
 
 ---
 
@@ -160,6 +160,48 @@ Replaces the native cursor with a two-part custom cursor — an inner dot that t
 
 ---
 
+<h3 style="display: flex; align-items: center;">
+  Module 6 — Image Effects
+</h3>
+
+Available on the native **Image** widget via **Advanced → 🖼️ Image Effects (Aurora)**. Two fully independent toggles — either, both, or neither can be active at once.
+
+**Entrance Animation** (13 effects — scroll or page-load triggered, animated with GSAP):
+
+| Name | Effect |
+|------|--------|
+| Fade Up | Rises with fade |
+| Fade In | Opacity only |
+| Slide from Left | Slides in from the left |
+| Slide from Right | Slides in from the right |
+| Zoom In | Grows from 70% → 100% |
+| Zoom Out | Shrinks from 130% → 100% |
+| Flip 3D | Y-axis 3D rotation |
+| Blur Reveal | Blurred → sharp |
+| Skew Reveal | Skewed → straightened |
+| Wipe Reveal (Left → Right) | An overlay panel recedes to reveal the image left-to-right |
+| Wipe Reveal (Bottom → Top) | An overlay panel recedes to reveal the image bottom-to-top |
+| Curtain Reveal (Split Center) | Two overlay panels part from the center outward |
+| Iris Reveal (Circle Expand) | A circular clip-path expands from the center |
+
+Shared controls: Duration (ms), Delay (ms), Trigger (scroll / page load), Visibility Threshold (%), Replay every time visible, and an Overlay Color (used only by the 4 reveal effects).
+
+**Hover Effect** (7 effects — 100% CSS, no JavaScript involved):
+
+| Name | Effect |
+|------|--------|
+| Shine Sweep | A skewed light band sweeps across the image — the effect referenced from the Schon theme |
+| Zoom In | Scales up inside a clipped container |
+| Grayscale → Color | Desaturated at rest, full color on hover |
+| Blur → Sharp Focus | Blurred at rest, sharp on hover |
+| Color Tint Overlay | A color overlay fades in on hover |
+| Brightness Pop | Brightness boost on hover |
+| Rotate + Zoom | Slight rotation + zoom combined |
+
+Shared controls: Hover Duration (ms); Shine Color + Shine Width (%) (shine only); Tint Color (tint only).
+
+---
+
 <h2 style="display: flex; align-items: center;">
   <img src="./assets/branding/icons/aurora_icon_blue_install.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
   Installation
@@ -216,19 +258,22 @@ aurora-for-elementor/
 │   ├── class-children-animation-controls.php   ← Module 2: Animate Children Elements
 │   ├── class-gradient-controls.php             ← Module 3: Gradient (incl. Follow Mouse)
 │   ├── class-glassmorphism-controls.php        ← Module 4: Glassmorphism
-│   └── class-cursor-follow-controls.php        ← Module 5: Cursor Follow
+│   ├── class-cursor-follow-controls.php        ← Module 5: Cursor Follow
+│   └── class-image-effects-controls.php        ← Module 6: Image Effects
 ├── assets/
 │   ├── js/
 │   │   ├── text-animations.js                  ← 24 animations (GSAP + Anime.js)
 │   │   ├── children-animations.js              ← Children stagger (GSAP)
 │   │   ├── gradient-module.js                  ← Gradient rendering + mouse tracking
 │   │   ├── cursor-follow.js                    ← Dot/ring cursor + zone tracking
+│   │   ├── image-effects.js                    ← 13 entrance/reveal animations (GSAP)
 │   │   └── vendor/                             ← Bundled GSAP & Anime.js
 │   └── css/
 │       ├── text-animations.css                 ← Base styles & helpers
 │       ├── gradient-module.css                 ← Gradient base styles
 │       ├── glass-module.css                    ← Glassmorphism fallback
-│       └── cursor-follow.css                   ← Cursor Follow base styles
+│       ├── cursor-follow.css                   ← Cursor Follow base styles
+│       └── image-effects.css                   ← 7 hover effects (pure CSS) + overlay base styles
 ├── languages/
 │   ├── aurora-for-elementor.pot                ← Translation template
 │   ├── aurora-for-elementor-pt_BR.po           ← Portuguese (Brazil) translation

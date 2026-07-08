@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aurora for Elementor\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-03 17:32+0000\n"
+"POT-Creation-Date: 2026-07-08 17:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -324,4 +324,103 @@ msgid "requires PHP %1$s or higher. Current version: %2$s."
 msgstr ""
 
 msgid "requires the Elementor plugin to be installed and activated."
+msgstr ""
+
+msgid "Image Effects"
+msgstr ""
+
+msgid "Enable Entrance Animation"
+msgstr ""
+
+msgid "Plays a reveal/impact animation the first time the image enters the screen (or on page load)."
+msgstr ""
+
+msgid "Entrance Effect"
+msgstr ""
+
+msgid "Slide from Left"
+msgstr ""
+
+msgid "Slide from Right"
+msgstr ""
+
+msgid "Flip 3D"
+msgstr ""
+
+msgid "Skew Reveal"
+msgstr ""
+
+msgid "Wipe Reveal (Left → Right)"
+msgstr ""
+
+msgid "Wipe Reveal (Bottom → Top)"
+msgstr ""
+
+msgid "Curtain Reveal (Split Center)"
+msgstr ""
+
+msgid "Iris Reveal (Circle Expand)"
+msgstr ""
+
+msgid "Overlay Color"
+msgstr ""
+
+msgid "Delay (ms)"
+msgstr ""
+
+msgid "Trigger"
+msgstr ""
+
+msgid "On Scroll (when visible)"
+msgstr ""
+
+msgid "On Page Load"
+msgstr ""
+
+msgid "Visibility Threshold (%)"
+msgstr ""
+
+msgid "How much of the image must be visible before the animation plays."
+msgstr ""
+
+msgid "Replay Every Time Visible"
+msgstr ""
+
+msgid "Enable Hover Effect"
+msgstr ""
+
+msgid "Independent from the Entrance Animation above — can be used alone or combined with it."
+msgstr ""
+
+msgid "Hover Effect"
+msgstr ""
+
+msgid "Shine Sweep"
+msgstr ""
+
+msgid "Grayscale → Color"
+msgstr ""
+
+msgid "Blur → Sharp Focus"
+msgstr ""
+
+msgid "Color Tint Overlay"
+msgstr ""
+
+msgid "Brightness Pop"
+msgstr ""
+
+msgid "Rotate + Zoom"
+msgstr ""
+
+msgid "Hover Duration (ms)"
+msgstr ""
+
+msgid "Shine Color"
+msgstr ""
+
+msgid "Shine Width (%)"
+msgstr ""
+
+msgid "Tint Color"
 msgstr ""

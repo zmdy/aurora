@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aurora for Elementor\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-03 17:32+0000\n"
-"PO-Revision-Date: 2026-07-03 17:32+0000\n"
+"POT-Creation-Date: 2026-07-08 17:00+0000\n"
+"PO-Revision-Date: 2026-07-08 17:00+0000\n"
 "Last-Translator: Aurora <aurora@example.com>\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -330,3 +330,102 @@ msgstr "requer PHP %1$s ou superior. Versão atual: %2$s."
 
 msgid "requires the Elementor plugin to be installed and activated."
 msgstr "requer o plugin Elementor instalado e ativado."
+
+msgid "Image Effects"
+msgstr "Efeitos de Imagem"
+
+msgid "Enable Entrance Animation"
+msgstr "Habilitar Animação de Entrada"
+
+msgid "Plays a reveal/impact animation the first time the image enters the screen (or on page load)."
+msgstr "Reproduz uma animação de revelação/impacto na primeira vez que a imagem entra na tela (ou ao carregar a página)."
+
+msgid "Entrance Effect"
+msgstr "Efeito de Entrada"
+
+msgid "Slide from Left"
+msgstr "Deslizar da Esquerda"
+
+msgid "Slide from Right"
+msgstr "Deslizar da Direita"
+
+msgid "Flip 3D"
+msgstr "Flip 3D"
+
+msgid "Skew Reveal"
+msgstr "Revelação com Inclinação"
+
+msgid "Wipe Reveal (Left → Right)"
+msgstr "Revelação por Varredura (Esquerda → Direita)"
+
+msgid "Wipe Reveal (Bottom → Top)"
+msgstr "Revelação por Varredura (Baixo → Cima)"
+
+msgid "Curtain Reveal (Split Center)"
+msgstr "Revelação em Cortina (Divisão ao Centro)"
+
+msgid "Iris Reveal (Circle Expand)"
+msgstr "Revelação em Íris (Expansão Circular)"
+
+msgid "Overlay Color"
+msgstr "Cor da Sobreposição"
+
+msgid "Delay (ms)"
+msgstr "Atraso (ms)"
+
+msgid "Trigger"
+msgstr "Gatilho"
+
+msgid "On Scroll (when visible)"
+msgstr "Ao Rolar (quando visível)"
+
+msgid "On Page Load"
+msgstr "Ao Carregar a Página"
+
+msgid "Visibility Threshold (%)"
+msgstr "Limite de Visibilidade (%)"
+
+msgid "How much of the image must be visible before the animation plays."
+msgstr "Quanto da imagem precisa estar visível antes que a animação seja reproduzida."
+
+msgid "Replay Every Time Visible"
+msgstr "Repetir Toda Vez que Visível"
+
+msgid "Enable Hover Effect"
+msgstr "Habilitar Efeito ao Passar o Mouse"
+
+msgid "Independent from the Entrance Animation above — can be used alone or combined with it."
+msgstr "Independente da Animação de Entrada acima — pode ser usado sozinho ou combinado com ela."
+
+msgid "Hover Effect"
+msgstr "Efeito ao Passar o Mouse"
+
+msgid "Shine Sweep"
+msgstr "Brilho Deslizante"
+
+msgid "Grayscale → Color"
+msgstr "Escala de Cinza → Cor"
+
+msgid "Blur → Sharp Focus"
+msgstr "Desfoque → Foco Nítido"
+
+msgid "Color Tint Overlay"
+msgstr "Sobreposição de Tonalidade de Cor"
+
+msgid "Brightness Pop"
+msgstr "Aumento de Brilho"
+
+msgid "Rotate + Zoom"
+msgstr "Rotação + Zoom"
+
+msgid "Hover Duration (ms)"
+msgstr "Duração do Hover (ms)"
+
+msgid "Shine Color"
+msgstr "Cor do Brilho"
+
+msgid "Shine Width (%)"
+msgstr "Largura do Brilho (%)"
+
+msgid "Tint Color"
+msgstr "Cor da Tonalidade"

@@ -28,6 +28,7 @@ final class Module_Manager {
 		Gradient_Controls::class,
 		Glassmorphism_Controls::class,
 		Cursor_Follow_Controls::class,
+		Image_Effects_Controls::class,
 	];
 
 	/**

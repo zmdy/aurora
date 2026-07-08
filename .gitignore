@@ -1,4 +1,4 @@
-# Ignore node_modules (caso venha a usar ferramentas de build)
+# Ignore node_modules (in case build tooling is added later)
 node_modules/
 npm-debug.log*
 

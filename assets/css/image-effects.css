@@ -1,0 +1,126 @@
+/**
+ * Aurora for Elementor — Image Effects Module
+ *
+ * Two independent halves:
+ *   - Hover effects (incl. the Shine sweep): 100% pure CSS, no JS involved.
+ *     PHP computes a `style` attribute with a handful of CSS custom
+ *     properties (--aurora-img-hover-duration, --aurora-img-shine-color,
+ *     --aurora-img-shine-width, --aurora-img-tint-color) plus the
+ *     `aurora-img-hover-active` class and a `data-aurora-img-hover`
+ *     attribute used below to dispatch to the right effect.
+ *   - Entrance (reveal) overlay panels: the wipe/curtain effects in
+ *     image-effects.js create these panels at runtime; this file only
+ *     provides their base non-per-instance styling (per-instance color is
+ *     set inline by the script, since it comes from a user color picker).
+ *
+ * @package Aurora
+ */
+
+/* ── Hover: shared base ──────────────────────────────────────────────────── */
+
+.aurora-img-hover-active .elementor-widget-container {
+	position: relative;
+	overflow: hidden;
+}
+
+.aurora-img-hover-active .elementor-widget-container img {
+	transition:
+		transform var(--aurora-img-hover-duration, 500ms) ease,
+		filter var(--aurora-img-hover-duration, 500ms) ease;
+}
+
+/* ── Hover: Shine Sweep ──────────────────────────────────────────────────── */
+/* A skewed light band that sweeps across the image on hover — the effect
+   referenced by the user from the Schon theme's image hovers. */
+
+.aurora-img-hover-active[data-aurora-img-hover="shine"] .elementor-widget-container::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -60%;
+	width: var(--aurora-img-shine-width, 30%);
+	height: 100%;
+	background: linear-gradient(75deg, transparent 0%, var(--aurora-img-shine-color, #ffffff) 50%, transparent 100%);
+	opacity: 0.85;
+	pointer-events: none;
+	transform: skewX(-20deg) translateX(0);
+	transition: transform var(--aurora-img-hover-duration, 500ms) ease;
+	z-index: 2;
+}
+
+.aurora-img-hover-active[data-aurora-img-hover="shine"]:hover .elementor-widget-container::after {
+	transform: skewX(-20deg) translateX(260%);
+}
+
+/* ── Hover: Zoom In ──────────────────────────────────────────────────────── */
+
+.aurora-img-hover-active[data-aurora-img-hover="zoom-in"]:hover .elementor-widget-container img {
+	transform: scale(1.12);
+}
+
+/* ── Hover: Grayscale → Color ────────────────────────────────────────────── */
+
+.aurora-img-hover-active[data-aurora-img-hover="grayscale"] .elementor-widget-container img {
+	filter: grayscale(100%);
+}
+
+.aurora-img-hover-active[data-aurora-img-hover="grayscale"]:hover .elementor-widget-container img {
+	filter: grayscale(0%);
+}
+
+/* ── Hover: Blur → Sharp Focus ───────────────────────────────────────────── */
+
+.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"] .elementor-widget-container img {
+	filter: blur(6px);
+}
+
+.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"]:hover .elementor-widget-container img {
+	filter: blur(0);
+}
+
+/* ── Hover: Color Tint Overlay ───────────────────────────────────────────── */
+
+.aurora-img-hover-active[data-aurora-img-hover="tint"] .elementor-widget-container::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-color: var(--aurora-img-tint-color, #7c6cff);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity var(--aurora-img-hover-duration, 500ms) ease;
+	z-index: 2;
+}
+
+.aurora-img-hover-active[data-aurora-img-hover="tint"]:hover .elementor-widget-container::before {
+	opacity: 0.35;
+}
+
+/* ── Hover: Brightness Pop ───────────────────────────────────────────────── */
+
+.aurora-img-hover-active[data-aurora-img-hover="brightness"]:hover .elementor-widget-container img {
+	filter: brightness(1.25);
+}
+
+/* ── Hover: Rotate + Zoom ────────────────────────────────────────────────── */
+
+.aurora-img-hover-active[data-aurora-img-hover="rotate-zoom"]:hover .elementor-widget-container img {
+	transform: rotate(3deg) scale(1.08);
+}
+
+/* ── Entrance: overlay panels (wipe-left, wipe-up, curtain) ─────────────── */
+/* Created at runtime by image-effects.js; color comes from the user's
+   Overlay Color control and is set inline, so it isn't repeated here. */
+
+.aurora-img-entrance-overlay {
+	will-change: transform;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+	.aurora-img-hover-active .elementor-widget-container img,
+	.aurora-img-hover-active[data-aurora-img-hover="shine"] .elementor-widget-container::after,
+	.aurora-img-hover-active[data-aurora-img-hover="tint"] .elementor-widget-container::before {
+		transition-duration: 1ms !important;
+	}
+}

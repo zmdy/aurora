@@ -92,6 +92,17 @@ final class Asset_Manager {
 			true
 		);
 
+		// ── Image Effects module ──────────────────────────────────────────────
+		// Only handles the entrance animations (GSAP + IntersectionObserver) —
+		// the hover effects are pure CSS, see assets/css/image-effects.css.
+		wp_enqueue_script(
+			'aurora-image-effects',
+			AURORA_URL . 'assets/js/image-effects.js',
+			[ 'jquery', 'aurora-gsap', 'elementor-frontend' ],
+			AURORA_VERSION,
+			true
+		);
+
 		// ── Styles ────────────────────────────────────────────────────────────
 		wp_enqueue_style(
 			'aurora-text-animations',
@@ -121,6 +132,16 @@ final class Asset_Manager {
 		wp_enqueue_style(
 			'aurora-cursor-follow',
 			AURORA_URL . 'assets/css/cursor-follow.css',
+			[],
+			AURORA_VERSION
+		);
+
+		// ── Image Effects module ──────────────────────────────────────────────
+		// Covers the hover effects (pure CSS) and the overlay panels used by
+		// the wipe/curtain/iris entrance effects.
+		wp_enqueue_style(
+			'aurora-image-effects',
+			AURORA_URL . 'assets/css/image-effects.css',
 			[],
 			AURORA_VERSION
 		);
