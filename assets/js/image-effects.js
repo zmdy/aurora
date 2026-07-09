@@ -209,40 +209,57 @@
     function applyReset(target, opts) {
         var img = target.img, box = target.box;
 
+        // IMPORTANT: `clearProps` must never be set in the SAME gsap.set()
+        // call as the property values we actually want to keep. gsap.set()
+        // is a zero-duration tween, and clearProps is applied at the end of
+        // that same render — i.e. in the same tick — which would instantly
+        // wipe out the very "from" values (opacity/transform/clip-path) we
+        // just set, leaving the image already in its final visible state
+        // before applyPlay() ever runs. That silently defeated every
+        // entrance effect (nothing appeared to animate). Clearing leftover
+        // inline styles (e.g. from a previously-selected effect) must happen
+        // in its own call, BEFORE the new "from" state is applied.
+
         if (isSimpleEffect(opts.effect)) {
-            gsap.set(img, Object.assign({ clearProps: 'transform,opacity,filter' }, SIMPLE_FROM[opts.effect]));
+            gsap.set(img, { clearProps: 'transform,opacity,filter' });
+            gsap.set(img, SIMPLE_FROM[opts.effect]);
             hideOverlays(box);
             return;
         }
 
         switch (opts.effect) {
             case 'wipe-left': {
-                gsap.set(img, { clearProps: 'all', opacity: 1 });
+                gsap.set(img, { clearProps: 'all' });
+                gsap.set(img, { opacity: 1 });
                 var overlayL = getOrCreateOverlay(box, opts.overlayColor);
                 gsap.set(overlayL, { scaleX: 1, transformOrigin: 'right center', opacity: 1, display: 'block' });
                 break;
             }
             case 'wipe-up': {
-                gsap.set(img, { clearProps: 'all', opacity: 1 });
+                gsap.set(img, { clearProps: 'all' });
+                gsap.set(img, { opacity: 1 });
                 var overlayU = getOrCreateOverlay(box, opts.overlayColor);
                 gsap.set(overlayU, { scaleY: 1, transformOrigin: 'top center', opacity: 1, display: 'block' });
                 break;
             }
             case 'curtain': {
-                gsap.set(img, { clearProps: 'all', opacity: 1 });
+                gsap.set(img, { clearProps: 'all' });
+                gsap.set(img, { opacity: 1 });
                 var pair = getOrCreateCurtainOverlays(box, opts.overlayColor);
                 gsap.set(pair.left, { scaleX: 1, transformOrigin: 'left center', opacity: 1, display: 'block' });
                 gsap.set(pair.right, { scaleX: 1, transformOrigin: 'right center', opacity: 1, display: 'block' });
                 break;
             }
             case 'iris': {
-                gsap.set(img, { clearProps: 'all', opacity: 1, clipPath: 'circle(0% at 50% 50%)' });
+                gsap.set(img, { clearProps: 'all' });
+                gsap.set(img, { opacity: 1, clipPath: 'circle(0% at 50% 50%)' });
                 hideOverlays(box);
                 break;
             }
             default:
                 // Unknown effect (shouldn't happen — PHP already validates it).
-                gsap.set(img, { clearProps: 'all', opacity: 1 });
+                gsap.set(img, { clearProps: 'all' });
+                gsap.set(img, { opacity: 1 });
                 hideOverlays(box);
         }
     }
