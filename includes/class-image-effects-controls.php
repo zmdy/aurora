@@ -87,16 +87,23 @@ class Image_Effects_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Uses a dedicated hook for the Image widget instead of the generic
-	 * "common" one — the "common" section_effects hook doesn't reliably
-	 * fire for the Image widget across Elementor versions (same issue
-	 * found and fixed in Glassmorphism_Controls), which was hiding this
-	 * entire section. Since this module only ever targets 'image', there's
-	 * no need for the catch-all "common" hook at all.
+	 * Needs a dedicated hook targeting a section that genuinely belongs to
+	 * the Image widget itself, not just the generic "common" one — debug
+	 * logging proved the 'common'/'common-optimized' callback is invoked
+	 * with a shared pseudo-element (get_name() literally "common"/
+	 * "common-optimized", never "image"), so an inclusion check for a
+	 * specific widget type can never pass there. The Image widget doesn't
+	 * register its own "section_effects", but it does register its own
+	 * "section_style_image" (a Style-tab section) — hooking after that
+	 * still lets us place our new section in the Advanced tab, since the
+	 * 'tab' argument of start_controls_section() is independent of which
+	 * hook triggered it. Kept the "common" hook too, harmlessly, since
+	 * applies_to_element() already filters it out.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/image/section_effects/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/image/section_style_image/after_section_end', 'priority' => 10 ],
 		];
 	}
 
