@@ -6,10 +6,13 @@
  * Two fully independent toggles instead of a single master switch, since
  * a user may want only the entrance animation, only the hover effect, or
  * both at once:
- *   - Entrance: 13 scroll/load-triggered effects (fade, slide, zoom, flip,
+ *   - Entrance: user picks a Library (GSAP or Anime.js, mirroring the Text
+ *     Animation module). GSAP offers 13 effects (fade, slide, zoom, flip,
  *     blur, skew, and 4 "reveal" effects — wipe/curtain/iris — that need
- *     an animated overlay). Needs frontend JS (image-effects.js), since it
- *     depends on GSAP tweens and (for scroll trigger) IntersectionObserver.
+ *     an animated overlay); Anime.js offers 8 spring/elastic-leaning
+ *     effects (Elastic Pop, Bounce Drop, etc.). Needs frontend JS
+ *     (image-effects.js), since it depends on GSAP/Anime.js tweens and
+ *     (for scroll trigger) IntersectionObserver.
  *   - Hover: 7 effects, including the "shine" sweep. Resolved entirely in
  *     CSS (:hover + transition), the same "no JS" approach already used by
  *     Glassmorphism — PHP only needs to compute a `style` attribute with a
@@ -40,7 +43,7 @@ class Image_Effects_Controls extends Animation_Module {
 	/** Elements where this module appears: only the native Image widget. */
 	const SUPPORTED_ELEMENTS = [ 'image' ];
 
-	/** Valid entrance effect keys (13 — comfortably above the 10 requested). */
+	/** Valid GSAP entrance effect keys (13 — comfortably above the 10 requested). */
 	const ENTRANCE_EFFECTS = [
 		'fade-up',
 		'fade-in',
@@ -57,7 +60,19 @@ class Image_Effects_Controls extends Animation_Module {
 		'iris',
 	];
 
-	/** Entrance effects that need an animated overlay (and therefore an overlay color). */
+	/** Valid Anime.js entrance effect keys (8 — spring/elastic-leaning, Anime.js's specialty). */
+	const ANIME_ENTRANCE_EFFECTS = [
+		'am-1',
+		'am-2',
+		'am-3',
+		'am-4',
+		'am-5',
+		'am-6',
+		'am-7',
+		'am-8',
+	];
+
+	/** Entrance effects that need an animated overlay (and therefore an overlay color) — GSAP only. */
 	const OVERLAY_EFFECTS = [ 'wipe-left', 'wipe-up', 'curtain', 'iris' ];
 
 	/** Valid hover effect keys. */
@@ -143,7 +158,23 @@ class Image_Effects_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Entrance: effect ──────────────────────────────────────────────────
+		// ── Entrance: library ─────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_img_entrance_library',
+			[
+				'label'              => esc_html__( 'Library', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'gsap',
+				'options'            => [
+					'gsap'    => esc_html__( 'GSAP', 'aurora-for-elementor' ),
+					'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ),
+				],
+				'condition'          => [ 'aurora_img_entrance_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Entrance: effect — GSAP ───────────────────────────────────────────
 		$element->add_control(
 			'aurora_img_entrance_effect',
 			[
@@ -165,7 +196,37 @@ class Image_Effects_Controls extends Animation_Module {
 					'curtain'     => esc_html__( 'Curtain Reveal (Split Center)', 'aurora-for-elementor' ),
 					'iris'        => esc_html__( 'Iris Reveal (Circle Expand)', 'aurora-for-elementor' ),
 				],
-				'condition'          => [ 'aurora_img_entrance_enable' => 'yes' ],
+				'condition'          => [
+					'aurora_img_entrance_enable'  => 'yes',
+					'aurora_img_entrance_library' => 'gsap',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Entrance: effect — Anime.js ────────────────────────────────────────
+		// Leans into what Anime.js is best at — spring/elastic-feeling settles —
+		// rather than duplicating the GSAP list.
+		$element->add_control(
+			'aurora_img_entrance_effect_anime',
+			[
+				'label'              => esc_html__( 'Entrance Effect', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'am-1',
+				'options'            => [
+					'am-1' => esc_html__( 'Elastic Pop', 'aurora-for-elementor' ),
+					'am-2' => esc_html__( 'Bounce Drop', 'aurora-for-elementor' ),
+					'am-3' => esc_html__( 'Spring Rotate', 'aurora-for-elementor' ),
+					'am-4' => esc_html__( 'Soft Zoom', 'aurora-for-elementor' ),
+					'am-5' => esc_html__( 'Swing In', 'aurora-for-elementor' ),
+					'am-6' => esc_html__( 'Perspective Tilt', 'aurora-for-elementor' ),
+					'am-7' => esc_html__( 'Elastic Slide', 'aurora-for-elementor' ),
+					'am-8' => esc_html__( 'Jelly Squash', 'aurora-for-elementor' ),
+				],
+				'condition'          => [
+					'aurora_img_entrance_enable'  => 'yes',
+					'aurora_img_entrance_library' => 'animejs',
+				],
 				'frontend_available' => true,
 			]
 		);
@@ -181,8 +242,9 @@ class Image_Effects_Controls extends Animation_Module {
 				'type'               => Controls_Manager::COLOR,
 				'default'            => '#0afbc1',
 				'condition'          => [
-					'aurora_img_entrance_enable' => 'yes',
-					'aurora_img_entrance_effect' => self::OVERLAY_EFFECTS,
+					'aurora_img_entrance_enable'  => 'yes',
+					'aurora_img_entrance_library' => 'gsap',
+					'aurora_img_entrance_effect'  => self::OVERLAY_EFFECTS,
 				],
 				'frontend_available' => true,
 			]
@@ -410,16 +472,25 @@ class Image_Effects_Controls extends Animation_Module {
 		// ── Entrance ──────────────────────────────────────────────────────────
 		if ( ! empty( $settings['aurora_img_entrance_enable'] ) && 'yes' === $settings['aurora_img_entrance_enable'] ) {
 
-			$effect = $settings['aurora_img_entrance_effect'] ?? 'fade-up';
-			$effect = in_array( $effect, self::ENTRANCE_EFFECTS, true ) ? $effect : 'fade-up';
+			$library = ( 'animejs' === ( $settings['aurora_img_entrance_library'] ?? 'gsap' ) ) ? 'animejs' : 'gsap';
 
-			$needs_overlay = in_array( $effect, self::OVERLAY_EFFECTS, true );
+			if ( 'animejs' === $library ) {
+				$effect = $settings['aurora_img_entrance_effect_anime'] ?? 'am-1';
+				$effect = in_array( $effect, self::ANIME_ENTRANCE_EFFECTS, true ) ? $effect : 'am-1';
+			} else {
+				$effect = $settings['aurora_img_entrance_effect'] ?? 'fade-up';
+				$effect = in_array( $effect, self::ENTRANCE_EFFECTS, true ) ? $effect : 'fade-up';
+			}
+
+			// Overlay reveal panels (wipe/curtain/iris) are a GSAP-only concept.
+			$needs_overlay = 'gsap' === $library && in_array( $effect, self::OVERLAY_EFFECTS, true );
 			$overlay_color = sanitize_hex_color( $settings['aurora_img_entrance_overlay_color'] ?? '#0afbc1' );
 			$overlay_color = $overlay_color ? $overlay_color : '#0afbc1';
 
 			$trigger = 'load' === ( $settings['aurora_img_entrance_trigger'] ?? 'scroll' ) ? 'load' : 'scroll';
 
 			$attrs['data-aurora-img-entrance-enable']    = '1';
+			$attrs['data-aurora-img-entrance-library']   = esc_attr( $library );
 			$attrs['data-aurora-img-entrance']           = esc_attr( $effect );
 			$attrs['data-aurora-img-entrance-overlay']   = $needs_overlay ? esc_attr( $overlay_color ) : '';
 			$attrs['data-aurora-img-entrance-duration']  = esc_attr( max( 100, (int) ( $settings['aurora_img_entrance_duration']['size'] ?? 800 ) ) );

@@ -93,12 +93,13 @@ final class Asset_Manager {
 		);
 
 		// ── Image Effects module ──────────────────────────────────────────────
-		// Only handles the entrance animations (GSAP + IntersectionObserver) —
-		// the hover effects are pure CSS, see assets/css/image-effects.css.
+		// Handles the entrance animations (GSAP or Anime.js, user-selectable,
+		// + IntersectionObserver for the scroll trigger) — the hover effects
+		// are pure CSS, see assets/css/image-effects.css.
 		wp_enqueue_script(
 			'aurora-image-effects',
 			AURORA_URL . 'assets/js/image-effects.js',
-			[ 'jquery', 'aurora-gsap', 'elementor-frontend' ],
+			[ 'jquery', 'aurora-gsap', 'aurora-animejs', 'elementor-frontend' ],
 			AURORA_VERSION,
 			true
 		);
