@@ -37,7 +37,7 @@ Available on any Elementor element. Replaces the native cursor with a two-part c
 
 = Module 6 — Image Effects =
 
-Available on the native Image widget. Two independent controls: an Entrance Animation (13 scroll/load-triggered reveal effects, including wipe, curtain, and iris reveals) and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
+Available on the native Image widget. Two independent controls: an Entrance Animation — choice of GSAP (13 scroll/load-triggered effects, including wipe, curtain, and iris reveals) or Anime.js (8 spring/elastic-leaning effects, including Elastic Pop and Bounce Drop) — and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
 
 = Requirements =
 

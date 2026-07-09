@@ -3,18 +3,25 @@
  *
  * Plays a reveal/impact animation on the native Elementor Image widget,
  * triggered either on scroll (IntersectionObserver) or on page load.
- * 13 effects are supported: 9 simple transform/opacity effects animated
- * directly on the <img>, plus 4 "reveal" effects (wipe-left, wipe-up,
- * curtain, iris) that mask the image with an animated overlay instead.
+ * Two selectable libraries, mirroring the Text Animation module:
+ *   - GSAP (default): 13 effects — 9 simple transform/opacity effects
+ *     animated directly on the <img>, plus 4 "reveal" effects (wipe-left,
+ *     wipe-up, curtain, iris) that mask the image with an animated
+ *     overlay instead.
+ *   - Anime.js: 8 effects leaning into what it's best at — spring/elastic
+ *     settles (Elastic Pop, Bounce Drop, Spring Rotate, Jelly Squash...).
+ *     These are self-contained anime.animate() calls (both "from" and
+ *     "to" values in one call), so unlike the GSAP effects they don't
+ *     need a separate reset/play split.
  *
  * The Hover effects of this module (including the Shine sweep) are pure
  * CSS — see assets/css/image-effects.css — and need no JavaScript at all.
  *
  * @package Aurora
- * @version 1.0.0
+ * @version 1.1.0
  */
 
-/* global gsap, elementorFrontend, jQuery */
+/* global gsap, anime, elementorFrontend, jQuery */
 (function ($) {
     'use strict';
 
@@ -51,6 +58,7 @@
     function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
+            library      : ds.auroraImgEntranceLibrary || 'gsap',
             effect       : ds.auroraImgEntrance || 'fade-up',
             overlayColor : ds.auroraImgEntranceOverlay || '#0afbc1',
             duration     : parseInt(ds.auroraImgEntranceDuration, 10) || 800,
@@ -195,6 +203,132 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // ANIME.JS EFFECTS (am-1 … am-8) — spring/elastic-leaning entrances
+    // ─────────────────────────────────────────────────────────────────────────
+    //
+    // Each anime.animate() call declares BOTH the "from" and "to" values as
+    // [from, to] array pairs — self-contained, unlike the GSAP effects
+    // above. There's no clearProps-style gotcha here, so no separate
+    // reset/play split is needed for the actual tween. A plain inline-style
+    // pre-hide (ANIME_RESET_STYLE, applied by applyAnimeReset()) is still
+    // used to avoid a flash of the fully-visible image before the scroll
+    // trigger fires (or during the brief gap before an on-load trigger).
+
+    var ANIME_RESET_STYLE = {
+        'am-1': { opacity: 0, transform: 'scale(0.3)' },
+        'am-2': { opacity: 0, transform: 'translateY(-120px)' },
+        'am-3': { opacity: 0, transform: 'rotate(45deg) scale(0.6)' },
+        'am-4': { opacity: 0, transform: 'scale(1.15)' },
+        'am-5': { opacity: 0, transform: 'rotate(-18deg)' },
+        'am-6': { opacity: 0, transform: 'rotateX(70deg)' },
+        'am-7': { opacity: 0, transform: 'translateX(-120px)' },
+        'am-8': { opacity: 0, transform: 'scale(1.35, 0.7)' },
+    };
+
+    function isAnimeEffect(effect) {
+        return Object.prototype.hasOwnProperty.call(ANIME_RESET_STYLE, effect);
+    }
+
+    /**
+     * Instantly hides the image in its "from" state via plain inline
+     * styles (no GSAP/Anime.js instance involved yet). Also gives the box
+     * a 3D perspective so am-6's rotateX has actual depth.
+     *
+     * @param {HTMLImageElement} img
+     * @param {HTMLElement}      box
+     * @param {string}           effect
+     */
+    function applyAnimeReset(img, box, effect) {
+        var style = ANIME_RESET_STYLE[effect] || { opacity: 0, transform: '' };
+        img.style.opacity = String(style.opacity);
+        img.style.transform = style.transform || '';
+        if (!box.style.perspective) {
+            box.style.perspective = '800px';
+        }
+    }
+
+    // Every entry below finishes with `onComplete: clearTransformAfterEntrance`
+    // (defined further down, alongside the GSAP effects) — same reasoning:
+    // Anime.js also leaves its final transform as an inline style, which
+    // would otherwise permanently block any CSS `:hover` rule targeting
+    // `transform` on the same <img> once Entrance finishes playing.
+
+    var animeEntranceEffects = {
+
+        // am-1 — Elastic Pop
+        'am-1': function (target, opts) {
+            anime.animate(target.img, {
+                scale: [0.3, 1], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outElastic(1, .6)',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-2 — Bounce Drop
+        'am-2': function (target, opts) {
+            anime.animate(target.img, {
+                translateY: [-120, 0], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outBounce',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-3 — Spring Rotate
+        'am-3': function (target, opts) {
+            anime.animate(target.img, {
+                rotate: [45, 0], scale: [0.6, 1], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outElastic(1, .5)',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-4 — Soft Zoom
+        'am-4': function (target, opts) {
+            anime.animate(target.img, {
+                scale: [1.15, 1], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outQuart',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-5 — Swing In
+        'am-5': function (target, opts) {
+            anime.animate(target.img, {
+                rotate: [-18, 0], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outElastic(1, .4)',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-6 — Perspective Tilt (needs the box's `perspective`, set by applyAnimeReset())
+        'am-6': function (target, opts) {
+            anime.animate(target.img, {
+                rotateX: [70, 0], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outExpo',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-7 — Elastic Slide
+        'am-7': function (target, opts) {
+            anime.animate(target.img, {
+                translateX: [-120, 0], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outElastic(1, .6)',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+
+        // am-8 — Jelly Squash
+        'am-8': function (target, opts) {
+            anime.animate(target.img, {
+                scaleX: [1.35, 1], scaleY: [0.7, 1], opacity: [0, 1],
+                duration: opts.duration, delay: opts.delay, ease: 'outElastic(1, .5)',
+                onComplete: function () { clearTransformAfterEntrance(target.img); },
+            });
+        },
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
     // RESET / PLAY — shared by every effect (overlay-based or simple)
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -219,6 +353,12 @@
         // entrance effect (nothing appeared to animate). Clearing leftover
         // inline styles (e.g. from a previously-selected effect) must happen
         // in its own call, BEFORE the new "from" state is applied.
+
+        if (isAnimeEffect(opts.effect)) {
+            applyAnimeReset(img, box, opts.effect);
+            hideOverlays(box);
+            return;
+        }
 
         if (isSimpleEffect(opts.effect)) {
             gsap.set(img, { clearProps: 'transform,opacity,filter' });
@@ -270,13 +410,43 @@
      * @param {{img: HTMLImageElement, box: HTMLElement}} target
      * @param {Object}                                    opts
      */
+    /**
+     * Clears the entrance-driven inline transform/filter/clip-path once the
+     * tween finishes. Without this, GSAP/Anime.js leave their final values
+     * as an INLINE style on the <img> — and an inline style always wins
+     * over an external stylesheet rule for the same CSS property, no
+     * matter its specificity. That permanently blocked any CSS `:hover`
+     * rule targeting `transform` or `filter` (e.g. the "Zoom In" or
+     * "Rotate + Zoom" hover effects) whenever Entrance was also enabled on
+     * the same image. Runs strictly after the tween completes (a separate
+     * call, not merged into the tween's own vars), so it doesn't retrigger
+     * the same clearProps-vs-values conflict fixed earlier in applyReset().
+     *
+     * @param {HTMLImageElement} img
+     */
+    function clearTransformAfterEntrance(img) {
+        if (typeof gsap === 'undefined') return;
+        gsap.set(img, { clearProps: 'transform,filter,clipPath' });
+    }
+
     function applyPlay(target, opts) {
         var img = target.img, box = target.box;
+
+        if (isAnimeEffect(opts.effect)) {
+            var animeFn = animeEntranceEffects[opts.effect];
+            if (animeFn) animeFn(target, opts);
+            return;
+        }
+
         var duration = opts.duration / 1000;
         var delay    = opts.delay / 1000;
 
         if (isSimpleEffect(opts.effect)) {
-            var to = Object.assign({ duration: duration, delay: delay }, SIMPLE_TO[opts.effect]);
+            var to = Object.assign(
+                { duration: duration, delay: delay },
+                SIMPLE_TO[opts.effect],
+                { onComplete: function () { clearTransformAfterEntrance(img); } }
+            );
             gsap.to(img, to);
             return;
         }
@@ -304,10 +474,14 @@
                 // of the image regardless of its aspect ratio.
                 gsap.to(img, {
                     duration: duration, delay: delay, clipPath: 'circle(150% at 50% 50%)', ease: 'power2.out',
+                    onComplete: function () { clearTransformAfterEntrance(img); },
                 });
                 break;
             default:
-                gsap.to(img, { duration: duration, delay: delay, opacity: 1 });
+                gsap.to(img, {
+                    duration: duration, delay: delay, opacity: 1,
+                    onComplete: function () { clearTransformAfterEntrance(img); },
+                });
         }
     }
 
@@ -325,7 +499,13 @@
      */
     function initImgEntrance(wrapper, opts) {
         console.log('[Aurora:image-fx] initImgEntrance()', { wrapper: wrapper, opts: opts });
-        if (typeof gsap === 'undefined') {
+
+        if (opts.library === 'animejs') {
+            if (typeof anime === 'undefined') {
+                console.log('[Aurora:image-fx] anime.js unavailable, aborting.');
+                return;
+            }
+        } else if (typeof gsap === 'undefined') {
             console.log('[Aurora:image-fx] gsap unavailable, aborting.');
             return;
         }
@@ -393,13 +573,20 @@
         hideOverlays(target.box);
     }
 
-    function waitForGsap(callback) {
+    /**
+     * Waits for either animation library to become available (whichever
+     * the element ends up needing is checked later, per-instance, in
+     * initImgEntrance()) or gives up after maxWait.
+     *
+     * @param {Function} callback
+     */
+    function waitForEntranceLibs(callback) {
         var waited  = 0;
         var maxWait = 6000;
         var step    = 80;
         var timer   = setInterval(function () {
             waited += step;
-            if (typeof gsap !== 'undefined' || waited >= maxWait) {
+            if (typeof gsap !== 'undefined' || typeof anime !== 'undefined' || waited >= maxWait) {
                 clearInterval(timer);
                 callback();
             }
@@ -444,8 +631,13 @@
         };
 
         AuroraImageEffectsHandler.prototype.getOpts = function () {
+            var library = this.getElementSettings('aurora_img_entrance_library') || 'gsap';
+            var effect  = 'animejs' === library
+                ? ( this.getElementSettings('aurora_img_entrance_effect_anime') || 'am-1' )
+                : ( this.getElementSettings('aurora_img_entrance_effect') || 'fade-up' );
             return {
-                effect       : this.getElementSettings('aurora_img_entrance_effect') || 'fade-up',
+                library      : library,
+                effect       : effect,
                 overlayColor : this.getElementSettings('aurora_img_entrance_overlay_color') || '#0afbc1',
                 duration     : sizeOf(this.getElementSettings('aurora_img_entrance_duration'), 800),
                 delay        : sizeOf(this.getElementSettings('aurora_img_entrance_delay'), 0),
@@ -531,8 +723,8 @@
 
     function bootstrap() {
         console.log('[Aurora:image-fx] bootstrap() started.');
-        waitForGsap(function () {
-            console.log('[Aurora:image-fx] waitForGsap resolved. gsap?', typeof gsap !== 'undefined');
+        waitForEntranceLibs(function () {
+            console.log('[Aurora:image-fx] waitForEntranceLibs resolved. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
 
             // Fallback: no Elementor JS available — scan the page using the
             // data-aurora-img-entrance-* attributes rendered by PHP on the
