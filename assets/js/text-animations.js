@@ -740,6 +740,18 @@
             textEl.style.opacity = '0';
         }
 
+        // Announce the DOM change so peer Aurora modules that painted the
+        // element BEFORE the split (Gradient's background-clip:text, most
+        // notably) can re-apply themselves to the freshly-created spans.
+        // Coupling the two via a custom event keeps the modules independent
+        // — text-animations doesn't need to know Gradient exists.
+        try {
+            wrapper.dispatchEvent(new CustomEvent('aurora:text-split', {
+                bubbles: true,
+                detail: { textEl: textEl, units: units }
+            }));
+        } catch (e) {}
+
         var played = false;
 
         function trigger() {
