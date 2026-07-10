@@ -3,7 +3,7 @@
 // ==========================================================================
 // A card component with a fixed inner DOM (.morph-header, .morph-image,
 // .morph-footer) that can render itself as one of N "templates" (Instagram
-// post, Instagram profile, Camera screen, Polaroid) and then MORPH from one
+// post, Instagram profile, Polaroid, custom) and then MORPH from one
 // template into another with a smooth interpolation of the frame + a
 // typewriter/letters caption reveal.
 //
@@ -80,7 +80,7 @@
 			switch ( state.template ) {
 				case 'polaroid':  return this.renderAsPolaroid( state );
 				case 'profile':   return this.renderAsProfile( state );
-				case 'camera':    return this.renderAsCameraScreen( state );
+				case 'custom':    return this.renderAsCustom( state );
 				case 'instagram':
 				default:          return this.renderAsInstagram( state );
 			}
@@ -89,7 +89,7 @@
 		renderAsInstagram( data ) {
 			this.mode = 'instagram';
 			this._resetRootStyles();
-			this.root.classList.remove( 'card-polaroid', 'card-camera', 'card-profile' );
+			this.root.classList.remove( 'card-polaroid', 'card-profile', 'card-custom' );
 			this.root.classList.add( 'card-instagram' );
 
 			const avatar   = data.avatar || data.photo || '';
@@ -136,29 +136,47 @@
 			return this;
 		}
 
-		renderAsCameraScreen( data ) {
-			this.mode = 'camera';
+		renderAsCustom( data ) {
+			this.mode = 'custom';
 			this._resetRootStyles();
 			this.root.classList.remove( 'card-instagram', 'card-polaroid', 'card-profile' );
-			this.root.classList.add( 'card-camera' );
+			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
+			this.root.classList.add( 'card-custom' );
+
+			// Width/height/padding/radius/rotate/bg all come from the state
+			// data — the whole point of the Custom template is that the
+			// user paints the frame themselves.
+			if ( data.width )  this.root.style.width = `${ data.width }px`;
+			if ( data.height ) this.root.style.height = `${ data.height }px`;
+			this.root.style.padding      = `${ data.paddingTop || 0 }px ${ data.paddingSides || 0 }px ${ data.paddingBottom || 0 }px`;
+			this.root.style.borderRadius = `${ data.radius || 0 }px`;
+			this.root.style.rotate       = `${ data.rotate || 0 }deg`;
+			if ( data.bgColor ) this.root.style.background = data.bgColor;
 
 			this.header.className = 'morph-header';
-			this.header.innerHTML = '';
+			this.header.style.display = data.headerHtml ? '' : 'none';
+			this.header.innerHTML = data.headerHtml || '';
 
-			this.image.className          = 'morph-image ig-photo-wrap';
+			this.image.className         = 'morph-image';
 			this.image.style.aspectRatio  = '';
 			this.image.style.borderRadius = '';
-			this.image.innerHTML = `<img class="ig-photo-item" src="${ data.photo || '' }" alt="${ this._escAttr( data.caption || '' ) }" style="opacity:1;">`;
+			if ( data.photo ) {
+				this.image.innerHTML = `<img class="morph-image-photo" src="${ data.photo }" alt="${ this._escAttr( data.caption || '' ) }">`;
+			} else {
+				this.image.innerHTML = '';
+				this.image.style.display = 'none';
+			}
 
 			this.footer.className = 'morph-footer';
-			this.footer.innerHTML = `<p class="ig-caption"><span class="ig-caption-text">${ this._escHtml( data.caption || '' ) }</span></p>`;
+			this.footer.style.display = data.footerHtml ? '' : 'none';
+			this.footer.innerHTML = data.footerHtml || '';
 			return this;
 		}
 
 		renderAsProfile( data ) {
 			this.mode = 'profile';
 			this._resetRootStyles();
-			this.root.classList.remove( 'card-instagram', 'card-polaroid', 'card-camera' );
+			this.root.classList.remove( 'card-instagram', 'card-polaroid', 'card-custom' );
 			this.root.classList.add( 'card-profile' );
 
 			const stats = {
@@ -215,7 +233,7 @@
 			const cfg  = MorphCard.POLAROID_SIZES[ size ];
 
 			this.mode = 'polaroid';
-			this.root.classList.remove( 'card-instagram', 'card-camera', 'card-profile' );
+			this.root.classList.remove( 'card-instagram', 'card-profile', 'card-custom' );
 			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
 			this.root.classList.add( 'card-polaroid' );
 			if ( data.frame ) {
@@ -261,14 +279,30 @@
 				return Promise.resolve( this );
 			}
 
+			// Per-state transition duration override: converts the ms value
+			// stored on the state (widget-side) into the seconds Motion One
+			// expects and stretches the caption reveal proportionally so
+			// the whole morph reads as one motion instead of two.
+			const merged = Object.assign( {}, timing );
+			if ( state.transitionDurationMs ) {
+				const frameSeconds = state.transitionDurationMs / 1000;
+				const defaultFrame = MorphCard.DEFAULT_MORPH_TIMING.frameDuration;
+				const scale = frameSeconds / defaultFrame;
+				merged.frameDuration      = frameSeconds;
+				merged.stripDuration      = MorphCard.DEFAULT_MORPH_TIMING.stripDuration * scale;
+				merged.captionDelay       = MorphCard.DEFAULT_MORPH_TIMING.captionDelay * scale;
+				merged.captionOutDuration = MorphCard.DEFAULT_MORPH_TIMING.captionOutDuration * scale;
+				merged.captionInDuration  = MorphCard.DEFAULT_MORPH_TIMING.captionInDuration * scale;
+			}
+
 			// Polaroid destination gets the rich transition (frame interpolate
 			// + caption typewriter). Everything else is a simple re-render
 			// with a crossfade — good enough visually, without hardcoding a
 			// dedicated animation for every (from, to) pair.
 			if ( 'polaroid' === state.template ) {
-				return this._morphToPolaroid( state, timing );
+				return this._morphToPolaroid( state, merged );
 			}
-			return this._morphCrossfade( state, timing );
+			return this._morphCrossfade( state, merged );
 		}
 
 		_morphCrossfade( state, timing ) {
@@ -289,13 +323,6 @@
 
 			const size = ( state.size && MorphCard.POLAROID_SIZES[ state.size ] ) ? state.size : 'normal';
 			const cfg  = MorphCard.POLAROID_SIZES[ size ];
-
-			const isCamera = 'camera' === this.mode;
-
-			// Camera-mode flourish (used when starting from a Camera state)
-			if ( isCamera ) {
-				this._playCameraFlash( 0.5 );
-			}
 
 			// Pin every computed frame value BEFORE swapping the class — this
 			// is the whole trick that keeps the interpolation from snapping.
@@ -328,7 +355,7 @@
 			// Now flip the mode class (colors etc. flip instantly; layout is
 			// pinned so no snap)
 			this.mode = 'polaroid';
-			this.root.classList.remove( 'card-instagram', 'card-camera', 'card-profile' );
+			this.root.classList.remove( 'card-instagram', 'card-profile', 'card-custom' );
 			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
 			this.root.classList.add( 'card-polaroid' );
 			if ( state.frame ) {
@@ -559,16 +586,6 @@
 			} );
 		}
 
-		_playCameraFlash( duration = 0.5 ) {
-			if ( typeof window.Motion === 'undefined' ) return Promise.resolve( this );
-			const { animate } = window.Motion;
-			const flash = document.createElement( 'div' );
-			flash.className = 'camera-flash-overlay';
-			this.root.appendChild( flash );
-			return animate( flash, { opacity: [ 0, 0.85, 0 ] }, { duration, easing: 'ease-out' } )
-				.finished.then( () => { flash.remove(); return this; } );
-		}
-
 		_escHtml( s ) {
 			return String( s ).replace( /[&<>"']/g, ( c ) => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ c ] ) );
 		}
@@ -604,7 +621,21 @@
 		}
 
 		start() {
-			this.card.renderState( this.config.states[ 0 ] );
+			// Elementor editor: skip the morph loop entirely and render the
+			// state picked in the widget panel (aurora_mc_preview_state) as
+			// a stable still. Any panel edit re-renders the widget's DOM
+			// from the server template, which repeatedly killed the morph
+			// mid-flight (class swapped but Motion One's interpolation
+			// cancelled) — trying to run the sequence there is fundamentally
+			// broken. The full sequence still runs on the real frontend.
+			const inEditor = this._isEditor();
+			const startIndex = inEditor
+				? Math.max( 0, Math.min( this.config.states.length - 1, this.config.previewStateIndex || 0 ) )
+				: 0;
+
+			this.index = startIndex;
+			this.card.renderState( this.config.states[ startIndex ] );
+
 			// The .morph-card CSS starts at opacity: 0 so Motion One can
 			// fade it in without a flash-of-unstyled-content. Force it back
 			// to 1 up front so the card is visible even if Motion never
@@ -615,14 +646,8 @@
 				const { animate } = window.Motion;
 				animate( this.cardEl, { opacity: [ 0, 1 ], scale: [ 0.92, 1 ], y: [ 30, 0 ] }, { duration: 0.9, delay: 0.2, easing: [ 0.22, 1, 0.36, 1 ] } );
 			}
+			if ( inEditor ) return;
 			if ( this.config.states.length < 2 ) return;
-			// Elementor editor: skip the morph loop and show state[0] as a
-			// still preview. Any panel edit re-renders the widget's DOM from
-			// the server template, which repeatedly kills the morph
-			// mid-flight (leaving the class swapped but Motion One's
-			// interpolation cancelled) — a stable preview beats a broken
-			// animation. The full sequence still runs on the real frontend.
-			if ( this._isEditor() ) return;
 			this._scheduleNext( this.config.states[ 0 ].durationMs + ( this.config.initialDelay || 0 ) );
 		}
 

@@ -2,9 +2,11 @@
 /**
  * Morph Card Widget — a standalone Elementor widget that renders a card
  * capable of morphing through N user-defined states (Instagram post,
- * Instagram profile, Camera screen, Polaroid). Each state carries its own
- * data + a duration (how long it stays on screen before morphing into the
- * next). A global "Loop" toggle restarts the sequence after the last state.
+ * Instagram profile, Polaroid, or a fully custom template). Each state
+ * carries its own data + a duration (how long it stays on screen before
+ * morphing into the next) + its own transition duration (how long the
+ * morph animation into this state takes). A global "Loop" toggle
+ * restarts the sequence after the last state.
  *
  * Unlike every other Aurora module (which only injects controls into the
  * Advanced tab of existing widgets), this one is a *new* widget — the
@@ -17,6 +19,7 @@
 namespace Aurora;
 
 use Elementor\Controls_Manager;
+use Elementor\Group_Control_Typography;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
 
@@ -26,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Morph_Card_Widget extends Widget_Base {
 
-	const TEMPLATES = [ 'instagram', 'profile', 'camera', 'polaroid' ];
+	const TEMPLATES = [ 'instagram', 'profile', 'polaroid', 'custom' ];
 
 	const POLAROID_SIZES = [ 'normal', 'instax', 'instax-square', 'horizontal', 'mini' ];
 
@@ -76,8 +79,8 @@ class Morph_Card_Widget extends Widget_Base {
 				'options' => [
 					'instagram' => esc_html__( 'Instagram Post', 'aurora-for-elementor' ),
 					'profile'   => esc_html__( 'Instagram Profile', 'aurora-for-elementor' ),
-					'camera'    => esc_html__( 'Camera Screen', 'aurora-for-elementor' ),
 					'polaroid'  => esc_html__( 'Polaroid', 'aurora-for-elementor' ),
+					'custom'    => esc_html__( 'Custom', 'aurora-for-elementor' ),
 				],
 			]
 		);
@@ -92,6 +95,22 @@ class Morph_Card_Widget extends Widget_Base {
 				'min'         => 0,
 				'step'        => 100,
 				'description' => esc_html__( 'How long the card stays on this state before morphing to the next one.', 'aurora-for-elementor' ),
+			]
+		);
+
+		// ── Transition duration into this state ──────────────────────────────
+		// Overrides the default frame-morph duration (1600ms) when the card
+		// morphs *into* this state. Lets each transition pace differently
+		// (e.g. a slow polaroid reveal followed by a snappy instagram flip).
+		$repeater->add_control(
+			'transition_duration_ms',
+			[
+				'label'       => esc_html__( 'Transition duration into this state (ms)', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::NUMBER,
+				'default'     => 1600,
+				'min'         => 100,
+				'step'        => 100,
+				'description' => esc_html__( 'How long the morph animation into this state takes.', 'aurora-for-elementor' ),
 			]
 		);
 
@@ -277,6 +296,115 @@ class Morph_Card_Widget extends Widget_Base {
 			]
 		);
 
+		// ── Custom template fields ───────────────────────────────────────────
+		$repeater->add_control(
+			'custom_width',
+			[
+				'label'     => esc_html__( 'Width (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 320,
+				'min'       => 40,
+				'max'       => 1200,
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_height',
+			[
+				'label'       => esc_html__( 'Height (px, 0 = auto)', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::NUMBER,
+				'default'     => 0,
+				'min'         => 0,
+				'max'         => 1600,
+				'description' => esc_html__( 'Leave 0 to let content set the height.', 'aurora-for-elementor' ),
+				'condition'   => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_padding_top',
+			[
+				'label'     => esc_html__( 'Padding top (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 16,
+				'min'       => 0,
+				'max'       => 200,
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_padding_sides',
+			[
+				'label'     => esc_html__( 'Padding sides (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 16,
+				'min'       => 0,
+				'max'       => 200,
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_padding_bottom',
+			[
+				'label'     => esc_html__( 'Padding bottom (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 16,
+				'min'       => 0,
+				'max'       => 200,
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_radius',
+			[
+				'label'     => esc_html__( 'Border radius (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 14,
+				'min'       => 0,
+				'max'       => 200,
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_rotate',
+			[
+				'label'     => esc_html__( 'Rotate (deg)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 0,
+				'min'       => -45,
+				'max'       => 45,
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_bg_color',
+			[
+				'label'     => esc_html__( 'Background color', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ffffff',
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_header_html',
+			[
+				'label'       => esc_html__( 'Header HTML', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'default'     => '',
+				'description' => esc_html__( 'Raw HTML injected into .morph-header. Empty = header hidden.', 'aurora-for-elementor' ),
+				'condition'   => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_footer_html',
+			[
+				'label'       => esc_html__( 'Footer HTML', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'default'     => '',
+				'description' => esc_html__( 'Raw HTML injected into .morph-footer. Empty = footer hidden.', 'aurora-for-elementor' ),
+				'condition'   => [ 'template' => [ 'custom' ] ],
+			]
+		);
+
 		// ── States repeater ──────────────────────────────────────────────────
 		$this->add_control(
 			'aurora_mc_states',
@@ -341,6 +469,107 @@ class Morph_Card_Widget extends Widget_Base {
 			]
 		);
 
+		// ── Editor-only: pick which state to render as a still preview ───────
+		// The JS handler skips the morph loop while inside the Elementor
+		// editor (a stable preview beats a broken animation — see
+		// morph-card.js:Sequence.start). This control lets you pick which
+		// state is shown there. Ignored on the real frontend.
+		$this->add_control(
+			'aurora_mc_preview_state',
+			[
+				'label'       => esc_html__( 'Editor preview: state index', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::NUMBER,
+				'default'     => 0,
+				'min'         => 0,
+				'step'        => 1,
+				'description' => esc_html__( 'Which state (0-based) is rendered in the editor preview. On the real frontend the sequence always starts from state 0.', 'aurora-for-elementor' ),
+			]
+		);
+
+		$this->end_controls_section();
+
+		// ── Appearance controls ──────────────────────────────────────────────
+		$this->start_controls_section(
+			'aurora_mc_section_appearance',
+			[
+				'label' => esc_html__( 'Appearance', 'aurora-for-elementor' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			]
+		);
+
+		$this->add_control(
+			'aurora_mc_float_enable',
+			[
+				'label'        => esc_html__( 'Floating animation', 'aurora-for-elementor' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'On', 'aurora-for-elementor' ),
+				'label_off'    => esc_html__( 'Off', 'aurora-for-elementor' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+				'description'  => esc_html__( 'The subtle up/down float applied via CSS on the card.', 'aurora-for-elementor' ),
+			]
+		);
+
+		$this->add_control(
+			'aurora_mc_rotation',
+			[
+				'label'       => esc_html__( 'Widget rotation (deg)', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::SLIDER,
+				'range'       => [ 'px' => [ 'min' => -45, 'max' => 45, 'step' => 1 ] ],
+				'default'     => [ 'size' => 0 ],
+				'description' => esc_html__( 'Rotation applied to the whole card, on top of each state\'s own rotation.', 'aurora-for-elementor' ),
+			]
+		);
+
+		$this->end_controls_section();
+
+		// ── Style tab: text ──────────────────────────────────────────────────
+		// Standard Elementor Typography + Color group over every text node
+		// inside the card. Emitted as scoped inline CSS on the widget
+		// wrapper (Elementor does this automatically from the `selector` key)
+		// — the extra specificity of {{WRAPPER}} + the class chain lets the
+		// user's font override the built-in Caveat/system stacks.
+		$this->start_controls_section(
+			'aurora_mc_section_text_style',
+			[
+				'label' => esc_html__( 'Text', 'aurora-for-elementor' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_control(
+			'aurora_mc_text_color',
+			[
+				'label'     => esc_html__( 'Text color', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .morph-card, {{WRAPPER}} .morph-card p, {{WRAPPER}} .morph-card span, {{WRAPPER}} .morph-caption, {{WRAPPER}} .ig-caption, {{WRAPPER}} .ig-username, {{WRAPPER}} .morph-profile-name, {{WRAPPER}} .morph-profile-bio' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name'     => 'aurora_mc_typography',
+				'label'    => esc_html__( 'Typography', 'aurora-for-elementor' ),
+				'selector' => '{{WRAPPER}} .morph-card, {{WRAPPER}} .morph-card p, {{WRAPPER}} .morph-card span',
+			]
+		);
+
+		// Caption stays independently themable because it uses a decorative
+		// script font by default (Caveat) — most users will want to keep that
+		// vibe on polaroids even after changing the main body font, so give
+		// it its own group instead of forcing them to override globally.
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name'     => 'aurora_mc_caption_typography',
+				'label'    => esc_html__( 'Caption typography (polaroid)', 'aurora-for-elementor' ),
+				'selector' => '{{WRAPPER}} .morph-caption, {{WRAPPER}} .ig-caption-as-polaroid',
+			]
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -355,17 +584,39 @@ class Morph_Card_Widget extends Widget_Base {
 			return;
 		}
 
+		$normalized_states = array_map( [ $this, 'normalize_state' ], $states );
+		$preview_index     = (int) ( $settings['aurora_mc_preview_state'] ?? 0 );
+		$preview_index     = max( 0, min( count( $normalized_states ) - 1, $preview_index ) );
+		$float_enabled     = ( 'yes' === ( $settings['aurora_mc_float_enable'] ?? 'yes' ) );
+		$rotation_deg      = (int) ( $settings['aurora_mc_rotation']['size'] ?? 0 );
+		$rotation_deg      = max( -45, min( 45, $rotation_deg ) );
+
 		$config = [
-			'states'        => array_map( [ $this, 'normalize_state' ], $states ),
-			'loop'          => ( 'yes' === ( $settings['aurora_mc_loop'] ?? '' ) ),
-			'initialDelay'  => max( 0, (int) ( $settings['aurora_mc_initial_delay'] ?? 0 ) ),
-			'captionEffect' => in_array( $settings['aurora_mc_caption_effect'] ?? 'typewriter', [ 'typewriter', 'letters' ], true ) ? $settings['aurora_mc_caption_effect'] : 'typewriter',
+			'states'            => $normalized_states,
+			'loop'              => ( 'yes' === ( $settings['aurora_mc_loop'] ?? '' ) ),
+			'initialDelay'      => max( 0, (int) ( $settings['aurora_mc_initial_delay'] ?? 0 ) ),
+			'captionEffect'     => in_array( $settings['aurora_mc_caption_effect'] ?? 'typewriter', [ 'typewriter', 'letters' ], true ) ? $settings['aurora_mc_caption_effect'] : 'typewriter',
+			'previewStateIndex' => $preview_index,
 		];
 
 		$json = wp_json_encode( $config );
 
+		$stage_classes = 'aurora-morph-card-stage';
+		if ( ! $float_enabled ) {
+			$stage_classes .= ' no-float';
+		}
+
+		$stage_style = '';
+		if ( 0 !== $rotation_deg ) {
+			// Widget-level rotation lives on the stage wrapper (not on
+			// .morph-card) so it composes cleanly with the card's own
+			// state-specific rotation (e.g. polaroid's -2deg) and doesn't
+			// clash with the CSS float animation's transform.
+			$stage_style = sprintf( ' style="transform: rotate(%ddeg);"', $rotation_deg );
+		}
+
 		?>
-		<div class="aurora-morph-card-stage" data-aurora-morph-config="<?php echo esc_attr( $json ); ?>">
+		<div class="<?php echo esc_attr( $stage_classes ); ?>" data-aurora-morph-config="<?php echo esc_attr( $json ); ?>"<?php echo $stage_style; ?>>
 			<div class="morph-card-glow"></div>
 			<div class="morph-card">
 				<div class="morph-header"></div>
@@ -384,10 +635,11 @@ class Morph_Card_Widget extends Widget_Base {
 		$template = in_array( $raw['template'] ?? '', self::TEMPLATES, true ) ? $raw['template'] : 'instagram';
 
 		$state = [
-			'template'    => $template,
-			'durationMs'  => max( 0, (int) ( $raw['duration_ms'] ?? 3200 ) ),
-			'photo'       => esc_url_raw( $raw['photo']['url'] ?? '' ),
-			'caption'     => (string) ( $raw['caption'] ?? '' ),
+			'template'             => $template,
+			'durationMs'           => max( 0, (int) ( $raw['duration_ms'] ?? 3200 ) ),
+			'transitionDurationMs' => max( 100, (int) ( $raw['transition_duration_ms'] ?? 1600 ) ),
+			'photo'                => esc_url_raw( $raw['photo']['url'] ?? '' ),
+			'caption'              => (string) ( $raw['caption'] ?? '' ),
 		];
 
 		switch ( $template ) {
@@ -417,8 +669,21 @@ class Morph_Card_Widget extends Widget_Base {
 				$state['gridPhotos'] = array_values( array_map( 'esc_url_raw', $grid ) );
 				break;
 
-			case 'camera':
-				// Camera has no extra fields beyond photo/caption.
+			case 'custom':
+				$bg = sanitize_hex_color( $raw['custom_bg_color'] ?? '#ffffff' );
+				$state['width']         = max( 40, min( 1200, (int) ( $raw['custom_width'] ?? 320 ) ) );
+				$state['height']        = max( 0, min( 1600, (int) ( $raw['custom_height'] ?? 0 ) ) );
+				$state['paddingTop']    = max( 0, min( 200, (int) ( $raw['custom_padding_top'] ?? 16 ) ) );
+				$state['paddingSides']  = max( 0, min( 200, (int) ( $raw['custom_padding_sides'] ?? 16 ) ) );
+				$state['paddingBottom'] = max( 0, min( 200, (int) ( $raw['custom_padding_bottom'] ?? 16 ) ) );
+				$state['radius']        = max( 0, min( 200, (int) ( $raw['custom_radius'] ?? 14 ) ) );
+				$state['rotate']        = max( -45, min( 45, (int) ( $raw['custom_rotate'] ?? 0 ) ) );
+				$state['bgColor']       = $bg ? $bg : '#ffffff';
+				// Header/footer HTML is passed through wp_kses_post so users
+				// can style the card freely but can't inject <script> or
+				// event handlers via a saved widget.
+				$state['headerHtml'] = wp_kses_post( (string) ( $raw['custom_header_html'] ?? '' ) );
+				$state['footerHtml'] = wp_kses_post( (string) ( $raw['custom_footer_html'] ?? '' ) );
 				break;
 		}
 

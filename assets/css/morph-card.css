@@ -2,7 +2,7 @@
    AURORA — MORPH CARD
    Fixed inner DOM (.morph-card > .morph-header, .morph-image, .morph-footer)
    with modifier classes for the current template: card-instagram,
-   card-polaroid, card-camera, card-profile.
+   card-polaroid, card-profile, card-custom.
 
    All rules are scoped under .aurora-morph-card-stage so they don't collide
    with anything else on the page. Colors reference CSS variables so a site
@@ -54,6 +54,12 @@
 	animation: auroraMorphCardFloat 4.2s ease-in-out infinite;
 }
 
+/* Widget-level toggle: turns the floating animation off. Applied to the
+   stage wrapper by PHP so the class survives a JS re-init cleanly. */
+.aurora-morph-card-stage.no-float .morph-card {
+	animation: none;
+}
+
 @keyframes auroraMorphCardFloat {
 	0%, 100% { transform: translateY(0); }
 	50% { transform: translateY(-10px); }
@@ -88,26 +94,16 @@
 	pointer-events: none;
 }
 
-/* ── Mode: Camera ────────────────────────────────────────────────────── */
-.aurora-morph-card-stage .morph-card.card-camera {
-	padding: 3px;
-	border-radius: 3px;
-	background: #14140f;
-	rotate: 0deg;
+/* ── Mode: Custom ─────────────────────────────────────────────────────
+   Fully data-driven — width/height/padding/radius/rotate/background come
+   from the state's data via inline styles, set in renderAsCustom(). This
+   rule only clears anything the .morph-card base might carry over that
+   would fight the state's own values. */
+.aurora-morph-card-stage .morph-card.card-custom {
+	max-width: none;
 }
-.aurora-morph-card-stage .morph-card.card-camera .morph-header { padding: 0; }
-.aurora-morph-card-stage .morph-card.card-camera .morph-image  { width: 100%; height: 100%; border-radius: 2px; }
-.aurora-morph-card-stage .morph-card.card-camera .morph-footer { padding: 0; }
-.aurora-morph-card-stage .morph-card.card-camera .ig-caption   { height: 0; margin: 0; overflow: hidden; }
-
-.aurora-morph-card-stage .camera-flash-overlay {
-	position: absolute;
-	inset: 0;
-	background: #fff;
-	border-radius: inherit;
-	opacity: 0;
-	pointer-events: none;
-	z-index: 6;
+.aurora-morph-card-stage .morph-card.card-custom .morph-image {
+	background: transparent;
 }
 
 /* ── Mode: Profile ───────────────────────────────────────────────────── */
