@@ -47,9 +47,16 @@ class Gradient_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Needs the "common" hook (widgets) in addition to the structural ones —
-	 * applies_to_element() filters so the section only actually shows up on
-	 * Heading/Text Editor.
+	 * Structural elements use the generic section_effects hook. Heading and
+	 * Text Editor need dedicated widget-scoped hooks: the generic 'common'
+	 * hook fires with a pseudo-element whose get_name() is literally
+	 * "common"/"common-optimized" (never the widget's real name), so an
+	 * applies_to_element() check for 'heading'/'text-editor' can never pass
+	 * there — see the same workaround in Image_Effects_Controls.
+	 * Hooking after a section that genuinely belongs to each widget is
+	 * enough; the 'tab' argument of start_controls_section() is independent
+	 * of which hook triggered it, so the new section still lands in the
+	 * Advanced tab.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
@@ -57,6 +64,8 @@ class Gradient_Controls extends Animation_Module {
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 20 ],
+			[ 'hook' => 'elementor/element/heading/section_title_style/after_section_end', 'priority' => 20 ],
+			[ 'hook' => 'elementor/element/text-editor/section_style/after_section_end', 'priority' => 20 ],
 		];
 	}
 
