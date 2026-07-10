@@ -297,60 +297,87 @@ class Morph_Card_Widget extends Widget_Base {
 		);
 
 		// ── Custom template fields ───────────────────────────────────────────
+		// Width is auto (fills the widget slot). The user controls the
+		// bounding box via max-width + aspect-ratio + padding, which is a
+		// much more predictable model for a template that has to work at
+		// arbitrary column widths.
 		$repeater->add_control(
-			'custom_width',
+			'custom_max_width',
 			[
-				'label'     => esc_html__( 'Width (px)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::NUMBER,
-				'default'   => 320,
-				'min'       => 40,
-				'max'       => 1200,
-				'condition' => [ 'template' => [ 'custom' ] ],
-			]
-		);
-		$repeater->add_control(
-			'custom_height',
-			[
-				'label'       => esc_html__( 'Height (px, 0 = auto)', 'aurora-for-elementor' ),
-				'type'        => Controls_Manager::NUMBER,
-				'default'     => 0,
-				'min'         => 0,
-				'max'         => 1600,
-				'description' => esc_html__( 'Leave 0 to let content set the height.', 'aurora-for-elementor' ),
+				'label'       => esc_html__( 'Max width', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::SLIDER,
+				'size_units'  => [ 'px', '%', 'em', 'rem', 'vw' ],
+				'range'       => [
+					'px'  => [ 'min' => 40,  'max' => 1200, 'step' => 1 ],
+					'%'   => [ 'min' => 10,  'max' => 100,  'step' => 1 ],
+					'em'  => [ 'min' => 5,   'max' => 80,   'step' => 0.5 ],
+					'rem' => [ 'min' => 5,   'max' => 80,   'step' => 0.5 ],
+					'vw'  => [ 'min' => 10,  'max' => 100,  'step' => 1 ],
+				],
+				'default'     => [ 'size' => 320, 'unit' => 'px' ],
 				'condition'   => [ 'template' => [ 'custom' ] ],
 			]
 		);
 		$repeater->add_control(
-			'custom_padding_top',
+			'custom_aspect_ratio',
 			[
-				'label'     => esc_html__( 'Padding top (px)', 'aurora-for-elementor' ),
+				'label'       => esc_html__( 'Aspect ratio (W:H)', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'auto',
+				'options'     => [
+					'auto'    => esc_html__( 'Auto (fits content)', 'aurora-for-elementor' ),
+					'1/1'     => '1 : 1',
+					'4/3'     => '4 : 3',
+					'3/4'     => '3 : 4',
+					'3/2'     => '3 : 2',
+					'2/3'     => '2 : 3',
+					'16/9'    => '16 : 9',
+					'9/16'    => '9 : 16',
+					'21/9'    => '21 : 9',
+					'custom'  => esc_html__( 'Custom…', 'aurora-for-elementor' ),
+				],
+				'description' => esc_html__( 'Card proportion. Image fills the remaining space (after header/footer/padding).', 'aurora-for-elementor' ),
+				'condition'   => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		// Two-number pair only revealed when the user picks "Custom…" —
+		// keeps the standard-ratio flow uncluttered.
+		$repeater->add_control(
+			'custom_aspect_ratio_w',
+			[
+				'label'     => esc_html__( 'Custom ratio: Width', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::NUMBER,
-				'default'   => 16,
-				'min'       => 0,
-				'max'       => 200,
-				'condition' => [ 'template' => [ 'custom' ] ],
+				'default'   => 1,
+				'min'       => 0.1,
+				'step'      => 0.1,
+				'condition' => [
+					'template'            => [ 'custom' ],
+					'custom_aspect_ratio' => 'custom',
+				],
 			]
 		);
 		$repeater->add_control(
-			'custom_padding_sides',
+			'custom_aspect_ratio_h',
 			[
-				'label'     => esc_html__( 'Padding sides (px)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Custom ratio: Height', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::NUMBER,
-				'default'   => 16,
-				'min'       => 0,
-				'max'       => 200,
-				'condition' => [ 'template' => [ 'custom' ] ],
+				'default'   => 1,
+				'min'       => 0.1,
+				'step'      => 0.1,
+				'condition' => [
+					'template'            => [ 'custom' ],
+					'custom_aspect_ratio' => 'custom',
+				],
 			]
 		);
 		$repeater->add_control(
-			'custom_padding_bottom',
+			'custom_padding',
 			[
-				'label'     => esc_html__( 'Padding bottom (px)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::NUMBER,
-				'default'   => 16,
-				'min'       => 0,
-				'max'       => 200,
-				'condition' => [ 'template' => [ 'custom' ] ],
+				'label'       => esc_html__( 'Padding', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::DIMENSIONS,
+				'size_units'  => [ 'px', '%', 'em', 'rem' ],
+				'default'     => [ 'top' => 16, 'right' => 16, 'bottom' => 16, 'left' => 16, 'unit' => 'px', 'isLinked' => true ],
+				'condition'   => [ 'template' => [ 'custom' ] ],
 			]
 		);
 		$repeater->add_control(
@@ -381,6 +408,47 @@ class Morph_Card_Widget extends Widget_Base {
 				'label'     => esc_html__( 'Background color', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#ffffff',
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		// ── Image sizing/positioning (object-fit + object-position) ──────────
+		// The image container fills the card's remaining space (see
+		// .card-custom .morph-image in morph-card.css); object-fit decides
+		// how the photo covers that box, object-position lets the user
+		// nudge which crop wins when object-fit crops.
+		$repeater->add_control(
+			'custom_image_fit',
+			[
+				'label'     => esc_html__( 'Image fit', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'cover',
+				'options'   => [
+					'cover'      => esc_html__( 'Cover (crop to fill)', 'aurora-for-elementor' ),
+					'contain'    => esc_html__( 'Contain (fit inside)', 'aurora-for-elementor' ),
+					'fill'       => esc_html__( 'Fill (stretch)', 'aurora-for-elementor' ),
+					'none'       => esc_html__( 'None (original size)', 'aurora-for-elementor' ),
+					'scale-down' => esc_html__( 'Scale down', 'aurora-for-elementor' ),
+				],
+				'condition' => [ 'template' => [ 'custom' ] ],
+			]
+		);
+		$repeater->add_control(
+			'custom_image_position',
+			[
+				'label'     => esc_html__( 'Image position', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'center center',
+				'options'   => [
+					'top left'      => esc_html__( 'Top left', 'aurora-for-elementor' ),
+					'top center'    => esc_html__( 'Top center', 'aurora-for-elementor' ),
+					'top right'     => esc_html__( 'Top right', 'aurora-for-elementor' ),
+					'center left'   => esc_html__( 'Center left', 'aurora-for-elementor' ),
+					'center center' => esc_html__( 'Center', 'aurora-for-elementor' ),
+					'center right'  => esc_html__( 'Center right', 'aurora-for-elementor' ),
+					'bottom left'   => esc_html__( 'Bottom left', 'aurora-for-elementor' ),
+					'bottom center' => esc_html__( 'Bottom center', 'aurora-for-elementor' ),
+					'bottom right'  => esc_html__( 'Bottom right', 'aurora-for-elementor' ),
+				],
 				'condition' => [ 'template' => [ 'custom' ] ],
 			]
 		);
@@ -671,14 +739,51 @@ class Morph_Card_Widget extends Widget_Base {
 
 			case 'custom':
 				$bg = sanitize_hex_color( $raw['custom_bg_color'] ?? '#ffffff' );
-				$state['width']         = max( 40, min( 1200, (int) ( $raw['custom_width'] ?? 320 ) ) );
-				$state['height']        = max( 0, min( 1600, (int) ( $raw['custom_height'] ?? 0 ) ) );
-				$state['paddingTop']    = max( 0, min( 200, (int) ( $raw['custom_padding_top'] ?? 16 ) ) );
-				$state['paddingSides']  = max( 0, min( 200, (int) ( $raw['custom_padding_sides'] ?? 16 ) ) );
-				$state['paddingBottom'] = max( 0, min( 200, (int) ( $raw['custom_padding_bottom'] ?? 16 ) ) );
+
+				// Max width: SLIDER with size_units returns { size, unit }.
+				$mw_raw   = is_array( $raw['custom_max_width'] ?? null ) ? $raw['custom_max_width'] : [];
+				$mw_unit  = in_array( $mw_raw['unit'] ?? '', [ 'px', '%', 'em', 'rem', 'vw' ], true ) ? $mw_raw['unit'] : 'px';
+				$mw_size  = is_numeric( $mw_raw['size'] ?? null ) ? (float) $mw_raw['size'] : 320;
+
+				// Aspect ratio: whitelist of enum strings; 'auto' means no
+				// aspect-ratio (card shrinks to content). 'custom' resolves
+				// to "W/H" from the paired number fields — anything
+				// non-positive falls back to auto so a half-typed value
+				// never freezes the card at 0-height.
+				$ar_allowed = [ 'auto', '1/1', '4/3', '3/4', '3/2', '2/3', '16/9', '9/16', '21/9', 'custom' ];
+				$ar_choice  = in_array( $raw['custom_aspect_ratio'] ?? '', $ar_allowed, true ) ? $raw['custom_aspect_ratio'] : 'auto';
+				if ( 'custom' === $ar_choice ) {
+					$ar_w = is_numeric( $raw['custom_aspect_ratio_w'] ?? null ) ? (float) $raw['custom_aspect_ratio_w'] : 0;
+					$ar_h = is_numeric( $raw['custom_aspect_ratio_h'] ?? null ) ? (float) $raw['custom_aspect_ratio_h'] : 0;
+					$ar   = ( $ar_w > 0 && $ar_h > 0 ) ? ( $ar_w . '/' . $ar_h ) : 'auto';
+				} else {
+					$ar = $ar_choice;
+				}
+
+				// Padding: DIMENSIONS returns { top, right, bottom, left, unit }.
+				$pad_raw  = is_array( $raw['custom_padding'] ?? null ) ? $raw['custom_padding'] : [];
+				$pad_unit = in_array( $pad_raw['unit'] ?? '', [ 'px', '%', 'em', 'rem' ], true ) ? $pad_raw['unit'] : 'px';
+
+				$fit_allowed = [ 'cover', 'contain', 'fill', 'none', 'scale-down' ];
+				$fit         = in_array( $raw['custom_image_fit'] ?? '', $fit_allowed, true ) ? $raw['custom_image_fit'] : 'cover';
+
+				$pos_allowed = [ 'top left', 'top center', 'top right', 'center left', 'center center', 'center right', 'bottom left', 'bottom center', 'bottom right' ];
+				$pos         = in_array( $raw['custom_image_position'] ?? '', $pos_allowed, true ) ? $raw['custom_image_position'] : 'center center';
+
+				$state['maxWidth']    = [ 'size' => $mw_size, 'unit' => $mw_unit ];
+				$state['aspectRatio'] = $ar;
+				$state['padding']     = [
+					'top'    => is_numeric( $pad_raw['top'] ?? null )    ? (float) $pad_raw['top']    : 16,
+					'right'  => is_numeric( $pad_raw['right'] ?? null )  ? (float) $pad_raw['right']  : 16,
+					'bottom' => is_numeric( $pad_raw['bottom'] ?? null ) ? (float) $pad_raw['bottom'] : 16,
+					'left'   => is_numeric( $pad_raw['left'] ?? null )   ? (float) $pad_raw['left']   : 16,
+					'unit'   => $pad_unit,
+				];
 				$state['radius']        = max( 0, min( 200, (int) ( $raw['custom_radius'] ?? 14 ) ) );
 				$state['rotate']        = max( -45, min( 45, (int) ( $raw['custom_rotate'] ?? 0 ) ) );
 				$state['bgColor']       = $bg ? $bg : '#ffffff';
+				$state['imageFit']      = $fit;
+				$state['imagePosition'] = $pos;
 				// Header/footer HTML is passed through wp_kses_post so users
 				// can style the card freely but can't inject <script> or
 				// event handlers via a saved widget.

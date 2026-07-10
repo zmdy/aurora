@@ -60,6 +60,20 @@
 	animation: none;
 }
 
+/* Morph engine: the class-swap (card-instagram → card-polaroid, etc)
+   changes border-radius / padding / rotate / background / max-width /
+   aspect-ratio all at once. When .is-morphing is set on the card the
+   browser's own transition machinery interpolates those changes over
+   --amc-morph-duration — no JS animation to sync, no reset-then-repin
+   race with class swaps. The class is only present during an active
+   morph so the first paint (and any static preview) stays snap-instant. */
+.aurora-morph-card-stage .morph-card.is-morphing,
+.aurora-morph-card-stage .morph-card.is-morphing .morph-image {
+	transition-property: border-radius, padding, padding-top, padding-right, padding-bottom, padding-left, rotate, background-color, background, max-width, aspect-ratio, width, height;
+	transition-duration: var(--amc-morph-duration, 1.6s);
+	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @keyframes auroraMorphCardFloat {
 	0%, 100% { transform: translateY(0); }
 	50% { transform: translateY(-10px); }
@@ -95,15 +109,30 @@
 }
 
 /* ── Mode: Custom ─────────────────────────────────────────────────────
-   Fully data-driven — width/height/padding/radius/rotate/background come
-   from the state's data via inline styles, set in renderAsCustom(). This
-   rule only clears anything the .morph-card base might carry over that
-   would fight the state's own values. */
+   Fully data-driven — max-width/aspect-ratio/padding/radius/rotate/bg
+   are written inline by renderAsCustom() based on the state's fields.
+   The image container flex-grows into whatever space is left after the
+   header/footer (which respect their own content height), so setting an
+   aspect-ratio on the card automatically produces a photo that fills
+   "card minus padding minus header/footer" without any extra math. */
 .aurora-morph-card-stage .morph-card.card-custom {
-	max-width: none;
+	width: auto;
+	box-sizing: border-box;
+}
+.aurora-morph-card-stage .morph-card.card-custom .morph-header,
+.aurora-morph-card-stage .morph-card.card-custom .morph-footer {
+	flex: 0 0 auto;
 }
 .aurora-morph-card-stage .morph-card.card-custom .morph-image {
+	flex: 1 1 auto;
+	min-height: 0;
 	background: transparent;
+	overflow: hidden;
+}
+.aurora-morph-card-stage .morph-card.card-custom .morph-image-photo {
+	width: 100%;
+	height: 100%;
+	display: block;
 }
 
 /* ── Mode: Profile ───────────────────────────────────────────────────── */
