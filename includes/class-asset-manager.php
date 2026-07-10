@@ -48,6 +48,19 @@ final class Asset_Manager {
 			true
 		);
 
+		// ── Vendor: Motion One 11 (local) ─────────────────────────────────────
+		// Used by the Morph Card widget for the smooth frame interpolation
+		// between templates (radius/padding/rotate/height) — a domain where
+		// GSAP would work too, but Motion's promise-based API keeps the
+		// morph pipeline readable.
+		wp_enqueue_script(
+			'aurora-motion-one',
+			AURORA_URL . 'assets/js/vendor/motion.min.js',
+			[],
+			'11.0.0',
+			true
+		);
+
 		// ── Text animations ───────────────────────────────────────────────────
 		// Depends on 'elementor-frontend' to make sure elementorFrontend/
 		// elementorModules already exist when this script registers its Frontend
@@ -143,6 +156,23 @@ final class Asset_Manager {
 		wp_enqueue_style(
 			'aurora-image-effects',
 			AURORA_URL . 'assets/css/image-effects.css',
+			[],
+			AURORA_VERSION
+		);
+
+		// ── Morph Card widget ─────────────────────────────────────────────────
+		// Registered (not enqueued) here: only pages that render the widget need
+		// them, and Elementor pulls them in via get_script_depends()/get_style_depends().
+		wp_register_script(
+			'aurora-morph-card',
+			AURORA_URL . 'assets/js/morph-card.js',
+			[ 'jquery', 'aurora-motion-one', 'aurora-animejs', 'elementor-frontend' ],
+			AURORA_VERSION,
+			true
+		);
+		wp_register_style(
+			'aurora-morph-card',
+			AURORA_URL . 'assets/css/morph-card.css',
 			[],
 			AURORA_VERSION
 		);

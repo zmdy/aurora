@@ -36,5 +36,19 @@ final class Plugin_Core {
 		$this->asset_manager = new Asset_Manager();
 
 		Module_Manager::init();
+
+		// Custom Elementor widgets (not "modules"): register through the
+		// dedicated Widgets_Manager hook. Modules add controls to existing
+		// widgets; the Morph Card is a widget of its own.
+		add_action( 'elementor/widgets/register', [ $this, 'register_widgets' ] );
+	}
+
+	/**
+	 * Registers Aurora's own Elementor widgets.
+	 *
+	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor's widget registry.
+	 */
+	public function register_widgets( $widgets_manager ): void {
+		$widgets_manager->register( new Morph_Card_Widget() );
 	}
 }

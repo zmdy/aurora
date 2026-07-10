@@ -1,0 +1,262 @@
+/* ==========================================================================
+   AURORA — MORPH CARD
+   Fixed inner DOM (.morph-card > .morph-header, .morph-image, .morph-footer)
+   with modifier classes for the current template: card-instagram,
+   card-polaroid, card-camera, card-profile.
+
+   All rules are scoped under .aurora-morph-card-stage so they don't collide
+   with anything else on the page. Colors reference CSS variables so a site
+   can theme them; the defaults below match the original prototype.
+   ========================================================================== */
+
+.aurora-morph-card-stage {
+	--amc-bg-light: #ffffff;
+	--amc-bg-card: #f5f4f0;
+	--amc-text-main: #2d3230;
+	--amc-text-muted: #7a7873;
+	--amc-border-color: rgba(0, 0, 0, 0.08);
+	--amc-accent-caramel: #c97c54;
+	--amc-accent-cyan: #0a8fa8;
+	--amc-accent-teal: #128a7c;
+	--amc-shadow-polaroid: 0 10px 30px rgba(28, 28, 26, 0.12);
+	--amc-shadow-lg: 0 15px 35px rgba(28, 28, 26, 0.14);
+
+	position: relative;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 320px;
+}
+
+.aurora-morph-card-stage .morph-card-glow {
+	position: absolute;
+	width: 340px;
+	height: 340px;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(201, 124, 84, 0.28) 0%, rgba(10, 143, 168, 0.14) 55%, transparent 75%);
+	filter: blur(50px);
+	z-index: 0;
+	pointer-events: none;
+}
+
+.aurora-morph-card-stage .morph-card {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	max-width: 320px;
+	background: var(--amc-bg-light);
+	box-shadow: var(--amc-shadow-polaroid), 0 30px 60px -20px rgba(38, 40, 42, 0.28);
+	border: 1px solid var(--amc-border-color);
+	display: flex;
+	flex-direction: column;
+	opacity: 0;
+	animation: auroraMorphCardFloat 4.2s ease-in-out infinite;
+}
+
+@keyframes auroraMorphCardFloat {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-10px); }
+}
+
+/* ── Mode: Instagram post ─────────────────────────────────────────────── */
+.aurora-morph-card-stage .morph-card.card-instagram {
+	border-radius: 22px;
+	padding: 14px 14px 18px;
+	rotate: -2deg;
+}
+
+/* ── Mode: Polaroid ──────────────────────────────────────────────────── */
+.aurora-morph-card-stage .morph-card.card-polaroid {
+	background: #faf9f6;
+}
+.aurora-morph-card-stage .morph-card.card-polaroid.frame-classic { background: #faf9f6; }
+.aurora-morph-card-stage .morph-card.card-polaroid.frame-vintage { background: #f2ead2; }
+.aurora-morph-card-stage .morph-card.card-polaroid.frame-pink    { background: linear-gradient(135deg, #fcebec 0%, #f7d2d6 100%); }
+.aurora-morph-card-stage .morph-card.card-polaroid.frame-dark    { background: #252523; color: #fcfbf8; }
+.aurora-morph-card-stage .morph-card.card-polaroid.frame-dark .morph-caption { color: #fcfbf8; }
+.aurora-morph-card-stage .morph-card.card-polaroid.frame-floral {
+	background-color: #fff;
+	background-image: radial-gradient(circle at 100% 150%, #f6e8df 24%, #fffcf8 25%, #fffcf8 28%, #f6e8df 29%, #f6e8df 36%, #fffcf8 36%, #fffcf8 40%, transparent 40%, transparent);
+	background-size: 16px 16px;
+}
+.aurora-morph-card-stage .morph-card.card-polaroid::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+	pointer-events: none;
+}
+
+/* ── Mode: Camera ────────────────────────────────────────────────────── */
+.aurora-morph-card-stage .morph-card.card-camera {
+	padding: 3px;
+	border-radius: 3px;
+	background: #14140f;
+	rotate: 0deg;
+}
+.aurora-morph-card-stage .morph-card.card-camera .morph-header { padding: 0; }
+.aurora-morph-card-stage .morph-card.card-camera .morph-image  { width: 100%; height: 100%; border-radius: 2px; }
+.aurora-morph-card-stage .morph-card.card-camera .morph-footer { padding: 0; }
+.aurora-morph-card-stage .morph-card.card-camera .ig-caption   { height: 0; margin: 0; overflow: hidden; }
+
+.aurora-morph-card-stage .camera-flash-overlay {
+	position: absolute;
+	inset: 0;
+	background: #fff;
+	border-radius: inherit;
+	opacity: 0;
+	pointer-events: none;
+	z-index: 6;
+}
+
+/* ── Mode: Profile ───────────────────────────────────────────────────── */
+.aurora-morph-card-stage .morph-card.card-profile {
+	max-width: 380px;
+	border-radius: 18px;
+	padding: 0;
+	rotate: 0deg;
+	overflow: hidden;
+}
+.aurora-morph-card-stage .morph-card.card-profile .morph-header { display: block; padding: 20px 18px 0; }
+.aurora-morph-card-stage .morph-card.card-profile .morph-image  { aspect-ratio: auto; border-radius: 0; background: var(--amc-bg-light); }
+.aurora-morph-card-stage .morph-card.card-profile .morph-footer { display: none; }
+
+.aurora-morph-card-stage .morph-profile-top { display: flex; align-items: center; gap: 18px; }
+.aurora-morph-card-stage .morph-profile-avatar-ring {
+	width: 68px; height: 68px; border-radius: 50%; padding: 2px;
+	background: linear-gradient(45deg, var(--amc-accent-caramel), var(--amc-accent-cyan), var(--amc-accent-teal));
+	display: grid; place-items: center; flex-shrink: 0;
+}
+.aurora-morph-card-stage .morph-profile-avatar-img {
+	width: 100%; height: 100%; border-radius: 50%;
+	object-fit: cover; border: 2px solid var(--amc-bg-light); display: block;
+}
+.aurora-morph-card-stage .morph-profile-stats { flex: 1; display: flex; justify-content: space-around; }
+.aurora-morph-card-stage .morph-profile-stat  { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.aurora-morph-card-stage .morph-profile-stat strong { font-size: 1rem; font-weight: 700; color: var(--amc-text-main); }
+.aurora-morph-card-stage .morph-profile-stat span   { font-size: 0.72rem; color: var(--amc-text-muted); }
+.aurora-morph-card-stage .morph-profile-info { margin-top: 12px; }
+.aurora-morph-card-stage .morph-profile-name { font-size: 0.9rem; font-weight: 700; color: var(--amc-text-main); margin-bottom: 2px; }
+.aurora-morph-card-stage .morph-profile-bio  { font-size: 0.78rem; color: var(--amc-text-muted); line-height: 1.45; }
+.aurora-morph-card-stage .morph-profile-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.aurora-morph-card-stage .morph-profile-btn {
+	font-size: 0.8rem; font-weight: 600; padding: 7px 0;
+	border-radius: 8px; text-align: center; cursor: pointer; border: none;
+}
+.aurora-morph-card-stage .morph-profile-btn-primary   { flex: 1; background: var(--amc-text-main); color: var(--amc-bg-light); }
+.aurora-morph-card-stage .morph-profile-btn-secondary { flex: 1; background: var(--amc-bg-card);  color: var(--amc-text-main); }
+.aurora-morph-card-stage .morph-profile-btn-icon {
+	width: 34px; height: 34px; flex-shrink: 0; background: var(--amc-bg-card); color: var(--amc-text-main);
+	display: grid; place-items: center; font-size: 0.85rem;
+}
+.aurora-morph-card-stage .morph-profile-tabs {
+	display: flex; border-top: 1px solid var(--amc-border-color); margin-top: 12px;
+}
+.aurora-morph-card-stage .morph-profile-tab {
+	flex: 1; display: grid; place-items: center; padding: 11px 0;
+	color: var(--amc-text-muted); font-size: 0.95rem; border-top: 2px solid transparent;
+}
+.aurora-morph-card-stage .morph-profile-tab.active {
+	color: var(--amc-text-main); border-top-color: var(--amc-text-main);
+}
+.aurora-morph-card-stage .morph-profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.aurora-morph-card-stage .morph-profile-grid-item { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: var(--amc-bg-card); }
+.aurora-morph-card-stage .morph-profile-grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── Shared zones ────────────────────────────────────────────────────── */
+.aurora-morph-card-stage .morph-header { display: flex; align-items: center; gap: 10px; }
+.aurora-morph-card-stage .morph-card.card-instagram .morph-header { padding: 2px 4px 12px; }
+
+.aurora-morph-card-stage .morph-image  { position: relative; width: 100%; overflow: hidden; background: var(--amc-bg-card); }
+.aurora-morph-card-stage .morph-card.card-instagram .morph-image { aspect-ratio: 1 / 1; border-radius: 14px; }
+.aurora-morph-card-stage .morph-card.card-polaroid .morph-image  { background: #1c1c1a; }
+
+.aurora-morph-card-stage .morph-image-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.aurora-morph-card-stage .morph-footer { position: relative; }
+.aurora-morph-card-stage .morph-card.card-instagram .morph-footer { padding: 0 4px; }
+
+.aurora-morph-card-stage .morph-caption {
+	font-family: 'Caveat', cursive;
+	font-weight: 700;
+	font-size: 1.35rem;
+	color: #2d3230;
+	text-align: center;
+	margin-top: 10px;
+	letter-spacing: 0.2px;
+}
+
+.aurora-morph-card-stage .ig-caption-as-polaroid {
+	font-family: 'Caveat', cursive;
+	font-weight: 700;
+	font-size: 1.35rem;
+	line-height: 1.22;
+	color: #2d3230;
+	text-align: center;
+	margin-top: 6px;
+	letter-spacing: 0.2px;
+	min-height: 26px;
+	white-space: normal;
+	word-break: break-word;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.aurora-morph-card-stage .ig-caption-as-polaroid .ig-caption-user { display: none; }
+
+/* ── Instagram bits ──────────────────────────────────────────────────── */
+.aurora-morph-card-stage .ig-header { display: flex; align-items: center; gap: 10px; padding: 2px 4px 12px; }
+.aurora-morph-card-stage .ig-avatar-ring {
+	width: 40px; height: 40px; border-radius: 50%; padding: 2px;
+	background: linear-gradient(45deg, var(--amc-accent-caramel), var(--amc-accent-cyan), var(--amc-accent-teal));
+	display: grid; place-items: center; flex-shrink: 0;
+}
+.aurora-morph-card-stage .ig-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--amc-bg-light); display: block; }
+.aurora-morph-card-stage .ig-header-text { flex: 1; min-width: 0; line-height: 1.25; }
+.aurora-morph-card-stage .ig-username    { font-size: 0.86rem; font-weight: 700; color: var(--amc-text-main); margin: 0; }
+.aurora-morph-card-stage .ig-subtext     { font-size: 0.72rem; color: var(--amc-text-muted); margin: 0; }
+.aurora-morph-card-stage .ig-more        { color: var(--amc-text-muted); font-size: 1rem; }
+
+.aurora-morph-card-stage .ig-photo-wrap  { position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; background: var(--amc-bg-card); }
+.aurora-morph-card-stage .ig-photo-item  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.aurora-morph-card-stage .ig-heart-burst { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 4; opacity: 0; }
+.aurora-morph-card-stage .ig-heart-burst i { font-size: 5rem; color: #fff; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.25)); }
+
+.aurora-morph-card-stage .ig-actions { display: flex; align-items: center; gap: 16px; padding: 14px 4px 6px; position: relative; }
+.aurora-morph-card-stage .ig-icon    { font-size: 1.35rem; color: var(--amc-text-main); }
+.aurora-morph-card-stage .ig-icon-save { margin-left: auto; }
+
+.aurora-morph-card-stage .ig-meta      { padding: 2px 4px 0; }
+.aurora-morph-card-stage .ig-likes     { font-size: 0.85rem; font-weight: 700; color: var(--amc-text-main); margin: 0 0 2px; }
+.aurora-morph-card-stage .ig-caption   { font-size: 0.82rem; color: var(--amc-text-main); line-height: 1.4; margin: 0; }
+.aurora-morph-card-stage .ig-caption-user { font-weight: 700; margin-right: 4px; }
+.aurora-morph-card-stage .ig-comments  { font-size: 0.74rem; color: var(--amc-text-muted); margin-top: 4px; }
+
+/* ── Shimmer sweep across the photo while morphing ───────────────────── */
+.aurora-morph-card-stage .morph-image-shimmer {
+	position: absolute;
+	top: 0; left: 0;
+	width: 60%; height: 100%;
+	background: linear-gradient(105deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0) 70%);
+	transform: translateX(-150%) skewX(-15deg);
+	pointer-events: none;
+	z-index: 3;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+.aurora-morph-card-stage .morph-image-shimmer.is-active {
+	opacity: 1;
+	animation: auroraMorphShimmerSweep 1.1s ease-in-out infinite;
+}
+@keyframes auroraMorphShimmerSweep {
+	0%   { transform: translateX(-150%) skewX(-15deg); }
+	100% { transform: translateX(250%) skewX(-15deg); }
+}
+
+/* ── Letters reveal (used by caption effect: letters) ────────────────── */
+.aurora-morph-card-stage .word   { display: inline-block; white-space: nowrap; }
+.aurora-morph-card-stage .letter { display: inline-block; opacity: 0; }
