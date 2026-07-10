@@ -295,26 +295,146 @@
 				merged.captionInDuration  = MorphCard.DEFAULT_MORPH_TIMING.captionInDuration * scale;
 			}
 
-			// Polaroid destination gets the rich transition (frame interpolate
-			// + caption typewriter). Everything else is a simple re-render
-			// with a crossfade — good enough visually, without hardcoding a
-			// dedicated animation for every (from, to) pair.
+			// Polaroid destination keeps its bespoke transition (shimmer +
+			// caption typewriter reveal) because those effects are the
+			// signature of the original prototype. Every other target goes
+			// through the generic _morphFrame: real frame interpolation
+			// (radius/padding/rotate/image radius/aspect-ratio) with the
+			// inner content crossfading over the top.
 			if ( 'polaroid' === state.template ) {
 				return this._morphToPolaroid( state, merged );
 			}
-			return this._morphCrossfade( state, merged );
+			return this._morphFrame( state, merged );
 		}
 
-		_morphCrossfade( state, timing ) {
+		/**
+		 * Returns the geometric frame values a given state resolves to
+		 * (radius, paddings, rotate, image radius, aspect-ratio, optional
+		 * width/height/bg). Used as the "target" side of the interpolation
+		 * in _morphFrame — mirrors what each renderAsX() ends up writing
+		 * to the DOM so the animated values match the final rest state.
+		 */
+		_getTargetFrame( state ) {
+			switch ( state.template ) {
+				case 'polaroid': {
+					const size = ( state.size && MorphCard.POLAROID_SIZES[ state.size ] ) ? state.size : 'normal';
+					const cfg  = MorphCard.POLAROID_SIZES[ size ];
+					return {
+						radius:        cfg.radius,
+						paddingTop:    cfg.paddingTop,
+						paddingSides:  cfg.paddingSides,
+						paddingBottom: cfg.paddingBottom,
+						rotate:        cfg.rotate,
+						imageRadius:   0,
+						aspectRatio:   cfg.photoRatio
+					};
+				}
+				case 'instagram':
+					return { radius: 22, paddingTop: 14, paddingSides: 14, paddingBottom: 18, rotate: -2, imageRadius: 14, aspectRatio: '1 / 1' };
+				case 'profile':
+					return { radius: 18, paddingTop: 0, paddingSides: 0, paddingBottom: 0, rotate: 0, imageRadius: 0, aspectRatio: 'auto' };
+				case 'custom':
+					return {
+						radius:        state.radius || 0,
+						paddingTop:    state.paddingTop || 0,
+						paddingSides:  state.paddingSides || 0,
+						paddingBottom: state.paddingBottom || 0,
+						rotate:        state.rotate || 0,
+						imageRadius:   0,
+						aspectRatio:   'auto',
+						width:         state.width,
+						height:        state.height,
+						bg:            state.bgColor
+					};
+				default:
+					return { radius: 0, paddingTop: 0, paddingSides: 0, paddingBottom: 0, rotate: 0, imageRadius: 0, aspectRatio: 'auto' };
+			}
+		}
+
+		/**
+		 * Generic morph for non-polaroid targets: interpolates the shared
+		 * frame between the current template and the next one while the
+		 * inner content crossfades over it. Same "pin computed → swap class
+		 * → animate to target" trick used by _morphToPolaroid — just without
+		 * the polaroid-specific shimmer and typewriter caption.
+		 */
+		_morphFrame( state, timing ) {
 			const { animate } = window.Motion;
 			const t = Object.assign( {}, MorphCard.DEFAULT_MORPH_TIMING, timing );
+			const target = this._getTargetFrame( state );
 
-			return animate( this.root, { opacity: [ 1, 0 ] }, { duration: t.captionOutDuration, easing: 'ease-in' } )
+			// Pin current computed frame values as inline styles BEFORE
+			// swapping the class — otherwise the class swap would snap
+			// radius/padding/rotate to their new CSS defaults instantly.
+			const rootCs = getComputedStyle( this.root );
+			const fromRadius     = rootCs.borderRadius;
+			const fromPadTop     = rootCs.paddingTop;
+			const fromPadLeft    = rootCs.paddingLeft;
+			const fromPadRight   = rootCs.paddingRight;
+			const fromPadBottom  = rootCs.paddingBottom;
+			const fromRotate     = ( rootCs.rotate && 'none' !== rootCs.rotate ) ? rootCs.rotate : '0deg';
+			const fromWidth      = rootCs.width;
+			const fromImageRadius = getComputedStyle( this.image ).borderRadius;
+
+			this.root.style.borderRadius = fromRadius;
+			this.root.style.paddingTop    = fromPadTop;
+			this.root.style.paddingLeft   = fromPadLeft;
+			this.root.style.paddingRight  = fromPadRight;
+			this.root.style.paddingBottom = fromPadBottom;
+			this.root.style.rotate        = fromRotate;
+			this.image.style.borderRadius = fromImageRadius;
+
+			// Inner content: fade the current header/image/footer out, then
+			// re-render for the new template underneath, then fade back in.
+			// Runs in parallel with the frame interpolation below.
+			const zones = [ this.header, this.image, this.footer ].filter( Boolean );
+			const contentDone = animate( zones, { opacity: [ 1, 0 ] }, { duration: t.captionOutDuration, easing: 'ease-in' } )
 				.finished.then( () => {
+					// Renders the new template — this also swaps the mode
+					// class and writes the target's inline styles. Re-pin
+					// the source frame values right after so the ongoing
+					// animate() below still interpolates from source →
+					// target (renderAsX writes the final target values).
 					this.renderState( state );
-					return animate( this.root, { opacity: [ 0, 1 ] }, { duration: t.captionInDuration, easing: 'ease-out' } ).finished;
-				} )
-				.then( () => this );
+					this.root.style.borderRadius = fromRadius;
+					this.root.style.paddingTop    = fromPadTop;
+					this.root.style.paddingLeft   = fromPadLeft;
+					this.root.style.paddingRight  = fromPadRight;
+					this.root.style.paddingBottom = fromPadBottom;
+					this.root.style.rotate        = fromRotate;
+					this.image.style.borderRadius = fromImageRadius;
+					return animate( zones, { opacity: [ 0, 1 ] }, { duration: t.captionInDuration, easing: 'ease-out' } ).finished;
+				} );
+
+			// Frame interpolation: root radius/padding/rotate + image
+			// radius (and aspect-ratio, which snaps — CSS animatable values
+			// only). Runs alongside the content crossfade so the whole
+			// thing reads as one continuous motion.
+			animate( this.root, {
+				borderRadius:  [ fromRadius, `${ target.radius }px` ],
+				paddingTop:    [ fromPadTop, `${ target.paddingTop }px` ],
+				paddingLeft:   [ fromPadLeft, `${ target.paddingSides }px` ],
+				paddingRight:  [ fromPadRight, `${ target.paddingSides }px` ],
+				paddingBottom: [ fromPadBottom, `${ target.paddingBottom }px` ],
+				rotate:        [ fromRotate, `${ target.rotate }deg` ]
+			}, { duration: t.frameDuration, delay: t.frameDelay, easing: [ 0.22, 1, 0.36, 1 ] } );
+
+			// Custom targets also interpolate width/height when set — the
+			// other templates leave those to CSS defaults / max-width.
+			if ( target.width ) {
+				animate( this.root, { width: [ fromWidth, `${ target.width }px` ] }, { duration: t.frameDuration, delay: t.frameDelay, easing: [ 0.22, 1, 0.36, 1 ] } );
+			}
+
+			animate( this.image, {
+				borderRadius: [ fromImageRadius, `${ target.imageRadius }px` ]
+			}, { duration: t.frameDuration, delay: t.frameDelay, easing: [ 0.22, 1, 0.36, 1 ] } );
+
+			// aspect-ratio isn't interpolatable, but setting it here means
+			// the image locks into the new proportion the moment renderAsX
+			// runs (which overwrites this value anyway — leaving it aligned).
+			this.image.style.aspectRatio = target.aspectRatio;
+
+			return contentDone.then( () => this );
 		}
 
 		_morphToPolaroid( state, timing ) {
