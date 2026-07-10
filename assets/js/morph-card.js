@@ -605,12 +605,15 @@
 
 		start() {
 			this.card.renderState( this.config.states[ 0 ] );
-			// Card starts invisible via CSS (opacity: 0) — fade it in.
+			// The .morph-card CSS starts at opacity: 0 so Motion One can
+			// fade it in without a flash-of-unstyled-content. Force it back
+			// to 1 up front so the card is visible even if Motion never
+			// loads (editor iframe quirks, network failure, etc.) — Motion
+			// then just re-animates from wherever it is.
+			this.cardEl.style.opacity = '1';
 			if ( typeof window.Motion !== 'undefined' ) {
 				const { animate } = window.Motion;
 				animate( this.cardEl, { opacity: [ 0, 1 ], scale: [ 0.92, 1 ], y: [ 30, 0 ] }, { duration: 0.9, delay: 0.2, easing: [ 0.22, 1, 0.36, 1 ] } );
-			} else {
-				this.cardEl.style.opacity = '1';
 			}
 			if ( this.config.states.length < 2 ) return;
 			// Elementor editor: skip the morph loop and show state[0] as a

@@ -52,14 +52,6 @@ class Morph_Card_Widget extends Widget_Base {
 		return [ 'aurora', 'morph', 'card', 'instagram', 'polaroid', 'transform' ];
 	}
 
-	public function get_script_depends(): array {
-		return [ 'aurora-motion-one', 'aurora-morph-card' ];
-	}
-
-	public function get_style_depends(): array {
-		return [ 'aurora-morph-card' ];
-	}
-
 	// ── Controls ─────────────────────────────────────────────────────────────
 
 	protected function register_controls(): void {

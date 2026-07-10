@@ -161,16 +161,18 @@ final class Asset_Manager {
 		);
 
 		// ── Morph Card widget ─────────────────────────────────────────────────
-		// Registered (not enqueued) here: only pages that render the widget need
-		// them, and Elementor pulls them in via get_script_depends()/get_style_depends().
-		wp_register_script(
+		// Enqueued globally (matches every other Aurora module): relying on
+		// get_script_depends() alone doesn't reliably pull the handler into
+		// the Elementor editor iframe, and without the handler the widget
+		// stays invisible (its .morph-card starts at opacity: 0 in the CSS).
+		wp_enqueue_script(
 			'aurora-morph-card',
 			AURORA_URL . 'assets/js/morph-card.js',
 			[ 'jquery', 'aurora-motion-one', 'aurora-animejs', 'elementor-frontend' ],
 			AURORA_VERSION,
 			true
 		);
-		wp_register_style(
+		wp_enqueue_style(
 			'aurora-morph-card',
 			AURORA_URL . 'assets/css/morph-card.css',
 			[],
