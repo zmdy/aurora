@@ -34,6 +34,35 @@
 	// ── MorphCard ───────────────────────────────────────────────────────────
 	class MorphCard {
 
+		// Base frame specs for templates whose frame is fixed by design.
+		// The morph engine writes THESE VALUES EXPLICITLY (never clears
+		// inline styles first) so the browser sees `20px → 40px`, not
+		// `20px → '' → 40px`, and the CSS transitions on .is-morphing
+		// interpolate cleanly instead of flashing through the class default.
+		static INSTAGRAM_FRAME = {
+			modeClass:         'card-instagram',
+			borderRadius:      '22px',
+			padding:           '14px 14px 18px 14px',
+			rotate:            '-2deg',
+			maxWidth:          '320px',
+			aspectRatio:       'auto',
+			background:        '',
+			imageAspectRatio:  '1 / 1',
+			imageBorderRadius: '14px'
+		};
+
+		static PROFILE_FRAME = {
+			modeClass:         'card-profile',
+			borderRadius:      '18px',
+			padding:           '0px 0px 0px 0px',
+			rotate:            '0deg',
+			maxWidth:          '380px',
+			aspectRatio:       'auto',
+			background:        '',
+			imageAspectRatio:  'auto',
+			imageBorderRadius: '0px'
+		};
+
 		// Proportions of each polaroid size (mirrors the .card-polaroid CSS rules).
 		static POLAROID_SIZES = {
 			'normal':        { photoRatio: '1 / 1', radius: 3, paddingTop: 16, paddingSides: 16, paddingBottom: 56, rotate: -2 },
@@ -77,21 +106,98 @@
 		// ── Rendering: template dispatchers ─────────────────────────────────
 
 		renderState( state ) {
+			this.mode = state.template || 'instagram';
+			this._applyFrame( this._getFrameSpec( state ) );
 			switch ( state.template ) {
-				case 'polaroid':  return this.renderAsPolaroid( state );
-				case 'profile':   return this.renderAsProfile( state );
-				case 'custom':    return this.renderAsCustom( state );
+				case 'polaroid':  return this._renderPolaroidContent( state );
+				case 'profile':   return this._renderProfileContent( state );
+				case 'custom':    return this._renderCustomContent( state );
 				case 'instagram':
-				default:          return this.renderAsInstagram( state );
+				default:          return this._renderInstagramContent( state );
 			}
 		}
 
-		renderAsInstagram( data ) {
-			this.mode = 'instagram';
-			this._resetRootStyles();
-			this.root.classList.remove( 'card-polaroid', 'card-profile', 'card-custom' );
-			this.root.classList.add( 'card-instagram' );
+		// Kept as public aliases for backwards compat (typewriteCaption and
+		// external code may still call these). They now just delegate to
+		// renderState so every entry point flows through the same pipeline.
+		renderAsInstagram( data ) { return this.renderState( Object.assign( {}, data, { template: 'instagram' } ) ); }
+		renderAsProfile( data )   { return this.renderState( Object.assign( {}, data, { template: 'profile' } ) ); }
+		renderAsPolaroid( data )  { return this.renderState( Object.assign( {}, data, { template: 'polaroid' } ) ); }
+		renderAsCustom( data )    { return this.renderState( Object.assign( {}, data, { template: 'custom' } ) ); }
 
+		/**
+		 * Returns a normalized frame spec for any state — the single
+		 * source of truth for what a template's frame looks like.
+		 */
+		_getFrameSpec( state ) {
+			switch ( state.template ) {
+				case 'polaroid': {
+					const size = ( state.size && MorphCard.POLAROID_SIZES[ state.size ] ) ? state.size : 'normal';
+					const cfg  = MorphCard.POLAROID_SIZES[ size ];
+					return {
+						modeClass:         'card-polaroid',
+						frameClass:        state.frame ? `frame-${ state.frame }` : null,
+						borderRadius:      `${ cfg.radius }px`,
+						padding:           `${ cfg.paddingTop }px ${ cfg.paddingSides }px ${ cfg.paddingBottom }px ${ cfg.paddingSides }px`,
+						rotate:            `${ cfg.rotate }deg`,
+						maxWidth:          '320px',
+						aspectRatio:       'auto',
+						background:        '',
+						imageAspectRatio:  cfg.photoRatio,
+						imageBorderRadius: '0px'
+					};
+				}
+				case 'profile':   return Object.assign( {}, MorphCard.PROFILE_FRAME );
+				case 'custom': {
+					const pad = state.padding || {};
+					const pu  = pad.unit || 'px';
+					const mw  = state.maxWidth || {};
+					const ar  = ( state.aspectRatio && 'auto' !== state.aspectRatio ) ? state.aspectRatio.replace( '/', ' / ' ) : 'auto';
+					return {
+						modeClass:         'card-custom',
+						borderRadius:      `${ state.radius || 0 }px`,
+						padding:           `${ pad.top || 0 }${ pu } ${ pad.right || 0 }${ pu } ${ pad.bottom || 0 }${ pu } ${ pad.left || 0 }${ pu }`,
+						rotate:            `${ state.rotate || 0 }deg`,
+						maxWidth:          mw.size ? `${ mw.size }${ mw.unit || 'px' }` : 'none',
+						aspectRatio:       ar,
+						background:        state.bgColor || '',
+						// Custom lets the image flex-fill the remaining
+						// space, so no explicit aspect ratio on .morph-image.
+						imageAspectRatio:  'auto',
+						imageBorderRadius: '0px'
+					};
+				}
+				case 'instagram':
+				default:          return Object.assign( {}, MorphCard.INSTAGRAM_FRAME );
+			}
+		}
+
+		/**
+		 * Writes every frame property to the root/image as an explicit
+		 * inline value — never clears. Combined with the CSS transitions
+		 * on .is-morphing, this is what makes any state → any state
+		 * morph smoothly instead of flashing through class defaults.
+		 */
+		_applyFrame( spec ) {
+			// Mode class (mutually exclusive)
+			this.root.classList.remove( 'card-instagram', 'card-polaroid', 'card-profile', 'card-custom' );
+			this.root.classList.add( spec.modeClass );
+			// Polaroid frame color variant
+			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
+			if ( spec.frameClass ) this.root.classList.add( spec.frameClass );
+			// Root inline styles — always written, never cleared.
+			this.root.style.borderRadius = spec.borderRadius;
+			this.root.style.padding      = spec.padding;
+			this.root.style.rotate       = spec.rotate;
+			this.root.style.maxWidth     = spec.maxWidth;
+			this.root.style.aspectRatio  = spec.aspectRatio;
+			this.root.style.background   = spec.background;
+			// Image frame — same principle. width/height stay in CSS.
+			this.image.style.aspectRatio  = spec.imageAspectRatio;
+			this.image.style.borderRadius = spec.imageBorderRadius;
+		}
+
+		_renderInstagramContent( data ) {
 			const avatar   = data.avatar || data.photo || '';
 			const username = data.username || '';
 			const subtext  = data.subtext || '';
@@ -100,6 +206,7 @@
 
 			this.header.className = 'morph-header ig-header';
 			this.header.style.cssText = '';
+			this.header.style.display = '';
 			this.header.innerHTML = `
 				<span class="ig-avatar-ring">
 					<img src="${ avatar }" alt="${ this._escAttr( username ) }" class="ig-avatar-img">
@@ -112,14 +219,14 @@
 			`;
 
 			this.image.className     = 'morph-image ig-photo-wrap';
-			this.image.style.aspectRatio  = '';
-			this.image.style.borderRadius = '';
+			this.image.style.display = '';
 			this.image.innerHTML = `
 				<img class="ig-photo-item" src="${ data.photo || '' }" alt="${ this._escAttr( data.caption || '' ) }" style="opacity:1;">
 				<div class="ig-heart-burst"><i class="fa-solid fa-heart"></i></div>
 			`;
 
 			this.footer.className = 'morph-footer';
+			this.footer.style.display = '';
 			this.footer.innerHTML = `
 				<div class="ig-actions">
 					<i class="fa-regular fa-heart ig-icon ig-icon-like"></i>
@@ -136,38 +243,13 @@
 			return this;
 		}
 
-		renderAsCustom( data ) {
-			this.mode = 'custom';
-			this._resetRootStyles();
-			this.root.classList.remove( 'card-instagram', 'card-polaroid', 'card-profile' );
-			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
-			this.root.classList.add( 'card-custom' );
-
-			// Max-width + aspect-ratio + padding drive the box; width itself
-			// stays auto so the card fits its column. The image inside then
-			// fills whatever space is left after the padding (see
-			// .card-custom .morph-image in morph-card.css: flex: 1 1 auto).
-			const mw = data.maxWidth || {};
-			if ( mw.size ) {
-				this.root.style.maxWidth = `${ mw.size }${ mw.unit || 'px' }`;
-			}
-			this.root.style.aspectRatio = ( data.aspectRatio && 'auto' !== data.aspectRatio ) ? data.aspectRatio.replace( '/', ' / ' ) : '';
-
-			const pad = data.padding || {};
-			const pu  = pad.unit || 'px';
-			this.root.style.padding = `${ pad.top || 0 }${ pu } ${ pad.right || 0 }${ pu } ${ pad.bottom || 0 }${ pu } ${ pad.left || 0 }${ pu }`;
-			this.root.style.borderRadius = `${ data.radius || 0 }px`;
-			this.root.style.rotate       = `${ data.rotate || 0 }deg`;
-			if ( data.bgColor ) this.root.style.background = data.bgColor;
-
+		_renderCustomContent( data ) {
 			this.header.className = 'morph-header';
 			this.header.style.display = data.headerHtml ? '' : 'none';
 			this.header.innerHTML = data.headerHtml || '';
 
-			this.image.className          = 'morph-image';
-			this.image.style.aspectRatio  = '';
-			this.image.style.borderRadius = '';
-			this.image.style.display      = '';
+			this.image.className     = 'morph-image';
+			this.image.style.display = '';
 			if ( data.photo ) {
 				const fit = data.imageFit || 'cover';
 				const pos = data.imagePosition || 'center center';
@@ -183,12 +265,7 @@
 			return this;
 		}
 
-		renderAsProfile( data ) {
-			this.mode = 'profile';
-			this._resetRootStyles();
-			this.root.classList.remove( 'card-instagram', 'card-polaroid', 'card-custom' );
-			this.root.classList.add( 'card-profile' );
-
+		_renderProfileContent( data ) {
 			const stats = {
 				posts:     data.posts || 0,
 				followers: data.followers || 0,
@@ -224,9 +301,8 @@
 				</div>
 			`;
 
-			this.image.className          = 'morph-image';
-			this.image.style.aspectRatio  = '';
-			this.image.style.borderRadius = '';
+			this.image.className     = 'morph-image';
+			this.image.style.display = '';
 			this.image.innerHTML = `
 				<div class="morph-profile-grid">
 					${ photos.map( ( src ) => `<div class="morph-profile-grid-item"><img src="${ src }" alt=""></div>` ).join( '' ) }
@@ -234,34 +310,22 @@
 			`;
 
 			this.footer.className = 'morph-footer';
+			this.footer.style.display = '';
 			this.footer.innerHTML = '';
 			return this;
 		}
 
-		renderAsPolaroid( data ) {
-			const size = ( data.size && MorphCard.POLAROID_SIZES[ data.size ] ) ? data.size : 'normal';
-			const cfg  = MorphCard.POLAROID_SIZES[ size ];
-
-			this.mode = 'polaroid';
-			this.root.classList.remove( 'card-instagram', 'card-profile', 'card-custom' );
-			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
-			this.root.classList.add( 'card-polaroid' );
-			if ( data.frame ) {
-				this.root.classList.add( `frame-${ data.frame }` );
-			}
-			this.root.style.borderRadius = `${ cfg.radius }px`;
-			this.root.style.padding      = `${ cfg.paddingTop }px ${ cfg.paddingSides }px ${ cfg.paddingBottom }px`;
-			this.root.style.rotate       = `${ cfg.rotate }deg`;
-
+		_renderPolaroidContent( data ) {
 			this.header.className = 'morph-header';
+			this.header.style.display = '';
 			this.header.innerHTML = '';
 
-			this.image.className         = 'morph-image';
-			this.image.style.aspectRatio = cfg.photoRatio;
-			this.image.style.borderRadius = '0px';
+			this.image.className     = 'morph-image';
+			this.image.style.display = '';
 			this.image.innerHTML = `<img class="morph-image-photo" src="${ data.photo || '' }" alt="${ this._escAttr( data.caption || '' ) }">`;
 
 			this.footer.className = 'morph-footer';
+			this.footer.style.display = '';
 			this.footer.innerHTML = `<p class="morph-caption ig-caption-as-polaroid"><span class="morph-caption-text">${ this._escHtml( data.caption || '' ) }</span></p>`;
 
 			const captionEl = this.footer.querySelector( '.morph-caption' );
@@ -318,13 +382,24 @@
 		}
 
 		/**
-		 * Generic morph for non-polaroid targets: hands the frame
-		 * interpolation off to CSS transitions on .morph-card (way more
-		 * robust than a parallel Motion One tween that has to survive an
-		 * inline-style reset mid-flight) and only uses Motion One for the
-		 * inner content crossfade. The `.is-morphing` class arms the
-		 * transition list right before the class swap, so the very first
-		 * render on page load doesn't animate from unstyled → mode default.
+		 * Generic morph — shared-element crossfade with no blank frame.
+		 *
+		 * The previous version faded the zones out to opacity 0, THEN
+		 * re-rendered underneath, THEN faded them back in — leaving a
+		 * visible gap where the card was empty. Now the pipeline is:
+		 *
+		 *   1. Snapshot each zone's current children into an absolutely-
+		 *      positioned overlay layered on top of the zone.
+		 *   2. Render the new state — new content instantly populates the
+		 *      zones underneath, but the overlays hide it visually.
+		 *   3. Motion One fades the overlays from 1 → 0 in parallel with
+		 *      the CSS transitions morphing the outer frame.
+		 *   4. Overlays are removed once fully transparent.
+		 *
+		 * The zones themselves stay at opacity 1 the whole time, so the
+		 * new content is always visible the instant the overlay drops
+		 * below full opacity — no blank moment, no "fade to nothing then
+		 * fade back". Same principle as Framer Motion's AnimatePresence.
 		 */
 		_morphFrame( state, timing ) {
 			const { animate } = window.Motion;
@@ -334,207 +409,120 @@
 			this.root.style.setProperty( '--amc-morph-duration', `${ durationMs }ms` );
 			this.root.classList.add( 'is-morphing' );
 
-			// Inner content: fade the current header/image/footer out, then
-			// re-render for the new template underneath (which triggers the
-			// class swap → CSS transitions animate the frame), then fade
-			// the new content back in.
-			const zones = [ this.header, this.image, this.footer ].filter( Boolean );
-			const contentDone = animate( zones, { opacity: [ 1, 0 ] }, { duration: t.captionOutDuration, easing: 'ease-in' } )
-				.finished.then( () => {
-					this.renderState( state );
-					return animate( zones, { opacity: [ 0, 1 ] }, { duration: t.captionInDuration, easing: 'ease-out' } ).finished;
-				} );
+			// 1) Snapshot current zone contents into overlays that mimic
+			//    each zone's own layout (so old flex children still lay
+			//    out like they did before the swap).
+			const overlays = this._snapshotZoneOverlays();
 
-			// Give the CSS transitions their full time to settle (frame
-			// duration + delay) before disarming the class — otherwise a
-			// rapid next state change would step in with transitions still
-			// arming a stale property list.
+			// 2) Render new state — writes new innerHTML into the zones,
+			//    but the overlays are re-appended on top afterwards so
+			//    they visually cover the new content until they fade out.
+			this.renderState( state );
+			overlays.forEach( ( { zone, overlay } ) => zone.appendChild( overlay ) );
+
+			// 3) Fade overlays out over the frame duration (matches the
+			//    CSS transition, so shape + content settle together).
+			const overlayEls = overlays.map( ( o ) => o.overlay );
+			const fadeMs = Math.max( t.captionOutDuration || 0.4, t.captionInDuration || 0.5 );
+			const fadeDone = overlayEls.length
+				? animate( overlayEls, { opacity: [ 1, 0 ] }, { duration: fadeMs, easing: 'ease-in-out' } )
+					.finished.then( () => overlayEls.forEach( ( o ) => o.remove() ) )
+				: Promise.resolve();
+
+			// Disarm .is-morphing after CSS transitions have settled.
 			const settleMs = durationMs + Math.round( ( t.frameDelay || 0 ) * 1000 ) + 60;
 			setTimeout( () => this.root.classList.remove( 'is-morphing' ), settleMs );
 
-			return contentDone.then( () => this );
+			return fadeDone.then( () => this );
+		}
+
+		/**
+		 * Builds one absolutely-positioned overlay per zone containing a
+		 * clone of that zone's current innerHTML. Overlay layout mimics
+		 * the zone's own display/flex/padding so cloned children lay out
+		 * identically instead of collapsing into an inline flow.
+		 */
+		_snapshotZoneOverlays() {
+			const zones = [ this.header, this.image, this.footer ].filter( Boolean );
+			const out = [];
+			zones.forEach( ( zone ) => {
+				if ( ! zone.innerHTML.trim() ) return;
+				const cs = getComputedStyle( zone );
+				const overlay = document.createElement( 'div' );
+				overlay.className = 'morph-zone-overlay';
+				overlay.style.display        = cs.display;
+				overlay.style.flexDirection  = cs.flexDirection;
+				overlay.style.alignItems     = cs.alignItems;
+				overlay.style.justifyContent = cs.justifyContent;
+				overlay.style.gap            = cs.gap;
+				overlay.style.padding        = cs.padding;
+				overlay.innerHTML            = zone.innerHTML;
+				out.push( { zone, overlay } );
+			} );
+			return out;
 		}
 
 		_morphToPolaroid( state, timing ) {
 			const { animate } = window.Motion;
 			const t = Object.assign( {}, MorphCard.DEFAULT_MORPH_TIMING, timing );
 
-			const size = ( state.size && MorphCard.POLAROID_SIZES[ state.size ] ) ? state.size : 'normal';
-			const cfg  = MorphCard.POLAROID_SIZES[ size ];
+			// Frame morph — same engine as every other target: arm CSS
+			// transitions via .is-morphing, then re-render the target
+			// which writes explicit inline values (from _applyFrame), and
+			// the browser interpolates between the two automatically.
+			const durationMs = Math.round( ( t.frameDuration || 1.6 ) * 1000 );
+			this.root.style.setProperty( '--amc-morph-duration', `${ durationMs }ms` );
+			this.root.classList.add( 'is-morphing' );
 
-			// Pin every computed frame value BEFORE swapping the class — this
-			// is the whole trick that keeps the interpolation from snapping.
-			const rootCs = getComputedStyle( this.root );
-			const fromRadius     = rootCs.borderRadius;
-			const fromPadTop     = rootCs.paddingTop;
-			const fromPadLeft    = rootCs.paddingLeft;
-			const fromPadRight   = rootCs.paddingRight;
-			const fromPadBottom  = rootCs.paddingBottom;
-			const fromRotate     = ( rootCs.rotate && 'none' !== rootCs.rotate ) ? rootCs.rotate : '0deg';
-			const fromImageRadius = getComputedStyle( this.image ).borderRadius;
+			const captionLine = this.footer.querySelector( '.ig-caption' );
+			const fullText    = state.caption || ( captionLine && captionLine.querySelector( '.ig-caption-text' ) ? captionLine.querySelector( '.ig-caption-text' ).textContent : '' );
 
-			this.root.style.borderRadius = fromRadius;
-			this.root.style.paddingTop    = fromPadTop;
-			this.root.style.paddingLeft   = fromPadLeft;
-			this.root.style.paddingRight  = fromPadRight;
-			this.root.style.paddingBottom = fromPadBottom;
-			this.root.style.rotate        = fromRotate;
-			this.image.style.borderRadius = fromImageRadius;
+			// Same overlay-crossfade as _morphFrame — no blank moment.
+			const overlays = this._snapshotZoneOverlays();
+			this.renderState( state );
+			// Hide caption text under the overlay so the typewriter can
+			// reveal it "for the first time" once the frame finishes.
+			const captionTextEl = this.footer.querySelector( '.morph-caption-text' );
+			if ( captionTextEl ) captionTextEl.textContent = '';
+			overlays.forEach( ( { zone, overlay } ) => zone.appendChild( overlay ) );
 
-			// References to the elements that need to fade/collapse
-			const header       = this.header;
-			const actions      = this.footer.querySelector( '.ig-actions' );
-			const likesLine    = this.footer.querySelector( '.ig-likes' );
-			const commentsLine = this.footer.querySelector( '.ig-comments' );
-			const captionLine  = this.footer.querySelector( '.ig-caption' );
-			const dotsEl       = this.image.querySelector( '.ig-dots' );
-			const heartBurstEl = this.image.querySelector( '.ig-heart-burst' );
-
-			// Now flip the mode class (colors etc. flip instantly; layout is
-			// pinned so no snap)
-			this.mode = 'polaroid';
-			this.root.classList.remove( 'card-instagram', 'card-profile', 'card-custom' );
-			this.root.classList.remove( 'frame-classic', 'frame-vintage', 'frame-pink', 'frame-dark', 'frame-floral' );
-			this.root.classList.add( 'card-polaroid' );
-			if ( state.frame ) {
-				this.root.classList.add( `frame-${ state.frame }` );
+			const overlayEls = overlays.map( ( o ) => o.overlay );
+			const fadeMs = Math.max( t.captionOutDuration || 0.4, t.captionInDuration || 0.5 );
+			if ( overlayEls.length ) {
+				animate( overlayEls, { opacity: [ 1, 0 ] }, { duration: fadeMs, easing: 'ease-in-out' } )
+					.finished.then( () => overlayEls.forEach( ( o ) => o.remove() ) );
 			}
 
-			// 1) Collapse the header
-			if ( header && header.children.length ) {
-				this._collapseElement( header, t.stripDuration, 'ease-in' ).then( () => {
-					header.innerHTML = '';
-					header.style.height = '';
-					header.style.paddingTop = '';
-					header.style.paddingBottom = '';
-					header.style.overflow = '';
-				} );
-			}
+			// Shimmer sweep across the image while the frame reshapes —
+			// the polaroid signature that _morphFrame doesn't ship.
+			this._playShimmerOnImage( t.frameDuration + 0.3 );
 
-			// 2) Collapse actions/likes/comments in a small cascade
-			[ actions, likesLine, commentsLine ].filter( Boolean ).forEach( ( el ) => {
+			// Disarm .is-morphing once the CSS transitions have settled.
+			setTimeout( () => this.root.classList.remove( 'is-morphing' ), durationMs + 60 );
+
+			// Once the fade-in has re-populated the polaroid caption line,
+			// play the typewriter/letters reveal on top of it. captionDelay
+			// gives the frame morph time to advance so the reveal doesn't
+			// race with the shape change.
+			return new Promise( ( resolve ) => {
 				setTimeout( () => {
-					this._collapseElement( el, t.stripDuration, 'ease-in' ).then( () => el.remove() );
-				}, t.stripStagger * 1000 );
-			} );
-
-			// 2.1) Fade the dots + heart burst
-			const imageExtras = [ dotsEl, heartBurstEl ].filter( Boolean );
-			if ( imageExtras.length ) {
-				animate( imageExtras, { opacity: [ 1, 0 ] }, { duration: t.stripDuration, easing: 'ease-in' } )
-					.finished.then( () => imageExtras.forEach( ( el ) => el.remove() ) );
-			}
-
-			// 3) Interpolate the frame (radius, padding, rotate) to polaroid target
-			animate( this.root, {
-				borderRadius: [ fromRadius, `${ cfg.radius }px` ],
-				paddingTop:    [ fromPadTop, `${ cfg.paddingTop }px` ],
-				paddingLeft:   [ fromPadLeft, `${ cfg.paddingSides }px` ],
-				paddingRight:  [ fromPadRight, `${ cfg.paddingSides }px` ],
-				paddingBottom: [ fromPadBottom, `${ cfg.paddingBottom }px` ],
-				rotate:        [ fromRotate, `${ cfg.rotate }deg` ]
-			}, { duration: t.frameDuration, delay: t.frameDelay, easing: [ 0.22, 1, 0.36, 1 ] } );
-
-			// 4) Image: lose its border-radius; also swap aspect-ratio
-			animate( this.image, { borderRadius: [ fromImageRadius, '0px' ] }, { duration: t.frameDuration, delay: t.frameDelay, easing: [ 0.22, 1, 0.36, 1 ] } );
-			this.image.style.aspectRatio = cfg.photoRatio;
-
-			// Shimmer sweep across the photo while it reshapes
-			this._playShimmerOnImage( t.frameDelay + t.frameDuration + 0.3 );
-
-			// 5) Caption: out → swap → typewriter/letters reveal in
-			const morphDone = new Promise( ( resolve ) => {
-				const fullText = state.caption || '';
-
-				setTimeout( () => {
-					if ( ! captionLine ) {
-						this._replaceFooterWithPolaroidCaption( fullText, t ).then( () => resolve( this ) );
-						return;
-					}
-					const fromCaptionHeight = captionLine.offsetHeight;
-					const targetFontSize    = this._captionFontSizeForWidth();
-					const targetCaptionHeight = this._measureCaptionHeight( fullText, targetFontSize );
-
-					animate( captionLine, {
-						opacity: [ 1, 0 ],
-						height:  [ `${ fromCaptionHeight }px`, `${ targetCaptionHeight }px` ]
-					}, { duration: t.captionOutDuration, easing: 'ease-in' } )
-						.finished.then( () => {
-							captionLine.classList.remove( 'ig-caption' );
-							captionLine.classList.add( 'morph-caption', 'ig-caption-as-polaroid' );
-							captionLine.style.height   = `${ targetCaptionHeight }px`;
-							captionLine.style.fontSize = `${ targetFontSize.toFixed( 1 ) }px`;
-							captionLine.innerHTML = '<span class="morph-caption-text"></span>';
-							const textEl = captionLine.querySelector( '.morph-caption-text' );
-
-							animate( captionLine, { opacity: [ 0, 1 ] }, { duration: t.captionInDuration, easing: [ 0.22, 1, 0.36, 1 ] } )
-								.finished.then( () => {
-									const revealPromise = 'letters' === t.captionEffect
-										? this._revealCaptionLetters( textEl, fullText, t )
-										: this._typewriteCaption( textEl, fullText, t );
-									revealPromise.then( () => {
-										captionLine.style.height = '';
-										resolve( this );
-									} );
-								} );
-						} );
+					const textEl = this.footer.querySelector( '.morph-caption-text' );
+					if ( ! textEl ) { resolve( this ); return; }
+					const revealPromise = 'letters' === t.captionEffect
+						? this._revealCaptionLetters( textEl, fullText, t )
+						: this._typewriteCaption( textEl, fullText, t );
+					revealPromise.then( () => resolve( this ) );
 				}, t.captionDelay * 1000 );
 			} );
-
-			return morphDone;
-		}
-
-		_replaceFooterWithPolaroidCaption( text, t ) {
-			this.footer.innerHTML = `<p class="morph-caption ig-caption-as-polaroid"><span class="morph-caption-text"></span></p>`;
-			const captionEl = this.footer.querySelector( '.morph-caption' );
-			const textEl    = this.footer.querySelector( '.morph-caption-text' );
-			if ( captionEl ) {
-				captionEl.style.fontSize = `${ this._captionFontSizeForWidth().toFixed( 1 ) }px`;
-			}
-			if ( ! textEl ) return Promise.resolve( this );
-			return 'letters' === t.captionEffect
-				? this._revealCaptionLetters( textEl, text, t )
-				: this._typewriteCaption( textEl, text, t );
 		}
 
 		// ── Utilities ───────────────────────────────────────────────────────
-
-		_resetRootStyles() {
-			this.root.style.borderRadius = '';
-			this.root.style.padding      = '';
-			this.root.style.paddingTop    = '';
-			this.root.style.paddingLeft   = '';
-			this.root.style.paddingRight  = '';
-			this.root.style.paddingBottom = '';
-			this.root.style.rotate       = '';
-			this.root.style.width        = '';
-			this.root.style.height       = '';
-		}
 
 		_captionFontSizeForWidth( width ) {
 			const effectiveWidth = width || this.root.getBoundingClientRect().width || MorphCard.CAPTION_FONT_REFERENCE_WIDTH;
 			const ratio = effectiveWidth / MorphCard.CAPTION_FONT_REFERENCE_WIDTH;
 			const size  = ratio * MorphCard.CAPTION_FONT_REFERENCE_SIZE;
 			return Math.max( MorphCard.CAPTION_FONT_MIN, Math.min( MorphCard.CAPTION_FONT_MAX, size ) );
-		}
-
-		_collapseElement( el, duration, easing ) {
-			if ( ! el || typeof window.Motion === 'undefined' ) return Promise.resolve();
-			const { animate } = window.Motion;
-			const cs = getComputedStyle( el );
-			const fromHeight     = el.offsetHeight;
-			const fromPadTop     = cs.paddingTop;
-			const fromPadBottom  = cs.paddingBottom;
-			el.style.overflow      = 'hidden';
-			el.style.height        = `${ fromHeight }px`;
-			el.style.paddingTop    = fromPadTop;
-			el.style.paddingBottom = fromPadBottom;
-			return animate( el, {
-				opacity:       [ 1, 0 ],
-				height:        [ `${ fromHeight }px`, '0px' ],
-				paddingTop:    [ fromPadTop, '0px' ],
-				paddingBottom: [ fromPadBottom, '0px' ]
-			}, { duration, easing } ).finished;
 		}
 
 		_typewriteCaption( el, text, timing ) {
