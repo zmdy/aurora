@@ -613,7 +613,18 @@
 				this.cardEl.style.opacity = '1';
 			}
 			if ( this.config.states.length < 2 ) return;
+			// Elementor editor: skip the morph loop and show state[0] as a
+			// still preview. Any panel edit re-renders the widget's DOM from
+			// the server template, which repeatedly kills the morph
+			// mid-flight (leaving the class swapped but Motion One's
+			// interpolation cancelled) — a stable preview beats a broken
+			// animation. The full sequence still runs on the real frontend.
+			if ( this._isEditor() ) return;
 			this._scheduleNext( this.config.states[ 0 ].durationMs + ( this.config.initialDelay || 0 ) );
+		}
+
+		_isEditor() {
+			return !! ( window.elementorFrontend && typeof window.elementorFrontend.isEditMode === 'function' && window.elementorFrontend.isEditMode() );
 		}
 
 		_scheduleNext( waitMs ) {
