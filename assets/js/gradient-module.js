@@ -357,7 +357,20 @@
 
         var id = ++instanceCounter;
 
-        if (wrapper.getAttribute('data-aurora-gradient-target') === 'text') {
+        // Target resolution — prefer an explicit `data.target` (set by the
+        // Elementor Handler from the widget's own type), fall back to the
+        // PHP-written attribute (needed in the pure-frontend fallback path,
+        // where the JS handler never runs), and finally to background.
+        //
+        // The Handler override matters in the editor: when the user toggles
+        // Enable Gradient on a Heading, the handler's run() fires BEFORE the
+        // widget is re-rendered by PHP, so `data-aurora-gradient-target`
+        // still holds a stale/missing value — trusting the attribute alone
+        // silently applied the gradient as a background rectangle behind
+        // the text instead of as a text-fill.
+        var target = data.target || wrapper.getAttribute('data-aurora-gradient-target') || 'background';
+
+        if (target === 'text') {
             var textEl = wrapper.querySelector('.elementor-heading-title, .elementor-text-editor') || wrapper;
             applyText(textEl, wrapper, data, id);
         } else {
@@ -374,6 +387,7 @@
      */
     function parseOptsFromDataset(el) {
         return {
+            target: el.getAttribute('data-aurora-gradient-target') || 'background',
             type: el.getAttribute('data-aurora-gradient-type') || 'linear',
             angle: parseInt(el.getAttribute('data-aurora-gradient-angle'), 10) || 135,
             stops: parseStops(el.getAttribute('data-aurora-gradient-stops')),
@@ -448,7 +462,15 @@
 
         AuroraGradientHandler.prototype.run = function () {
             if (!this.isEnabled()) return;
-            applyGradient(this.$element[0], this.getOpts());
+            var el = this.$element[0];
+            var opts = this.getOpts();
+            // Derive target from the widget's own type class — matches the
+            // TEXT_ELEMENTS list in class-gradient-controls.php. Beats
+            // reading the PHP-written data-attribute in the editor, where
+            // toggling Enable Gradient fires the handler before PHP has
+            // re-rendered the wrapper's attributes.
+            opts.target = el.matches('.elementor-widget-heading, .elementor-widget-text-editor') ? 'text' : 'background';
+            applyGradient(el, opts);
         };
 
         AuroraGradientHandler.prototype.onInit = function () {
