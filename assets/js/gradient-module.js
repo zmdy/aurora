@@ -226,12 +226,25 @@
      * @param {Object} data
      * @param {number} id
      */
-    function applyBackground(el, data, id) {
+    /**
+     * Undoes anything applyBackground may have written. Mirrors
+     * clearTextGradient for the container-background path — used when
+     * the user disables the gradient toggle so the last render doesn't
+     * silently linger on the DOM.
+     */
+    function clearBackgroundGradient(el) {
         el.classList.remove('aurora-gradient-host');
         el.removeAttribute('data-aurora-gradient-instance');
-        el.style.backgroundImage = '';
+        el.style.backgroundImage      = '';
+        el.style.backgroundSize       = '';
+        el.style.backgroundPosition   = '';
+        el.style.backgroundRepeat     = '';
         injectCss(el, '');
         stopFollowMouse(el);
+    }
+
+    function applyBackground(el, data, id) {
+        clearBackgroundGradient(el);
 
         if (data.followMouse) {
             startFollowMouse(el, el, data);
@@ -314,12 +327,38 @@
         el.style.backgroundImage = gradientCss;
     }
 
-    function applyText(textEl, trackEl, data, id) {
+    /**
+     * Undoes every inline style / class / attribute this module might
+     * have written on a text target — including any leaf spans left
+     * behind by Text Animation. Called when the user disables the
+     * gradient or switches the widget's target to a non-text kind,
+     * both of which used to leave the previous paint stuck on the DOM.
+     */
+    function clearTextGradient(textEl, trackEl) {
+        stopFollowMouse(trackEl);
+        injectCss(textEl, '');
         textEl.classList.remove('aurora-gradient-text');
         textEl.removeAttribute('data-aurora-gradient-instance');
-        textEl.style.backgroundSize = '';
-        injectCss(textEl, '');
-        stopFollowMouse(trackEl);
+
+        var propsToClear = [
+            'backgroundImage', 'backgroundClip', 'webkitBackgroundClip',
+            'backgroundSize', 'backgroundPosition', 'backgroundRepeat',
+            'color', 'webkitTextFillColor',
+            'paddingTop', 'paddingBottom', 'lineHeight'
+        ];
+        propsToClear.forEach(function (p) { textEl.style[p] = ''; });
+
+        var leaves = findTextLeaves(textEl);
+        for (var i = 0; i < leaves.length; i++) {
+            propsToClear.forEach(function (p) { leaves[i].style[p] = ''; });
+        }
+    }
+
+    function applyText(textEl, trackEl, data, id) {
+        // Reset any prior paint (colors, sizes, background positions, leaf
+        // paints) before applying a fresh one — makes color/mode changes in
+        // the editor deterministic instead of layering onto stale styles.
+        clearTextGradient(textEl, trackEl);
 
         // Guard against accent/descender clipping when the browser
         // computes the text-bounds mask for background-clip:text —
@@ -345,36 +384,41 @@
         }
 
         var gradientCss = buildGradientCss(data.type, data.angle, data.stops);
+        var leaves      = findTextLeaves(textEl);
+        var mode        = data.textMode || 'phrase';
 
-        // If Text Animation has already split the element into per-char /
-        // per-word spans, only the LEAF spans should carry the gradient.
-        // Painting the parent AND the leaves would render two versions
-        // stacked on top of each other: background-clip:text on the parent
-        // paints through descendant text at the parent's (untransformed)
-        // position, while each leaf paints again at its animated position
-        // — producing the "letters bunched at the start + animated on top"
-        // ghost the user reported.
-        var leaves = findTextLeaves(textEl);
-
-        if (leaves.length > 0) {
-            // Split path: strip any gradient from the parent so it can't
-            // ghost through, then paint each leaf individually.
-            textEl.style.backgroundImage      = '';
-            textEl.style.webkitBackgroundClip = '';
-            textEl.style.backgroundClip       = '';
-            // Keep color/text-fill transparent so any residual descendant
-            // text that isn't a leaf (spaces between words, aria fallback)
-            // doesn't render as solid theme color underneath.
+        if (leaves.length === 0) {
+            // No Text Animation split — paint the parent directly.
+            paintTextTarget(textEl, gradientCss);
+        } else if (mode === 'per-letter') {
+            // Each glyph carries the FULL gradient (all letters look
+            // identical). Parent must stay bare, otherwise its own paint
+            // would ghost through the descendant text at the parent's
+            // untransformed position (see the earlier bunched-letters
+            // regression).
             textEl.style.color                = 'transparent';
             textEl.style.webkitTextFillColor  = 'transparent';
             for (var li = 0; li < leaves.length; li++) {
                 paintTextTarget(leaves[li], gradientCss);
             }
         } else {
-            // No split yet — paint the parent normally. If Text Animation
-            // splits later, the 'aurora:text-split' listener re-runs this
-            // function and we take the branch above instead.
-            paintTextTarget(textEl, gradientCss);
+            // Phrase mode: the whole sentence shares a single gradient
+            // that stretches across the parent's bounding box. Each leaf
+            // receives a background sized to the parent's dimensions and
+            // POSITIONED so it displays only the slice sitting under its
+            // own glyph — visually reconstructing the phrase-wide
+            // gradient across all animated spans.
+            var parentRect = textEl.getBoundingClientRect();
+            textEl.style.color               = 'transparent';
+            textEl.style.webkitTextFillColor = 'transparent';
+            for (var lj = 0; lj < leaves.length; lj++) {
+                var leaf     = leaves[lj];
+                var leafRect = leaf.getBoundingClientRect();
+                paintTextTarget(leaf, gradientCss);
+                leaf.style.backgroundSize     = parentRect.width + 'px ' + parentRect.height + 'px';
+                leaf.style.backgroundPosition = (parentRect.left - leafRect.left) + 'px ' + (parentRect.top - leafRect.top) + 'px';
+                leaf.style.backgroundRepeat   = 'no-repeat';
+            }
         }
 
         if (!data.animate) return;
@@ -463,7 +507,8 @@
             style: el.getAttribute('data-aurora-gradient-style') || 'mesh',
             speed: parseInt(el.getAttribute('data-aurora-gradient-speed'), 10) || 8,
             followMouse: el.getAttribute('data-aurora-gradient-follow-mouse') === '1',
-            spotlightRadius: parseInt(el.getAttribute('data-aurora-gradient-spotlight-radius'), 10) || 600
+            spotlightRadius: parseInt(el.getAttribute('data-aurora-gradient-spotlight-radius'), 10) || 600,
+            textMode: el.getAttribute('data-aurora-gradient-text-mode') || 'phrase'
         };
     }
 
@@ -524,20 +569,33 @@
                 style: this.getElementSettings('aurora_gradient_animation_style') || 'mesh',
                 speed: sizeOf(this.getElementSettings('aurora_gradient_speed'), 8),
                 followMouse: followMouse,
-                spotlightRadius: sizeOf(this.getElementSettings('aurora_gradient_spotlight_radius'), 600)
+                spotlightRadius: sizeOf(this.getElementSettings('aurora_gradient_spotlight_radius'), 600),
+                textMode: this.getElementSettings('aurora_gradient_text_mode') || 'phrase'
             };
         };
 
         AuroraGradientHandler.prototype.run = function () {
-            if (!this.isEnabled()) return;
             var el = this.$element[0];
+            var isText = el.matches('.elementor-widget-heading, .elementor-widget-text-editor');
+
+            // Disabled path — actively strip anything the previous run
+            // painted. Without this, toggling Enable Gradient off (or
+            // switching the target away from text) left the old inline
+            // styles frozen on the DOM and the widget appeared to still
+            // have a gradient. Same story for editor color changes:
+            // clearing before applying is what makes the change stick.
+            if (!this.isEnabled()) {
+                if (isText) {
+                    var textEl = el.querySelector('.elementor-heading-title, .elementor-text-editor') || el;
+                    clearTextGradient(textEl, el);
+                } else {
+                    clearBackgroundGradient(el);
+                }
+                return;
+            }
+
             var opts = this.getOpts();
-            // Derive target from the widget's own type class — matches the
-            // TEXT_ELEMENTS list in class-gradient-controls.php. Beats
-            // reading the PHP-written data-attribute in the editor, where
-            // toggling Enable Gradient fires the handler before PHP has
-            // re-rendered the wrapper's attributes.
-            opts.target = el.matches('.elementor-widget-heading, .elementor-widget-text-editor') ? 'text' : 'background';
+            opts.target = isText ? 'text' : 'background';
             applyGradient(el, opts);
         };
 

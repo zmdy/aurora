@@ -246,6 +246,32 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
+		// ── Text render mode (headings / text editor only) ───────────────────
+		// Only meaningful when the gradient targets text (background-clip
+		// on Heading/Text Editor). Two modes:
+		//   phrase     — one gradient stretches across the whole sentence.
+		//                Each glyph shows its own slice of that gradient.
+		//   per-letter — each letter carries its own full copy of the
+		//                gradient (all letters look identical). This is
+		//                what Text Animation splits used to force, since a
+		//                single parent gradient can't paint through
+		//                animated descendant text.
+		$element->add_control(
+			'aurora_gradient_text_mode',
+			[
+				'label'              => esc_html__( 'Text render mode', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'phrase',
+				'options'            => [
+					'phrase'     => esc_html__( 'Whole phrase (one gradient across all text)', 'aurora-for-elementor' ),
+					'per-letter' => esc_html__( 'Per letter (each glyph shows the full gradient)', 'aurora-for-elementor' ),
+				],
+				'description'        => esc_html__( 'Only applies when the gradient is used as a text fill on Heading/Text Editor.', 'aurora-for-elementor' ),
+				'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
 		// ── Animate ───────────────────────────────────────────────────────────
 		// Hidden while Follow Mouse is on: one drives the gradient from a
 		// timer (CSS @keyframes), the other from live cursor position — the
@@ -372,6 +398,9 @@ class Gradient_Controls extends Animation_Module {
 		$follow_mouse = 'radial' === $type && 'yes' === ( $settings['aurora_gradient_follow_mouse'] ?? '' );
 		$animate      = ! $follow_mouse && 'yes' === ( $settings['aurora_gradient_animate'] ?? '' );
 
+		$text_mode = $settings['aurora_gradient_text_mode'] ?? 'phrase';
+		$text_mode = in_array( $text_mode, [ 'phrase', 'per-letter' ], true ) ? $text_mode : 'phrase';
+
 		return [
 			'data-aurora-gradient-enable'           => '1',
 			'data-aurora-gradient-target'           => esc_attr( $target ),
@@ -383,6 +412,7 @@ class Gradient_Controls extends Animation_Module {
 			'data-aurora-gradient-speed'            => esc_attr( max( 1, (int) ( $settings['aurora_gradient_speed']['size'] ?? 8 ) ) ),
 			'data-aurora-gradient-follow-mouse'     => $follow_mouse ? '1' : '0',
 			'data-aurora-gradient-spotlight-radius' => esc_attr( max( 50, (int) ( $settings['aurora_gradient_spotlight_radius']['size'] ?? 600 ) ) ),
+			'data-aurora-gradient-text-mode'        => esc_attr( $text_mode ),
 		];
 	}
 }
