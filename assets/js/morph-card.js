@@ -43,7 +43,7 @@
 			modeClass:         'card-instagram',
 			borderRadius:      '22px',
 			padding:           '14px 14px 18px 14px',
-			rotate:            '-2deg',
+			rotate:            '0deg',
 			maxWidth:          '320px',
 			aspectRatio:       'auto',
 			background:        '',
@@ -191,7 +191,11 @@
 			this.root.style.rotate       = spec.rotate;
 			this.root.style.maxWidth     = spec.maxWidth;
 			this.root.style.aspectRatio  = spec.aspectRatio;
-			this.root.style.background   = spec.background;
+			// backgroundColor (not the `background` shorthand) — shorthand
+			// nukes background-image/repeat/etc which the polaroid noise
+			// texture and other CSS rules quietly depend on. Longhand
+			// keeps them intact.
+			this.root.style.backgroundColor = spec.background;
 			// Image frame — same principle. width/height stay in CSS.
 			this.image.style.aspectRatio  = spec.imageAspectRatio;
 			this.image.style.borderRadius = spec.imageBorderRadius;

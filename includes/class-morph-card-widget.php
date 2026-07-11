@@ -19,6 +19,7 @@
 namespace Aurora;
 
 use Elementor\Controls_Manager;
+use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
@@ -591,54 +592,127 @@ class Morph_Card_Widget extends Widget_Base {
 
 		$this->end_controls_section();
 
-		// ── Style tab: text ──────────────────────────────────────────────────
-		// Standard Elementor Typography + Color group over every text node
-		// inside the card. Emitted as scoped inline CSS on the widget
-		// wrapper (Elementor does this automatically from the `selector` key)
-		// — the extra specificity of {{WRAPPER}} + the class chain lets the
-		// user's font override the built-in Caveat/system stacks.
+		// ── Style tab: Card ──────────────────────────────────────────────────
+		// Card-level visual controls (box shadow, base body text color).
 		$this->start_controls_section(
-			'aurora_mc_section_text_style',
+			'aurora_mc_section_card_style',
 			[
-				'label' => esc_html__( 'Text', 'aurora-for-elementor' ),
+				'label' => esc_html__( 'Card', 'aurora-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name'     => 'aurora_mc_box_shadow',
+				'label'    => esc_html__( 'Box shadow', 'aurora-for-elementor' ),
+				'selector' => '{{WRAPPER}} .morph-card',
 			]
 		);
 
 		$this->add_control(
 			'aurora_mc_text_color',
 			[
-				'label'     => esc_html__( 'Text color', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Base text color (fallback)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .morph-card, {{WRAPPER}} .morph-card p, {{WRAPPER}} .morph-card span, {{WRAPPER}} .morph-caption, {{WRAPPER}} .ig-caption, {{WRAPPER}} .ig-username, {{WRAPPER}} .morph-profile-name, {{WRAPPER}} .morph-profile-bio' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .morph-card' => 'color: {{VALUE}};',
 				],
 			]
 		);
 
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
+		$this->end_controls_section();
+
+		// ── Style tab: Instagram text ────────────────────────────────────────
+		// One typography group per text zone so restyling the username
+		// doesn't drag the caption with it (and vice versa). Every group
+		// emits its own scoped CSS block, so unused groups add nothing.
+		$this->start_controls_section(
+			'aurora_mc_section_ig_style',
 			[
-				'name'     => 'aurora_mc_typography',
-				'label'    => esc_html__( 'Typography', 'aurora-for-elementor' ),
-				'selector' => '{{WRAPPER}} .morph-card, {{WRAPPER}} .morph-card p, {{WRAPPER}} .morph-card span',
+				'label' => esc_html__( 'Instagram text', 'aurora-for-elementor' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
+		$this->_add_text_typography_group( 'ig_username',  'Username',       '{{WRAPPER}} .ig-username, {{WRAPPER}} .ig-caption-user' );
+		$this->_add_text_typography_group( 'ig_subtext',   'Subtext',        '{{WRAPPER}} .ig-subtext' );
+		$this->_add_text_typography_group( 'ig_caption',   'Caption text',   '{{WRAPPER}} .ig-caption, {{WRAPPER}} .ig-caption .ig-caption-text' );
+		$this->_add_text_typography_group( 'ig_likes',     'Likes counter',  '{{WRAPPER}} .ig-likes, {{WRAPPER}} .ig-likes-count' );
+		$this->_add_text_typography_group( 'ig_comments',  'Comments line',  '{{WRAPPER}} .ig-comments' );
+		$this->end_controls_section();
 
-		// Caption stays independently themable because it uses a decorative
-		// script font by default (Caveat) — most users will want to keep that
-		// vibe on polaroids even after changing the main body font, so give
-		// it its own group instead of forcing them to override globally.
+		// ── Style tab: Polaroid text ─────────────────────────────────────────
+		$this->start_controls_section(
+			'aurora_mc_section_polaroid_style',
+			[
+				'label' => esc_html__( 'Polaroid text', 'aurora-for-elementor' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			]
+		);
+		// Kept the legacy name (aurora_mc_caption_typography) so existing
+		// saved widgets don't lose their polaroid font settings.
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			[
 				'name'     => 'aurora_mc_caption_typography',
-				'label'    => esc_html__( 'Caption typography (polaroid)', 'aurora-for-elementor' ),
+				'label'    => esc_html__( 'Caption typography', 'aurora-for-elementor' ),
 				'selector' => '{{WRAPPER}} .morph-caption, {{WRAPPER}} .ig-caption-as-polaroid',
 			]
 		);
-
+		$this->add_control(
+			'aurora_mc_polaroid_caption_color',
+			[
+				'label'     => esc_html__( 'Caption color', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .morph-caption, {{WRAPPER}} .ig-caption-as-polaroid' => 'color: {{VALUE}};',
+				],
+			]
+		);
 		$this->end_controls_section();
+
+		// ── Style tab: Profile text ──────────────────────────────────────────
+		$this->start_controls_section(
+			'aurora_mc_section_profile_style',
+			[
+				'label' => esc_html__( 'Profile text', 'aurora-for-elementor' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			]
+		);
+		$this->_add_text_typography_group( 'profile_name',     'Display name',   '{{WRAPPER}} .morph-profile-name' );
+		$this->_add_text_typography_group( 'profile_bio',      'Bio',            '{{WRAPPER}} .morph-profile-bio' );
+		$this->_add_text_typography_group( 'profile_stat_num', 'Stats numbers',  '{{WRAPPER}} .morph-profile-stat strong' );
+		$this->_add_text_typography_group( 'profile_stat_lbl', 'Stats labels',   '{{WRAPPER}} .morph-profile-stat span' );
+		$this->_add_text_typography_group( 'profile_btn',      'Buttons',        '{{WRAPPER}} .morph-profile-btn' );
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Adds a Typography group + matching Color control for one text zone.
+	 * Keeps register_controls() readable — every zone would otherwise
+	 * repeat the same 8-line block. `name_key` becomes the setting id
+	 * prefix so Elementor stores each group under a unique key.
+	 */
+	private function _add_text_typography_group( string $name_key, string $label, string $selector ): void {
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name'     => 'aurora_mc_typo_' . $name_key,
+				'label'    => sprintf( esc_html__( '%s typography', 'aurora-for-elementor' ), $label ),
+				'selector' => $selector,
+			]
+		);
+		$this->add_control(
+			'aurora_mc_color_' . $name_key,
+			[
+				'label'     => sprintf( esc_html__( '%s color', 'aurora-for-elementor' ), $label ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => [
+					$selector => 'color: {{VALUE}};',
+				],
+			]
+		);
 	}
 
 	// ── Render ───────────────────────────────────────────────────────────────
