@@ -1,17 +1,18 @@
 /**
  * Aurora for Elementor — Frontend: Gradient Module
  *
- * Multi-stop gradients (3+ colors) on containers (background) and on
- * the Heading/Text Editor widgets (text), with an optional "mesh"
- * animation (blurred blobs, the same visual language as the brand
- * icons) or "loop" (hue rotation). The whole effect is resolved via
- * CSS — this file only reads the saved data (via the Elementor
- * Handler or data-attributes) and injects a dynamic stylesheet with
- * the gradient and, when animated, a per-instance @keyframes block
+ * Multi-stop gradients (3+ colors) on containers (background), on the
+ * Heading/Text Editor widgets (text-fill), on the Icon widget (icon-fill,
+ * handling both font-icon and SVG icon markup), and on Icon Box
+ * (configurable: box background or icon-fill) — with an optional "mesh"
+ * animation (blurred blobs) or "loop" (hue rotation). The whole effect is
+ * resolved via CSS — this file only reads the saved data (via the
+ * Elementor Handler or data-attributes) and injects a dynamic stylesheet
+ * with the gradient and, when animated, a per-instance @keyframes block
  * (each element can have different colors/speed).
  *
  * @package Aurora
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 /* global elementorFrontend, elementorModules, jQuery */
@@ -443,6 +444,211 @@
         injectCss(textEl, css);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // ICON FILL (Icon widget, and Icon Box when "Apply To" = Icon)
+    // ─────────────────────────────────────────────────────────────────────────
+    //
+    // Elementor's Icon control renders one of two completely different DOM
+    // shapes depending on the icon library the user picked, and both need a
+    // different gradient technique:
+    //   - Font icon (Font Awesome, etc.): the glyph is a font character
+    //     rendered via <i class="fa ...">. It IS text, so the exact same
+    //     background-clip:text trick used for Heading/Text Editor works
+    //     unchanged — paintTextTarget() is reused as-is, including full
+    //     Animate (pan/loop) and Follow Mouse support for free.
+    //   - SVG icon: <svg> paths have no notion of "text" to clip — CSS
+    //     background-clip:text has no effect on them. Instead, a
+    //     <linearGradient>/<radialGradient> is injected directly into the
+    //     SVG's own <defs>, and every path's fill is pointed at it via
+    //     fill="url(#id)". Animate only supports "loop" (a CSS hue-rotate
+    //     filter on the whole <svg>, which works regardless of fill type) —
+    //     a moving-blobs mesh or a background-position pan don't apply to an
+    //     SVG fill, so both "mesh" and "pan" style values fall back to the
+    //     hue-rotate loop for SVG icons. Follow Mouse isn't supported for
+    //     SVG icons (the spotlight math would need to run in the SVG's own
+    //     coordinate space) — it's silently ignored, falling back to a
+    //     static gradient centered on the icon.
+
+    /**
+     * @param {HTMLElement} iconWrap Icon container, e.g. `.elementor-icon` (holds either an <i> or an <svg>).
+     * @returns {{type: 'font'|'svg', glyphEl: HTMLElement}|null}
+     */
+    function getIconGlyph(iconWrap) {
+        if (!iconWrap) return null;
+        var svg = iconWrap.querySelector('svg');
+        if (svg) return { type: 'svg', glyphEl: svg };
+        var i = iconWrap.querySelector('i');
+        if (i) return { type: 'font', glyphEl: i };
+        return null;
+    }
+
+    /**
+     * Injects/updates the <linearGradient> or <radialGradient> definition
+     * inside an SVG's own <defs> and points every shape's fill at it.
+     * Re-run on every settings change — overwrites the previous def instead
+     * of accumulating one per re-render.
+     *
+     * @param {SVGElement} svg
+     * @param {Object}     data
+     * @param {number}     id
+     * @returns {string} The gradient element's id (for the animation CSS selector, unused currently but kept for parity/debugging).
+     */
+    function paintSvgIconGradient(svg, data, id) {
+        var svgNs = 'http://www.w3.org/2000/svg';
+        var defs = svg.querySelector('defs');
+        if (!defs) {
+            defs = document.createElementNS(svgNs, 'defs');
+            svg.insertBefore(defs, svg.firstChild);
+        }
+
+        var gradId = 'aurora-grad-icon-' + id;
+        var previous = defs.querySelector('#' + gradId);
+        if (previous) previous.remove();
+
+        var isRadial = data.type === 'radial';
+        var gradEl = document.createElementNS(svgNs, isRadial ? 'radialGradient' : 'linearGradient');
+        gradEl.setAttribute('id', gradId);
+
+        if (isRadial) {
+            gradEl.setAttribute('cx', '50%');
+            gradEl.setAttribute('cy', '50%');
+            gradEl.setAttribute('r', '70%');
+        } else {
+            // Same angle-to-endpoint conversion CSS linear-gradient() uses
+            // internally, so the SVG version points the same direction as
+            // the CSS one used elsewhere for this same instance.
+            var rad = ((data.angle - 90) * Math.PI) / 180;
+            var dx = Math.cos(rad) * 0.5;
+            var dy = Math.sin(rad) * 0.5;
+            gradEl.setAttribute('x1', (50 - dx * 100) + '%');
+            gradEl.setAttribute('y1', (50 - dy * 100) + '%');
+            gradEl.setAttribute('x2', (50 + dx * 100) + '%');
+            gradEl.setAttribute('y2', (50 + dy * 100) + '%');
+        }
+
+        data.stops.forEach(function (s, i) {
+            var stop = document.createElementNS(svgNs, 'stop');
+            var offset = (s.offset === null || typeof s.offset === 'undefined')
+                ? (i / Math.max(1, data.stops.length - 1)) * 100
+                : s.offset;
+            stop.setAttribute('offset', offset + '%');
+            stop.setAttribute('stop-color', s.color);
+            gradEl.appendChild(stop);
+        });
+
+        defs.appendChild(gradEl);
+
+        var shapes = svg.querySelectorAll('path, circle, rect, polygon, ellipse, line, polyline');
+        shapes.forEach(function (shape) {
+            shape.style.fill = 'url(#' + gradId + ')';
+        });
+        // Also set it on the <svg> itself, in case a shape inherits fill
+        // from the root via `fill="currentColor"` further down the tree.
+        svg.style.fill = 'url(#' + gradId + ')';
+
+        return gradId;
+    }
+
+    /**
+     * Undoes anything applyIconFill may have written — SVG defs/fill AND
+     * the font-icon background-clip:text paint, whichever path was used
+     * last, so switching icon library or disabling the module never
+     * leaves stale paint behind.
+     *
+     * @param {HTMLElement} iconWrap
+     * @param {HTMLElement} trackEl
+     */
+    function clearIconFill(iconWrap, trackEl) {
+        stopFollowMouse(trackEl);
+        if (!iconWrap) return;
+
+        injectCss(iconWrap, '');
+        iconWrap.classList.remove('aurora-gradient-icon');
+        iconWrap.removeAttribute('data-aurora-gradient-instance');
+
+        var glyph = getIconGlyph(iconWrap);
+        if (!glyph) return;
+
+        if (glyph.type === 'font') {
+            var propsToClear = [
+                'backgroundImage', 'backgroundClip', 'webkitBackgroundClip',
+                'backgroundSize', 'backgroundPosition', 'backgroundRepeat',
+                'color', 'webkitTextFillColor'
+            ];
+            propsToClear.forEach(function (p) { glyph.glyphEl.style[p] = ''; });
+        } else {
+            glyph.glyphEl.style.fill = '';
+            glyph.glyphEl.style.filter = '';
+            var defs = glyph.glyphEl.querySelector('defs');
+            if (defs) defs.innerHTML = '';
+            var shapes = glyph.glyphEl.querySelectorAll('path, circle, rect, polygon, ellipse, line, polyline');
+            shapes.forEach(function (shape) { shape.style.fill = ''; });
+        }
+    }
+
+    /**
+     * @param {HTMLElement} iconWrap Located `.elementor-icon` node.
+     * @param {HTMLElement} trackEl  Outer wrapper (bounding box for Follow Mouse).
+     * @param {Object}      data
+     * @param {number}      id
+     */
+    function applyIconFill(iconWrap, trackEl, data, id) {
+        clearIconFill(iconWrap, trackEl);
+
+        var glyph = getIconGlyph(iconWrap);
+        if (!glyph) return;
+
+        if (glyph.type === 'font') {
+            // Identical mechanism to text — the glyph IS a font character.
+            if (data.followMouse) {
+                paintTextTarget(glyph.glyphEl, 'none');
+                startFollowMouse(trackEl, glyph.glyphEl, data);
+                return;
+            }
+
+            var gradientCss = buildGradientCss(data.type, data.angle, data.stops);
+            paintTextTarget(glyph.glyphEl, gradientCss);
+
+            if (!data.animate) return;
+
+            iconWrap.classList.add('aurora-gradient-icon');
+            iconWrap.setAttribute('data-aurora-gradient-instance', id);
+            glyph.glyphEl.style.backgroundSize = '300% 300%';
+
+            var selector = '.aurora-gradient-icon[data-aurora-gradient-instance="' + id + '"] i';
+            var css;
+            if (data.style === 'loop') {
+                css = selector + '{animation:aurora-grad-icon-hue-' + id + ' ' + data.speed + 's linear infinite;}' +
+                    '@keyframes aurora-grad-icon-hue-' + id + '{' +
+                    '0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}';
+            } else {
+                css = selector + '{animation:aurora-grad-icon-pan-' + id + ' ' + data.speed + 's ease-in-out infinite;}' +
+                    '@keyframes aurora-grad-icon-pan-' + id + '{' +
+                    '0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}';
+            }
+            injectCss(iconWrap, css);
+            return;
+        }
+
+        // SVG path — Follow Mouse isn't supported (see the block comment
+        // above this section); always paints a static-position gradient.
+        paintSvgIconGradient(glyph.glyphEl, data, id);
+
+        if (!data.animate) return;
+
+        iconWrap.classList.add('aurora-gradient-icon');
+        iconWrap.setAttribute('data-aurora-gradient-instance', id);
+
+        // Mesh/Pan both fall back to the hue-rotate loop for SVG fills —
+        // neither a moving-blobs background nor a background-position pan
+        // has a meaningful SVG-fill equivalent.
+        var svgSelector = '.aurora-gradient-icon[data-aurora-gradient-instance="' + id + '"] svg';
+        var svgCss = svgSelector + '{animation:aurora-grad-icon-svg-hue-' + id + ' ' + data.speed + 's linear infinite;}' +
+            '@keyframes aurora-grad-icon-svg-hue-' + id + '{' +
+            '0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}';
+        injectCss(iconWrap, svgCss);
+    }
+
     /**
      * Single entry point: decides background vs. text using the
      * `data-aurora-gradient-target` attribute that PHP already computed
@@ -485,6 +691,13 @@
         if (target === 'text') {
             var textEl = wrapper.querySelector('.elementor-heading-title, .elementor-text-editor') || wrapper;
             applyText(textEl, wrapper, data, id);
+        } else if (target === 'icon') {
+            // Icon Box nests its icon one level deeper (.elementor-icon-box-icon
+            // .elementor-icon) than the plain Icon widget (.elementor-icon
+            // directly) — this selector matches both without needing to know
+            // which widget it's running on.
+            var iconWrap = wrapper.querySelector('.elementor-icon-box-icon .elementor-icon, .elementor-icon');
+            if (iconWrap) applyIconFill(iconWrap, wrapper, data, id);
         } else {
             applyBackground(wrapper, data, id);
         }
@@ -574,20 +787,38 @@
             };
         };
 
+        AuroraGradientHandler.prototype.resolveTarget = function (el) {
+            var isText = el.matches('.elementor-widget-heading, .elementor-widget-text-editor');
+            if (isText) return 'text';
+
+            var isIconWidget = el.matches('.elementor-widget-icon');
+            if (isIconWidget) return 'icon';
+
+            var isIconBox = el.matches('.elementor-widget-icon-box');
+            if (isIconBox) {
+                return 'icon' === this.getElementSettings('aurora_gradient_apply_to') ? 'icon' : 'background';
+            }
+
+            return 'background';
+        };
+
         AuroraGradientHandler.prototype.run = function () {
             var el = this.$element[0];
-            var isText = el.matches('.elementor-widget-heading, .elementor-widget-text-editor');
+            var target = this.resolveTarget(el);
 
             // Disabled path — actively strip anything the previous run
             // painted. Without this, toggling Enable Gradient off (or
-            // switching the target away from text) left the old inline
+            // switching the target away from text/icon) left the old inline
             // styles frozen on the DOM and the widget appeared to still
             // have a gradient. Same story for editor color changes:
             // clearing before applying is what makes the change stick.
             if (!this.isEnabled()) {
-                if (isText) {
+                if (target === 'text') {
                     var textEl = el.querySelector('.elementor-heading-title, .elementor-text-editor') || el;
                     clearTextGradient(textEl, el);
+                } else if (target === 'icon') {
+                    var iconWrap = el.querySelector('.elementor-icon-box-icon .elementor-icon, .elementor-icon');
+                    clearIconFill(iconWrap, el);
                 } else {
                     clearBackgroundGradient(el);
                 }
@@ -595,7 +826,21 @@
             }
 
             var opts = this.getOpts();
-            opts.target = isText ? 'text' : 'background';
+            opts.target = target;
+
+            // Icon Box's target is a runtime-togglable setting ("Apply To")
+            // — clear whichever target ISN'T currently selected first, so
+            // flipping it in the editor doesn't leave stale paint from the
+            // previous choice (a background AND an icon-fill at once).
+            if (el.matches('.elementor-widget-icon-box')) {
+                if (target === 'icon') {
+                    clearBackgroundGradient(el);
+                } else {
+                    var iconWrapEl = el.querySelector('.elementor-icon-box-icon .elementor-icon, .elementor-icon');
+                    clearIconFill(iconWrapEl, el);
+                }
+            }
+
             applyGradient(el, opts);
         };
 

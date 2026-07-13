@@ -25,7 +25,7 @@ Available on Sections, Columns, Containers, and Widgets. Applies a staggered ent
 
 = Module 3 — Gradient =
 
-Available on Sections, Columns, Containers (as a background) and on Heading/Text Editor widgets (as a text-fill). Multi-stop gradients (3+ colors) in linear, radial, or conic form, with an optional animated "mesh"/"color loop" motion, or a "Follow Mouse" spotlight mode that recenters a radial gradient on the live cursor position.
+Available on Sections, Columns, Containers (as a background), Heading/Text Editor widgets (as a text-fill), the Icon widget (as an icon-fill), and Icon Box (choice of box background or icon-fill). Multi-stop gradients (3+ colors) in linear, radial, or conic form, with an optional animated "mesh"/"color loop" motion, or a "Follow Mouse" spotlight mode that recenters a radial gradient on the live cursor position (Follow Mouse isn't available on SVG-based icon fills).
 
 = Module 4 — Glassmorphism =
 

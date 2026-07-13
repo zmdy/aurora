@@ -1,8 +1,10 @@
 <?php
 /**
  * Gradient Controls — multi-stop gradients (3+ colors) on containers
- * (background) and on the Heading/Text Editor widgets (text), with an
- * optional "mesh" (blurred blobs) or "loop" (hue rotation) animation.
+ * (background), on the Heading/Text Editor widgets (text-fill), on the
+ * Icon widget (icon-fill), and on Icon Box (configurable: box background
+ * or icon-fill) — with an optional "mesh" (blurred blobs) or "loop" (hue
+ * rotation) animation.
  *
  * Implements only what's specific to this module; the shared plumbing
  * (hooks, deduplication, section assembly) lives in Animation_Module.
@@ -25,11 +27,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Gradient_Controls extends Animation_Module {
 
-	/** Elements where this module appears: background on structural elements, text on the 2 widgets. */
-	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container', 'heading', 'text-editor' ];
+	/** Elements where this module appears. */
+	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container', 'heading', 'text-editor', 'icon', 'icon-box' ];
 
 	/** Widgets where the gradient is applied as a text-fill instead of a background. */
 	const TEXT_ELEMENTS = [ 'heading', 'text-editor' ];
+
+	/** Widgets where the gradient is ALWAYS applied as an icon-fill (no choice — Icon Box has one instead, see aurora_gradient_apply_to). */
+	const ICON_ELEMENTS = [ 'icon' ];
+
+	/** Icon Box is the only element with a runtime-selectable target (Box background vs. Icon fill). */
+	const CONFIGURABLE_TARGET_ELEMENTS = [ 'icon-box' ];
 
 	protected function get_section_id(): string {
 		return 'aurora_gradient_section';
@@ -40,7 +48,9 @@ class Gradient_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Only appears on containers (background) and on the Heading/Text Editor widgets (text).
+	 * Appears on structural containers (background), Heading/Text Editor
+	 * (text-fill), Icon (icon-fill), and Icon Box (box background or
+	 * icon-fill, user's choice) — see SUPPORTED_ELEMENTS.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
 		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
@@ -66,12 +76,19 @@ class Gradient_Controls extends Animation_Module {
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/heading/section_title_style/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/text-editor/section_style/after_section_end', 'priority' => 20 ],
+			// Icon's own dedicated Style-tab section is 'section_style_icon'
+			// (confirmed against Elementor core's Widget_Icon::register_controls()).
+			[ 'hook' => 'elementor/element/icon/section_style_icon/after_section_end', 'priority' => 20 ],
+			// Icon Box's FIRST widget-scoped Style-tab section is 'section_style_box'
+			// (confirmed against Elementor core's Widget_Icon_Box::register_controls())
+			// — genuinely belongs to the icon-box widget, unlike the shared 'common' hook.
+			[ 'hook' => 'elementor/element/icon-box/section_style_box/after_section_end', 'priority' => 20 ],
 		];
 	}
 
 	/**
 	 * Same reason as Text_Animation_Controls: ensures widgets (Heading,
-	 * Text Editor) also receive the attributes on the frontend.
+	 * Text Editor, Icon, Icon Box) also receive the attributes on the frontend.
 	 */
 	protected function get_render_hooks(): array {
 		return [
@@ -89,6 +106,9 @@ class Gradient_Controls extends Animation_Module {
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
+		$name         = $element->get_name();
+		$is_icon_box  = in_array( $name, self::CONFIGURABLE_TARGET_ELEMENTS, true );
+
 		// ── Enable ────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_gradient_enable',
@@ -99,10 +119,33 @@ class Gradient_Controls extends Animation_Module {
 				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
 				'return_value'       => 'yes',
 				'default'            => '',
-				'description'        => esc_html__( 'On containers, applies to the background. On Heading/Text Editor, applies to the text color.', 'aurora-for-elementor' ),
+				'description'        => esc_html__( 'On containers, applies to the background. On Heading/Text Editor, applies to the text color. On the Icon widget, applies to the icon fill. On Icon Box, see "Apply To" below.', 'aurora-for-elementor' ),
 				'frontend_available' => true,
 			]
 		);
+
+		// ── Apply to (Icon Box only) ──────────────────────────────────────────
+		// The only element with a runtime-selectable target: the user picks
+		// whether the gradient paints the whole box (background, like a card)
+		// or just the icon inside it (fill, same technique as the Icon
+		// widget). Every other supported element has a fixed, element-type-
+		// determined target — see get_render_attributes().
+		if ( $is_icon_box ) {
+			$element->add_control(
+				'aurora_gradient_apply_to',
+				[
+					'label'              => esc_html__( 'Apply To', 'aurora-for-elementor' ),
+					'type'               => Controls_Manager::SELECT,
+					'default'            => 'box',
+					'options'            => [
+						'box'  => esc_html__( 'Whole Box (background)', 'aurora-for-elementor' ),
+						'icon' => esc_html__( 'Icon Only (fill)', 'aurora-for-elementor' ),
+					],
+					'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
+					'frontend_available' => true,
+				]
+			);
+		}
 
 		// ── Type ──────────────────────────────────────────────────────────────
 		$element->add_control(
@@ -295,13 +338,20 @@ class Gradient_Controls extends Animation_Module {
 
 		// ── Animation style ───────────────────────────────────────────────────
 		// The "mesh" value drives two different CSS effects depending on the
-		// target (see gradient-module.js applyBackground()/applyText()): a
-		// real moving-blobs mesh on backgrounds, but a simple background-
-		// position pan on text (background-clip:text can't render blurred
-		// ::before blob layers). The option label is adjusted per element
-		// type so it never promises a blob effect that won't actually show
-		// up when animating a Heading/Text Editor's text color.
-		$is_text_element = in_array( $element->get_name(), self::TEXT_ELEMENTS, true );
+		// target (see gradient-module.js applyBackground()/applyText()/
+		// applyIconFill()): a real moving-blobs mesh on backgrounds, but a
+		// simple background-position pan on text/icon-fill targets
+		// (background-clip:text — or the icon-fill equivalent — can't render
+		// blurred ::before blob layers). The option label is adjusted per
+		// element type so it never promises a blob effect that won't
+		// actually show up. Icon Box isn't included here even though it CAN
+		// resolve to an icon-fill target — its target is a runtime setting
+		// (aurora_gradient_apply_to), not known yet at registration time, so
+		// its label stays the generic "Mesh" wording (a small cosmetic
+		// mismatch if the user picks "Icon Only", not a functional bug —
+		// see applyIconFill(), which always uses the pan/loop mechanics
+		// regardless of the label shown).
+		$is_clip_element = in_array( $element->get_name(), array_merge( self::TEXT_ELEMENTS, self::ICON_ELEMENTS ), true );
 
 		$element->add_control(
 			'aurora_gradient_animation_style',
@@ -310,7 +360,7 @@ class Gradient_Controls extends Animation_Module {
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'mesh',
 				'options'   => [
-					'mesh' => $is_text_element
+					'mesh' => $is_clip_element
 						? esc_html__( 'Pan (sliding gradient)', 'aurora-for-elementor' )
 						: esc_html__( 'Mesh (moving blobs)', 'aurora-for-elementor' ),
 					'loop' => esc_html__( 'Color Loop (hue rotation)', 'aurora-for-elementor' ),
@@ -381,8 +431,17 @@ class Gradient_Controls extends Animation_Module {
 			];
 		}
 
-		$name   = $element ? $element->get_name() : '';
-		$target = in_array( $name, self::TEXT_ELEMENTS, true ) ? 'text' : 'background';
+		$name = $element ? $element->get_name() : '';
+
+		if ( in_array( $name, self::TEXT_ELEMENTS, true ) ) {
+			$target = 'text';
+		} elseif ( in_array( $name, self::ICON_ELEMENTS, true ) ) {
+			$target = 'icon';
+		} elseif ( in_array( $name, self::CONFIGURABLE_TARGET_ELEMENTS, true ) ) {
+			$target = ( 'icon' === ( $settings['aurora_gradient_apply_to'] ?? 'box' ) ) ? 'icon' : 'background';
+		} else {
+			$target = 'background';
+		}
 
 		$type = $settings['aurora_gradient_type'] ?? 'linear';
 		$type = in_array( $type, [ 'linear', 'radial', 'conic' ], true ) ? $type : 'linear';

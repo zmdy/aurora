@@ -25,9 +25,18 @@
 	background-repeat: no-repeat;
 }
 
+/* Icon with an animated gradient fill (Icon widget, or Icon Box with
+   "Apply To" = Icon) — font-icon path only; the SVG path animates via a
+   hue-rotate filter and doesn't need a background-position base rule. */
+.aurora-gradient-icon i {
+	background-repeat: no-repeat;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.aurora-gradient-host::before,
-	.aurora-gradient-text {
+	.aurora-gradient-text,
+	.aurora-gradient-icon i,
+	.aurora-gradient-icon svg {
 		animation: none !important;
 	}
 }
