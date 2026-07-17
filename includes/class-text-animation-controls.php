@@ -151,6 +151,7 @@ class Text_Animation_Controls extends Animation_Module {
 					'ml-12' => esc_html__( 'Clip Wrap (Words)',      'aurora-for-elementor' ),
 					'ml-13' => esc_html__( 'Echo Clone (Letters)',   'aurora-for-elementor' ),
 					'ml-14' => esc_html__( 'Native Scramble',        'aurora-for-elementor' ),
+					'ml-15' => esc_html__( 'Continuous Wave (never stops)', 'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_text_enable'  => 'yes',
@@ -295,6 +296,73 @@ class Text_Animation_Controls extends Animation_Module {
 				'frontend_available' => true,
 			]
 		);
+
+		// ── Hover Scatter (independent of the entrance effect above) ─────────
+		// Always powered by Anime.js (regardless of the Library choice above,
+		// since Anime.js is loaded site-wide as a shared dependency) — each
+		// split unit jumps to a random offset/rotation on mouseenter and
+		// settles back with an elastic ease on mouseleave. Reuses the SAME
+		// split produced for the entrance effect (see initTextAnimation() in
+		// text-animations.js) rather than splitting the text a second time,
+		// so it needs Enable Text Animation on too; pairs best with
+		// "Split by: Characters" for the classic "each letter scatters" look.
+		$element->add_control(
+			'aurora_text_hover_enable',
+			[
+				'label'              => esc_html__( 'Hover Scatter', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'separator'          => 'before',
+				'description'        => esc_html__( 'Independent of the entrance effect above — on hover, each split unit jumps to a random position and settles back on mouse out. Always uses Anime.js. Works best with "Split by: Characters".', 'aurora-for-elementor' ),
+				'condition'          => [ 'aurora_text_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
+		$element->add_control(
+			'aurora_text_hover_intensity',
+			[
+				'label'     => esc_html__( 'Scatter Intensity (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 5,
+						'max'  => 80,
+						'step' => 1,
+					],
+				],
+				'default'            => [ 'size' => 24 ],
+				'condition'          => [
+					'aurora_text_enable'       => 'yes',
+					'aurora_text_hover_enable' => 'yes',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		$element->add_control(
+			'aurora_text_hover_duration',
+			[
+				'label'     => esc_html__( 'Scatter/Settle Duration (ms)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 100,
+						'max'  => 1200,
+						'step' => 50,
+					],
+				],
+				'default'            => [ 'size' => 350 ],
+				'condition'          => [
+					'aurora_text_enable'       => 'yes',
+					'aurora_text_hover_enable' => 'yes',
+				],
+				'frontend_available' => true,
+			]
+		);
 	}
 
 	// ── Render Attributes ─────────────────────────────────────────────────────
@@ -318,17 +386,22 @@ class Text_Animation_Controls extends Animation_Module {
 			? ( $settings['aurora_text_animation_gsap'] ?? 'gs-1' )
 			: ( $settings['aurora_text_animation_anime'] ?? 'ml-1' );
 
+		$hover_enable = 'yes' === ( $settings['aurora_text_hover_enable'] ?? '' );
+
 		return [
-			'data-aurora-enable'    => '1',
-			'data-aurora-library'   => esc_attr( $library ),
-			'data-aurora-animation' => esc_attr( $animation ),
-			'data-aurora-split-by'  => esc_attr( $settings['aurora_text_split_by'] ?? 'chars' ),
-			'data-aurora-duration'  => esc_attr( $settings['aurora_text_duration']['size'] ?? 800 ),
-			'data-aurora-delay'     => esc_attr( $settings['aurora_text_delay']['size'] ?? 0 ),
-			'data-aurora-stagger'   => esc_attr( $settings['aurora_text_stagger']['size'] ?? 30 ),
-			'data-aurora-trigger'   => esc_attr( $settings['aurora_text_trigger'] ?? 'scroll' ),
-			'data-aurora-threshold' => esc_attr( ( $settings['aurora_text_threshold']['size'] ?? 20 ) / 100 ),
-			'data-aurora-replay'    => ( 'yes' === ( $settings['aurora_text_replay'] ?? '' ) ) ? '1' : '0',
+			'data-aurora-enable'          => '1',
+			'data-aurora-library'         => esc_attr( $library ),
+			'data-aurora-animation'       => esc_attr( $animation ),
+			'data-aurora-split-by'        => esc_attr( $settings['aurora_text_split_by'] ?? 'chars' ),
+			'data-aurora-duration'        => esc_attr( $settings['aurora_text_duration']['size'] ?? 800 ),
+			'data-aurora-delay'           => esc_attr( $settings['aurora_text_delay']['size'] ?? 0 ),
+			'data-aurora-stagger'         => esc_attr( $settings['aurora_text_stagger']['size'] ?? 30 ),
+			'data-aurora-trigger'         => esc_attr( $settings['aurora_text_trigger'] ?? 'scroll' ),
+			'data-aurora-threshold'       => esc_attr( ( $settings['aurora_text_threshold']['size'] ?? 20 ) / 100 ),
+			'data-aurora-replay'          => ( 'yes' === ( $settings['aurora_text_replay'] ?? '' ) ) ? '1' : '0',
+			'data-aurora-hover-enable'    => $hover_enable ? '1' : '0',
+			'data-aurora-hover-intensity' => esc_attr( max( 5, (int) ( $settings['aurora_text_hover_intensity']['size'] ?? 24 ) ) ),
+			'data-aurora-hover-duration'  => esc_attr( max( 100, (int) ( $settings['aurora_text_hover_duration']['size'] ?? 350 ) ) ),
 		];
 	}
 }
