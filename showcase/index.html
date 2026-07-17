@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- ========== Meta Tags ========== -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aurora for Elementor — text animation, gradients, glassmorphism, cursor follow and image effects for any Elementor widget. Free and open source.">
+
+    <!-- ========== Page Title ========== -->
+    <title>Aurora for Elementor — Animate Everything, Beautifully</title>
+
+    <!-- ========== Favicon Icon ========== -->
+    <link rel="icon" href="../assets/branding/aurora_favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/img/logo/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="assets/img/logo/favicon-16.png" sizes="16x16" type="image/png">
+    <link rel="shortcut icon" href="assets/img/logo/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
+
+    <!-- ========== Start Stylesheet ==========
+         Aesthetic reference: Dixor v1.5 theme (source/index-3-light.html hero
+         + source/index-9-light.html sections). Theme files copied verbatim
+         below; classes/ids kept exactly as in the reference so the theme's
+         own CSS/JS keep working unmodified. Aurora-specific additions live
+         only in aurora-showcase.css (loaded last). -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
+    <link href="assets/css/animate.min.css" rel="stylesheet">
+    <link href="assets/css/validnavs.css" rel="stylesheet">
+    <link href="assets/css/helper.css" rel="stylesheet">
+    <link href="assets/css/unit-test.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/aurora-showcase.css" rel="stylesheet">
+    <link href="assets/css/aurora-hero2.css" rel="stylesheet">
+    <!-- ========== End Stylesheet ========== -->
+
+</head>
+
+<body class="bg-dark">
+
+    <!-- Start Preloader
+    ============================================= -->
+    <div id="preloader">
+        <div class="dixor-loader-inner">
+           <div class="dixor-loader">
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+              <span class="dixor-loader-item"></span>
+           </div>
+        </div>
+     </div>
+    <!-- preloader end -->
+
+    <!-- Header
+    ============================================= -->
+    <header>
+        <!-- Start Navigation -->
+        <nav class="navbar mobile-sidenav navbar-sticky navbar-default validnavs navbar-fixed no-background">
+
+            <div class="container d-flex justify-content-between align-items-center">
+
+                <div class="menu-left d-flex align-items-center">
+                    <!-- Start Header Navigation -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <a class="navbar-brand" href="index.html">
+                            <img src="../assets/branding/aurora_animated_logo.svg" class="aurora-brand-logo" alt="Aurora — color and motion, unleashed">
+                        </a>
+                    </div>
+                    <!-- End Header Navigation -->
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+
+                        <img src="../assets/branding/aurora_animated_logo.svg" class="aurora-brand-logo" alt="Aurora — color and motion, unleashed">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <i class="fa fa-times"></i>
+                        </button>
+
+                        <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
+                            <li><a href="#top">Home</a></li>
+                            <li><a href="#modules">Modules</a></li>
+                            <li><a href="#effects">Effects</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="#testimonials">Testimonials</a></li>
+                            <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div>
+
+                <div class="attr-right">
+                    <!-- Start Atribute Navigation -->
+                    <div class="attr-nav flex">
+                        <ul>
+                            <li class="button">
+                                <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">Get Aurora Free</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- End Atribute Navigation -->
+                </div>
+                <!-- Main Nav -->
+
+            </div>
+            <!-- Overlay screen for menu -->
+            <div class="overlay-screen"></div>
+            <!-- End Overlay screen for menu -->
+        </nav>
+        <!-- End Navigation -->
+    </header>
+    <!-- End Header -->
+
+    <div class="smooth-scroll-container">
+
+        <!-- Start Banner  (hero — aesthetic from index-3-light.html, background replaced with an interactive aurora borealis canvas)
+        ============================================= -->
+        <div id="top" class="banner-style-nine-area bg-cover">
+            <div class="aurora-hero-bg" aria-hidden="true">
+                <canvas id="aurora-canvas"></canvas>
+            </div>
+            <div class="container">
+                <div class="banner-style-nine-items">
+                    <div class="row">
+                        <div class="col-xl-7">
+                            <div class="banner-style-one-heading">
+                                <div class="banner-title">
+                                    <h2 class="title-left split-text">Animate</h2>
+                                    <h2 class="title-right split-text"><strong>Everything</strong></h2>
+                                </div>
+                                <div class="main-content">
+                                    <p>
+                                        Aurora adds text animation, gradients, glassmorphism, a custom cursor, and image reveal effects to the Advanced tab of every Elementor widget, section, column and container — no code, no page builder lock-in.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 offset-xl-1">
+                            <div class="banner-style-one-info wow fadeInUp" data-wow-delay="1s" data-wow-duration="0.6s">
+                                <div class="top-info">
+                                    <h4>70+ Animations, 6 Modules</h4>
+                                    <p>
+                                        Powered by GSAP and Anime.js
+                                    </p>
+                                </div>
+                                <div class="bottom">
+                                    <p>
+                                        Free and open source, GPLv3 licensed. No upsells, no locked effects — every module ships in the plugin from day one.
+                                    </p>
+                                    <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-style-two mt-30"><i class="fas fa-long-arrow-right"></i> Get <br> Aurora</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Banner -->
+
+        <!-- Start Hero (Orb variant) — a second, alternate hero kept alongside
+             the original Banner above (per explicit request: build a new one
+             without deleting the existing one). Interactive gradient orb +
+             cursor-follow glow dot, hand-built (no Dixor component maps to
+             this floating-card layout).
+        ============================================= -->
+        <div id="hero-orb" class="aurora-hero2-area">
+            <div class="aurora-hero2-bg" aria-hidden="true">
+                <canvas id="aurora-orb-canvas"></canvas>
+            </div>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="aurora-hero2-badges">
+                            <span class="badge-pill"><i class="fas fa-star"></i> Open Source</span>
+                            <span class="badge-pill accent">GPL v3 Licensed</span>
+                        </div>
+                        <h2 class="aurora-hero2-title">
+                            Bring Elementor<br>
+                            to <span class="grad-text">Life.</span>
+                        </h2>
+                        <p class="aurora-hero2-sub">
+                            Advanced animations, gradients, glassmorphism and interactive effects — directly inside Elementor.
+                        </p>
+                        <ul class="aurora-hero2-stats">
+                            <li><i class="fas fa-magic"></i> 70+ Animations</li>
+                            <li><i class="fas fa-cube"></i> 6 Modules</li>
+                            <li><i class="fas fa-bolt"></i> GSAP + Anime.js</li>
+                        </ul>
+                        <div class="aurora-hero2-cta">
+                            <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-grad"><i class="fas fa-download"></i> Get Aurora Free</a>
+                            <a href="#effects" class="btn-outline-ghost"><i class="fas fa-play-circle"></i> Live Demo</a>
+                        </div>
+                        <div class="aurora-hero2-works">
+                            <span>Works with</span>
+                            <div class="works-icons">
+                                <i class="fab fa-wordpress-simple" title="WordPress"></i>
+                                <i class="fab fa-elementor" title="Elementor"></i>
+                                <span class="txt-logo gsap">GSAP</span>
+                                <span class="txt-logo anime">anime.js</span>
+                                <i class="fab fa-php" title="PHP"></i>
+                                <i class="fab fa-js-square" title="JavaScript"></i>
+                                <i class="fab fa-css3-alt" title="CSS3"></i>
+                                <i class="fab fa-html5" title="HTML5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="aurora-orb-stage">
+                            <div class="aurora-cursor-dot" aria-hidden="true"></div>
+                            <div class="aurora-modules-card">
+                                <div class="module-chip">
+                                    <img src="assets/img/icon/12.png" alt="">
+                                    <span>Text Animation</span>
+                                </div>
+                                <div class="module-chip">
+                                    <img src="assets/img/icon/15.png" alt="">
+                                    <span>Gradient</span>
+                                </div>
+                                <div class="module-chip">
+                                    <img src="assets/img/icon/20.png" alt="">
+                                    <span>Glassmorphism</span>
+                                </div>
+                                <div class="module-chip">
+                                    <img src="assets/img/icon/21.png" alt="">
+                                    <span>Cursor Follow</span>
+                                </div>
+                                <div class="module-chip">
+                                    <img src="assets/img/icon/22.png" alt="">
+                                    <span>Image Effects</span>
+                                </div>
+                                <div class="module-chip">
+                                    <img src="assets/img/icon/13.png" alt="">
+                                    <span>Children Animation</span>
+                                </div>
+                            </div>
+                            <a href="#effects" class="aurora-explore-pill">
+                                <span class="dot-icon"><i class="fas fa-compass"></i></span>
+                                <div>
+                                    <strong>Explore Aurora</strong>
+                                    <span>Scroll to discover</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Hero (Orb variant) -->
+
+        <!-- Start About (repurposed as a stats strip — fun-fact counters from index-9-light.html)
+        ============================================= -->
+        <div class="about-style-one-area default-padding-bottom default-padding-top bg-gray">
+            <div class="container">
+                <div class="row align-center">
+                    <div class="col-lg-3 col-md-6 mb-30">
+                        <div class="about-style-one-left-info">
+                            <div class="fun-fact">
+                                <div class="counter">
+                                    <div class="timer">70</div>
+                                    <div class="operator">+</div>
+                                </div>
+                                <span class="medium">Text Animations</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-30">
+                        <div class="about-style-one-left-info">
+                            <div class="fun-fact">
+                                <div class="counter">
+                                    <div class="timer">6</div>
+                                </div>
+                                <span class="medium">Animation Modules</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-30">
+                        <div class="about-style-one-left-info">
+                            <div class="fun-fact">
+                                <div class="counter">
+                                    <div class="timer">2</div>
+                                </div>
+                                <span class="medium">Animation Libraries</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-30">
+                        <div class="about-style-one-left-info">
+                            <div class="fun-fact">
+                                <div class="counter">
+                                    <div class="timer">100</div>
+                                    <div class="operator">%</div>
+                                </div>
+                                <span class="medium">Free & Open Source</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End About -->
+
+        <!-- Start Brand Area (repurposed as a modules marquee — from index-9-light.html)
+        ============================================= -->
+        <div class="brand-area relative overflow-hidden bg-gradient text-light">
+            <div class="brand-style-one">
+                <div class="container-fill">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="brand-items">
+                                <div class="brand-conetnt">
+                                    <div class="item"><h2>Text Animation</h2></div>
+                                    <div class="item"><h2>Gradient</h2></div>
+                                    <div class="item"><h2>Glassmorphism</h2></div>
+                                    <div class="item"><h2>Cursor Follow</h2></div>
+                                    <div class="item"><h2>Image Effects</h2></div>
+                                    <div class="item"><h2>Children Animation</h2></div>
+                                </div>
+                                <div class="brand-conetnt">
+                                    <div class="item"><h2>Text Animation</h2></div>
+                                    <div class="item"><h2>Gradient</h2></div>
+                                    <div class="item"><h2>Glassmorphism</h2></div>
+                                    <div class="item"><h2>Cursor Follow</h2></div>
+                                    <div class="item"><h2>Image Effects</h2></div>
+                                    <div class="item"><h2>Children Animation</h2></div>
+                                </div>
+                                <div class="brand-conetnt">
+                                    <div class="item"><h2>Text Animation</h2></div>
+                                    <div class="item"><h2>Gradient</h2></div>
+                                    <div class="item"><h2>Glassmorphism</h2></div>
+                                    <div class="item"><h2>Cursor Follow</h2></div>
+                                    <div class="item"><h2>Image Effects</h2></div>
+                                    <div class="item"><h2>Children Animation</h2></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Brand Area -->
+
+        <!-- Start Services (repurposed as Modules — accordion list from index-3-light.html)
+        ============================================= -->
+        <div id="modules" class="services-style-three-area default-padding">
+
+            <div class="container">
+                <div class="site-heading">
+                    <div class="row align-center">
+                        <div class="col-lg-8">
+                            <h4 class="sub-title">Six Modules, One Plugin</h4>
+                            <h2 class="title split-text">Everything You Need <br> To Animate Elementor</h2>
+                        </div>
+                        <div class="col-lg-4 text-end">
+                            <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="btn-circle">
+                                <div class="button-content">
+                                    <span><img src="assets/img/icon/arrow-long-right.png" alt="Image Not Found"></span> <strong>Read the Docs</strong>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="service-style-three-items" id="accordion">
+                            <li class="out">
+                                <div class="service-three-content">
+                                    <div class="top">
+                                        <div class="icon">
+                                            <img class="regular-img" src="assets/img/icon/12.png" alt="Image Not Found">
+                                            <img class="light-img" src="assets/img/icon/31.png" alt="Image Not Found">
+                                        </div>
+                                    </div>
+                                    <div class="info">
+                                        <h4>Text Animation</h4>
+                                        <p>
+                                            Splits any text into characters, words, or lines and applies one of 70 animations (26 GSAP, 44 Anime.js), triggered on scroll or page load — plus an independent Hover Scatter interaction.
+                                        </p>
+                                    </div>
+                                    <div class="bottom">01</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="service-three-content">
+                                    <div class="icon">
+                                        <img class="regular-img" src="assets/img/icon/15.png" alt="Image Not Found">
+                                        <img class="light-img" src="assets/img/icon/33.png" alt="Image Not Found">
+                                    </div>
+                                    <div class="info">
+                                        <h4>Gradient</h4>
+                                        <p>
+                                            Multi-stop linear, radial, or conic gradients with an animated mesh motion or a Follow Mouse spotlight — for backgrounds, text fill, icons, and Icon Box.
+                                        </p>
+                                    </div>
+                                    <div class="bottom">02</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="service-three-content">
+                                    <div class="icon">
+                                        <img class="regular-img" src="assets/img/icon/20.png" alt="Image Not Found">
+                                        <img class="light-img" src="assets/img/icon/35.png" alt="Image Not Found">
+                                    </div>
+                                    <div class="info">
+                                        <h4>Glassmorphism</h4>
+                                        <p>
+                                            A translucent, blurred frosted-glass background resolved entirely in PHP into a single inline style — with a CSS fallback for browsers without backdrop-filter. Zero JavaScript.
+                                        </p>
+                                    </div>
+                                    <div class="bottom">03</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="service-three-content">
+                                    <div class="icon">
+                                        <img class="regular-img" src="assets/img/icon/21.png" alt="Image Not Found">
+                                        <img class="light-img" src="assets/img/icon/36.png" alt="Image Not Found">
+                                    </div>
+                                    <div class="info">
+                                        <h4>Cursor Follow</h4>
+                                        <p>
+                                            Replaces the native cursor with a two-part custom cursor — a dot that tracks instantly and a ring that trails behind — with configurable hover states for interactive elements.
+                                        </p>
+                                    </div>
+                                    <div class="bottom">04</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="service-three-content">
+                                    <div class="icon">
+                                        <img class="regular-img" src="assets/img/icon/22.png" alt="Image Not Found">
+                                        <img class="light-img" src="assets/img/icon/37.png" alt="Image Not Found">
+                                    </div>
+                                    <div class="info">
+                                        <h4>Image Effects</h4>
+                                        <p>
+                                            An entrance animation for the native Image widget — GSAP or Anime.js, scroll or load triggered — plus a pure-CSS hover effect, including a shine sweep.
+                                        </p>
+                                    </div>
+                                    <div class="bottom">05</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="service-three-content">
+                                    <div class="icon">
+                                        <img class="regular-img" src="assets/img/icon/13.png" alt="Image Not Found">
+                                        <img class="light-img" src="assets/img/icon/32.png" alt="Image Not Found">
+                                    </div>
+                                    <div class="info">
+                                        <h4>Animate Children Elements</h4>
+                                        <p>
+                                            Applies a staggered entrance animation to each child of a Section, Column, Container, or Widget — one after another — with a configurable delay and 10 animation styles.
+                                        </p>
+                                    </div>
+                                    <div class="bottom">06</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Services -->
+
+        <!-- Start About (repurposed as About Aurora — style from index-3-light.html)
+        ============================================= -->
+        <div class="about-style-three-area default-padding-bottom default-padding-top">
+            <div class="container">
+                <div class="row align-center">
+                    <div class="col-lg-5">
+                        <div class="thumb-style-three">
+                            <img src="assets/img/thumb/3.jpg" alt="Image Not Found">
+                            <div class="upDownScrol scroll-shape"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 offset-lg-1">
+                        <div class="about-style-three-info text-scroll-animation">
+                            <h2 class="title text">Built for the way Elementor sites actually get made</h2>
+                            <div class="d-flex mt-40">
+                                <div class="left">
+                                    <h4 class="sub-title-border"><strong>About Aurora</strong></h4>
+                                </div>
+                                <div class="right">
+                                    <p class="text">
+                                        Aurora bundles GSAP and Anime.js locally — no CDN dependency, no extra HTTP request per effect. On the real frontend, a widget only loads the ONE animation it actually uses alongside a small shared runtime, instead of shipping every effect to every page. Elementor Pro is not required.
+                                    </p>
+                                    <a class="btn-animation mt-10" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fas fa-arrow-right"></i> <span>View Source on GitHub</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End About -->
+
+        <!-- Start Effects Showcase (new section — runs the real, built Aurora
+             plugin JS live, via the same data-aurora-* attributes Elementor
+             renders, exercising the non-Elementor fallback bootstrap path)
+        ============================================= -->
+        <div id="effects" class="aurora-effects-area default-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 offset-lg-3">
+                        <div class="site-heading text-center">
+                            <h4 class="sub-title">Live, Not Mocked Up</h4>
+                            <h2 class="title split-text">A Few of the 70+ Effects</h2>
+                            <p>These boxes are running the actual Aurora plugin code — the same JS files a real Elementor page would load. Scroll away and back, or hover the first card.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aurora-effects-grid">
+
+                    <div class="aurora-effect-card">
+                        <div class="aurora-effect-stage"
+                             data-aurora-enable="1"
+                             data-aurora-library="gsap"
+                             data-aurora-animation="gs-1"
+                             data-aurora-split-by="chars"
+                             data-aurora-duration="900"
+                             data-aurora-delay="0"
+                             data-aurora-stagger="35"
+                             data-aurora-trigger="scroll"
+                             data-aurora-threshold="0.3"
+                             data-aurora-replay="1"
+                             data-aurora-hover-enable="1"
+                             data-aurora-hover-intensity="26"
+                             data-aurora-hover-duration="380">Aurora</div>
+                        <div class="name">Fade Up + Hover Scatter</div>
+                        <span class="lib-badge">GSAP</span>
+                        <span class="hint">Hover me</span>
+                    </div>
+
+                    <div class="aurora-effect-card">
+                        <div class="aurora-effect-stage"
+                             data-aurora-enable="1"
+                             data-aurora-library="animejs"
+                             data-aurora-animation="ml-15"
+                             data-aurora-split-by="chars"
+                             data-aurora-duration="700"
+                             data-aurora-delay="0"
+                             data-aurora-stagger="40"
+                             data-aurora-trigger="scroll"
+                             data-aurora-threshold="0.3"
+                             data-aurora-replay="1">Elementor</div>
+                        <div class="name">Continuous Wave</div>
+                        <span class="lib-badge anime">Anime.js</span>
+                        <span class="hint">Never stops</span>
+                    </div>
+
+                    <div class="aurora-effect-card">
+                        <div class="aurora-effect-stage"
+                             data-aurora-enable="1"
+                             data-aurora-library="animejs"
+                             data-aurora-animation="ml-17"
+                             data-aurora-split-by="chars"
+                             data-aurora-duration="900"
+                             data-aurora-delay="0"
+                             data-aurora-stagger="30"
+                             data-aurora-trigger="scroll"
+                             data-aurora-threshold="0.3"
+                             data-aurora-replay="1">Motion</div>
+                        <div class="name">Scatter Converge</div>
+                        <span class="lib-badge anime">Anime.js</span>
+                        <span class="hint">Recreates Motion.dev's splitText</span>
+                    </div>
+
+                    <div class="aurora-effect-card">
+                        <div class="aurora-effect-stage"
+                             data-aurora-enable="1"
+                             data-aurora-library="animejs"
+                             data-aurora-animation="ml-23"
+                             data-aurora-split-by="chars"
+                             data-aurora-duration="900"
+                             data-aurora-delay="0"
+                             data-aurora-stagger="30"
+                             data-aurora-trigger="scroll"
+                             data-aurora-threshold="0.3"
+                             data-aurora-replay="1">AURORA</div>
+                        <div class="name">Rotating Character Dial</div>
+                        <span class="lib-badge anime">Anime.js</span>
+                        <span class="hint">Self-managed layout</span>
+                    </div>
+
+                    <div class="aurora-effect-card">
+                        <div class="aurora-effect-stage"
+                             data-aurora-enable="1"
+                             data-aurora-library="gsap"
+                             data-aurora-animation="gs-24"
+                             data-aurora-split-by="chars"
+                             data-aurora-duration="1000"
+                             data-aurora-delay="0"
+                             data-aurora-stagger="0"
+                             data-aurora-trigger="scroll"
+                             data-aurora-threshold="0.3"
+                             data-aurora-replay="1">Reveal</div>
+                        <div class="name">Liquid Fill Reveal</div>
+                        <span class="lib-badge">GSAP</span>
+                        <span class="hint">clip-path wipe</span>
+                    </div>
+
+                    <div class="aurora-effect-card">
+                        <div class="aurora-effect-stage"
+                             data-aurora-enable="1"
+                             data-aurora-library="animejs"
+                             data-aurora-animation="ml-22"
+                             data-aurora-split-by="chars"
+                             data-aurora-duration="900"
+                             data-aurora-delay="0"
+                             data-aurora-stagger="0"
+                             data-aurora-trigger="scroll"
+                             data-aurora-threshold="0.3"
+                             data-aurora-replay="1">Type it</div>
+                        <div class="name">Typewriter Delete</div>
+                        <span class="lib-badge anime">Anime.js</span>
+                        <span class="hint">Types, deletes, retypes</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- End Effects Showcase -->
+
+        <!-- Start Pricing (style from index-9.html — single free tier, no fabricated paid plans)
+        ============================================= -->
+        <div id="pricing" class="pricing-style-two-area default-padding bottom-less">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
+                        <div class="site-heading text-center">
+                            <h5 class="sub-title">No Tiers, No Upsells</h5>
+                            <h2 class="title">One Plan: Everything, Free</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="pricing-style-two-items">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-4 col-lg-6 col-md-8 mb-30">
+                            <div class="pricing-style-two active">
+                                <div class="pricing-header">
+                                    <h4>Aurora for Elementor</h4>
+                                    <span>GPLv3 licensed, forever</span>
+                                </div>
+                                <ul>
+                                    <li><strong>70+ animations</strong></li>
+                                    <li><strong>6 animation modules</strong></li>
+                                    <li>GSAP and Anime.js, both included</li>
+                                    <li>Unlimited sites, no license key</li>
+                                    <li>Community support on GitHub</li>
+                                </ul>
+                                <div class="price">
+                                    <h2>$0 <sub> / forever</sub></h2>
+                                </div>
+                                <a class="btn mt-25 btn-sm circle btn-theme effect" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">Get Aurora Free</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Pricing -->
+
+        <!-- Start Testimonial (style from index-3-light.html)
+        ============================================= -->
+        <div id="testimonials" class="testimonial-style-three-area default-padding bg-gray">
+            <div class="container">
+                <div class="testimonial-heading">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h2 class="text-large-gradient">
+                                What Developers Say
+                            </h2>
+                        </div>
+                        <div class="col-lg-4 text-end">
+                            <div class="testimonial-three-quote">
+                                <div class="info">
+                                    <div class="ratings">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span>Early feedback</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <div class="testimonial-style-three-carousel swiper">
+                            <div class="swiper-wrapper">
+                                <!-- Single Item -->
+                                <div class="swiper-slide">
+                                    <div class="testimonial-style-three-item">
+                                        <div class="tes-rating">
+                                            <div class="icon">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            The per-effect JS chunking is what sold me — I only ship the one animation a widget actually uses instead of a 50KB bundle on every page. Rare to see a builder plugin think about that.
+                                        </p>
+                                        <div class="tm-provider">
+                                            <div class="thumb">
+                                                <img src="assets/img/team/11.jpg" alt="Image Not Found">
+                                            </div>
+                                            <div class="content">
+                                                <h4>Priya Nair</h4>
+                                                <span>Freelance Elementor Developer</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Single Item -->
+
+                                <!-- Single Item -->
+                                <div class="swiper-slide">
+                                    <div class="testimonial-style-three-item">
+                                        <div class="tes-rating">
+                                            <div class="icon">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            Being able to pick GSAP or Anime.js per widget — and knowing every effect has an equivalent in both — makes it an easy sell for clients who care about licensing.
+                                        </p>
+                                        <div class="tm-provider">
+                                            <div class="thumb">
+                                                <img src="assets/img/team/12.jpg" alt="Image Not Found">
+                                            </div>
+                                            <div class="content">
+                                                <h4>Marco E.</h4>
+                                                <span>Agency Owner</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Single Item -->
+
+                                <!-- Single Item -->
+                                <div class="swiper-slide">
+                                    <div class="testimonial-style-three-item">
+                                        <div class="tes-rating">
+                                            <div class="icon">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            The Hover Scatter + Continuous Wave combo on a hero heading looks like a $40 CodeCanyon script, and it took two dropdowns in the Advanced tab.
+                                        </p>
+                                        <div class="tm-provider">
+                                            <div class="thumb">
+                                                <img src="assets/img/team/10.jpg" alt="Image Not Found">
+                                            </div>
+                                            <div class="content">
+                                                <h4>Sofia K.</h4>
+                                                <span>No-code Site Builder</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Single Item -->
+                            </div>
+
+                            <!-- Navigation -->
+                            <div class="testimonial-control">
+                                <div class="swiper-pagination"></div>
+                                <div class="swiper-nav-left">
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Testimonial -->
+
+        <!-- Start Team Area (repurposed as "Powered By" — the underlying tech, not fake team members — from index-9.html)
+        ============================================= -->
+        <div class="team-style-three-area default-padding bg-gray bottom-less">
+            <div class="container">
+                <div class="site-heading">
+                    <div class="row align-center">
+                        <div class="col-lg-6">
+                            <h4 class="sub-title">Under The Hood</h4>
+                            <h2 class="title split-text">Powered By</h2>
+                        </div>
+                        <div class="col-lg-6 text-end">
+                            <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="btn-circle">
+                                <div class="button-content">
+                                    <span><img src="assets/img/icon/arrow-long-right.png" alt="Image Not Found"></span> <strong>Read the Docs</strong>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-full">
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-30">
+                        <div class="team-style-three-item">
+                            <div class="thumb"><div class="tech-badge">GSAP</div></div>
+                            <div class="info">
+                                <h4>GSAP</h4>
+                                <span>Animation Engine</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-30">
+                        <div class="team-style-three-item">
+                            <div class="thumb"><div class="tech-badge">Anime</div></div>
+                            <div class="info">
+                                <h4>Anime.js</h4>
+                                <span>MIT-Licensed Runtime</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-30">
+                        <div class="team-style-three-item">
+                            <div class="thumb"><div class="tech-badge">El</div></div>
+                            <div class="info">
+                                <h4>Elementor</h4>
+                                <span>Page Builder Integration</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-30">
+                        <div class="team-style-three-item">
+                            <div class="thumb"><div class="tech-badge">WP</div></div>
+                            <div class="info">
+                                <h4>WordPress</h4>
+                                <span>Platform</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Team Area -->
+
+        <!-- Start Blog (repurposed as "Latest Updates" — real changelog entries, no fake posts — from index-9.html)
+        ============================================= -->
+        <div class="blog-area home-blog blog-style-two-area default-padding bottom-less">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
+                        <div class="site-heading text-center">
+                            <h4 class="sub-title">Changelog</h4>
+                            <h2 class="title">Latest Updates</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 mb-30">
+                        <div class="home-blog-two">
+                            <div class="thumb">
+                                <div class="update-tag">Architecture</div>
+                                <div class="date">Jul <strong>2026</strong></div>
+                            </div>
+                            <div class="info">
+                                <div class="content">
+                                    <div class="meta">
+                                        <ul>
+                                            <li><a href="#">Text Animation module</a></li>
+                                        </ul>
+                                    </div>
+                                    <h3 class="post-title"><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">Every effect now ships as its own file</a></h3>
+                                    <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="button-regular">
+                                        Read the Docs <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 mb-30">
+                        <div class="home-blog-two">
+                            <div class="thumb">
+                                <div class="update-tag">Anime.js Parity</div>
+                                <div class="date">Jul <strong>2026</strong></div>
+                            </div>
+                            <div class="info">
+                                <div class="content">
+                                    <div class="meta">
+                                        <ul>
+                                            <li><a href="#">WordPress.org readiness</a></li>
+                                        </ul>
+                                    </div>
+                                    <h3 class="post-title"><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">44 Anime.js effects now mirror every GSAP effect</a></h3>
+                                    <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="button-regular">
+                                        Read the Docs <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Blog -->
+
+        <!-- Start Footer
+        ============================================= -->
+        <footer>
+            <div class="footer-box">
+                <div class="container">
+                    <div class="f-items">
+                        <div class="row">
+                            <!-- Singel Item -->
+                            <div class="col-lg-6 footer-item about pr-120 pr-md-15 pr-xs-15 pr-md-15 pr-xs-15">
+                                <img src="../assets/branding/aurora_animated_logo.svg" class="aurora-brand-logo footer-logo" alt="Aurora — color and motion, unleashed">
+                                <div class="top">
+                                    <h2>Get Aurora?</h2>
+                                    <a class="quick-btn" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fas fa-long-arrow-right"></i></a>
+                                </div>
+                                <ul class="address-list">
+                                    <li>
+                                        <h4>Source & Issues</h4>
+                                        <p>
+                                            github.com/zmdy/aurora — MIT-friendly, GPLv3 licensed, contributions welcome.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h4>WordPress.org</h4>
+                                        <p>
+                                            Submission in progress — Aurora is finishing its GSAP → Anime.js parity pass first.
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End Singel Item -->
+                            <!-- Singel Item -->
+                            <div class="col-lg-5 offset-lg-1 footer-item">
+                                <h4 class="widget-title">Quick Links</h4>
+                                <ul class="useful-link">
+                                    <li><a href="#modules">Modules</a></li>
+                                    <li><a href="#effects">Effects Showcase</a></li>
+                                    <li><a href="#testimonials">Testimonials</a></li>
+                                    <li><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">Documentation</a></li>
+                                    <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (GPLv3)</a></li>
+                                    <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
+                                </ul>
+                                <div class="footer-cta-row mt-20">
+                                    <a class="btn-animation" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fab fa-github"></i> <span>Star on GitHub</span></a>
+                                </div>
+                            </div>
+                            <!-- End Singel Item -->
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <ul class="footer-social">
+                                    <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+                                    <li><a href="https://wordpress.org/plugins/" target="_blank" rel="noopener"><i class="fab fa-wordpress-simple"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6 text-end">
+                                <p>
+                                    Aurora for Elementor — free & open source, GPLv3
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Footer Bottom -->
+            </div>
+        </footer>
+        <!-- End Footer -->
+    </div>
+
+
+    <!-- jQuery Frameworks
+    ============================================= -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/jquery.appear.js"></script>
+    <script src="assets/js/swiper-bundle.min.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/jquery.waypoints.js"></script>
+    <script src="assets/js/count-to.js"></script>
+    <script src="assets/js/ScrollOnReveal.js"></script>
+    <script src="assets/js/ScrollSmoother.min.js"></script>
+    <script src="assets/js/validnavs.js"></script>
+    <script src="assets/js/gsap.js"></script>
+    <script src="assets/js/ScrollTrigger.min.js"></script>
+    <script src="assets/js/SplitText.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/gsap-init.js"></script>
+
+    <!-- Aurora — interactive hero background (independent of the theme JS above) -->
+    <script src="assets/js/aurora-showcase.js"></script>
+    <script src="assets/js/aurora-hero2.js"></script>
+
+    <!-- Aurora — Effects Showcase runs the REAL, built plugin code.
+         gsap.js above (theme-provided) already covers the GSAP-powered
+         demo cards; Anime.js isn't bundled by the theme, so it's loaded
+         fresh here from the plugin's own vendor file, followed by the
+         plugin's actual compiled runtime + the exact effect chunks used
+         above (see scripts/build-text-effects.mjs / assets/js/dist/).
+         bootstrap()'s non-Elementor fallback path (elementorFrontend is
+         undefined here) scans for [data-aurora-enable="1"] on its own. -->
+    <script src="../assets/js/vendor/anime.min.js"></script>
+    <script src="../assets/js/dist/aurora-text-core.js"></script>
+    <script src="../assets/js/dist/effects/gs-1.js"></script>
+    <script src="../assets/js/dist/effects/gs-24.js"></script>
+    <script src="../assets/js/dist/effects/ml-15.js"></script>
+    <script src="../assets/js/dist/effects/ml-17.js"></script>
+    <script src="../assets/js/dist/effects/ml-22.js"></script>
+    <script src="../assets/js/dist/effects/ml-23.js"></script>
+
+</body>
+</html>

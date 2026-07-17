@@ -1,0 +1,319 @@
+/* ==================================================================
+   Aurora for Elementor — "Orb" hero variant
+   A second, alternate hero kept alongside the original Banner section
+   (id="top"). Self-contained: this layout (badge pills, floating
+   module card, works-with icon strip, glowing orb) has no equivalent
+   Dixor theme component, so it's hand-built rather than reusing
+   banner-style-* classes.
+================================================================== */
+
+.aurora-hero2-area {
+    position: relative;
+    background: var(--aurora-night, #05060f);
+    padding: 140px 0 120px;
+    overflow: hidden;
+}
+
+/* Full-section animated gradient background (the interactive orb canvas
+   now paints the ENTIRE section, not just the right-hand stage — a bright
+   concentration on the right plus soft ambient drift across the rest). */
+.aurora-hero2-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.aurora-hero2-bg canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.aurora-hero2-area::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 65%);
+    mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.aurora-hero2-area .container {
+    position: relative;
+    z-index: 2;
+}
+
+.aurora-hero2-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.aurora-hero2-badges .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.aurora-hero2-badges .badge-pill i {
+    color: #ffd166;
+    font-size: 12px;
+}
+
+.aurora-hero2-badges .badge-pill.accent {
+    color: var(--aurora-teal, #22d3ee);
+    border-color: rgba(34, 211, 238, 0.3);
+}
+
+.aurora-hero2-title {
+    color: #ffffff;
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+}
+
+.aurora-hero2-title .grad-text {
+    background: var(--bg-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.aurora-hero2-sub {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 17px;
+    max-width: 480px;
+    margin-bottom: 30px;
+}
+
+.aurora-hero2-stats {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 0;
+    margin: 0 0 35px;
+}
+
+.aurora-hero2-stats li {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aurora-hero2-stats li i {
+    color: var(--color-primary, #39ffb4);
+}
+
+.aurora-hero2-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.aurora-hero2-cta .btn-grad,
+.aurora-hero2-cta .btn-outline-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.aurora-hero2-cta .btn-grad {
+    background: linear-gradient(90deg, var(--aurora-teal, #22d3ee), var(--color-secondary, #7c5cff));
+    color: #05060f;
+}
+
+.aurora-hero2-cta .btn-outline-ghost {
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.aurora-hero2-cta a:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
+}
+
+.aurora-hero2-works {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.aurora-hero2-works > span:first-child {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+}
+
+.aurora-hero2-works .works-icons {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.aurora-hero2-works .works-icons i {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 22px;
+}
+
+.aurora-hero2-works .works-icons .txt-logo {
+    font-weight: 700;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.aurora-hero2-works .works-icons .txt-logo.gsap {
+    color: #88ce02;
+    font-style: italic;
+}
+
+.aurora-hero2-works .works-icons .txt-logo.anime {
+    color: #ff4b4b;
+}
+
+/* ------------------------------------------------------------------
+   Orb stage
+------------------------------------------------------------------ */
+
+.aurora-orb-stage {
+    position: relative;
+    z-index: 2;
+    min-height: 480px;
+}
+
+.aurora-cursor-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.9), rgba(34, 211, 238, 0));
+    box-shadow: 0 0 25px 6px rgba(34, 211, 238, 0.55);
+    pointer-events: none;
+    z-index: 3;
+    will-change: transform;
+}
+
+.aurora-modules-card {
+    position: absolute;
+    top: 12%;
+    right: 4%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 22px;
+    z-index: 2;
+    max-width: 320px;
+}
+
+.aurora-modules-card .module-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.aurora-modules-card .module-chip img {
+    width: 26px;
+    height: 26px;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.aurora-modules-card .module-chip span {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.2;
+}
+
+.aurora-explore-pill {
+    position: absolute;
+    bottom: 8%;
+    left: 2%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    padding: 10px 20px 10px 10px;
+    z-index: 2;
+}
+
+.aurora-explore-pill .dot-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #05060f;
+    flex: none;
+}
+
+.aurora-explore-pill strong {
+    display: block;
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.aurora-explore-pill span {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 11px;
+}
+
+@media (max-width: 991px) {
+    .aurora-modules-card {
+        position: static;
+        margin-top: 30px;
+        max-width: 100%;
+    }
+
+    .aurora-explore-pill {
+        position: static;
+        margin-top: 20px;
+    }
+
+    .aurora-orb-stage {
+        min-height: 380px;
+    }
+}
+
+@media (max-width: 767px) {
+    .aurora-hero2-title {
+        font-size: 38px;
+    }
+}

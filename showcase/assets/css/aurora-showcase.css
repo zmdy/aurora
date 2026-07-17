@@ -1,0 +1,300 @@
+/* ==================================================================
+   Aurora for Elementor — Showcase / Landing Page
+   Supplementary stylesheet, loaded AFTER the Dixor theme's own style.css.
+   Only overrides/additions live here — the theme's own CSS files are
+   untouched, so every class/id from the reference pages keeps working
+   exactly as it did there.
+================================================================== */
+
+:root {
+    /* Aurora borealis palette, overriding the theme's lime-green accent
+       with a green/teal/violet trio closer to the real phenomenon. */
+    --color-primary: #39FFB4;
+    --color-secondary: #7C5CFF;
+    --aurora-teal: #22D3EE;
+    --aurora-violet: #A855F7;
+    --aurora-night: #05060F;
+    --bg-gradient: linear-gradient(90deg, var(--aurora-teal) 0%, var(--color-primary) 50%, var(--aurora-violet) 100%);
+}
+
+/* ------------------------------------------------------------------
+   Hero — interactive aurora borealis background
+   (replaces the static bg-cover / light-banner-active image layers)
+------------------------------------------------------------------ */
+
+.banner-style-nine-area {
+    background-color: var(--aurora-night);
+    overflow: hidden;
+}
+
+.aurora-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.aurora-hero-bg canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.aurora-hero-bg::after {
+    /* Soft vignette so text stays legible over the brightest blobs */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(5, 6, 15, 0) 40%, rgba(5, 6, 15, 0.65) 100%);
+    pointer-events: none;
+}
+
+.banner-style-nine-area .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Hero content now follows index-9.html's own hero idea (two-line
+   title-left/title-right + a right-hand info card with an arrow CTA),
+   kept inside the original banner-style-nine-area wrapper so the aurora
+   canvas background and section id/anchor stay exactly as before.
+   body.bg-dark already flips h2/p to white and adds the outline treatment
+   to .title-right site-wide (see style.css ~2769-2789, ~3839-3850) — these
+   rules only add the aurora-specific accent. */
+.banner-style-one-heading .title-right strong {
+    background: var(--bg-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 0;
+}
+
+.banner-style-nine-area .banner-style-one-heading .main-content p {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.banner-style-one-info .top-info {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.banner-style-one-info .bottom p {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ------------------------------------------------------------------
+   Modules marquee (repurposed brand-area) — module names use a longer
+   string than the theme's original 1-word items, so give them breathing
+   room and the aurora gradient treatment.
+------------------------------------------------------------------ */
+
+.brand-area .item h2 {
+    background: var(--bg-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ------------------------------------------------------------------
+   Modules accordion — the theme's own .service-style-three-items is a
+   single flex row (li width: 30%), built for exactly 3 items. We have
+   6 modules, so force a proper responsive grid instead: 3 columns on
+   desktop (2 rows of 3), 2 on tablet, 1 on mobile. li.out keeps width
+   at 100% (fills its own cell) so the hover/click description-reveal
+   still works — only the theme's "widen on hover" side effect is
+   dropped, matching how the theme's own tablet/mobile breakpoints
+   already behave (they don't widen on hover either).
+------------------------------------------------------------------ */
+
+#modules .service-style-three-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    border: none;
+}
+
+#modules .service-style-three-items li,
+#modules .service-style-three-items li.out {
+    width: 100%;
+}
+
+@media (max-width: 991px) {
+    #modules .service-style-three-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575px) {
+    #modules .service-style-three-items {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ------------------------------------------------------------------
+   Effects Showcase — a new section (no direct theme equivalent) styled
+   to match the existing site-heading / default-padding / bg-gray
+   conventions already used throughout the theme.
+------------------------------------------------------------------ */
+
+.aurora-effects-area {
+    background-color: var(--aurora-night);
+}
+
+.aurora-effects-area .site-heading .sub-title {
+    color: var(--color-primary);
+}
+
+.aurora-effects-area .site-heading .title,
+.aurora-effects-area .site-heading p {
+    color: #ffffff;
+}
+
+.aurora-effects-area .site-heading p {
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 640px;
+    margin: 15px auto 0;
+}
+
+.aurora-effects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 60px;
+}
+
+@media (max-width: 991px) {
+    .aurora-effects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .aurora-effects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.aurora-effect-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 40px 25px;
+    text-align: center;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.aurora-effect-card:hover {
+    border-color: rgba(57, 255, 180, 0.4);
+    transform: translateY(-4px);
+}
+
+.aurora-effect-stage {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 25px;
+    cursor: default;
+}
+
+.aurora-effect-card .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.aurora-effect-card .lib-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 30px;
+    color: var(--aurora-night);
+    background: var(--color-primary);
+    font-weight: 700;
+}
+
+.aurora-effect-card .lib-badge.anime {
+    background: var(--aurora-violet);
+    color: #ffffff;
+}
+
+.aurora-effect-card .hint {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* ------------------------------------------------------------------
+   Small helpers
+------------------------------------------------------------------ */
+
+/* Real brand asset, referenced from ../assets/branding/ (the plugin-root
+   branding kit) rather than copied, so it stays in sync with the source
+   of truth. It's the "Borealis" animated wordmark + tagline lockup —
+   marked "Recommended" in the brand's own brandguide.html. */
+.aurora-brand-logo {
+    display: block;
+    height: 40px;
+    width: auto;
+}
+
+.aurora-brand-logo.footer-logo {
+    height: 46px;
+    margin-bottom: 20px;
+}
+
+.aurora-logo-mark.footer-logo img {
+    width: 34px;
+    height: 34px;
+}
+
+/* ------------------------------------------------------------------
+   "Powered By" (Team Area repurposed for the underlying tech stack
+   instead of photos of people that don't exist for this OSS project).
+------------------------------------------------------------------ */
+
+.tech-badge {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-gradient);
+    color: var(--aurora-night);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-align: center;
+    padding: 10px;
+}
+
+/* ------------------------------------------------------------------
+   "Latest Updates" (Blog repurposed as changelog highlights — no thumb
+   photo, so give .thumb its own gradient tile + a text tag instead).
+------------------------------------------------------------------ */
+
+.home-blog-two .thumb {
+    position: relative;
+    min-height: 220px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-blog-two .update-tag {
+    color: var(--aurora-night);
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    padding: 0 30px;
+}
