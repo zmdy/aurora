@@ -599,6 +599,41 @@
                 delay    : opts.delay,
             });
         },
+
+        // ml-15 — Continuous Wave: unlike every other effect here, this one
+        // never settles — recreates the "wavy" example from Motion.dev's
+        // splitText docs (a Motion+ paid feature) using the free Anime.js
+        // already bundled instead. Each unit bobs up and down forever,
+        // staggered by index so the motion ripples across the text.
+        // NOTE: because it's a perpetual loop, "Replay on re-entering
+        // viewport" doesn't fully stop it while scrolled out of view — the
+        // loop keeps ticking in the background (harmless: opacity is reset
+        // to 0 by reset(), so nothing is visible, just a small amount of
+        // wasted CPU). Fine for the common case (Trigger: On Page Load, no
+        // replay needed since it never stops anyway).
+        'ml-15': function (units, opts) {
+            // Two SEPARATE calls on purpose: opacity fades in once (a normal
+            // entrance), while translateY loops forever. Bundling both into
+            // one looping tween would make opacity alternate too, so the
+            // text would fade out and back in forever instead of just
+            // bobbing in place — anime.js tracks transform channels
+            // (translateY here) independently of other properties (opacity),
+            // so these two calls don't fight over the same value.
+            anime.animate(units, {
+                opacity : [0, 1],
+                duration: Math.max(400, opts.duration),
+                delay   : function (el, i) { return opts.delay + i * opts.stagger; },
+                ease    : 'outSine',
+            });
+            anime.animate(units, {
+                translateY: [0, -14],
+                duration  : Math.max(400, opts.duration / 2),
+                delay     : function (el, i) { return opts.delay + i * opts.stagger; },
+                loop      : true,
+                alternate : true,
+                ease      : 'inOutSine',
+            });
+        },
     };
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -632,15 +667,18 @@
     function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
-            library   : ds.auroraLibrary   || 'gsap',
-            animation : ds.auroraAnimation || 'gs-1',
-            splitBy   : ds.auroraSplitBy   || 'chars',
-            duration  : parseInt(ds.auroraDuration,  10) || 800,
-            delay     : parseInt(ds.auroraDelay,     10) || 0,
-            stagger   : parseInt(ds.auroraStagger,   10) || 30,
-            trigger   : ds.auroraTrigger   || 'scroll',
-            threshold : parseFloat(ds.auroraThreshold)  || 0.2,
-            replay    : ds.auroraReplay    === '1',
+            library       : ds.auroraLibrary   || 'gsap',
+            animation     : ds.auroraAnimation || 'gs-1',
+            splitBy       : ds.auroraSplitBy   || 'chars',
+            duration      : parseInt(ds.auroraDuration,  10) || 800,
+            delay         : parseInt(ds.auroraDelay,     10) || 0,
+            stagger       : parseInt(ds.auroraStagger,   10) || 30,
+            trigger       : ds.auroraTrigger   || 'scroll',
+            threshold     : parseFloat(ds.auroraThreshold)  || 0.2,
+            replay        : ds.auroraReplay    === '1',
+            hoverEnable   : ds.auroraHoverEnable === '1',
+            hoverIntensity: parseInt(ds.auroraHoverIntensity, 10) || 24,
+            hoverDuration : parseInt(ds.auroraHoverDuration, 10) || 350,
         };
     }
 
@@ -673,6 +711,84 @@
 
     function isSelfManaged(animation) {
         return SELF_MANAGED_ANIMATIONS.indexOf(animation) !== -1;
+    }
+
+    /**
+     * Hover Scatter — independent of the entrance effect. On mouseenter,
+     * each split unit jumps to a random offset/rotation; on mouseleave it
+     * settles back to its natural position with an elastic ease. Recreates
+     * the "each letter becomes randomly spaced" example from Motion.dev's
+     * splitText docs (a Motion+-only feature) using the already-bundled,
+     * free Anime.js instead.
+     *
+     * Reuses the SAME `units` array produced for the entrance effect rather
+     * than re-splitting the text, so it only makes sense when the entrance
+     * effect actually split the text (not for SELF_MANAGED_ANIMATIONS,
+     * which don't populate `units`).
+     *
+     * @param {HTMLElement}   wrapper
+     * @param {HTMLElement[]} units
+     * @param {Object}        opts
+     */
+    function attachHoverScatter(wrapper, units, opts) {
+        if (!opts.hoverEnable || !units || !units.length || typeof anime === 'undefined') {
+            return;
+        }
+
+        var intensity = opts.hoverIntensity || 24;
+        var duration  = opts.hoverDuration  || 350;
+
+        function rand(min, max) {
+            if (anime && anime.utils && typeof anime.utils.random === 'function') {
+                return anime.utils.random(min, max);
+            }
+            return Math.random() * (max - min) + min;
+        }
+
+        function onEnter() {
+            units.forEach(function (u) {
+                anime.animate(u, {
+                    translateX: rand(-intensity, intensity),
+                    translateY: rand(-intensity, intensity),
+                    rotate    : rand(-intensity, intensity) / 2,
+                    duration  : duration,
+                    ease      : 'outQuart',
+                });
+            });
+        }
+
+        function onLeave() {
+            units.forEach(function (u) {
+                anime.animate(u, {
+                    translateX: 0,
+                    translateY: 0,
+                    rotate    : 0,
+                    duration  : duration,
+                    ease      : 'outElastic(1,.6)',
+                });
+            });
+        }
+
+        // Clean up any previous listeners before attaching new ones (safe
+        // to call repeatedly across reinitializations from the editor).
+        detachHoverScatter(wrapper);
+
+        wrapper.addEventListener('mouseenter', onEnter);
+        wrapper.addEventListener('mouseleave', onLeave);
+        wrapper._auroraHoverHandlers = { enter: onEnter, leave: onLeave };
+    }
+
+    /**
+     * Removes any Hover Scatter listeners previously attached to `wrapper`.
+     *
+     * @param {HTMLElement} wrapper
+     */
+    function detachHoverScatter(wrapper) {
+        if (wrapper._auroraHoverHandlers) {
+            wrapper.removeEventListener('mouseenter', wrapper._auroraHoverHandlers.enter);
+            wrapper.removeEventListener('mouseleave', wrapper._auroraHoverHandlers.leave);
+            wrapper._auroraHoverHandlers = null;
+        }
     }
 
     /**
@@ -752,6 +868,11 @@
             }));
         } catch (e) {}
 
+        // Hover Scatter is independent of the entrance effect/trigger above
+        // — wire it up regardless of whether the entrance is scroll- or
+        // load-triggered. No-ops internally if disabled or self-managed.
+        attachHoverScatter(wrapper, units, opts);
+
         var played = false;
 
         function trigger() {
@@ -804,6 +925,7 @@
             wrapper._auroraObserver.disconnect();
             wrapper._auroraObserver = null;
         }
+        detachHoverScatter(wrapper);
         var textEl = getTextTarget(wrapper);
         if (textEl && typeof textEl._auroraPristineHTML !== 'undefined') {
             textEl.innerHTML = textEl._auroraPristineHTML;
@@ -887,6 +1009,9 @@
                 trigger   : this.getElementSettings('aurora_text_trigger') || 'scroll',
                 threshold : sizeOf(this.getElementSettings('aurora_text_threshold'), 20) / 100,
                 replay    : this.getElementSettings('aurora_text_replay') === 'yes',
+                hoverEnable   : this.getElementSettings('aurora_text_hover_enable') === 'yes',
+                hoverIntensity: sizeOf(this.getElementSettings('aurora_text_hover_intensity'), 24),
+                hoverDuration : sizeOf(this.getElementSettings('aurora_text_hover_duration'), 350),
             };
         };
 
