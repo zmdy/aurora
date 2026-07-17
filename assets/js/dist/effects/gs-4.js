@@ -1,0 +1,1 @@
+var AuroraEffect_gs_4=function(){"use strict";function i(r){typeof window>"u"||!r||!r.id||(window.AuroraTextEffects=window.AuroraTextEffects||{},window.AuroraTextEffects[r.id]=r)}var e={id:"gs-4",run:function(r,t){gsap.fromTo(r,{y:60,opacity:0},{duration:t.duration/1e3,delay:t.delay/1e3,y:0,opacity:1,ease:"elastic.out(1, 0.4)",stagger:t.stagger/1e3})}};return i(e),e}();

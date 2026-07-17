@@ -15,10 +15,16 @@ desktop.ini
 *~
 
 # Build artifacts
+# NOTE: assets/js/dist/ is an exception (see below) — those are the
+# compiled Text Animation bundles the plugin actually loads at runtime.
+# They're committed on purpose so the plugin works with zero build step
+# for end users; only assets/js/src/ + node_modules/ require Node/npm.
 dist/
 build/
 *.min.js.map
 *.min.css.map
+!assets/js/dist/
+!assets/js/dist/**
 
 # WordPress specific
 wp-config.php

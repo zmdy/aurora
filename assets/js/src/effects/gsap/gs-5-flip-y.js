@@ -1,0 +1,23 @@
+/* global gsap */
+import { registerEffect } from '../../core/registry.js';
+
+var effect = {
+    id: 'gs-5',
+    run: function (units, opts) {
+        gsap.set(units, { transformPerspective: 600 });
+        gsap.fromTo(units,
+            { rotationY: 90, opacity: 0 },
+            {
+                duration: opts.duration / 1000,
+                delay: opts.delay / 1000,
+                rotationY: 0,
+                opacity: 1,
+                ease: 'power3.out',
+                stagger: opts.stagger / 1000,
+            }
+        );
+    },
+};
+
+registerEffect(effect);
+export default effect;

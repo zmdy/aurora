@@ -120,6 +120,22 @@ class Text_Animation_Controls extends Animation_Module {
 					'gs-8'  => esc_html__( 'Wave',            'aurora-for-elementor' ),
 					'gs-9'  => esc_html__( 'Bounce Drop',     'aurora-for-elementor' ),
 					'gs-10' => esc_html__( 'Glitch',          'aurora-for-elementor' ),
+					'gs-11' => esc_html__( 'Rotate In',       'aurora-for-elementor' ),
+					'gs-12' => esc_html__( 'Slot Machine',    'aurora-for-elementor' ),
+					'gs-13' => esc_html__( 'Spin In',         'aurora-for-elementor' ),
+					'gs-14' => esc_html__( 'Neon Flicker',    'aurora-for-elementor' ),
+					'gs-15' => esc_html__( 'CRT Boot',        'aurora-for-elementor' ),
+					'gs-16' => esc_html__( 'Domino Fall',     'aurora-for-elementor' ),
+					'gs-17' => esc_html__( 'Pendulum Swing',  'aurora-for-elementor' ),
+					'gs-18' => esc_html__( 'Unfold 3D',       'aurora-for-elementor' ),
+					'gs-19' => esc_html__( 'Stretch Warp',    'aurora-for-elementor' ),
+					'gs-20' => esc_html__( 'Heartbeat',       'aurora-for-elementor' ),
+					'gs-21' => esc_html__( 'Vertical Blinds', 'aurora-for-elementor' ),
+					'gs-22' => esc_html__( 'Rubber Stamp',    'aurora-for-elementor' ),
+					'gs-23' => esc_html__( 'VHS Tracking',    'aurora-for-elementor' ),
+					'gs-24' => esc_html__( 'Liquid Fill Reveal', 'aurora-for-elementor' ),
+					'gs-25' => esc_html__( 'Perspective Fly', 'aurora-for-elementor' ),
+					'gs-26' => esc_html__( 'Cinema Title',    'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_text_enable'  => 'yes',
@@ -152,6 +168,14 @@ class Text_Animation_Controls extends Animation_Module {
 					'ml-13' => esc_html__( 'Echo Clone (Letters)',   'aurora-for-elementor' ),
 					'ml-14' => esc_html__( 'Native Scramble',        'aurora-for-elementor' ),
 					'ml-15' => esc_html__( 'Continuous Wave (never stops)', 'aurora-for-elementor' ),
+					'ml-16' => esc_html__( 'Elastic Slide',        'aurora-for-elementor' ),
+					'ml-17' => esc_html__( 'Scatter Converge',     'aurora-for-elementor' ),
+					'ml-18' => esc_html__( 'Matrix Rain',          'aurora-for-elementor' ),
+					'ml-19' => esc_html__( 'Spiral In',            'aurora-for-elementor' ),
+					'ml-20' => esc_html__( 'Flip Board',           'aurora-for-elementor' ),
+					'ml-21' => esc_html__( 'RGB Split',            'aurora-for-elementor' ),
+					'ml-22' => esc_html__( 'Typewriter Delete',    'aurora-for-elementor' ),
+					'ml-23' => esc_html__( 'Rotating Character Dial', 'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_text_enable'  => 'yes',
@@ -175,7 +199,11 @@ class Text_Animation_Controls extends Animation_Module {
 				],
 				'condition' => [
 					'aurora_text_enable'       => 'yes',
-					'aurora_text_animation_gsap!' => 'gs-3', // Scramble ignores split.
+					// These GSAP effects manage their own DOM (they set
+					// selfManaged: true in their effect file) and ignore
+					// this control entirely — see core/engine.js's
+					// isSelfManaged().
+					'aurora_text_animation_gsap!' => [ 'gs-3', 'gs-24', 'gs-25', 'gs-26' ],
 				],
 				'frontend_available' => true,
 			]
@@ -386,6 +414,8 @@ class Text_Animation_Controls extends Animation_Module {
 			? ( $settings['aurora_text_animation_gsap'] ?? 'gs-1' )
 			: ( $settings['aurora_text_animation_anime'] ?? 'ml-1' );
 
+		$this->enqueue_effect_script( $animation, $library );
+
 		$hover_enable = 'yes' === ( $settings['aurora_text_hover_enable'] ?? '' );
 
 		return [
@@ -403,5 +433,48 @@ class Text_Animation_Controls extends Animation_Module {
 			'data-aurora-hover-intensity' => esc_attr( max( 5, (int) ( $settings['aurora_text_hover_intensity']['size'] ?? 24 ) ) ),
 			'data-aurora-hover-duration'  => esc_attr( max( 100, (int) ( $settings['aurora_text_hover_duration']['size'] ?? 350 ) ) ),
 		];
+	}
+
+	/**
+	 * Enqueues the ONE effect chunk this widget actually needs
+	 * (assets/js/dist/effects/{id}.js — see scripts/build-text-effects.mjs).
+	 *
+	 * Skipped entirely inside the Elementor editor/preview context: there,
+	 * Asset_Manager already loads the full "aurora-text-editor.js" bundle
+	 * with every effect baked in, so the panel can preview any dropdown
+	 * choice instantly without waiting on a script to load.
+	 *
+	 * On the real frontend this runs once per widget, during
+	 * elementor/frontend/element/before_render — before wp_footer, so a
+	 * wp_enqueue_script() call made here still gets printed. Calling it
+	 * more than once with the same $animation (e.g. two widgets using the
+	 * same effect) is harmless: WordPress dedupes by handle automatically.
+	 *
+	 * @param string $animation  Effect id, e.g. 'gs-1' or 'ml-15'.
+	 * @param string $library    'gsap' | 'animejs' — decides which vendor
+	 *                           script the chunk depends on.
+	 */
+	private function enqueue_effect_script( string $animation, string $library ): void {
+
+		if ( \Elementor\Plugin::$instance->editor->is_edit_mode()
+			|| \Elementor\Plugin::$instance->preview->is_preview_mode() ) {
+			return;
+		}
+
+		// Guards against a corrupt/unexpected saved value being used to
+		// build a file path.
+		if ( ! preg_match( '/^(gs|ml)-\d+$/', $animation ) ) {
+			return;
+		}
+
+		$handle = 'aurora-text-effect-' . $animation;
+
+		wp_enqueue_script(
+			$handle,
+			AURORA_URL . 'assets/js/dist/effects/' . $animation . '.js',
+			[ 'aurora-text-core', 'gsap' === $library ? 'aurora-gsap' : 'aurora-animejs' ],
+			AURORA_VERSION,
+			true
+		);
 	}
 }

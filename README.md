@@ -262,7 +262,15 @@ aurora-for-elementor/
 │   └── class-image-effects-controls.php        ← Module 6: Image Effects
 ├── assets/
 │   ├── js/
-│   │   ├── text-animations.js                  ← 24 animations (GSAP + Anime.js)
+│   │   ├── src/                                ← Text Animation SOURCE (needs `npm run build`)
+│   │   │   ├── core/                           ←   Shared runtime (split, engine, Elementor handler)
+│   │   │   ├── effects/gsap/                   ←   One file per GSAP effect (gs-1 … gs-10)
+│   │   │   ├── effects/anime/                  ←   One file per Anime.js effect (ml-1 … ml-15+)
+│   │   │   └── entries/                        ←   editor.js (all effects) / frontend-core.js (runtime only)
+│   │   ├── dist/                               ← Text Animation BUILD OUTPUT (committed — no build step needed to run the plugin)
+│   │   │   ├── aurora-text-editor.js           ←   Full bundle, loaded only inside the Elementor editor/preview
+│   │   │   ├── aurora-text-core.js             ←   Shared runtime, loaded on the real frontend
+│   │   │   └── effects/{gs-1,ml-15,...}.js     ←   One tiny chunk per effect — PHP enqueues only the one a widget uses
 │   │   ├── children-animations.js              ← Children stagger (GSAP)
 │   │   ├── gradient-module.js                  ← Gradient rendering + mouse tracking
 │   │   ├── cursor-follow.js                    ← Dot/ring cursor + zone tracking
@@ -281,6 +289,19 @@ aurora-for-elementor/
 ├── LICENSE
 └── README.md
 ```
+
+### Building the Text Animation module
+
+The Text Animation module is the only part of Aurora with a build step — every other module is plain PHP/JS/CSS, no tooling required. Text Animation's source lives in `assets/js/src/` (one file per effect, under `effects/gsap/` and `effects/anime/`), and is compiled into the flat files the plugin actually loads (`assets/js/dist/`) with:
+
+```
+npm install
+npm run build
+```
+
+`assets/js/dist/` is committed to the repo, so running the plugin (or installing it from a .zip) never requires Node/npm — the build step is only needed when you change a `src/` file.
+
+Why split like this? On the real frontend, only the ONE effect chunk a given widget actually uses gets enqueued alongside a small shared runtime (`aurora-text-core.js`) — instead of shipping every effect to every page. Inside the Elementor editor, a single full bundle (`aurora-text-editor.js`, every effect baked in) is loaded instead, so switching the effect dropdown in the panel previews instantly with no extra network request. Adding effect #26 is just: create one file under `effects/gsap/` or `effects/anime/`, add its select option in `class-text-animation-controls.php`, and run `npm run build` — nothing else in the codebase needs to change.
 
 ### Translations
 

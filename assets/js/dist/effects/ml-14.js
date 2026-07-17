@@ -1,0 +1,1 @@
+var AuroraEffect_ml_14=function(){"use strict";function t(n){typeof window>"u"||!n||!n.id||(window.AuroraTextEffects=window.AuroraTextEffects||{},window.AuroraTextEffects[n.id]=n)}var e={id:"ml-14",selfManaged:!0,run:function(n,r,i){i.style.opacity="1",anime.animate(i,{innerHTML:anime.scrambleText({duration:r.duration}),delay:r.delay})}};return t(e),e}();

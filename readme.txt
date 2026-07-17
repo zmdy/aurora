@@ -17,7 +17,7 @@ Aurora adds a set of advanced design modules to the **Advanced** tab of every El
 
 = Module 1 — Text Animation =
 
-Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 24 animations (10 powered by GSAP, 14 by Anime.js), triggered on scroll or page load.
+Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 49 animations (26 powered by GSAP, 23 by Anime.js) — a curated, deduplicated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. Only the specific effect a widget uses is ever loaded on the real frontend, on top of a small shared runtime — so adding more effects over time never adds weight to pages that don't use them.
 
 = Module 2 — Animate Children Elements =
 
@@ -80,6 +80,9 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 
 = 0.1 =
 * Initial release: Text Animation, Animate Children Elements, Gradient (incl. Follow Mouse spotlight), Glassmorphism, Cursor Follow, and Image Effects modules.
+* Text Animation: added a Continuous Wave entrance effect and a Hover Scatter interaction (both Anime.js).
+* Text Animation: restructured into one file per effect, built via Vite into a full editor bundle and small, individually-loadable frontend chunks — only the effect a widget actually uses is sent to real visitors.
+* Text Animation: added 24 new effects (16 GSAP, 8 Anime.js) curated from GSAPify's animation catalogs and translated from Framer Motion/Motion.dev examples — Rotate In, Slot Machine, Spin In, Neon Flicker, CRT Boot, Domino Fall, Pendulum Swing, Unfold 3D, Stretch Warp, Heartbeat, Vertical Blinds, Rubber Stamp, VHS Tracking, Liquid Fill Reveal, Perspective Fly, Cinema Title, Elastic Slide, Scatter Converge, Matrix Rain, Spiral In, Flip Board, RGB Split, Typewriter Delete, and Rotating Character Dial. Near-duplicate variants were intentionally skipped in favor of one representative effect each.
 
 == Upgrade Notice ==
 

@@ -1,0 +1,71 @@
+/**
+ * Aurora Text Animation — EDITOR bundle entry point.
+ *
+ * Built into a single flat file (dist/aurora-text-editor.js), enqueued
+ * only inside the Elementor editor/preview context (see
+ * Asset_Manager::enqueue_frontend_assets()). Bundles EVERY effect so the
+ * panel can preview any dropdown choice instantly, with no per-effect
+ * network round trip while editing.
+ *
+ * Adding effect #26: create the file under ../effects/{gsap,anime}/, add
+ * ONE import line below, and add its PHP select option. Nothing else in
+ * this file (or core/*) ever needs to change.
+ */
+
+// Every import below runs the effect file's own top-level
+// registerEffect() call as a side effect — this list is a manifest, not a
+// map, deliberately (see core/registry.js for why).
+import '../effects/gsap/gs-1-fade-up.js';
+import '../effects/gsap/gs-2-clip-reveal.js';
+import '../effects/gsap/gs-3-scramble.js';
+import '../effects/gsap/gs-4-elastic-bounce.js';
+import '../effects/gsap/gs-5-flip-y.js';
+import '../effects/gsap/gs-6-slide-in.js';
+import '../effects/gsap/gs-7-scale-up.js';
+import '../effects/gsap/gs-8-wave.js';
+import '../effects/gsap/gs-9-bounce-drop.js';
+import '../effects/gsap/gs-10-glitch.js';
+import '../effects/gsap/gs-11-rotate-in.js';
+import '../effects/gsap/gs-12-slot-machine.js';
+import '../effects/gsap/gs-13-spin-in.js';
+import '../effects/gsap/gs-14-neon-flicker.js';
+import '../effects/gsap/gs-15-crt-boot.js';
+import '../effects/gsap/gs-16-domino-fall.js';
+import '../effects/gsap/gs-17-pendulum-swing.js';
+import '../effects/gsap/gs-18-unfold-3d.js';
+import '../effects/gsap/gs-19-stretch-warp.js';
+import '../effects/gsap/gs-20-heartbeat.js';
+import '../effects/gsap/gs-21-vertical-blinds.js';
+import '../effects/gsap/gs-22-rubber-stamp.js';
+import '../effects/gsap/gs-23-vhs-tracking.js';
+import '../effects/gsap/gs-24-liquid-fill.js';
+import '../effects/gsap/gs-25-perspective-fly.js';
+import '../effects/gsap/gs-26-cinema-title.js';
+
+import '../effects/anime/ml-1-float-up.js';
+import '../effects/anime/ml-2-scale-in.js';
+import '../effects/anime/ml-3-drop-down.js';
+import '../effects/anime/ml-4-slide-right.js';
+import '../effects/anime/ml-5-wave.js';
+import '../effects/anime/ml-6-flip-x.js';
+import '../effects/anime/ml-7-typewriter.js';
+import '../effects/anime/ml-8-blur-reveal.js';
+import '../effects/anime/ml-9-skew-in.js';
+import '../effects/anime/ml-10-explosion.js';
+import '../effects/anime/ml-11-native-split.js';
+import '../effects/anime/ml-12-clip-wrap.js';
+import '../effects/anime/ml-13-echo-clone.js';
+import '../effects/anime/ml-14-native-scramble.js';
+import '../effects/anime/ml-15-continuous-wave.js';
+import '../effects/anime/ml-16-elastic-slide.js';
+import '../effects/anime/ml-17-scatter-converge.js';
+import '../effects/anime/ml-18-matrix-rain.js';
+import '../effects/anime/ml-19-spiral-in.js';
+import '../effects/anime/ml-20-flip-board.js';
+import '../effects/anime/ml-21-rgb-split.js';
+import '../effects/anime/ml-22-typewriter-delete.js';
+import '../effects/anime/ml-23-rotating-dial.js';
+
+import { bootstrap } from '../core/elementor-handler.js';
+
+bootstrap();

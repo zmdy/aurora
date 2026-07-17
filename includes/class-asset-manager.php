@@ -65,9 +65,29 @@ final class Asset_Manager {
 		// Depends on 'elementor-frontend' to make sure elementorFrontend/
 		// elementorModules already exist when this script registers its Frontend
 		// Handler (onInit/onElementChange) — needed for the editor's live preview.
+		//
+		// Two different bundles, built from assets/js/src/ via Vite
+		// (npm run build — see package.json):
+		//
+		//  - Inside the Elementor editor/preview iframe, every effect must be
+		//    available immediately so switching the dropdown previews
+		//    instantly with no extra request — so we load the full bundle
+		//    (core runtime + all 25 effects baked in).
+		//  - On the real public frontend, we load ONLY the shared core
+		//    runtime here; the ONE specific effect each widget actually uses
+		//    is enqueued separately, per-widget, by
+		//    Text_Animation_Controls::get_render_attributes() (called during
+		//    element render, via the elementor/frontend/element/before_render
+		//    hook — early enough that wp_enqueue_script() calls made there
+		//    still get printed before wp_footer).
+		$is_editor_context = \Elementor\Plugin::$instance->editor->is_edit_mode()
+			|| \Elementor\Plugin::$instance->preview->is_preview_mode();
+
 		wp_enqueue_script(
-			'aurora-text-animations',
-			AURORA_URL . 'assets/js/text-animations.js',
+			'aurora-text-core',
+			AURORA_URL . ( $is_editor_context
+				? 'assets/js/dist/aurora-text-editor.js'
+				: 'assets/js/dist/aurora-text-core.js' ),
 			[ 'jquery', 'aurora-gsap', 'aurora-animejs', 'elementor-frontend' ],
 			AURORA_VERSION,
 			true
