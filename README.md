@@ -292,16 +292,67 @@ aurora-for-elementor/
 
 ### Building the Text Animation module
 
-The Text Animation module is the only part of Aurora with a build step — every other module is plain PHP/JS/CSS, no tooling required. Text Animation's source lives in `assets/js/src/` (one file per effect, under `effects/gsap/` and `effects/anime/`), and is compiled into the flat files the plugin actually loads (`assets/js/dist/`) with:
+The Text Animation module is the only part of Aurora with a build step — every other module is plain PHP/JS/CSS, no tooling required. Its source lives in `assets/js/src/` (one file per effect, under `effects/gsap/` and `effects/anime/`) and is compiled with **Vite** into the flat files the plugin actually loads (`assets/js/dist/`). `assets/js/dist/` is committed to the repo, so installing the plugin from a .zip or running it as-is never requires Node/npm — the build step is only needed when you change a file under `assets/js/src/`.
+
+#### Prerequisites
+
+- Node.js 18+ and npm (check with `node -v` / `npm -v`)
+
+#### One-time setup
 
 ```
+cd aurora-for-elementor
 npm install
+```
+
+This reads `package.json` and installs Vite into `node_modules/` (already `.gitignore`d — never committed).
+
+#### Compiling
+
+```
 npm run build
 ```
 
-`assets/js/dist/` is committed to the repo, so running the plugin (or installing it from a .zip) never requires Node/npm — the build step is only needed when you change a `src/` file.
+This runs `scripts/build-text-effects.mjs`, which drives Vite's build API directly (no `vite.config.js` — see the script's own header comment for why: `iife` output doesn't support multi-entry code-splitting, so every bundle is produced as its own isolated build call). One run regenerates everything in `assets/js/dist/`:
 
-Why split like this? On the real frontend, only the ONE effect chunk a given widget actually uses gets enqueued alongside a small shared runtime (`aurora-text-core.js`) — instead of shipping every effect to every page. Inside the Elementor editor, a single full bundle (`aurora-text-editor.js`, every effect baked in) is loaded instead, so switching the effect dropdown in the panel previews instantly with no extra network request. Adding effect #26 is just: create one file under `effects/gsap/` or `effects/anime/`, add its select option in `class-text-animation-controls.php`, and run `npm run build` — nothing else in the codebase needs to change.
+| Output | What it is | When it's loaded |
+|---|---|---|
+| `aurora-text-editor.js` | Core runtime + **all** effects baked in, one file | Only inside the Elementor editor/preview iframe |
+| `aurora-text-core.js` | Core runtime only, no effects | Every real (non-editor) frontend page |
+| `effects/{id}.js` (e.g. `gs-1.js`, `ml-23.js`) | One effect each, self-contained | Only the effect(s) a given widget actually uses, enqueued per-widget by PHP |
+
+Re-run `npm run build` after editing, adding, or removing anything under `assets/js/src/` — it's the only step that turns those source changes into what the plugin actually serves. Nothing needs to be manually copied or renamed; the script discovers every effect file automatically from its `{id}-{slug}.js` filename.
+
+#### Adding a new effect
+
+1. Create `assets/js/src/effects/gsap/{id}-{slug}.js` or `assets/js/src/effects/anime/{id}-{slug}.js`, following the shape of any existing file in that folder (`export default { id, run(units, opts, textEl) {...} }`, plus `registerEffect(effect)`).
+2. Add one import line to `assets/js/src/entries/editor.js` (so the editor bundle picks it up).
+3. Add its select option in `includes/class-text-animation-controls.php`.
+4. Run `npm run build`.
+
+Nothing else in the codebase needs to change — no manifest to update, no ids to register elsewhere.
+
+#### GSAP → Anime.js parity
+
+Every GSAP effect (`gs-1`..`gs-26`) has an Anime.js effect with the same visual result, so the Library control is a real choice rather than Anime.js being a smaller fallback set. This exists to prepare for an eventual WordPress.org submission: GSAP's core license (GreenSock's "Standard No-Charge License") isn't GPL-compatible, while Anime.js is MIT. GSAP is still bundled and selectable today — nothing has been removed — but if GSAP is ever dropped, no effect is lost; the Library default just needs to switch to `animejs` and each `aurora_text_animation_gsap` value needs to be remapped to its Anime.js counterpart below.
+
+| GSAP | Anime.js | | GSAP | Anime.js |
+|---|---|---|---|---|
+| gs-1 Fade Up | ml-1 Float Up | | gs-14 Neon Flicker | ml-32 Neon Flicker |
+| gs-2 Clip Reveal | ml-12 Clip Wrap | | gs-15 CRT Boot | ml-33 CRT Boot |
+| gs-3 Scramble Text | ml-14 Native Scramble | | gs-16 Domino Fall | ml-34 Domino Fall |
+| gs-4 Elastic Bounce | ml-24 Elastic Bounce | | gs-17 Pendulum Swing | ml-35 Pendulum Swing |
+| gs-5 3D Flip | ml-25 3D Flip | | gs-18 Unfold 3D | ml-36 Unfold 3D |
+| gs-6 Slide In | ml-26 Slide In | | gs-19 Stretch Warp | ml-37 Stretch Warp |
+| gs-7 Scale Up | ml-2 Scale In | | gs-20 Heartbeat | ml-38 Heartbeat |
+| gs-8 Wave | ml-5 Wave | | gs-21 Vertical Blinds | ml-39 Vertical Blinds |
+| gs-9 Bounce Drop | ml-27 Bounce Drop | | gs-22 Rubber Stamp | ml-40 Rubber Stamp |
+| gs-10 Glitch | ml-28 Glitch | | gs-23 VHS Tracking | ml-41 VHS Tracking |
+| gs-11 Rotate In | ml-29 Rotate In | | gs-24 Liquid Fill Reveal | ml-42 Liquid Fill Reveal |
+| gs-12 Slot Machine | ml-30 Slot Machine | | gs-25 Perspective Fly | ml-43 Perspective Fly |
+| gs-13 Spin In | ml-31 Spin In | | gs-26 Cinema Title | ml-44 Cinema Title |
+
+(`ml-6`..`ml-11`, `ml-13`, `ml-15`..`ml-23` are Anime.js-original effects with no GSAP equivalent — no mapping needed for those.)
 
 ### Translations
 
