@@ -1,0 +1,1 @@
+var AuroraEffect_ml_30=function(){"use strict";function e(r){typeof window>"u"||!r||!r.id||(window.AuroraTextEffects=window.AuroraTextEffects||{},window.AuroraTextEffects[r.id]=r)}var t={id:"ml-30",run:function(r,n){anime.animate(r,{translateY:["-500%","0%"],opacity:[0,1],duration:n.duration,delay:function(a,i){return n.delay+i*n.stagger},ease:"outExpo"})}};return e(t),t}();

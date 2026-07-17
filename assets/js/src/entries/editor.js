@@ -66,6 +66,34 @@ import '../effects/anime/ml-21-rgb-split.js';
 import '../effects/anime/ml-22-typewriter-delete.js';
 import '../effects/anime/ml-23-rotating-dial.js';
 
+// ml-24+ : Anime.js ports of the GSAP-only effects above (gs-4, gs-5,
+// gs-6, gs-9..gs-26) — see ml-24-elastic-bounce.js's header comment for
+// why this parity set exists (WordPress.org submission prep: GSAP's core
+// license isn't GPL-compatible, Anime.js's MIT license is; GSAP stays
+// available for now per explicit instruction, this just means dropping it
+// later won't lose any effect).
+import '../effects/anime/ml-24-elastic-bounce.js';
+import '../effects/anime/ml-25-flip-y.js';
+import '../effects/anime/ml-26-slide-from-left.js';
+import '../effects/anime/ml-27-bounce-drop.js';
+import '../effects/anime/ml-28-glitch.js';
+import '../effects/anime/ml-29-rotate-in.js';
+import '../effects/anime/ml-30-slot-machine.js';
+import '../effects/anime/ml-31-spin-in.js';
+import '../effects/anime/ml-32-neon-flicker.js';
+import '../effects/anime/ml-33-crt-boot.js';
+import '../effects/anime/ml-34-domino-fall.js';
+import '../effects/anime/ml-35-pendulum-swing.js';
+import '../effects/anime/ml-36-unfold-3d.js';
+import '../effects/anime/ml-37-stretch-warp.js';
+import '../effects/anime/ml-38-heartbeat.js';
+import '../effects/anime/ml-39-vertical-blinds.js';
+import '../effects/anime/ml-40-rubber-stamp.js';
+import '../effects/anime/ml-41-vhs-tracking.js';
+import '../effects/anime/ml-42-liquid-fill.js';
+import '../effects/anime/ml-43-perspective-fly.js';
+import '../effects/anime/ml-44-cinema-title.js';
+
 import { bootstrap } from '../core/elementor-handler.js';
 
 bootstrap();
