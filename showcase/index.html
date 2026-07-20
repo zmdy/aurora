@@ -325,17 +325,30 @@ body.cursor-click .gcursor-ring { transform: translate(-50%, -50%) scale(1.3); }
   background: var(--c-night);
 }
 
+.hero__bg-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('quadro-34.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.70;
+  pointer-events: none;
+}
+
 /* Dynamic moving mesh gradient background overlay */
 .hero::before {
   content: '';
   position: absolute;
   inset: -25%;
-  z-index: 0;
-  background: radial-gradient(circle at 20% 30%, rgba(5,150,105,.22) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(2,132,199,.20) 0%, transparent 50%),
-              radial-gradient(circle at 50% 80%, rgba(109,40,217,.22) 0%, transparent 50%);
-  filter: blur(70px);
-  opacity: .9;
+  z-index: 1;
+  background: radial-gradient(circle at 20% 30%, rgba(5,150,105,.30) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(2,132,199,.28) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(109,40,217,.30) 0%, transparent 50%);
+  filter: blur(60px);
+  mix-blend-mode: multiply;
+  opacity: .85;
   animation: hero-gradient-move 14s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -1160,6 +1173,196 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   DEEP DIVE FEATURE SHOWCASE CSS — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.deep-dive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s-8);
+  margin-top: var(--s-10);
+}
+
+@media (max-width: 900px) {
+  .deep-dive-grid { grid-template-columns: 1fr; }
+}
+
+.feature-deep-card {
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,.08);
+  border-radius: var(--r-xl);
+  padding: var(--s-8);
+  transition: all var(--t-normal);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  box-shadow: 0 4px 16px rgba(15,23,42,.03);
+}
+
+.feature-deep-card:hover {
+  border-color: rgba(109, 40, 217, 0.35);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.feature-preview-box {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--r-lg);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(15,23,42,.08);
+}
+
+.preview-gradient-mesh {
+  background: linear-gradient(135deg, #059669, #0284c7, #6d28d9);
+  background-size: 200% 200%;
+  animation: mesh-gradient-move 6s ease infinite alternate;
+}
+
+@keyframes mesh-gradient-move {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.preview-glass-box {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--r-lg);
+  padding: 24px 36px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.preview-tilt-card {
+  width: 80%;
+  height: 140px;
+  background: linear-gradient(135deg, rgba(109,40,217,.15), rgba(2,132,199,.15));
+  border: 1px solid rgba(15,23,42,.15);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .1s ease-out;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DISTRIBUTION ROADMAP SECTION CSS — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.editions-section {
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.editions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-8);
+  margin-top: var(--s-10);
+}
+
+@media (max-width: 850px) {
+  .editions-grid { grid-template-columns: 1fr; }
+}
+
+.edition-card {
+  background: #f8fafc;
+  border: 1px solid rgba(15,23,42,.08);
+  border-radius: var(--r-xl);
+  padding: var(--s-8);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all var(--t-normal);
+  box-shadow: 0 4px 16px rgba(15,23,42,.02);
+}
+
+.edition-card--wp {
+  border-color: rgba(2, 132, 199, 0.3);
+}
+
+.edition-card--wp:hover {
+  border-color: rgba(2, 132, 199, 0.6);
+  box-shadow: 0 20px 40px rgba(2, 132, 199, 0.12);
+  transform: translateY(-3px);
+}
+
+.edition-card--gh {
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+.edition-card--gh:hover {
+  border-color: rgba(5, 150, 105, 0.6);
+  box-shadow: 0 20px 40px rgba(5, 150, 105, 0.12);
+  transform: translateY(-3px);
+}
+
+.edition-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  font-family: var(--f-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-4);
+  width: fit-content;
+}
+
+.edition-badge--wp { background: rgba(2, 132, 199, 0.12); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.25); }
+.edition-badge--gh { background: rgba(5, 150, 105, 0.12); color: #059669; border: 1px solid rgba(5, 150, 105, 0.25); }
+
+.edition-title {
+  font-family: var(--f-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--c-text-main);
+  margin-bottom: var(--s-3);
+}
+
+.edition-desc {
+  font-size: 14px;
+  color: var(--c-text-muted);
+  line-height: 1.7;
+  margin-bottom: var(--s-6);
+}
+
+.edition-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin-bottom: var(--s-8);
+}
+
+.edition-features li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 13px;
+  color: var(--c-text-main);
+}
+
+.edition-features svg {
+  color: var(--c-green);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    HOW IT WORKS / ARCHITECTURE — LIGHT THEME
    ═══════════════════════════════════════════════════════════════════ */
 .arch-section {
@@ -1535,7 +1738,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
       <ul class="nav__links" role="list">
         <li><a href="#playground">Playground</a></li>
         <li><a href="#effects">Effects</a></li>
-        <li><a href="#modules">Modules</a></li>
+        <li><a href="#deep-dive">Features</a></li>
+        <li><a href="#editions">Editions</a></li>
         <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
 
@@ -1551,6 +1755,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
      HERO
      ═══════════════════════════════════════════════════════════════════ -->
 <section id="top" class="hero">
+  <div class="hero__bg-img" aria-hidden="true"></div>
   <div class="hero__canvas-bg">
     <canvas id="aurora-canvas"></canvas>
   </div>
@@ -1791,6 +1996,140 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
         <div class="module-card__num">06 — Advanced Physics</div>
         <h3 class="module-card__title">Zero Dependencies</h3>
         <p class="module-card__desc">Vanilla JS core (12 KB gzipped). CDN fallbacks automatically injected only when needed — leaving your site fast and clean.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     DEEP DIVE FEATURE SHOWCASE — LIGHT THEME
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="deep-dive" class="deep-dive-section section-gap-lg" style="background:var(--c-night)">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Deep Feature Showcase</div>
+      <h2 class="display-2" style="margin-top:1rem">Engineered Beyond Text Motion</h2>
+      <p>Explore the four pillar modules powering custom gradients, glassmorphism, cursor physics &amp; 3D perspective.</p>
+    </div>
+
+    <div class="deep-dive-grid">
+      <!-- Card 1: Multi-Stop Gradient Engine -->
+      <div class="feature-deep-card">
+        <div class="feature-preview-box preview-gradient-mesh">
+          <span style="font-family:var(--f-display);font-size:1.8rem;font-weight:700;color:#fff;text-shadow:0 10px 20px rgba(0,0,0,0.3)">Gradient Mesh &amp; Spotlight</span>
+        </div>
+        <div>
+          <div class="eyebrow" style="margin-bottom:0.5rem">Module 02</div>
+          <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:var(--c-text-main);margin-bottom:0.5rem">Multi-Stop Gradient &amp; Spotlight</h3>
+          <p class="text-muted" style="font-size:14px;line-height:1.7">Linear, radial, or conic gradients with animated mesh drift or follow-mouse spotlight. Applies seamlessly to element backgrounds or text fills with hardware acceleration.</p>
+        </div>
+      </div>
+
+      <!-- Card 2: Glassmorphic Panel Engine -->
+      <div class="feature-deep-card">
+        <div class="feature-preview-box" style="background:radial-gradient(circle at center, rgba(109,40,217,0.2), transparent 70%)">
+          <div class="preview-glass-box">
+            <div style="font-family:var(--f-heading);font-size:1.2rem;font-weight:700;color:var(--c-text-main)">Frosted Glass</div>
+            <div style="font-size:11px;color:var(--c-text-dim);margin-top:4px">PHP Zero-JS Backdrop Filter</div>
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow" style="margin-bottom:0.5rem">Module 03</div>
+          <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:var(--c-text-main);margin-bottom:0.5rem">PHP-Powered Glassmorphism</h3>
+          <p class="text-muted" style="font-size:14px;line-height:1.7">Translucent blurred backgrounds resolved directly in PHP into clean inline styles. Zero JavaScript execution overhead at runtime, with automatic legacy CSS fallbacks.</p>
+        </div>
+      </div>
+
+      <!-- Card 3: Cursor Follower Zones -->
+      <div class="feature-deep-card">
+        <div class="feature-preview-box" style="background:#f8fafc;display:flex;gap:1rem;flex-wrap:wrap">
+          <a href="#playground" class="btn-primary" style="padding:10px 20px;font-size:13px">Hover Target 1</a>
+          <button class="btn-ghost" style="padding:10px 20px;font-size:13px">Hover Target 2</button>
+        </div>
+        <div>
+          <div class="eyebrow" style="margin-bottom:0.5rem">Module 04</div>
+          <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:var(--c-text-main);margin-bottom:0.5rem">Custom Cursor Follower Zones</h3>
+          <p class="text-muted" style="font-size:14px;line-height:1.7">A two-part cursor (dot + ring) with customizable spring trail physics and distinct hover states for buttons, links, cards, and custom data attributes.</p>
+        </div>
+      </div>
+
+      <!-- Card 4: 3D Perspective Tilt & Image Parallax -->
+      <div class="feature-deep-card">
+        <div class="feature-preview-box" style="perspective:600px">
+          <div class="preview-tilt-card" id="tilt-card-demo-light">
+            <span style="font-family:var(--f-heading);font-size:1rem;font-weight:700;color:var(--c-text-main)">Interactive 3D Perspective Tilt</span>
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow" style="margin-bottom:0.5rem">Module 05</div>
+          <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:var(--c-text-main);margin-bottom:0.5rem">3D Image Perspective &amp; Glare</h3>
+          <p class="text-muted" style="font-size:14px;line-height:1.7">Gyroscope/mouse 3D perspective tilt with specular light glare reflection and scroll parallax curve controls for images and cards.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     DISTRIBUTION ROADMAP (WORDPRESS.ORG & GITHUB EDITIONS) — LIGHT THEME
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="editions" class="editions-section section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Distribution Roadmap</div>
+      <h2 class="display-2" style="margin-top:1rem">Choose Your Aurora Edition</h2>
+      <p>From 1-click WordPress.org installation to the full dual-engine GSAP 3 Enterprise build on GitHub.</p>
+    </div>
+
+    <div class="editions-grid">
+      <!-- WordPress.org Version -->
+      <div class="edition-card edition-card--wp">
+        <div>
+          <div class="edition-badge edition-badge--wp">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10C22 6.477 17.523 2 12 2z"></path><path d="M12 6v12M6 12h12"></path></svg>
+            Coming Soon to WordPress.org
+          </div>
+          <h3 class="edition-title">WordPress.org Edition</h3>
+          <p class="edition-desc">Lightweight official edition built for the WordPress Plugin Directory with 1-click automatic updates inside WP Admin.</p>
+
+          <ul class="edition-features">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Built-in text motion powered natively by Anime.js</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> 44 text effects + Native character/word/line splitter</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Native integration inside Elementor's Advanced tab</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> 100% Free &amp; Open Source (GPL v3 License)</li>
+          </ul>
+        </div>
+
+        <div style="padding-top:1rem;border-top:1px solid rgba(15,23,42,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+          <span style="font-size:12px;color:var(--c-text-dim)">Status: Review in progress by WP.org team</span>
+          <span class="btn-ghost" style="padding:8px 16px;font-size:12px;opacity:.7;cursor:default">Release Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- GitHub Enterprise Edition -->
+      <div class="edition-card edition-card--gh">
+        <div>
+          <div class="edition-badge edition-badge--gh">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Available Now on GitHub
+          </div>
+          <h3 class="edition-title">GitHub Power Edition (GSAP 3)</h3>
+          <p class="edition-desc">Full-featured enterprise edition powered by dual motion engines (GSAP 3 + Anime.js 3), all 70+ effects, static code export &amp; advanced physics.</p>
+
+          <ul class="edition-features">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> All 70+ registered text effects (GSAP 3 + Anime.js 3)</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Clean HTML/JS snippet generator for static websites</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Complete source code, unminified chunks &amp; build scripts</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Direct .zip plugin download ready for Elementor</li>
+          </ul>
+        </div>
+
+        <div style="padding-top:1rem;border-top:1px solid rgba(15,23,42,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+          <span style="font-size:12px;color:var(--c-text-dim)">Version 1.0.0 Stable</span>
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary" style="padding:8px 18px;font-size:13px">
+            Download GSAP Edition (GitHub)
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -2457,8 +2796,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
         mouse.x += (target.x - mouse.x) * .03;
         mouse.y += (target.y - mouse.y) * .03;
         ctx.clearRect(0, 0, w, h);
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(0, 0, w, h);
 
         blobs.forEach(function(b, i) {
           var dx = Math.sin(t * b.sp + b.ph) * .22;
@@ -2618,6 +2955,26 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
     document.addEventListener('DOMContentLoaded', initHeroAnimations);
   } else {
     initHeroAnimations();
+  }
+
+  /* Interactive 3D Perspective Tilt for Showcase Card */
+  var tiltCard = document.getElementById('tilt-card-demo') || document.getElementById('tilt-card-demo-light');
+  if (tiltCard) {
+    var parentBox = tiltCard.closest('.feature-preview-box');
+    if (parentBox) {
+      parentBox.addEventListener('mousemove', function(e) {
+        var rect = parentBox.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        var rotX = (-y / (rect.height / 2)) * 18;
+        var rotY = (x / (rect.width / 2)) * 18;
+        tiltCard.style.transform = 'rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg) scale(1.05)';
+      });
+
+      parentBox.addEventListener('mouseleave', function() {
+        tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+      });
+    }
   }
 
 })();
