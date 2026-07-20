@@ -1,1052 +1,2554 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- ========== Meta Tags ========== -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Aurora for Elementor — text animation, gradients, glassmorphism, cursor follow and image effects for any Elementor widget. Free and open source.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Aurora for Elementor — 70+ premium text animations, gradients, glassmorphism, cursor follow and image effects. Light theme showcase.">
+<title>Aurora for Elementor — Light Theme Showcase</title>
+<link rel="icon" href="../assets/branding/aurora_favicon.svg" type="image/svg+xml">
 
-    <!-- ========== Page Title ========== -->
-    <title>Aurora for Elementor — Animate Everything, Beautifully</title>
+<!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
-    <!-- ========== Favicon Icon ========== -->
-    <link rel="icon" href="../assets/branding/aurora_favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="assets/img/logo/favicon-32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="assets/img/logo/favicon-16.png" sizes="16x16" type="image/png">
-    <link rel="shortcut icon" href="assets/img/logo/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
+<!-- Plugin CSS -->
+<link href="../assets/css/text-animations.css" rel="stylesheet">
 
-    <!-- ========== Start Stylesheet ==========
-         Aesthetic reference: Dixor v1.5 theme (source/index-3-light.html hero
-         + source/index-9-light.html sections). Theme files copied verbatim
-         below; classes/ids kept exactly as in the reference so the theme's
-         own CSS/JS keep working unmodified. Aurora-specific additions live
-         only in aurora-showcase.css (loaded last). -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
-    <link href="assets/css/animate.min.css" rel="stylesheet">
-    <link href="assets/css/validnavs.css" rel="stylesheet">
-    <link href="assets/css/helper.css" rel="stylesheet">
-    <link href="assets/css/unit-test.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/aurora-showcase.css" rel="stylesheet">
-    <link href="assets/css/aurora-hero2.css" rel="stylesheet">
-    <!-- ========== End Stylesheet ========== -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   AURORA LIGHT DESIGN SYSTEM — DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Brand Palette */
+  --c-green:    #059669;
+  --c-teal:     #0284c7;
+  --c-violet:   #6d28d9;
 
+  /* Light Theme Surface Palette */
+  --c-night:    #f8fafc;
+  --c-surface:  #ffffff;
+  --c-elevated: #f1f5f9;
+  --c-text-main:#0f172a;
+  --c-text-muted:#475569;
+  --c-text-dim: #64748b;
+  --c-border:   rgba(15, 23, 42, 0.08);
+  --c-border-hover: rgba(5, 150, 105, 0.35);
+
+  /* Gradient Presets */
+  --g-aurora: linear-gradient(115deg, #059669 0%, #0284c7 45%, #6d28d9 100%);
+  --g-subtle: linear-gradient(135deg, rgba(5,150,105,.08) 0%, rgba(2,132,199,.06) 50%, rgba(109,40,217,.08) 100%);
+
+  /* Typography Tokens */
+  --f-display: 'Syne', sans-serif;
+  --f-heading: 'Space Grotesk', system-ui, sans-serif;
+  --f-sans:    'Inter', system-ui, sans-serif;
+  --f-mono:    'JetBrains Mono', monospace;
+
+  /* Spacing scale */
+  --s-1:  .25rem;
+  --s-2:  .5rem;
+  --s-3:  .75rem;
+  --s-4:  1rem;
+  --s-5:  1.25rem;
+  --s-6:  1.5rem;
+  --s-8:  2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-20: 5rem;
+  --s-24: 6rem;
+  --s-32: 8rem;
+
+  /* Radii */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 9999px;
+
+  /* Shadows for Light Theme */
+  --shadow-glow-green:  0 10px 30px rgba(5,150,105,.18);
+  --shadow-glow-teal:   0 10px 30px rgba(2,132,199,.18);
+  --shadow-glow-violet: 0 10px 30px rgba(109,40,217,.18);
+  --shadow-card: 0 16px 36px rgba(15,23,42,0.06), 0 2px 8px rgba(15,23,42,0.04), inset 0 1px 0 rgba(255,255,255,0.9);
+  --shadow-modal: 0 25px 60px rgba(15,23,42,0.18), 0 4px 16px rgba(15,23,42,0.08);
+
+  /* Timing */
+  --t-fast:   150ms cubic-bezier(.4,0,.2,1);
+  --t-normal: 300ms cubic-bezier(.4,0,.2,1);
+  --t-slow:   500ms cubic-bezier(.4,0,.2,1);
+  --t-spring: 600ms cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESET & BASE — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--f-sans);
+  background: var(--c-night);
+  color: var(--c-text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(5,150,105,.2); color: #0f172a; }
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL CURSOR FOLLOWER — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.gcursor-dot,
+.gcursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity .3s ease, transform .2s ease, width .25s ease, height .25s ease, background .25s ease, border-color .25s ease;
+}
+
+.gcursor-dot {
+  width: 8px; height: 8px;
+  background: var(--c-green);
+  box-shadow: 0 0 12px rgba(5,150,105,.5);
+}
+
+.gcursor-ring {
+  width: 38px; height: 38px;
+  border: 1.5px solid rgba(5,150,105,.45);
+  background: rgba(5,150,105,.04);
+}
+
+body.cursor-ready .gcursor-dot,
+body.cursor-ready .gcursor-ring { opacity: 1; }
+
+body.cursor-hover .gcursor-dot {
+  width: 12px; height: 12px;
+  background: var(--c-violet);
+  box-shadow: 0 0 16px rgba(109,40,217,.6);
+}
+
+body.cursor-hover .gcursor-ring {
+  width: 54px; height: 54px;
+  border-color: rgba(109,40,217,.5);
+  background: rgba(109,40,217,.06);
+}
+
+body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(.6); }
+body.cursor-click .gcursor-ring { transform: translate(-50%, -50%) scale(1.3); }
+
+@media (max-width: 768px), (pointer: coarse) {
+  .gcursor-dot, .gcursor-ring { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LAYOUT UTILITIES
+   ═══════════════════════════════════════════════════════════════════ */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--s-6);
+}
+
+.section-gap { padding: var(--s-32) 0; }
+.section-gap-lg { padding: calc(var(--s-32) * 1.5) 0; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TYPOGRAPHY SYSTEM
+   ═══════════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--c-green) !important;
+  outline-offset: 3px !important;
+}
+
+.eyebrow {
+  font-family: var(--f-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  background: var(--g-aurora);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.display-1 {
+  font-family: var(--f-display);
+  font-size: clamp(3.2rem, 8vw, 6.5rem);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: -.03em;
+  color: var(--c-text-main);
+}
+
+.display-2 {
+  font-family: var(--f-display);
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--c-text-main);
+}
+
+.display-3 {
+  font-family: var(--f-heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  color: var(--c-text-main);
+}
+
+.text-gradient {
+  background: var(--g-aurora);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-muted { color: var(--c-text-muted); }
+.text-dim   { color: var(--c-text-dim); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   NAV — FLOATING LIGHT GLASSMORPHIC PILL BAR
+   ═══════════════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 1.25rem;
+  left: 0; right: 0;
+  z-index: 1000;
+  pointer-events: none;
+  transition: transform var(--t-normal);
+}
+
+.nav .container {
+  max-width: 1080px;
+  padding: 0 var(--s-4);
+}
+
+.nav__inner {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-8);
+  padding: 10px 24px;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+  transition: all var(--t-normal);
+}
+
+.nav.scrolled .nav__inner {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-color: rgba(5, 150, 105, 0.35);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12), 0 0 25px rgba(5, 150, 105, 0.12);
+  transform: translateY(-2px);
+}
+
+.nav__logo {
+  height: 32px;
+  width: auto;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--s-8);
+  list-style: none;
+}
+
+.nav__links a {
+  font-family: var(--f-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  transition: color var(--t-fast);
+}
+
+.nav__links a:hover { color: var(--c-text-main); }
+
+.nav__cta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 9px 20px;
+  border-radius: var(--r-full);
+  background: var(--g-aurora);
+  font-family: var(--f-heading);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(5,150,105,.25);
+  transition: opacity var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+}
+
+.nav__cta:hover { opacity: .95; transform: translateY(-1px); box-shadow: 0 8px 22px rgba(5,150,105,.35); }
+
+@media (max-width: 768px) {
+  .nav { top: .75rem; }
+  .nav__links { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HERO — LIGHT THEME WITH DYNAMIC MOVING GRADIENT
+   ═══════════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--c-night);
+}
+
+/* Dynamic moving mesh gradient background overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(5,150,105,.22) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(2,132,199,.20) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(109,40,217,.22) 0%, transparent 50%);
+  filter: blur(70px);
+  opacity: .9;
+  animation: hero-gradient-move 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes hero-gradient-move {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 50px) scale(1.12); }
+  100% { transform: translate(50px, -30px) scale(1.05); }
+}
+
+/* Aurora canvas background */
+.hero__canvas-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+#aurora-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Dot grid overlay */
+.hero__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%);
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-top: 140px;
+  padding-bottom: 80px;
+}
+
+.hero__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(5,150,105,.3);
+  background: rgba(5,150,105,.08);
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-green);
+  margin-bottom: var(--s-6);
+  letter-spacing: .05em;
+}
+
+.hero__label::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c-green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .4; transform: scale(.8); }
+}
+
+.hero__title {
+  font-family: var(--f-display);
+  font-size: clamp(3.8rem, 9.5vw, 8.2rem);
+  font-weight: 700;
+  line-height: .92;
+  letter-spacing: -.03em;
+  margin-bottom: var(--s-6);
+  color: var(--c-text-main);
+}
+
+.hero__title .word-stack {
+  display: block;
+}
+
+.hero__title .line-outlined {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(15, 23, 42, 0.25);
+}
+
+.hero__title .line-gradient {
+  background: var(--g-aurora);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero__sub {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--c-text-muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: var(--s-10);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: center;
+}
+
+/* Primary button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 15px 30px;
+  border-radius: var(--r-full);
+  background: var(--g-aurora);
+  font-family: var(--f-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(5,150,105,.28);
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,.2);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 36px rgba(5,150,105,.38); }
+.btn-primary:hover::after { opacity: 1; }
+
+/* Ghost button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 14px 28px;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  font-family: var(--f-heading);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-text-main);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+}
+
+.btn-ghost:hover {
+  border-color: rgba(15, 23, 42, 0.3);
+  color: var(--c-text-main);
+  background: #f8fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+/* Hero stats */
+.hero__stats {
+  margin-top: var(--s-16);
+  display: flex;
+  gap: var(--s-10);
+  flex-wrap: wrap;
+}
+
+.hero__stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero__stat-number {
+  font-family: var(--f-display);
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  background: var(--g-aurora);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero__stat-label {
+  font-family: var(--f-heading);
+  font-size: 12px;
+  color: var(--c-text-dim);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* Scroll indicator */
+.hero__scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--c-text-dim);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.hero__scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.25), transparent);
+  animation: scroll-line 2s ease-in-out infinite;
+}
+
+@keyframes scroll-line {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  50.1%{ transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PLAYGROUND — LIGHT THEME STAGE & CONTROLS
+   ═══════════════════════════════════════════════════════════════════ */
+.pg-section {
+  background: var(--c-surface);
+  position: relative;
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .pg-grid { grid-template-columns: 1fr; }
+}
+
+/* Stage container */
+.pg-stage-wrap {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: var(--r-xl);
+  padding: var(--s-16) var(--s-10);
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.pg-stage-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.pg-stage {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.1;
+  color: #0f172a;
+  letter-spacing: -.03em;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.pg-replay-btn {
+  position: absolute;
+  top: var(--s-5);
+  right: var(--s-5);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 8px 16px;
+  border-radius: var(--r-full);
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  transition: all var(--t-fast);
+}
+
+.pg-replay-btn:hover {
+  background: rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.3);
+  color: var(--c-green);
+}
+
+.pg-replay-btn svg { transition: transform var(--t-normal); }
+.pg-replay-btn:hover svg { transform: rotate(180deg); }
+
+/* Badges overlay on stage */
+.pg-badges {
+  position: absolute;
+  bottom: var(--s-5);
+  left: var(--s-5);
+  z-index: 3;
+  display: flex;
+  gap: var(--s-2);
+}
+
+.pg-badge {
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.pg-badge--gsap  { background: rgba(5,150,105,.12); color: var(--c-green); border: 1px solid rgba(5,150,105,.25); }
+.pg-badge--anime { background: rgba(109,40,217,.12); color: var(--c-violet); border: 1px solid rgba(109,40,217,.25); }
+.pg-badge--split { background: rgba(15,23,42,.06); color: var(--c-text-muted); border: 1px solid rgba(15,23,42,.1); }
+
+/* Control panel */
+.pg-panel {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: var(--r-xl);
+  padding: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  box-shadow: var(--shadow-card);
+}
+
+.pg-panel__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.pg-panel__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+
+/* Tabs inside panel */
+.lib-tabs, .split-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: var(--r-sm);
+  padding: 3px;
+  gap: 3px;
+}
+
+.lib-tab, .split-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: calc(var(--r-sm) - 2px);
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  text-align: center;
+  transition: all var(--t-fast);
+}
+
+.lib-tab.active-gsap {
+  background: var(--c-green);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(5,150,105,.3);
+}
+
+.lib-tab.active-anime {
+  background: var(--c-violet);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(109,40,217,.3);
+}
+
+.split-tab.active {
+  background: #ffffff;
+  color: var(--c-text-main);
+  box-shadow: 0 2px 6px rgba(15,23,42,.08);
+}
+
+/* Select & Input */
+.pg-select, .pg-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: #f1f5f9;
+  border: 1px solid rgba(15,23,42,.1);
+  color: var(--c-text-main);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.pg-select:focus, .pg-input:focus {
+  border-color: var(--c-green);
+  box-shadow: 0 0 0 3px rgba(5,150,105,.15);
+}
+
+.pg-select option { background: #ffffff; color: #0f172a; }
+
+/* Sliders */
+.slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+.slider-val {
+  font-family: var(--f-mono);
+  color: var(--c-green);
+  font-weight: 700;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: var(--r-full);
+  background: #cbd5e1;
+  outline: none;
+  margin-top: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--c-green);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(5,150,105,.4);
+  transition: transform var(--t-fast);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* Toggle switch */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 44px; height: 24px;
+}
+
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  left: 3px; top: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--t-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider { background: var(--c-green); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* Snippet Button */
+.btn-snippet {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 12px 20px;
+  border-radius: var(--r-sm);
+  background: rgba(109,40,217,.08);
+  border: 1px solid rgba(109,40,217,.25);
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-violet);
+  transition: all var(--t-fast);
+  letter-spacing: .03em;
+  margin-top: var(--s-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-snippet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(109,40,217,.1);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.btn-snippet:hover {
+  background: rgba(109,40,217,.15);
+  border-color: rgba(109,40,217,.45);
+  color: var(--c-violet);
+  transform: translateY(-1px);
+}
+
+.btn-snippet:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   EFFECT GRID CATALOG — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.effects-catalog {
+  background: var(--c-night);
+}
+
+.effects-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-10);
+  flex-wrap: wrap;
+}
+
+.effects-tabs {
+  display: flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.catalog-text-box {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,.12);
+  border-radius: var(--r-full);
+  padding: 8px 18px;
+  transition: all var(--t-fast);
+  min-width: 280px;
+  flex: 0 1 360px;
+  box-shadow: 0 2px 6px rgba(15,23,42,.03);
+}
+
+.catalog-text-box:focus-within {
+  border-color: rgba(5,150,105,.6);
+  background: #ffffff;
+  box-shadow: 0 0 20px rgba(5,150,105,.15);
+}
+
+.catalog-text-box svg {
+  color: var(--c-text-dim);
+  flex-shrink: 0;
+  transition: color var(--t-fast);
+}
+
+.catalog-text-box:focus-within svg {
+  color: var(--c-green);
+}
+
+.catalog-text-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--c-text-main);
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.catalog-text-box input::placeholder {
+  color: var(--c-text-dim);
+  font-weight: 400;
+}
+
+.effects-tab {
+  padding: 8px 18px;
+  border-radius: var(--r-full);
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,.1);
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  transition: all var(--t-fast);
+  letter-spacing: .04em;
+  box-shadow: 0 2px 4px rgba(15,23,42,.02);
+}
+
+.effects-tab.active {
+  background: var(--g-aurora);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(5,150,105,.25);
+}
+
+.effects-tab:hover:not(.active) {
+  border-color: rgba(15,23,42,.3);
+  color: var(--c-text-main);
+}
+
+.effects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+
+.effect-card {
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,.08);
+  border-radius: var(--r-lg);
+  padding: var(--s-8) var(--s-5) var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  transition: border-color var(--t-normal), transform var(--t-normal), box-shadow var(--t-normal);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15,23,42,.03);
+}
+
+.effect-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--g-aurora);
+  transform: scaleX(0);
+  transition: transform var(--t-normal);
+  transform-origin: left;
+}
+
+.effect-card:hover {
+  border-color: rgba(5,150,105,.35);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.effect-card:hover::before { transform: scaleX(1); }
+
+.effect-card__stage {
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -.03em;
+  overflow: hidden;
+}
+
+.effect-card__info {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.effect-card__name {
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-text-main);
+  line-height: 1.2;
+}
+
+.effect-card__id {
+  font-size: 10px;
+  font-family: var(--f-mono);
+  color: var(--c-text-dim);
+}
+
+.lib-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: var(--r-full);
+  font-family: var(--f-heading);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.lib-chip--gsap {
+  background: rgba(5,150,105,.12);
+  color: var(--c-green);
+}
+
+.lib-chip--anime {
+  background: rgba(109,40,217,.12);
+  color: var(--c-violet);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODULES FEATURE SECTION — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.modules-section {
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-4);
+}
+
+@media (max-width: 900px) { .modules-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .modules-grid { grid-template-columns: 1fr; } }
+
+.module-card {
+  background: #f8fafc;
+  border: 1px solid rgba(15,23,42,.07);
+  border-radius: var(--r-lg);
+  padding: var(--s-8) var(--s-6);
+  transition: all var(--t-normal);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15,23,42,.02);
+}
+
+.module-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--g-subtle);
+  opacity: 0;
+  transition: opacity var(--t-normal);
+}
+
+.module-card:hover {
+  border-color: rgba(5,150,105,.25);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.module-card:hover::after { opacity: 1; }
+
+.module-card__icon {
+  width: 44px; height: 44px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--s-5);
+  position: relative;
+  z-index: 1;
+  font-size: 22px;
+}
+
+.module-card__icon--green { background: rgba(5,150,105,.12); }
+.module-card__icon--teal  { background: rgba(2,132,199,.12); }
+.module-card__icon--violet{ background: rgba(109,40,217,.12); }
+
+.module-card__num {
+  font-size: 10px;
+  font-family: var(--f-mono);
+  color: var(--c-text-dim);
+  margin-bottom: var(--s-2);
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.module-card__title {
+  font-family: var(--f-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-text-main);
+  margin-bottom: var(--s-2);
+  position: relative;
+  z-index: 1;
+}
+
+.module-card__desc {
+  font-size: 13px;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HOW IT WORKS / ARCHITECTURE — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.arch-section {
+  background: var(--c-night);
+}
+
+.arch-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .arch-flow { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .arch-flow { grid-template-columns: 1fr; }
+}
+
+.arch-flow::after {
+  content: '';
+  position: absolute;
+  top: 26px; left: 13%;
+  width: 74%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15,23,42,.12), transparent);
+}
+
+.arch-step {
+  padding: var(--s-8) var(--s-6);
+  position: relative;
+}
+
+.arch-step__num {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(15,23,42,.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text-dim);
+  margin-bottom: var(--s-5);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(15,23,42,.04);
+  position: relative;
+  z-index: 1;
+}
+
+.arch-step__title {
+  font-family: var(--f-heading);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: var(--s-2);
+  color: var(--c-text-main);
+}
+
+.arch-step__desc {
+  font-size: 13px;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+}
+
+/* Code snippet — Sleek Dark Terminal for Max Syntax Readability */
+.code-block {
+  background: #0f172a;
+  border: 1px solid rgba(15,23,42,.2);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  color: #f8fafc;
+  box-shadow: 0 10px 30px rgba(15,23,42,.15);
+}
+
+.code-block .kw  { color: #a78bfa; }
+.code-block .str { color: #34d399; }
+.code-block .cmt { color: #64748b; font-style: italic; }
+.code-block .num { color: #38bdf8; }
+.code-block .attr{ color: #c084fc; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   CTA / FOOTER AREA — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.cta-section {
+  background: var(--c-surface);
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--c-border);
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(5,150,105,.12) 0%, rgba(109,40,217,.08) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta-box {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.cta-box .display-2 { margin-bottom: var(--s-5); }
+
+.cta-box p {
+  color: var(--c-text-muted);
+  font-size: 1.05rem;
+  margin-bottom: var(--s-10);
+  line-height: 1.7;
+}
+
+.cta-actions {
+  display: flex;
+  gap: var(--s-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid rgba(15,23,42,.08);
+  padding: var(--s-12) 0 var(--s-8);
+  background: var(--c-night);
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--s-12);
+  margin-bottom: var(--s-12);
+}
+
+@media (max-width: 768px) {
+  .footer__grid { grid-template-columns: 1fr; gap: var(--s-8); }
+}
+
+.footer__logo { height: 28px; margin-bottom: var(--s-4); }
+
+.footer__tagline {
+  font-size: 14px;
+  color: var(--c-text-dim);
+  max-width: 300px;
+  line-height: 1.7;
+}
+
+.footer__col-title {
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-text-main);
+  margin-bottom: var(--s-4);
+}
+
+.footer__links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.footer__links a {
+  font-size: 13px;
+  color: var(--c-text-muted);
+  transition: color var(--t-fast);
+}
+
+.footer__links a:hover { color: var(--c-green); }
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--s-8);
+  border-top: 1px solid rgba(15,23,42,.06);
+  font-size: 12px;
+  color: var(--c-text-dim);
+  flex-wrap: wrap;
+  gap: var(--s-4);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SNIPPET MODAL — LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.snippet-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-fast);
+}
+
+.snippet-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.snippet-modal {
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,.12);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 820px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-modal);
+  transform: scale(.95);
+  transition: transform var(--t-fast);
+  overflow: hidden;
+}
+
+.snippet-modal-backdrop.active .snippet-modal {
+  transform: scale(1);
+}
+
+.snippet-modal__header {
+  padding: var(--s-5) var(--s-6);
+  border-bottom: 1px solid rgba(15,23,42,.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+}
+
+.snippet-modal__title {
+  font-family: var(--f-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text-main);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.snippet-modal__close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(15,23,42,.05);
+  color: var(--c-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-fast);
+}
+
+.snippet-modal__close:hover {
+  background: rgba(15,23,42,.1);
+  color: var(--c-text-main);
+}
+
+.snippet-modal__body {
+  padding: var(--s-6);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  background: #f8fafc;
+}
+
+.snippet-modal__code {
+  background: #0f172a;
+  border: 1px solid rgba(15,23,42,.2);
+  border-radius: var(--r-md);
+  padding: var(--s-5);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #f8fafc;
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 380px;
+}
+
+.snippet-modal__footer {
+  padding: var(--s-4) var(--s-6);
+  border-top: 1px solid rgba(15,23,42,.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+}
+
+.btn-copy-snippet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 10px 22px;
+  border-radius: var(--r-full);
+  background: var(--g-aurora);
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(5,150,105,.25);
+  transition: all var(--t-fast);
+}
+
+.btn-copy-snippet:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(5,150,105,.35);
+}
+
+/* Toast notification */
+.toast-msg {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20000;
+  padding: 12px 22px;
+  border-radius: var(--r-full);
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,.1);
+  color: #ffffff;
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(15,23,42,.25);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all var(--t-normal);
+}
+
+.toast-msg.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+</style>
 </head>
 
-<body class="bg-dark">
+<body>
 
-    <!-- Start Preloader
-    ============================================= -->
-    <div id="preloader">
-        <div class="dixor-loader-inner">
-           <div class="dixor-loader">
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-              <span class="dixor-loader-item"></span>
-           </div>
-        </div>
-     </div>
-    <!-- preloader end -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     GLOBAL CURSOR FOLLOWER DOM
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
+<div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
 
-    <!-- Header
-    ============================================= -->
-    <header>
-        <!-- Start Navigation -->
-        <nav class="navbar mobile-sidenav navbar-sticky navbar-default validnavs navbar-fixed no-background">
+<!-- ═══════════════════════════════════════════════════════════════════
+     NAVIGATION
+     ═══════════════════════════════════════════════════════════════════ -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="#top" aria-label="Aurora home">
+        <img src="../assets/branding/aurora_animated_logo.svg" class="nav__logo" alt="Aurora for Elementor">
+      </a>
 
-            <div class="container d-flex justify-content-between align-items-center">
+      <ul class="nav__links" role="list">
+        <li><a href="#playground">Playground</a></li>
+        <li><a href="#effects">Effects</a></li>
+        <li><a href="#modules">Modules</a></li>
+        <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
 
-                <div class="menu-left d-flex align-items-center">
-                    <!-- Start Header Navigation -->
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                        <a class="navbar-brand" href="index.html">
-                            <img src="../assets/branding/aurora_animated_logo.svg" class="aurora-brand-logo" alt="Aurora — color and motion, unleashed">
-                        </a>
-                    </div>
-                    <!-- End Header Navigation -->
+      <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__cta" aria-label="Download Aurora for free">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        Download Free
+      </a>
+    </div>
+  </div>
+</nav>
 
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="navbar-menu">
+<!-- ═══════════════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="top" class="hero">
+  <div class="hero__canvas-bg">
+    <canvas id="aurora-canvas"></canvas>
+  </div>
+  <div class="hero__grid" aria-hidden="true"></div>
 
-                        <img src="../assets/branding/aurora_animated_logo.svg" class="aurora-brand-logo" alt="Aurora — color and motion, unleashed">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
-                            <i class="fa fa-times"></i>
-                        </button>
-
-                        <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
-                            <li><a href="#top">Home</a></li>
-                            <li><a href="#modules">Modules</a></li>
-                            <li><a href="#effects">Effects</a></li>
-                            <li><a href="#pricing">Pricing</a></li>
-                            <li><a href="#testimonials">Testimonials</a></li>
-                            <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div>
-
-                <div class="attr-right">
-                    <!-- Start Atribute Navigation -->
-                    <div class="attr-nav flex">
-                        <ul>
-                            <li class="button">
-                                <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">Get Aurora Free</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- End Atribute Navigation -->
-                </div>
-                <!-- Main Nav -->
-
-            </div>
-            <!-- Overlay screen for menu -->
-            <div class="overlay-screen"></div>
-            <!-- End Overlay screen for menu -->
-        </nav>
-        <!-- End Navigation -->
-    </header>
-    <!-- End Header -->
-
-    <div class="smooth-scroll-container">
-
-        <!-- Start Banner  (hero — aesthetic from index-3-light.html, background replaced with an interactive aurora borealis canvas)
-        ============================================= -->
-        <div id="top" class="banner-style-nine-area bg-cover">
-            <div class="aurora-hero-bg" aria-hidden="true">
-                <canvas id="aurora-canvas"></canvas>
-            </div>
-            <div class="container">
-                <div class="banner-style-nine-items">
-                    <div class="row">
-                        <div class="col-xl-7">
-                            <div class="banner-style-one-heading">
-                                <div class="banner-title">
-                                    <h2 class="title-left split-text">Animate</h2>
-                                    <h2 class="title-right split-text"><strong>Everything</strong></h2>
-                                </div>
-                                <div class="main-content">
-                                    <p>
-                                        Aurora adds text animation, gradients, glassmorphism, a custom cursor, and image reveal effects to the Advanced tab of every Elementor widget, section, column and container — no code, no page builder lock-in.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 offset-xl-1">
-                            <div class="banner-style-one-info wow fadeInUp" data-wow-delay="1s" data-wow-duration="0.6s">
-                                <div class="top-info">
-                                    <h4>70+ Animations, 6 Modules</h4>
-                                    <p>
-                                        Powered by GSAP and Anime.js
-                                    </p>
-                                </div>
-                                <div class="bottom">
-                                    <p>
-                                        Free and open source, GPLv3 licensed. No upsells, no locked effects — every module ships in the plugin from day one.
-                                    </p>
-                                    <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-style-two mt-30"><i class="fas fa-long-arrow-right"></i> Get <br> Aurora</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Banner -->
-
-        <!-- Start Hero (Orb variant) — a second, alternate hero kept alongside
-             the original Banner above (per explicit request: build a new one
-             without deleting the existing one). Interactive gradient orb +
-             cursor-follow glow dot, hand-built (no Dixor component maps to
-             this floating-card layout).
-        ============================================= -->
-        <div id="hero-orb" class="aurora-hero2-area">
-            <div class="aurora-hero2-bg" aria-hidden="true">
-                <canvas id="aurora-orb-canvas"></canvas>
-            </div>
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <div class="aurora-hero2-badges">
-                            <span class="badge-pill"><i class="fas fa-star"></i> Open Source</span>
-                            <span class="badge-pill accent">GPL v3 Licensed</span>
-                        </div>
-                        <h2 class="aurora-hero2-title">
-                            Bring Elementor<br>
-                            to <span class="grad-text">Life.</span>
-                        </h2>
-                        <p class="aurora-hero2-sub">
-                            Advanced animations, gradients, glassmorphism and interactive effects — directly inside Elementor.
-                        </p>
-                        <ul class="aurora-hero2-stats">
-                            <li><i class="fas fa-magic"></i> 70+ Animations</li>
-                            <li><i class="fas fa-cube"></i> 6 Modules</li>
-                            <li><i class="fas fa-bolt"></i> GSAP + Anime.js</li>
-                        </ul>
-                        <div class="aurora-hero2-cta">
-                            <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-grad"><i class="fas fa-download"></i> Get Aurora Free</a>
-                            <a href="#effects" class="btn-outline-ghost"><i class="fas fa-play-circle"></i> Live Demo</a>
-                        </div>
-                        <div class="aurora-hero2-works">
-                            <span>Works with</span>
-                            <div class="works-icons">
-                                <i class="fab fa-wordpress-simple" title="WordPress"></i>
-                                <i class="fab fa-elementor" title="Elementor"></i>
-                                <span class="txt-logo gsap">GSAP</span>
-                                <span class="txt-logo anime">anime.js</span>
-                                <i class="fab fa-php" title="PHP"></i>
-                                <i class="fab fa-js-square" title="JavaScript"></i>
-                                <i class="fab fa-css3-alt" title="CSS3"></i>
-                                <i class="fab fa-html5" title="HTML5"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="aurora-orb-stage">
-                            <div class="aurora-cursor-dot" aria-hidden="true"></div>
-                            <div class="aurora-modules-card">
-                                <div class="module-chip">
-                                    <img src="assets/img/icon/12.png" alt="">
-                                    <span>Text Animation</span>
-                                </div>
-                                <div class="module-chip">
-                                    <img src="assets/img/icon/15.png" alt="">
-                                    <span>Gradient</span>
-                                </div>
-                                <div class="module-chip">
-                                    <img src="assets/img/icon/20.png" alt="">
-                                    <span>Glassmorphism</span>
-                                </div>
-                                <div class="module-chip">
-                                    <img src="assets/img/icon/21.png" alt="">
-                                    <span>Cursor Follow</span>
-                                </div>
-                                <div class="module-chip">
-                                    <img src="assets/img/icon/22.png" alt="">
-                                    <span>Image Effects</span>
-                                </div>
-                                <div class="module-chip">
-                                    <img src="assets/img/icon/13.png" alt="">
-                                    <span>Children Animation</span>
-                                </div>
-                            </div>
-                            <a href="#effects" class="aurora-explore-pill">
-                                <span class="dot-icon"><i class="fas fa-compass"></i></span>
-                                <div>
-                                    <strong>Explore Aurora</strong>
-                                    <span>Scroll to discover</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Hero (Orb variant) -->
-
-        <!-- Start About (repurposed as a stats strip — fun-fact counters from index-9-light.html)
-        ============================================= -->
-        <div class="about-style-one-area default-padding-bottom default-padding-top bg-gray">
-            <div class="container">
-                <div class="row align-center">
-                    <div class="col-lg-3 col-md-6 mb-30">
-                        <div class="about-style-one-left-info">
-                            <div class="fun-fact">
-                                <div class="counter">
-                                    <div class="timer">70</div>
-                                    <div class="operator">+</div>
-                                </div>
-                                <span class="medium">Text Animations</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-30">
-                        <div class="about-style-one-left-info">
-                            <div class="fun-fact">
-                                <div class="counter">
-                                    <div class="timer">6</div>
-                                </div>
-                                <span class="medium">Animation Modules</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-30">
-                        <div class="about-style-one-left-info">
-                            <div class="fun-fact">
-                                <div class="counter">
-                                    <div class="timer">2</div>
-                                </div>
-                                <span class="medium">Animation Libraries</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-30">
-                        <div class="about-style-one-left-info">
-                            <div class="fun-fact">
-                                <div class="counter">
-                                    <div class="timer">100</div>
-                                    <div class="operator">%</div>
-                                </div>
-                                <span class="medium">Free & Open Source</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End About -->
-
-        <!-- Start Brand Area (repurposed as a modules marquee — from index-9-light.html)
-        ============================================= -->
-        <div class="brand-area relative overflow-hidden bg-gradient text-light">
-            <div class="brand-style-one">
-                <div class="container-fill">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="brand-items">
-                                <div class="brand-conetnt">
-                                    <div class="item"><h2>Text Animation</h2></div>
-                                    <div class="item"><h2>Gradient</h2></div>
-                                    <div class="item"><h2>Glassmorphism</h2></div>
-                                    <div class="item"><h2>Cursor Follow</h2></div>
-                                    <div class="item"><h2>Image Effects</h2></div>
-                                    <div class="item"><h2>Children Animation</h2></div>
-                                </div>
-                                <div class="brand-conetnt">
-                                    <div class="item"><h2>Text Animation</h2></div>
-                                    <div class="item"><h2>Gradient</h2></div>
-                                    <div class="item"><h2>Glassmorphism</h2></div>
-                                    <div class="item"><h2>Cursor Follow</h2></div>
-                                    <div class="item"><h2>Image Effects</h2></div>
-                                    <div class="item"><h2>Children Animation</h2></div>
-                                </div>
-                                <div class="brand-conetnt">
-                                    <div class="item"><h2>Text Animation</h2></div>
-                                    <div class="item"><h2>Gradient</h2></div>
-                                    <div class="item"><h2>Glassmorphism</h2></div>
-                                    <div class="item"><h2>Cursor Follow</h2></div>
-                                    <div class="item"><h2>Image Effects</h2></div>
-                                    <div class="item"><h2>Children Animation</h2></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Brand Area -->
-
-        <!-- Start Services (repurposed as Modules — accordion list from index-3-light.html)
-        ============================================= -->
-        <div id="modules" class="services-style-three-area default-padding">
-
-            <div class="container">
-                <div class="site-heading">
-                    <div class="row align-center">
-                        <div class="col-lg-8">
-                            <h4 class="sub-title">Six Modules, One Plugin</h4>
-                            <h2 class="title split-text">Everything You Need <br> To Animate Elementor</h2>
-                        </div>
-                        <div class="col-lg-4 text-end">
-                            <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="btn-circle">
-                                <div class="button-content">
-                                    <span><img src="assets/img/icon/arrow-long-right.png" alt="Image Not Found"></span> <strong>Read the Docs</strong>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <ul class="service-style-three-items" id="accordion">
-                            <li class="out">
-                                <div class="service-three-content">
-                                    <div class="top">
-                                        <div class="icon">
-                                            <img class="regular-img" src="assets/img/icon/12.png" alt="Image Not Found">
-                                            <img class="light-img" src="assets/img/icon/31.png" alt="Image Not Found">
-                                        </div>
-                                    </div>
-                                    <div class="info">
-                                        <h4>Text Animation</h4>
-                                        <p>
-                                            Splits any text into characters, words, or lines and applies one of 70 animations (26 GSAP, 44 Anime.js), triggered on scroll or page load — plus an independent Hover Scatter interaction.
-                                        </p>
-                                    </div>
-                                    <div class="bottom">01</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="service-three-content">
-                                    <div class="icon">
-                                        <img class="regular-img" src="assets/img/icon/15.png" alt="Image Not Found">
-                                        <img class="light-img" src="assets/img/icon/33.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Gradient</h4>
-                                        <p>
-                                            Multi-stop linear, radial, or conic gradients with an animated mesh motion or a Follow Mouse spotlight — for backgrounds, text fill, icons, and Icon Box.
-                                        </p>
-                                    </div>
-                                    <div class="bottom">02</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="service-three-content">
-                                    <div class="icon">
-                                        <img class="regular-img" src="assets/img/icon/20.png" alt="Image Not Found">
-                                        <img class="light-img" src="assets/img/icon/35.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Glassmorphism</h4>
-                                        <p>
-                                            A translucent, blurred frosted-glass background resolved entirely in PHP into a single inline style — with a CSS fallback for browsers without backdrop-filter. Zero JavaScript.
-                                        </p>
-                                    </div>
-                                    <div class="bottom">03</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="service-three-content">
-                                    <div class="icon">
-                                        <img class="regular-img" src="assets/img/icon/21.png" alt="Image Not Found">
-                                        <img class="light-img" src="assets/img/icon/36.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Cursor Follow</h4>
-                                        <p>
-                                            Replaces the native cursor with a two-part custom cursor — a dot that tracks instantly and a ring that trails behind — with configurable hover states for interactive elements.
-                                        </p>
-                                    </div>
-                                    <div class="bottom">04</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="service-three-content">
-                                    <div class="icon">
-                                        <img class="regular-img" src="assets/img/icon/22.png" alt="Image Not Found">
-                                        <img class="light-img" src="assets/img/icon/37.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Image Effects</h4>
-                                        <p>
-                                            An entrance animation for the native Image widget — GSAP or Anime.js, scroll or load triggered — plus a pure-CSS hover effect, including a shine sweep.
-                                        </p>
-                                    </div>
-                                    <div class="bottom">05</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="service-three-content">
-                                    <div class="icon">
-                                        <img class="regular-img" src="assets/img/icon/13.png" alt="Image Not Found">
-                                        <img class="light-img" src="assets/img/icon/32.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Animate Children Elements</h4>
-                                        <p>
-                                            Applies a staggered entrance animation to each child of a Section, Column, Container, or Widget — one after another — with a configurable delay and 10 animation styles.
-                                        </p>
-                                    </div>
-                                    <div class="bottom">06</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Services -->
-
-        <!-- Start About (repurposed as About Aurora — style from index-3-light.html)
-        ============================================= -->
-        <div class="about-style-three-area default-padding-bottom default-padding-top">
-            <div class="container">
-                <div class="row align-center">
-                    <div class="col-lg-5">
-                        <div class="thumb-style-three">
-                            <img src="assets/img/thumb/3.jpg" alt="Image Not Found">
-                            <div class="upDownScrol scroll-shape"></div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 offset-lg-1">
-                        <div class="about-style-three-info text-scroll-animation">
-                            <h2 class="title text">Built for the way Elementor sites actually get made</h2>
-                            <div class="d-flex mt-40">
-                                <div class="left">
-                                    <h4 class="sub-title-border"><strong>About Aurora</strong></h4>
-                                </div>
-                                <div class="right">
-                                    <p class="text">
-                                        Aurora bundles GSAP and Anime.js locally — no CDN dependency, no extra HTTP request per effect. On the real frontend, a widget only loads the ONE animation it actually uses alongside a small shared runtime, instead of shipping every effect to every page. Elementor Pro is not required.
-                                    </p>
-                                    <a class="btn-animation mt-10" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fas fa-arrow-right"></i> <span>View Source on GitHub</span></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End About -->
-
-        <!-- Start Effects Showcase (new section — runs the real, built Aurora
-             plugin JS live, via the same data-aurora-* attributes Elementor
-             renders, exercising the non-Elementor fallback bootstrap path)
-        ============================================= -->
-        <div id="effects" class="aurora-effects-area default-padding">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-7 offset-lg-3">
-                        <div class="site-heading text-center">
-                            <h4 class="sub-title">Live, Not Mocked Up</h4>
-                            <h2 class="title split-text">A Few of the 70+ Effects</h2>
-                            <p>These boxes are running the actual Aurora plugin code — the same JS files a real Elementor page would load. Scroll away and back, or hover the first card.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="aurora-effects-grid">
-
-                    <div class="aurora-effect-card">
-                        <div class="aurora-effect-stage"
-                             data-aurora-enable="1"
-                             data-aurora-library="gsap"
-                             data-aurora-animation="gs-1"
-                             data-aurora-split-by="chars"
-                             data-aurora-duration="900"
-                             data-aurora-delay="0"
-                             data-aurora-stagger="35"
-                             data-aurora-trigger="scroll"
-                             data-aurora-threshold="0.3"
-                             data-aurora-replay="1"
-                             data-aurora-hover-enable="1"
-                             data-aurora-hover-intensity="26"
-                             data-aurora-hover-duration="380">Aurora</div>
-                        <div class="name">Fade Up + Hover Scatter</div>
-                        <span class="lib-badge">GSAP</span>
-                        <span class="hint">Hover me</span>
-                    </div>
-
-                    <div class="aurora-effect-card">
-                        <div class="aurora-effect-stage"
-                             data-aurora-enable="1"
-                             data-aurora-library="animejs"
-                             data-aurora-animation="ml-15"
-                             data-aurora-split-by="chars"
-                             data-aurora-duration="700"
-                             data-aurora-delay="0"
-                             data-aurora-stagger="40"
-                             data-aurora-trigger="scroll"
-                             data-aurora-threshold="0.3"
-                             data-aurora-replay="1">Elementor</div>
-                        <div class="name">Continuous Wave</div>
-                        <span class="lib-badge anime">Anime.js</span>
-                        <span class="hint">Never stops</span>
-                    </div>
-
-                    <div class="aurora-effect-card">
-                        <div class="aurora-effect-stage"
-                             data-aurora-enable="1"
-                             data-aurora-library="animejs"
-                             data-aurora-animation="ml-17"
-                             data-aurora-split-by="chars"
-                             data-aurora-duration="900"
-                             data-aurora-delay="0"
-                             data-aurora-stagger="30"
-                             data-aurora-trigger="scroll"
-                             data-aurora-threshold="0.3"
-                             data-aurora-replay="1">Motion</div>
-                        <div class="name">Scatter Converge</div>
-                        <span class="lib-badge anime">Anime.js</span>
-                        <span class="hint">Recreates Motion.dev's splitText</span>
-                    </div>
-
-                    <div class="aurora-effect-card">
-                        <div class="aurora-effect-stage"
-                             data-aurora-enable="1"
-                             data-aurora-library="animejs"
-                             data-aurora-animation="ml-23"
-                             data-aurora-split-by="chars"
-                             data-aurora-duration="900"
-                             data-aurora-delay="0"
-                             data-aurora-stagger="30"
-                             data-aurora-trigger="scroll"
-                             data-aurora-threshold="0.3"
-                             data-aurora-replay="1">AURORA</div>
-                        <div class="name">Rotating Character Dial</div>
-                        <span class="lib-badge anime">Anime.js</span>
-                        <span class="hint">Self-managed layout</span>
-                    </div>
-
-                    <div class="aurora-effect-card">
-                        <div class="aurora-effect-stage"
-                             data-aurora-enable="1"
-                             data-aurora-library="gsap"
-                             data-aurora-animation="gs-24"
-                             data-aurora-split-by="chars"
-                             data-aurora-duration="1000"
-                             data-aurora-delay="0"
-                             data-aurora-stagger="0"
-                             data-aurora-trigger="scroll"
-                             data-aurora-threshold="0.3"
-                             data-aurora-replay="1">Reveal</div>
-                        <div class="name">Liquid Fill Reveal</div>
-                        <span class="lib-badge">GSAP</span>
-                        <span class="hint">clip-path wipe</span>
-                    </div>
-
-                    <div class="aurora-effect-card">
-                        <div class="aurora-effect-stage"
-                             data-aurora-enable="1"
-                             data-aurora-library="animejs"
-                             data-aurora-animation="ml-22"
-                             data-aurora-split-by="chars"
-                             data-aurora-duration="900"
-                             data-aurora-delay="0"
-                             data-aurora-stagger="0"
-                             data-aurora-trigger="scroll"
-                             data-aurora-threshold="0.3"
-                             data-aurora-replay="1">Type it</div>
-                        <div class="name">Typewriter Delete</div>
-                        <span class="lib-badge anime">Anime.js</span>
-                        <span class="hint">Types, deletes, retypes</span>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!-- End Effects Showcase -->
-
-        <!-- Start Pricing (style from index-9.html — single free tier, no fabricated paid plans)
-        ============================================= -->
-        <div id="pricing" class="pricing-style-two-area default-padding bottom-less">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
-                        <div class="site-heading text-center">
-                            <h5 class="sub-title">No Tiers, No Upsells</h5>
-                            <h2 class="title">One Plan: Everything, Free</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="pricing-style-two-items">
-                    <div class="row justify-content-center">
-                        <div class="col-xl-4 col-lg-6 col-md-8 mb-30">
-                            <div class="pricing-style-two active">
-                                <div class="pricing-header">
-                                    <h4>Aurora for Elementor</h4>
-                                    <span>GPLv3 licensed, forever</span>
-                                </div>
-                                <ul>
-                                    <li><strong>70+ animations</strong></li>
-                                    <li><strong>6 animation modules</strong></li>
-                                    <li>GSAP and Anime.js, both included</li>
-                                    <li>Unlimited sites, no license key</li>
-                                    <li>Community support on GitHub</li>
-                                </ul>
-                                <div class="price">
-                                    <h2>$0 <sub> / forever</sub></h2>
-                                </div>
-                                <a class="btn mt-25 btn-sm circle btn-theme effect" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">Get Aurora Free</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Pricing -->
-
-        <!-- Start Testimonial (style from index-3-light.html)
-        ============================================= -->
-        <div id="testimonials" class="testimonial-style-three-area default-padding bg-gray">
-            <div class="container">
-                <div class="testimonial-heading">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <h2 class="text-large-gradient">
-                                What Developers Say
-                            </h2>
-                        </div>
-                        <div class="col-lg-4 text-end">
-                            <div class="testimonial-three-quote">
-                                <div class="info">
-                                    <div class="ratings">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <span>Early feedback</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-
-                        <div class="testimonial-style-three-carousel swiper">
-                            <div class="swiper-wrapper">
-                                <!-- Single Item -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-style-three-item">
-                                        <div class="tes-rating">
-                                            <div class="icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>
-                                            The per-effect JS chunking is what sold me — I only ship the one animation a widget actually uses instead of a 50KB bundle on every page. Rare to see a builder plugin think about that.
-                                        </p>
-                                        <div class="tm-provider">
-                                            <div class="thumb">
-                                                <img src="assets/img/team/11.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="content">
-                                                <h4>Priya Nair</h4>
-                                                <span>Freelance Elementor Developer</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Single Item -->
-
-                                <!-- Single Item -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-style-three-item">
-                                        <div class="tes-rating">
-                                            <div class="icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>
-                                            Being able to pick GSAP or Anime.js per widget — and knowing every effect has an equivalent in both — makes it an easy sell for clients who care about licensing.
-                                        </p>
-                                        <div class="tm-provider">
-                                            <div class="thumb">
-                                                <img src="assets/img/team/12.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="content">
-                                                <h4>Marco E.</h4>
-                                                <span>Agency Owner</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Single Item -->
-
-                                <!-- Single Item -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-style-three-item">
-                                        <div class="tes-rating">
-                                            <div class="icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>
-                                            The Hover Scatter + Continuous Wave combo on a hero heading looks like a $40 CodeCanyon script, and it took two dropdowns in the Advanced tab.
-                                        </p>
-                                        <div class="tm-provider">
-                                            <div class="thumb">
-                                                <img src="assets/img/team/10.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="content">
-                                                <h4>Sofia K.</h4>
-                                                <span>No-code Site Builder</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Single Item -->
-                            </div>
-
-                            <!-- Navigation -->
-                            <div class="testimonial-control">
-                                <div class="swiper-pagination"></div>
-                                <div class="swiper-nav-left">
-                                    <div class="swiper-button-prev"></div>
-                                    <div class="swiper-button-next"></div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Testimonial -->
-
-        <!-- Start Team Area (repurposed as "Powered By" — the underlying tech, not fake team members — from index-9.html)
-        ============================================= -->
-        <div class="team-style-three-area default-padding bg-gray bottom-less">
-            <div class="container">
-                <div class="site-heading">
-                    <div class="row align-center">
-                        <div class="col-lg-6">
-                            <h4 class="sub-title">Under The Hood</h4>
-                            <h2 class="title split-text">Powered By</h2>
-                        </div>
-                        <div class="col-lg-6 text-end">
-                            <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="btn-circle">
-                                <div class="button-content">
-                                    <span><img src="assets/img/icon/arrow-long-right.png" alt="Image Not Found"></span> <strong>Read the Docs</strong>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-full">
-                <div class="row">
-                    <div class="col-xl-3 col-md-6 mb-30">
-                        <div class="team-style-three-item">
-                            <div class="thumb"><div class="tech-badge">GSAP</div></div>
-                            <div class="info">
-                                <h4>GSAP</h4>
-                                <span>Animation Engine</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-30">
-                        <div class="team-style-three-item">
-                            <div class="thumb"><div class="tech-badge">Anime</div></div>
-                            <div class="info">
-                                <h4>Anime.js</h4>
-                                <span>MIT-Licensed Runtime</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-30">
-                        <div class="team-style-three-item">
-                            <div class="thumb"><div class="tech-badge">El</div></div>
-                            <div class="info">
-                                <h4>Elementor</h4>
-                                <span>Page Builder Integration</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-30">
-                        <div class="team-style-three-item">
-                            <div class="thumb"><div class="tech-badge">WP</div></div>
-                            <div class="info">
-                                <h4>WordPress</h4>
-                                <span>Platform</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Team Area -->
-
-        <!-- Start Blog (repurposed as "Latest Updates" — real changelog entries, no fake posts — from index-9.html)
-        ============================================= -->
-        <div class="blog-area home-blog blog-style-two-area default-padding bottom-less">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
-                        <div class="site-heading text-center">
-                            <h4 class="sub-title">Changelog</h4>
-                            <h2 class="title">Latest Updates</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 mb-30">
-                        <div class="home-blog-two">
-                            <div class="thumb">
-                                <div class="update-tag">Architecture</div>
-                                <div class="date">Jul <strong>2026</strong></div>
-                            </div>
-                            <div class="info">
-                                <div class="content">
-                                    <div class="meta">
-                                        <ul>
-                                            <li><a href="#">Text Animation module</a></li>
-                                        </ul>
-                                    </div>
-                                    <h3 class="post-title"><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">Every effect now ships as its own file</a></h3>
-                                    <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="button-regular">
-                                        Read the Docs <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 mb-30">
-                        <div class="home-blog-two">
-                            <div class="thumb">
-                                <div class="update-tag">Anime.js Parity</div>
-                                <div class="date">Jul <strong>2026</strong></div>
-                            </div>
-                            <div class="info">
-                                <div class="content">
-                                    <div class="meta">
-                                        <ul>
-                                            <li><a href="#">WordPress.org readiness</a></li>
-                                        </ul>
-                                    </div>
-                                    <h3 class="post-title"><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">44 Anime.js effects now mirror every GSAP effect</a></h3>
-                                    <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="button-regular">
-                                        Read the Docs <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Blog -->
-
-        <!-- Start Footer
-        ============================================= -->
-        <footer>
-            <div class="footer-box">
-                <div class="container">
-                    <div class="f-items">
-                        <div class="row">
-                            <!-- Singel Item -->
-                            <div class="col-lg-6 footer-item about pr-120 pr-md-15 pr-xs-15 pr-md-15 pr-xs-15">
-                                <img src="../assets/branding/aurora_animated_logo.svg" class="aurora-brand-logo footer-logo" alt="Aurora — color and motion, unleashed">
-                                <div class="top">
-                                    <h2>Get Aurora?</h2>
-                                    <a class="quick-btn" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fas fa-long-arrow-right"></i></a>
-                                </div>
-                                <ul class="address-list">
-                                    <li>
-                                        <h4>Source & Issues</h4>
-                                        <p>
-                                            github.com/zmdy/aurora — MIT-friendly, GPLv3 licensed, contributions welcome.
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <h4>WordPress.org</h4>
-                                        <p>
-                                            Submission in progress — Aurora is finishing its GSAP → Anime.js parity pass first.
-                                        </p>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- End Singel Item -->
-                            <!-- Singel Item -->
-                            <div class="col-lg-5 offset-lg-1 footer-item">
-                                <h4 class="widget-title">Quick Links</h4>
-                                <ul class="useful-link">
-                                    <li><a href="#modules">Modules</a></li>
-                                    <li><a href="#effects">Effects Showcase</a></li>
-                                    <li><a href="#testimonials">Testimonials</a></li>
-                                    <li><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">Documentation</a></li>
-                                    <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (GPLv3)</a></li>
-                                    <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
-                                </ul>
-                                <div class="footer-cta-row mt-20">
-                                    <a class="btn-animation" href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fab fa-github"></i> <span>Star on GitHub</span></a>
-                                </div>
-                            </div>
-                            <!-- End Singel Item -->
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer Bottom -->
-                <div class="footer-bottom">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <ul class="footer-social">
-                                    <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
-                                    <li><a href="https://wordpress.org/plugins/" target="_blank" rel="noopener"><i class="fab fa-wordpress-simple"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class="col-lg-6 text-end">
-                                <p>
-                                    Aurora for Elementor — free & open source, GPLv3
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Footer Bottom -->
-            </div>
-        </footer>
-        <!-- End Footer -->
+  <div class="container hero__content">
+    <div class="hero__label">
+      <span>Elementor Extension • Open Source</span>
     </div>
 
+    <h1 class="hero__title">
+      <span class="word-stack">Text Motion,</span>
+      <span class="word-stack line-outlined">Unbound.</span>
+      <span class="word-stack line-gradient">Every Pixel Alive.</span>
+    </h1>
 
-    <!-- jQuery Frameworks
-    ============================================= -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/jquery.appear.js"></script>
-    <script src="assets/js/swiper-bundle.min.js"></script>
-    <script src="assets/js/wow.min.js"></script>
-    <script src="assets/js/jquery.waypoints.js"></script>
-    <script src="assets/js/count-to.js"></script>
-    <script src="assets/js/ScrollOnReveal.js"></script>
-    <script src="assets/js/ScrollSmoother.min.js"></script>
-    <script src="assets/js/validnavs.js"></script>
-    <script src="assets/js/gsap.js"></script>
-    <script src="assets/js/ScrollTrigger.min.js"></script>
-    <script src="assets/js/SplitText.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/gsap-init.js"></script>
+    <p class="hero__sub">
+      70+ GPU-accelerated text animations, mesh gradients, glassmorphic filters &amp; interactive cursor follow — built directly into Elementor's Advanced tab.
+    </p>
 
-    <!-- Aurora — interactive hero background (independent of the theme JS above) -->
-    <script src="assets/js/aurora-showcase.js"></script>
-    <script src="assets/js/aurora-hero2.js"></script>
+    <div class="hero__actions">
+      <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary" aria-label="Download Aurora for Free">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download Aurora for Free
+      </a>
+      <a href="#playground" class="btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        Live Text Playground
+      </a>
+    </div>
 
-    <!-- Aurora — Effects Showcase runs the REAL, built plugin code.
-         gsap.js above (theme-provided) already covers the GSAP-powered
-         demo cards; Anime.js isn't bundled by the theme, so it's loaded
-         fresh here from the plugin's own vendor file, followed by the
-         plugin's actual compiled runtime + the exact effect chunks used
-         above (see scripts/build-text-effects.mjs / assets/js/dist/).
-         bootstrap()'s non-Elementor fallback path (elementorFrontend is
-         undefined here) scans for [data-aurora-enable="1"] on its own. -->
-    <script src="../assets/js/vendor/anime.min.js"></script>
-    <script src="../assets/js/dist/aurora-text-core.js"></script>
-    <script src="../assets/js/dist/effects/gs-1.js"></script>
-    <script src="../assets/js/dist/effects/gs-24.js"></script>
-    <script src="../assets/js/dist/effects/ml-15.js"></script>
-    <script src="../assets/js/dist/effects/ml-17.js"></script>
-    <script src="../assets/js/dist/effects/ml-22.js"></script>
-    <script src="../assets/js/dist/effects/ml-23.js"></script>
+    <div class="hero__stats">
+      <div class="hero__stat-item">
+        <div class="hero__stat-number">70+</div>
+        <div class="hero__stat-label">Text Animations</div>
+      </div>
+      <div class="hero__stat-item">
+        <div class="hero__stat-number">6</div>
+        <div class="hero__stat-label">Power Modules</div>
+      </div>
+      <div class="hero__stat-item">
+        <div class="hero__stat-number">0 KB</div>
+        <div class="hero__stat-label">Jank &amp; Bloat</div>
+      </div>
+    </div>
+  </div>
 
+  <div class="hero__scroll" aria-hidden="true">
+    <span>Scroll to Explore</span>
+    <div class="hero__scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     INTERACTIVE PLAYGROUND
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="playground" class="pg-section section-gap-lg">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:var(--s-10)">
+      <div class="eyebrow">Interactive Studio</div>
+      <h2 class="display-2" style="margin-top:1rem">Test Every Effect in Real Time</h2>
+      <p>Tweak library engine, text splitting, duration, stagger &amp; hover physics live.</p>
+    </div>
+
+    <div class="pg-grid">
+      <!-- Stage -->
+      <div class="pg-stage-wrap">
+        <button class="pg-replay-btn" id="pg-replay-btn" aria-label="Replay animation">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          Replay
+        </button>
+
+        <div class="pg-badges">
+          <span class="pg-badge pg-badge--gsap" id="badge-lib">GSAP</span>
+          <span class="pg-badge pg-badge--split" id="badge-split">CHARS</span>
+          <span class="pg-badge pg-badge--gsap" id="badge-anim">gs-1</span>
+        </div>
+
+        <div class="pg-stage" id="pg-stage">
+          <!-- Text animated by JS -->
+        </div>
+      </div>
+
+      <!-- Panel controls -->
+      <div class="pg-panel">
+        <div class="pg-panel__group">
+          <div class="pg-panel__label">Animation Library</div>
+          <div class="lib-tabs">
+            <button class="lib-tab active-gsap" id="tab-gsap" aria-pressed="true">GSAP (26)</button>
+            <button class="lib-tab" id="tab-anime" aria-pressed="false">Anime.js (44)</button>
+          </div>
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="pg-panel__label">Text Content</div>
+          <input type="text" class="pg-input" id="ctrl-text" value="Aurora Motion" placeholder="Type preview text...">
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="pg-panel__label">Effect Preset</div>
+          <select class="pg-select" id="ctrl-anim">
+            <!-- Dynamically populated by JS -->
+          </select>
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="pg-panel__label">Split Strategy</div>
+          <div class="split-tabs">
+            <button class="split-tab active" id="split-chars" aria-pressed="true">Chars</button>
+            <button class="split-tab" id="split-words" aria-pressed="false">Words</button>
+            <button class="split-tab" id="split-lines" aria-pressed="false">Lines</button>
+          </div>
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="slider-row">
+            <span>Duration</span>
+            <span class="slider-val" id="val-duration">800ms</span>
+          </div>
+          <input type="range" id="ctrl-duration" min="200" max="2500" step="50" value="800">
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="slider-row">
+            <span>Stagger</span>
+            <span class="slider-val" id="val-stagger">30ms</span>
+          </div>
+          <input type="range" id="ctrl-stagger" min="0" max="150" step="5" value="30">
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="slider-row">
+            <span>Delay</span>
+            <span class="slider-val" id="val-delay">0ms</span>
+          </div>
+          <input type="range" id="ctrl-delay" min="0" max="1000" step="50" value="0">
+        </div>
+
+        <div class="pg-panel__group">
+          <div class="toggle-row">
+            <span style="font-size:13px;font-weight:600">Hover Scatter Effect</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="ctrl-hover">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-snippet" id="btn-open-snippet">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          Get HTML / JS Snippet
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     EFFECT GRID — ALL 70 ANIMATIONS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="effects" class="effects-catalog section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Animation Catalog</div>
+      <h2 class="display-2" style="margin-top:1rem">All 70 Effects, Live</h2>
+      <p>Scroll into view to trigger. Hover to re-run. Click to load in Playground.</p>
+    </div>
+
+    <div class="effects-toolbar">
+      <div class="effects-tabs" role="tablist" aria-label="Filter animations by category">
+        <button class="effects-tab active" data-filter="all" role="tab" aria-selected="true">All 70</button>
+        <button class="effects-tab" data-filter="gsap" role="tab" aria-selected="false">GSAP (26)</button>
+        <button class="effects-tab" data-filter="anime" role="tab" aria-selected="false">Anime.js (44)</button>
+        <button class="effects-tab" data-filter="reveal" role="tab" aria-selected="false">Reveals</button>
+        <button class="effects-tab" data-filter="kinetic" role="tab" aria-selected="false">Kinetic</button>
+        <button class="effects-tab" data-filter="glitch" role="tab" aria-selected="false">Glitch</button>
+      </div>
+
+      <div class="catalog-text-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        <input type="text" id="catalog-text-input" placeholder="Type custom text for all cards..." aria-label="Custom text for catalog cards">
+      </div>
+    </div>
+
+    <div class="effects-grid" id="effects-grid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MODULES OVERVIEW
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="modules" class="modules-section section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Plugin Modules</div>
+      <h2 class="display-2" style="margin-top:1rem">Six Modules, One Plugin</h2>
+      <p>Every module adds a section to Elementor's Advanced tab — no page builder lock-in.</p>
+    </div>
+
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="module-card__icon module-card__icon--green">✨</div>
+        <div class="module-card__num">01 — Text Animation</div>
+        <h3 class="module-card__title">70+ Text Effects</h3>
+        <p class="module-card__desc">Split titles into chars, words, or lines and animate them with GSAP or Anime.js on scroll or page load. Add Hover Scatter for interactive depth.</p>
+      </div>
+      <div class="module-card">
+        <div class="module-card__icon module-card__icon--teal">🌈</div>
+        <div class="module-card__num">02 — Gradient</div>
+        <h3 class="module-card__title">Gradient &amp; Spotlight</h3>
+        <p class="module-card__desc">Multi-stop linear, radial, or conic gradients with animated mesh drift or a Follow Mouse spotlight. Applies as background or text fill.</p>
+      </div>
+      <div class="module-card">
+        <div class="module-card__icon module-card__icon--violet">🧊</div>
+        <div class="module-card__num">03 — Glassmorphism</div>
+        <h3 class="module-card__title">Frosted Glass Panels</h3>
+        <p class="module-card__desc">Translucent blurred backgrounds resolved in PHP into a single inline style — with CSS fallback. Zero JavaScript. Zero overhead.</p>
+      </div>
+      <div class="module-card">
+        <div class="module-card__icon module-card__icon--green">🖱️</div>
+        <div class="module-card__num">04 — Cursor Follow</div>
+        <h3 class="module-card__title">Custom Cursor Zones</h3>
+        <p class="module-card__desc">A two-part cursor (dot + ring) with configurable trail delay and distinct hover states for links, buttons, and images inside each zone.</p>
+      </div>
+      <div class="module-card">
+        <div class="module-card__icon module-card__icon--teal">🖼️</div>
+        <div class="module-card__num">05 — Image Effects</div>
+        <h3 class="module-card__title">3D Tilt &amp; Parallax</h3>
+        <p class="module-card__desc">Gyroscope/mouse 3D perspective tilt, magnetic pull, and scroll parallax with configurable intensity and easing curves.</p>
+      </div>
+      <div class="module-card">
+        <div class="module-card__icon module-card__icon--violet">⚡</div>
+        <div class="module-card__num">06 — Advanced Physics</div>
+        <h3 class="module-card__title">Zero Dependencies</h3>
+        <p class="module-card__desc">Vanilla JS core (12 KB gzipped). CDN fallbacks automatically injected only when needed — leaving your site fast and clean.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ARCHITECTURE & PERFORMANCE
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="arch-section section-gap-lg">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:var(--s-12)">
+      <div class="eyebrow">Swiss Architecture</div>
+      <h2 class="display-2" style="margin-top:1rem">Engineered for 100/100 PageSpeed</h2>
+      <p>No framework bloat. No layout shifts. Pure GPU-accelerated motion.</p>
+    </div>
+
+    <div class="arch-flow">
+      <div class="arch-step">
+        <div class="arch-step__num">01</div>
+        <h3 class="arch-step__title">Intersection Observer</h3>
+        <p class="arch-step__desc">Animations trigger only when scrolled into viewport with threshold awareness — saving main thread cycles.</p>
+      </div>
+      <div class="arch-step">
+        <div class="arch-step__num">02</div>
+        <h3 class="arch-step__title">DOM Splitting</h3>
+        <p class="arch-step__desc">Text is safely split into accessible spans preserving ARIA accessibility labels for screen readers.</p>
+      </div>
+      <div class="arch-step">
+        <div class="arch-step__num">03</div>
+        <h3 class="arch-step__title">GPU Compositing</h3>
+        <p class="arch-step__desc">All movement uses translate3d and opacity properties exclusively — avoiding browser repaint/reflow.</p>
+      </div>
+      <div class="arch-step">
+        <div class="arch-step__num">04</div>
+        <h3 class="arch-step__title">Auto Memory Cleanup</h3>
+        <p class="arch-step__desc">Observers and split instances automatically disconnect on unmount, keeping RAM footprint minimal.</p>
+      </div>
+    </div>
+
+    <!-- Quick installation code block -->
+    <div style="margin-top:var(--s-16)">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--c-text-dim);margin-bottom:var(--s-3)">
+        Standalone HTML Integration (Zero WP Needed)
+      </div>
+      <div class="code-block">
+        <span class="cmt">&lt;!-- 1. Include CDN Dependencies --&gt;</span><br>
+        &lt;<span class="kw">script</span> <span class="attr">src</span>=<span class="str">"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;<br>
+        &lt;<span class="kw">script</span> <span class="attr">src</span>=<span class="str">"https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;<br>
+        &lt;<span class="kw">script</span> <span class="attr">src</span>=<span class="str">"assets/js/dist/aurora-text-editor.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;<br><br>
+        <span class="cmt">&lt;!-- 2. Add data attributes to any HTML heading --&gt;</span><br>
+        &lt;<span class="kw">h1</span> <span class="attr">data-aurora-enable</span>=<span class="str">"1"</span> <span class="attr">data-aurora-library</span>=<span class="str">"gsap"</span> <span class="attr">data-aurora-animation</span>=<span class="str">"gs-1"</span>&gt;<br>
+        &nbsp;&nbsp;Aurora Light Theme Works Everywhere<br>
+        &lt;/<span class="kw">h1</span>&gt;
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CTA & FOOTER
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="cta-section section-gap-lg">
+  <div class="container">
+    <div class="cta-box">
+      <div class="eyebrow">Open Source &amp; Free</div>
+      <h2 class="display-2" style="margin-top:1rem">Supercharge Your Elementor &amp; Web Design</h2>
+      <p>Download the full plugin zip or embed the library standalone in any static website.</p>
+      <div class="cta-actions">
+        <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary" aria-label="Download free from GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download Aurora for Free
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="../assets/branding/aurora_animated_logo.svg" class="footer__logo" alt="Aurora for Elementor">
+        <p class="footer__tagline">
+          The Swiss Army knife extension for Elementor design system motion, gradients, glassmorphism and cursor zones.
+        </p>
+      </div>
+
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="#playground">Interactive Studio</a></li>
+          <li><a href="#effects">All 70 Animations</a></li>
+          <li><a href="#modules">Plugin Modules</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer__col-title">Resources</div>
+        <ul class="footer__links">
+          <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub Repository</a></li>
+          <li><a href="https://github.com/zmdy/aurora/releases" target="_blank" rel="noopener">Releases &amp; Zip</a></li>
+          <li><a href="../index.html">Dark Theme Version</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 Aurora Motion. MIT Licensed Open Source.</span>
+      <span>Light Theme Edition</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SNIPPET POPUP MODAL
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="snippet-modal-backdrop" id="snippet-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="snippet-modal">
+    <div class="snippet-modal__header">
+      <div class="snippet-modal__title" id="modal-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--c-green)" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        <span>Static Web Code Snippet</span>
+      </div>
+      <button class="snippet-modal__close" id="btn-close-snippet" aria-label="Close popup modal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="snippet-modal__body">
+      <div style="font-size:13px;color:var(--c-text-muted)">
+        Below is the readable preview code. Clicking <strong>"Copy Production Code Snippet"</strong> will copy the clean element HTML, CDN scripts, and minified init code directly to your clipboard for instant static site reuse.
+      </div>
+      <pre class="snippet-modal__code" id="snippet-code-box"><code><!-- Code loaded dynamically by JS --></code></pre>
+    </div>
+
+    <div class="snippet-modal__footer">
+      <span style="font-size:12px;color:var(--c-text-dim)">Ready to paste in any HTML/CSS project</span>
+      <button class="btn-copy-snippet" id="btn-copy-snippet">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Production Code Snippet
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toast-msg" role="status" aria-live="polite">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--c-green)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <span>Code copied to clipboard!</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     REQUIRED SCRIPTS FOR SHOWCASE
+     ═══════════════════════════════════════════════════════════════════ -->
+<!-- CDN Dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+
+<!-- Compiled Aurora Engine -->
+<script src="../assets/js/dist/aurora-text-editor.js"></script>
+
+<!-- Showcase Application Logic -->
+<script>
+(function() {
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════════════════════
+     ALL 70 ANIMATIONS REGISTRY
+     ═══════════════════════════════════════════════════════════════════ */
+  var ALL_EFFECTS = [
+    // GSAP Effects (26)
+    { id:'gs-1',  name:'Slide Fade Up',        lib:'gsap',  tags:['reveal'] },
+    { id:'gs-2',  name:'Overflow Mask Up',     lib:'gsap',  tags:['reveal'] },
+    { id:'gs-3',  name:'Scramble Decoder',     lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-4',  name:'Elastic Bounce Up',    lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-5',  name:'3D Flip Y',            lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-6',  name:'Slide Fade Left',      lib:'gsap',  tags:['reveal'] },
+    { id:'gs-7',  name:'Pop Scale Back',       lib:'gsap',  tags:['reveal'] },
+    { id:'gs-8',  name:'Wave Sine Stagger',    lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-9',  name:'Bounce Drop Down',     lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-10', name:'Glitch Jitter',        lib:'gsap',  tags:['glitch'] },
+    { id:'gs-11', name:'Pivot Corner Rotate',  lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-12', name:'Drop Elevator',        lib:'gsap',  tags:['reveal'] },
+    { id:'gs-13', name:'Spin Vortex',          lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-14', name:'Flicker Neon Strobe',  lib:'gsap',  tags:['glitch'] },
+    { id:'gs-15', name:'Horizontal Line Reveal',lib:'gsap', tags:['reveal'] },
+    { id:'gs-16', name:'Swing Door Left',      lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-17', name:'Pendulum Hang',        lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-18', name:'Isometric 3D Shift',   lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-19', name:'Squeeze Stretch',      lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-20', name:'Heartbeat Pulse',      lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-21', name:'Center Explode Out',   lib:'gsap',  tags:['reveal'] },
+    { id:'gs-22', name:'Slam Zoom Impact',     lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-23', name:'Cyber Skew Tremor',    lib:'gsap',  tags:['glitch'] },
+    { id:'gs-24', name:'Liquid Fill Reveal',   lib:'gsap',  tags:['reveal'] },
+    { id:'gs-25', name:'Deep Z-Perspective',   lib:'gsap',  tags:['kinetic'] },
+    { id:'gs-26', name:'Tracking Expand',      lib:'gsap',  tags:['reveal'] },
+
+    // Anime.js Effects (44)
+    { id:'ml-1',  name:'Exponential Fade Up',  lib:'anime', tags:['reveal'] },
+    { id:'ml-2',  name:'Elastic Zoom In',      lib:'anime', tags:['kinetic'] },
+    { id:'ml-3',  name:'Top Down Drop',        lib:'anime', tags:['reveal'] },
+    { id:'ml-4',  name:'Slide Right In',       lib:'anime', tags:['reveal'] },
+    { id:'ml-5',  name:'Sine Wave Float',      lib:'anime', tags:['kinetic'] },
+    { id:'ml-6',  name:'3D Flip X Underneath', lib:'anime', tags:['kinetic'] },
+    { id:'ml-7',  name:'Staggered Fade Pulse', lib:'anime', tags:['reveal'] },
+    { id:'ml-8',  name:'Blur Focus Unmask',    lib:'anime', tags:['reveal'] },
+    { id:'ml-9',  name:'Skew Shear Slide',     lib:'anime', tags:['kinetic'] },
+    { id:'ml-10', name:'Zoom Blast Impact',    lib:'anime', tags:['kinetic'] },
+    { id:'ml-11', name:'Sunny Chars Ascend',   lib:'anime', tags:['reveal'] },
+    { id:'ml-12', name:'Word Clip Reveal',     lib:'anime', tags:['reveal'] },
+    { id:'ml-13', name:'Dual Clip Shift',      lib:'anime', tags:['reveal'] },
+    { id:'ml-14', name:'Scramble Text Swap',   lib:'anime', tags:['glitch'] },
+    { id:'ml-15', name:'Levitate Continuous',  lib:'anime', tags:['kinetic'] },
+    { id:'ml-16', name:'Elastic Whip Right',   lib:'anime', tags:['kinetic'] },
+    { id:'ml-17', name:'Chaos Scatter Converge',lib:'anime',tags:['glitch'] },
+    { id:'ml-18', name:'Random Fall Down',     lib:'anime', tags:['reveal'] },
+    { id:'ml-19', name:'Vortex Spiral Assembly',lib:'anime',tags:['kinetic'] },
+    { id:'ml-20', name:'Flap Down Perspective',lib:'anime', tags:['kinetic'] },
+    { id:'ml-21', name:'RGB Split Chromatic',  lib:'anime', tags:['glitch'] },
+    { id:'ml-22', name:'Typewriter Infinite Loop',lib:'anime',tags:['kinetic'] },
+    { id:'ml-23', name:'Circular Orbit Loop',  lib:'anime', tags:['kinetic'] },
+    { id:'ml-24', name:'Spring Rubber Bounce', lib:'anime', tags:['kinetic'] },
+    { id:'ml-25', name:'3D Card Flip Left',    lib:'anime', tags:['kinetic'] },
+    { id:'ml-26', name:'Left Horizontal Slide', lib:'anime', tags:['reveal'] },
+    { id:'ml-27', name:'Bounce Drop Ground',   lib:'anime', tags:['kinetic'] },
+    { id:'ml-28', name:'Glitch Noise Shimmer', lib:'anime', tags:['glitch'] },
+    { id:'ml-29', name:'Corner Rotate Lift',   lib:'anime', tags:['kinetic'] },
+    { id:'ml-30', name:'Elevator Fall Fast',   lib:'anime', tags:['reveal'] },
+    { id:'ml-31', name:'Vortex Spin Expand',   lib:'anime', tags:['kinetic'] },
+    { id:'ml-32', name:'Neon Strobe Flash',    lib:'anime', tags:['glitch'] },
+    { id:'ml-33', name:'Horizontal Line Expand',lib:'anime',tags:['reveal'] },
+    { id:'ml-34', name:'Door Swing In',        lib:'anime', tags:['kinetic'] },
+    { id:'ml-35', name:'Pendulum Swing Down',  lib:'anime', tags:['kinetic'] },
+    { id:'ml-36', name:'Isometric 3D Rotate',  lib:'anime', tags:['kinetic'] },
+    { id:'ml-37', name:'Squeeze Stretch Elastic',lib:'anime',tags:['kinetic'] },
+    { id:'ml-38', name:'Pulse Beat Impact',    lib:'anime', tags:['kinetic'] },
+    { id:'ml-39', name:'Edges Center Unfold',  lib:'anime', tags:['reveal'] },
+    { id:'ml-40', name:'Slam Zoom Rubber',     lib:'anime', tags:['kinetic'] },
+    { id:'ml-41', name:'Cyber Tremor Jitter',  lib:'anime', tags:['glitch'] },
+    { id:'ml-42', name:'Liquid Fill Wipe',     lib:'anime', tags:['reveal'] },
+    { id:'ml-43', name:'Perspective Z Push',   lib:'anime', tags:['kinetic'] },
+    { id:'ml-44', name:'Letter Spacing Unfold',lib:'anime', tags:['reveal'] }
+  ];
+
+  var DEMO_WORDS = ['Aurora','Motion','Design','Shine','Spark','Borealis','Canvas','Studio','Pixel','Create'];
+
+  /* ═══════════════════════════════════════════════════════════════════
+     PLAYGROUND STATE & CONTROLS
+     ═══════════════════════════════════════════════════════════════════ */
+  var pgState = {
+    lib: 'gsap',
+    anim: 'gs-1',
+    split: 'chars',
+    duration: 800,
+    stagger: 30,
+    delay: 0,
+    hover: false
+  };
+
+  var $pgStage   = document.getElementById('pg-stage');
+  var $ctrlText  = document.getElementById('ctrl-text');
+  var $ctrlAnim  = document.getElementById('ctrl-anim');
+  var $badgeLib  = document.getElementById('badge-lib');
+  var $badgeSplit= document.getElementById('badge-split');
+  var $badgeAnim = document.getElementById('badge-anim');
+
+  // Populate animation dropdown
+  function populateEffects() {
+    $ctrlAnim.innerHTML = '';
+    ALL_EFFECTS.filter(function(e) { return e.lib === pgState.lib; }).forEach(function(e) {
+      var o = document.createElement('option');
+      o.value = e.id;
+      o.textContent = e.name + ' (' + e.id + ')';
+      $ctrlAnim.appendChild(o);
+    });
+    $ctrlAnim.value = pgState.anim;
+  }
+
+  function runPlayground() {
+    var rawText = $ctrlText.value || 'Aurora Motion';
+    $pgStage.innerHTML = '';
+    $pgStage.textContent = rawText;
+    $pgStage.style.opacity = '1';
+    $pgStage._auroraOriginal = rawText;
+    $pgStage._auroraPristineHTML = rawText;
+
+    var eff = window.AuroraTextEffects && window.AuroraTextEffects[pgState.anim];
+    var opts = {
+      library: pgState.lib,
+      animation: pgState.anim,
+      splitBy: pgState.split,
+      duration: pgState.duration,
+      stagger: pgState.stagger,
+      delay: pgState.delay,
+      hoverEnable: pgState.hover,
+      hoverIntensity: 24,
+      hoverDuration: 350
+    };
+
+    var units = [];
+    if (eff && eff.selfManaged) {
+      $pgStage.style.opacity = '0';
+    } else {
+      units = AuroraSplit[pgState.split]($pgStage);
+      units.forEach(function(u) { u.style.opacity = '0'; });
+    }
+
+    if (eff && typeof eff.run === 'function') {
+      eff.run(units, opts, $pgStage);
+    }
+
+    // Hover scatter setup
+    if (pgState.hover && units.length && typeof anime !== 'undefined') {
+      var dur = 350, intensity = 24;
+      var rnd = function(min, max) { return Math.random() * (max - min) + min; };
+      var enter = function() {
+        units.forEach(function(u) {
+          anime.animate(u, { translateX: rnd(-intensity, intensity), translateY: rnd(-intensity, intensity), rotate: rnd(-intensity, intensity)/2, duration: dur, ease: 'outQuart' });
+        });
+      };
+      var leave = function() {
+        units.forEach(function(u) {
+          anime.animate(u, { translateX: 0, translateY: 0, rotate: 0, duration: dur, ease: 'outElastic(1,.6)' });
+        });
+      };
+      $pgStage.addEventListener('mouseenter', enter);
+      $pgStage.addEventListener('mouseleave', leave);
+    }
+  }
+
+  // Library tabs & effect selection
+  function selectPlaygroundEffect(lib, animId) {
+    pgState.lib = lib;
+    pgState.anim = animId;
+    document.getElementById('tab-gsap').className = 'lib-tab' + (lib === 'gsap' ? ' active-gsap' : '');
+    document.getElementById('tab-anime').className = 'lib-tab' + (lib === 'anime' ? ' active-anime' : '');
+    document.getElementById('tab-gsap').setAttribute('aria-pressed', lib === 'gsap');
+    document.getElementById('tab-anime').setAttribute('aria-pressed', lib === 'anime');
+    $badgeLib.textContent = lib.toUpperCase();
+    $badgeLib.className = 'pg-badge pg-badge--' + (lib === 'gsap' ? 'gsap' : 'anime');
+    $badgeAnim.textContent = animId;
+    populateEffects();
+    $ctrlAnim.value = animId;
+    runPlayground();
+  }
+
+  function switchLib(lib) {
+    var defaultAnim = lib === 'gsap' ? 'gs-1' : 'ml-1';
+    selectPlaygroundEffect(lib, defaultAnim);
+  }
+
+  document.getElementById('tab-gsap').addEventListener('click', function() { switchLib('gsap'); });
+  document.getElementById('tab-anime').addEventListener('click', function() { switchLib('anime'); });
+
+  // Split tabs
+  ['chars','words','lines'].forEach(function(s) {
+    document.getElementById('split-' + s).addEventListener('click', function() {
+      pgState.split = s;
+      ['chars','words','lines'].forEach(function(x) {
+        document.getElementById('split-' + x).classList.toggle('active', x === s);
+        document.getElementById('split-' + x).setAttribute('aria-pressed', x === s);
+      });
+      $badgeSplit.textContent = s.toUpperCase();
+      runPlayground();
+    });
+  });
+
+  // Sliders
+  [['ctrl-duration','val-duration','duration','ms'],
+   ['ctrl-stagger', 'val-stagger', 'stagger', 'ms'],
+   ['ctrl-delay',   'val-delay',   'delay',   'ms']].forEach(function(cfg) {
+    var el = document.getElementById(cfg[0]);
+    var out = document.getElementById(cfg[1]);
+    el.addEventListener('input', function() {
+      pgState[cfg[2]] = parseInt(this.value, 10);
+      out.textContent = this.value + cfg[3];
+      runPlayground();
+    });
+  });
+
+  // Hover toggle
+  document.getElementById('ctrl-hover').addEventListener('change', function() {
+    pgState.hover = this.checked;
+    runPlayground();
+  });
+
+  // Text input
+  var textTimer;
+  $ctrlText.addEventListener('input', function() {
+    clearTimeout(textTimer);
+    textTimer = setTimeout(runPlayground, 300);
+  });
+
+  // Animation select
+  $ctrlAnim.addEventListener('change', function() {
+    pgState.anim = this.value;
+    $badgeAnim.textContent = this.value;
+    runPlayground();
+  });
+
+  // Replay button
+  document.getElementById('pg-replay-btn').addEventListener('click', runPlayground);
+
+  // Init playground
+  populateEffects();
+  setTimeout(runPlayground, 800);
+
+  /* ═══════════════════════════════════════════════════════════════════
+     EFFECTS GRID CATALOG
+     ═══════════════════════════════════════════════════════════════════ */
+  var catalogCustomText = '';
+
+  function runCardEffect(stage) {
+    var effId = stage.dataset.auroraAnimation;
+    var effect = window.AuroraTextEffects && window.AuroraTextEffects[effId];
+    if (!effect) return;
+
+    var word = catalogCustomText || stage.dataset.defaultText || 'AURORA';
+
+    stage._auroraOriginal = stage._auroraPristineHTML = word;
+    stage.innerHTML = '';
+    stage.textContent = word;
+    stage.style.opacity = '1';
+
+    var opts = { library: stage.dataset.auroraLibrary, animation: effId, splitBy: 'chars', duration: 800, stagger: 35, delay: 0, replay: true };
+    var units = [];
+    if (effect.selfManaged) {
+      stage.style.opacity = '0';
+    } else {
+      units = AuroraSplit.chars(stage);
+      units.forEach(function(u) { u.style.opacity = '0'; });
+    }
+    effect.run(units, opts, stage);
+  }
+
+  function buildGrid(filter) {
+    var grid = document.getElementById('effects-grid');
+    grid.innerHTML = '';
+
+    var filtered = ALL_EFFECTS.filter(function(e) {
+      if (filter === 'all')   return true;
+      if (filter === 'gsap')  return e.lib === 'gsap';
+      if (filter === 'anime') return e.lib === 'anime';
+      return e.tags.indexOf(filter) !== -1;
+    });
+
+    filtered.forEach(function(eff, idx) {
+      var defaultWord = DEMO_WORDS[idx % DEMO_WORDS.length];
+      var displayWord = catalogCustomText || defaultWord;
+      var card = document.createElement('div');
+      card.className = 'effect-card';
+      card.dataset.id = eff.id;
+      card.dataset.lib = eff.lib;
+
+      card.innerHTML =
+        '<div class="effect-card__stage" data-default-text="' + defaultWord + '" data-aurora-enable="1" data-aurora-library="' + eff.lib + '" data-aurora-animation="' + eff.id + '" data-aurora-trigger="scroll" data-aurora-replay="1" data-aurora-duration="800" data-aurora-stagger="35">' + displayWord + '</div>' +
+        '<div class="effect-card__info">' +
+          '<div>' +
+            '<div class="effect-card__name">' + eff.name + '</div>' +
+            '<div class="effect-card__id">' + eff.id + '</div>' +
+          '</div>' +
+          '<span class="lib-chip lib-chip--' + eff.lib + '">' + (eff.lib === 'gsap' ? 'GSAP' : 'Anime') + '</span>' +
+        '</div>';
+
+      // Hover to re-run animation
+      card.addEventListener('mouseenter', function() {
+        var stage = card.querySelector('.effect-card__stage');
+        if (stage) runCardEffect(stage);
+      });
+
+      // Click to load in playground
+      card.addEventListener('click', function() {
+        $ctrlText.value = catalogCustomText || defaultWord;
+        selectPlaygroundEffect(eff.lib, eff.id);
+        document.getElementById('playground').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      grid.appendChild(card);
+    });
+
+    // Start IntersectionObserver for scroll-triggered animations
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        runCardEffect(entry.target);
+      });
+    }, { threshold: .3 });
+
+    grid.querySelectorAll('[data-aurora-enable="1"]').forEach(function(el) {
+      obs.observe(el);
+    });
+  }
+
+  // Custom text input listener for catalog cards
+  var $catalogInput = document.getElementById('catalog-text-input');
+  if ($catalogInput) {
+    $catalogInput.addEventListener('input', function() {
+      catalogCustomText = this.value.trim();
+      document.querySelectorAll('.effect-card').forEach(function(card) {
+        var stage = card.querySelector('.effect-card__stage');
+        if (stage) runCardEffect(stage);
+      });
+    });
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.effects-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.effects-tab').forEach(function(b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      this.classList.add('active');
+      this.setAttribute('aria-selected', 'true');
+      buildGrid(this.dataset.filter);
+    });
+  });
+
+  buildGrid('all');
+
+  /* ═══════════════════════════════════════════════════════════════════
+     DYNAMIC DUAL-SNIPPET POPUP MODAL GENERATOR
+     ═══════════════════════════════════════════════════════════════════ */
+  function getEffectSourceCode(effId) {
+    var eff = window.AuroraTextEffects && window.AuroraTextEffects[effId];
+    if (!eff) return '// Effect ' + effId + ' source code';
+    return eff.run.toString();
+  }
+
+  // Full Readable Preview Code
+  function generateSnippet() {
+    var textVal = $ctrlText.value || 'Aurora Motion';
+    var isGsap = pgState.lib === 'gsap';
+    var effCode = getEffectSourceCode(pgState.anim);
+
+    var cdnTags = isGsap
+      ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>'
+      : '<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"><\/script>';
+
+    return '<!-- Aurora Text Animation: ' + pgState.anim + ' (' + pgState.lib.toUpperCase() + ') -->\n' +
+      '<!-- Dependencies -->\n' +
+      cdnTags + '\n\n' +
+      '<!-- HTML Target Element -->\n' +
+      '<h1 id="aurora-heading" class="aurora-text-target">\n  ' + textVal + '\n</h1>\n\n' +
+      '<!-- Inline CSS -->\n' +
+      '<style>\n' +
+      '  .aurora-text-target {\n' +
+      '    font-family: system-ui, sans-serif;\n' +
+      '    font-size: 3rem;\n' +
+      '    font-weight: 800;\n' +
+      '    color: #0f172a;\n' +
+      '  }\n' +
+      '</style>\n\n' +
+      '<!-- Effect Engine & Execution Script -->\n' +
+      '<script>\n' +
+      '(function() {\n' +
+      '  var effect = {\n' +
+      '    id: "' + pgState.anim + '",\n' +
+      '    run: ' + effCode + '\n' +
+      '  };\n\n' +
+      '  var target = document.getElementById("aurora-heading");\n' +
+      '  var opts = {\n' +
+      '    duration: ' + pgState.duration + ',\n' +
+      '    stagger: ' + pgState.stagger + ',\n' +
+      '    delay: ' + pgState.delay + '\n' +
+      '  };\n\n' +
+      '  // Initialize effect\n' +
+      '  effect.run(target.children, opts, target);\n' +
+      '})();\n' +
+      '<\/script>';
+  }
+
+  // Lean Production Code Snippet (Element + CDN + Minified Script)
+  function generateLeanSnippet() {
+    var textVal = $ctrlText.value || 'Aurora Motion';
+    var isGsap = pgState.lib === 'gsap';
+
+    var cdnTags = isGsap
+      ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>'
+      : '<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"><\/script>';
+
+    return '<!-- Aurora Target Element -->\n' +
+      '<h1 id="aurora-animated-heading" class="aurora-heading" data-aurora-enable="1" data-aurora-library="' + pgState.lib + '" data-aurora-animation="' + pgState.anim + '" data-aurora-duration="' + pgState.duration + '" data-aurora-stagger="' + pgState.stagger + '" data-aurora-delay="' + pgState.delay + '">\n' +
+      '  ' + textVal + '\n' +
+      '</h1>\n\n' +
+      '<!-- Dependencies -->\n' +
+      cdnTags + '\n' +
+      '<script src="assets/js/dist/aurora-text-editor.js"><\/script>\n\n' +
+      '<!-- Minified Execution Script -->\n' +
+      '<script>!function(){var e=document.getElementById("aurora-animated-heading");if(e&&window.AuroraTextEffects){var t=e.dataset.auroraAnimation,a=window.AuroraTextEffects[t];a&&a.run&&a.run([],{duration:' + pgState.duration + ',stagger:' + pgState.stagger + ',delay:' + pgState.delay + '},e)}}();<\/script>';
+  }
+
+  var $modalBackdrop = document.getElementById('snippet-backdrop');
+  var $codeBox       = document.getElementById('snippet-code-box');
+  var $btnOpenModal  = document.getElementById('btn-open-snippet');
+  var $btnCloseModal = document.getElementById('btn-close-snippet');
+  var $btnCopyCode   = document.getElementById('btn-copy-snippet');
+  var $toast         = document.getElementById('toast-msg');
+
+  function openModal() {
+    $codeBox.textContent = generateSnippet();
+    $modalBackdrop.classList.add('active');
+  }
+
+  function closeModal() {
+    $modalBackdrop.classList.remove('active');
+  }
+
+  $btnOpenModal.addEventListener('click', openModal);
+  $btnCloseModal.addEventListener('click', closeModal);
+  $modalBackdrop.addEventListener('click', function(e) {
+    if (e.target === $modalBackdrop) closeModal();
+  });
+
+  // Copy Lean Snippet to Clipboard
+  $btnCopyCode.addEventListener('click', function() {
+    var leanCode = generateLeanSnippet();
+    navigator.clipboard.writeText(leanCode).then(function() {
+      $toast.classList.add('show');
+      setTimeout(function() { $toast.classList.remove('show'); }, 2500);
+    });
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     HERO CANVAS ANIMATION LOOP — LIGHT MODE
+     ═══════════════════════════════════════════════════════════════════ */
+  var canvas = document.getElementById('aurora-canvas');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = 0, h = 0;
+    var mouse = { x: .5, y: .4 };
+    var target = { x: .5, y: .4 };
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var blobs = [
+      { c: 'rgba(5,150,105,.35)',  sx:.28, sy:.30, r:.58, sp:.52, ph: 0.0, pull: .16 },
+      { c: 'rgba(2,132,199,.28)',  sx:.72, sy:.25, r:.62, sp:.40, ph: 2.1, pull:-.14 },
+      { c: 'rgba(109,40,217,.28)', sx:.55, sy:.72, r:.50, sp:.36, ph: 4.2, pull: .20 },
+      { c: 'rgba(2,132,199,.18)',  sx:.18, sy:.78, r:.44, sp:.60, ph: 1.4, pull:-.10 },
+    ];
+
+    function resizeCanvas() {
+      w = canvas.parentElement.offsetWidth;
+      h = canvas.parentElement.offsetHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    canvas.parentElement.addEventListener('mousemove', function(e) {
+      var rect = canvas.parentElement.getBoundingClientRect();
+      target.x = (e.clientX - rect.left) / rect.width;
+      target.y = (e.clientY - rect.top) / rect.height;
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    if (!reduceMotion) {
+      var t = 0;
+      function drawCanvas() {
+        t += .012;
+        mouse.x += (target.x - mouse.x) * .03;
+        mouse.y += (target.y - mouse.y) * .03;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(0, 0, w, h);
+
+        blobs.forEach(function(b, i) {
+          var dx = Math.sin(t * b.sp + b.ph) * .22;
+          var dy = Math.cos(t * b.sp * .85 + b.ph) * .18;
+          var cx = (b.sx + dx + (mouse.x - .5) * b.pull) * w;
+          var cy = (b.sy + dy + (mouse.y - .5) * b.pull) * h;
+          var r = b.r * Math.max(w, h) * (1 + Math.sin(t * 0.5 + i) * 0.15);
+          var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+          g.addColorStop(0, b.c);
+          g.addColorStop(1, 'rgba(248,250,252,0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, w, h);
+        });
+        requestAnimationFrame(drawCanvas);
+      }
+      requestAnimationFrame(drawCanvas);
+    } else {
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, w, h);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     NAV SCROLL STATE & GLOBAL CURSOR FOLLOWER
+     ═══════════════════════════════════════════════════════════════════ */
+  var nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  (function() {
+    var dot  = document.getElementById('gcursor-dot');
+    var ring = document.getElementById('gcursor-ring');
+    if (!dot || !ring) return;
+
+    var cur  = { x: -100, y: -100 };
+    var target = { x: -100, y: -100 };
+    var ringPos= { x: -100, y: -100 };
+    var isReady = false;
+
+    window.addEventListener('mousemove', function(e) {
+      target.x = e.clientX;
+      target.y = e.clientY;
+      if (!isReady) {
+        isReady = true;
+        cur.x = ringPos.x = target.x;
+        cur.y = ringPos.y = target.y;
+        document.body.classList.add('cursor-ready');
+      }
+    }, { passive: true });
+
+    function renderCursor() {
+      if (isReady) {
+        cur.x += (target.x - cur.x) * .6;
+        cur.y += (target.y - cur.y) * .6;
+        ringPos.x += (target.x - ringPos.x) * .18;
+        ringPos.y += (target.y - ringPos.y) * .18;
+
+        dot.style.transform  = 'translate3d(' + cur.x.toFixed(2) + 'px,' + cur.y.toFixed(2) + 'px,0) translate(-50%,-50%)';
+        ring.style.transform = 'translate3d(' + ringPos.x.toFixed(2) + 'px,' + ringPos.y.toFixed(2) + 'px,0) translate(-50%,-50%)';
+      }
+      requestAnimationFrame(renderCursor);
+    }
+    requestAnimationFrame(renderCursor);
+
+    // Interactive element hover & click states
+    var hoverSelectors = 'a, button, input, select, .effect-card, .module-card, .split-tab, .lib-tab';
+
+    document.addEventListener('mouseover', function(e) {
+      if (e.target.closest(hoverSelectors)) {
+        document.body.classList.add('cursor-hover');
+      }
+    });
+
+    document.addEventListener('mouseout', function(e) {
+      if (e.target.closest(hoverSelectors)) {
+        document.body.classList.remove('cursor-hover');
+      }
+    });
+
+    window.addEventListener('mousedown', function() {
+      document.body.classList.add('cursor-click');
+    });
+
+    window.addEventListener('mouseup', function() {
+      document.body.classList.remove('cursor-click');
+    });
+  })();
+
+})();
+</script>
 </body>
 </html>
