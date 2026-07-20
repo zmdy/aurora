@@ -2831,6 +2831,50 @@ function generateSnippet() {
   return snippet;
 }
 
+/* Lean snippet — element + CDN tags + minified init script only.
+   This is what the "Copy" button puts into the clipboard. */
+function generateLeanSnippet() {
+  var text    = (document.getElementById('ctrl-text').value || 'AURORA').trim();
+  var lib     = pgState.lib;
+  var animId  = pgState.anim;
+  var split   = pgState.split;
+  var dur     = pgState.duration;
+  var stg     = pgState.stagger;
+  var dly     = pgState.delay;
+
+  var libSrc = lib === 'gsap' ? GSAP_CDN : ANIME_CDN;
+
+  /* Minified IIFE — self-contained init, no external helpers needed */
+  var mini = '!function(){' +
+    'var e=document.getElementById("aurora-text"),' +
+    'f=window.AuroraTextEffects&&window.AuroraTextEffects["' + animId + '"];' +
+    'if(!f)return;' +
+    'var o={library:"' + lib + '",animation:"' + animId + '",splitBy:"' + split + '",duration:' + dur + ',stagger:' + stg + ',delay:' + dly + ',replay:!0};' +
+    'var u=[];' +
+    'if(f.selfManaged){e.style.opacity="0";}else{' +
+      'var t=e.innerText;e.setAttribute("aria-label",t);e.innerHTML="";' +
+      't.split(" ").forEach(function(w,i,a){' +
+        'var wr=document.createElement("span");wr.style.cssText="display:inline-block;white-space:nowrap;";' +
+        'Array.from(w).forEach(function(c){var s=document.createElement("span");s.style.cssText="display:inline-block;will-change:transform,opacity;opacity:0;";s.textContent=c;wr.appendChild(s);u.push(s)});' +
+        'e.appendChild(wr);' +
+        'if(i<a.length-1){var sp=document.createElement("span");sp.innerHTML="&nbsp;";e.appendChild(sp);}' +
+      '});' +
+    '}' +
+    'f.run(u,o,e);' +
+  '}();';
+
+  return [
+    '<!-- Aurora: ' + animId + ' (' + lib.toUpperCase() + ') | split-by=' + split + ' dur=' + dur + 'ms stagger=' + stg + 'ms delay=' + dly + 'ms -->',
+    '<link rel="stylesheet" href="' + AURORA_CDN_CSS + '">',
+    '<script src="' + libSrc + '"><\/script>',
+    '<script src="' + AURORA_CDN_JS + '"><\/script>',
+    '',
+    '<div id="aurora-text">' + text + '<\/div>',
+    '',
+    '<script>' + mini + '<\/script>'
+  ].join('\n');
+}
+
 function openSnippetModal() {
   var overlay = document.getElementById('snippet-overlay');
   if (!overlay) return;
@@ -2849,17 +2893,16 @@ function closeSnippetModal() {
 }
 
 function copySnippet(btnEl) {
-  var code = generateSnippet();
+  var code = generateLeanSnippet();
   navigator.clipboard.writeText(code).then(function() {
     var orig = btnEl.innerHTML;
-    btnEl.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btnEl.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/><\/svg> Copied!';
     btnEl.classList.add('copied');
     setTimeout(function() {
       btnEl.innerHTML = orig;
       btnEl.classList.remove('copied');
     }, 2200);
   }).catch(function() {
-    /* fallback: open modal so user can manually copy */
     openSnippetModal();
   });
 }
@@ -2960,13 +3003,13 @@ document.getElementById('btn-snippet-2').addEventListener('click', function() { 
     </div>
 
     <div class="snippet-modal__footer">
-      <p class="snippet-info">Uses CDN links for GSAP / Anime.js and Aurora's text bundle.<br>Drop this file anywhere — no build step needed.</p>
-      <button class="btn-copy-snippet" id="btn-copy-final" aria-label="Copy snippet to clipboard">
+      <p class="snippet-info">Preview shows full readable HTML.<br>The button copies only the <strong style="color:rgba(255,255,255,.55)">element + CDN tags + minified init script</strong> — ready to paste.</p>
+      <button class="btn-copy-snippet" id="btn-copy-final" aria-label="Copy lean snippet to clipboard">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
         </svg>
-        Copy to Clipboard
+        Copy Snippet
       </button>
     </div>
   </div>

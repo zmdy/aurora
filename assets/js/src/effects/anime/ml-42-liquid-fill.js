@@ -10,9 +10,12 @@ var effect = {
     run: function (units, opts, textEl) {
         var original = textEl._auroraOriginal || textEl.innerText;
         textEl.innerHTML = '';
-        textEl.textContent = original;
+        var span = document.createElement('span');
+        span.textContent = original;
+        span.style.display = 'block';
+        textEl.appendChild(span);
         textEl.style.opacity = '1';
-        anime.animate(textEl, {
+        anime.animate(span, {
             clipPath: ['inset(100% 0 0 0)', 'inset(0% 0 0 0)'],
             duration: opts.duration,
             delay: opts.delay,
