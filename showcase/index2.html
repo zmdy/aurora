@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Aurora for Elementor — Celestial Edition with Real Aurora Borealis background, 70+ text animations, glassmorphism and interactive particle engine.">
+<title>Aurora for Elementor — Celestial Hero Showcase (index2.html)</title>
+<link rel="icon" href="../assets/branding/aurora_favicon.svg" type="image/svg+xml">
+
+<!-- Distinctive Display & UI Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+<!-- Plugin CSS -->
+<link href="../assets/css/text-animations.css" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   AURORA CELESTIAL DESIGN SYSTEM TOKENS
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Brand Palette */
+  --c-green:        #05b172;
+  --c-green-bright: #10b981;
+  --c-teal:         #0099cc;
+  --c-cyan:         #38bdf8;
+  --c-violet:       #7c5cff;
+
+  /* Void & Glass Surface Palette */
+  --c-night:        #03040c;
+  --c-surface:      #07091a;
+  --c-elevated:     #0d1127;
+  --c-text-main:    #ffffff;
+  --c-text-muted:   rgba(255, 255, 255, 0.75);
+  --c-text-dim:     rgba(255, 255, 255, 0.5);
+  --c-border:       rgba(255, 255, 255, 0.1);
+  --c-border-glow:  rgba(5, 177, 114, 0.4);
+
+  /* Gradient Presets */
+  --g-aurora:       linear-gradient(115deg, #05b172 0%, #0099cc 50%, #7c5cff 100%);
+  --g-aurora-bright:linear-gradient(115deg, #34d399 0%, #38bdf8 50%, #a78bfa 100%);
+  --g-glass:        linear-gradient(135deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.02) 100%);
+
+  /* Typography Tokens */
+  --f-display:      'Syne', sans-serif;
+  --f-heading:      'Space Grotesk', system-ui, sans-serif;
+  --f-sans:         'Inter', system-ui, sans-serif;
+  --f-mono:         'JetBrains Mono', monospace;
+
+  /* Spacing Scale */
+  --s-1:  .25rem;
+  --s-2:  .5rem;
+  --s-3:  .75rem;
+  --s-4:  1rem;
+  --s-5:  1.25rem;
+  --s-6:  1.5rem;
+  --s-8:  2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+
+  /* Radii & Transitions */
+  --r-sm:   6px;
+  --r-md:   12px;
+  --r-lg:   18px;
+  --r-xl:   24px;
+  --r-full: 9999px;
+
+  --t-fast:   150ms ease;
+  --t-normal: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --t-slow:   600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base resets & typography */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--f-sans);
+  background-color: var(--c-night);
+  color: var(--c-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-green-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--s-6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL CURSOR FOLLOWER
+   ═══════════════════════════════════════════════════════════════════ */
+.gcursor-dot, .gcursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity .3s ease, transform .15s ease-out;
+}
+
+.gcursor-dot {
+  width: 8px; height: 8px;
+  background: #34d399;
+  box-shadow: 0 0 12px #34d399, 0 0 24px #34d399;
+}
+
+.gcursor-ring {
+  width: 40px; height: 40px;
+  border: 1.5px solid rgba(52, 211, 153, 0.45);
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.15);
+}
+
+body.cursor-ready .gcursor-dot,
+body.cursor-ready .gcursor-ring { opacity: 1; }
+
+body.cursor-hover .gcursor-ring {
+  transform: translate(-50%, -50%) scale(1.6);
+  border-color: rgba(56, 189, 248, 0.8);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(0.5); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FLOATING GLASSMORPHIC NAVBAR
+   ═══════════════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 1.25rem;
+  left: 0; right: 0;
+  z-index: 1000;
+  pointer-events: none;
+  transition: transform var(--t-normal);
+}
+
+.nav .container {
+  max-width: 1080px;
+  padding: 0 var(--s-4);
+}
+
+.nav__inner {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-8);
+  padding: 10px 24px;
+  border-radius: var(--r-full);
+  background: rgba(7, 9, 26, 0.45);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all var(--t-normal);
+}
+
+.nav.scrolled .nav__inner {
+  background: rgba(3, 4, 12, 0.75);
+  backdrop-filter: blur(28px) saturate(220%);
+  -webkit-backdrop-filter: blur(28px) saturate(220%);
+  border-color: rgba(5, 177, 114, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(5, 177, 114, 0.2);
+  transform: translateY(-2px);
+}
+
+.nav__logo { height: 32px; width: auto; }
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--s-8);
+  list-style: none;
+}
+
+.nav__links a {
+  font-family: var(--f-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.nav__links a:hover { color: #ffffff; }
+
+.nav__cta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 9px 20px;
+  border-radius: var(--r-full);
+  background: var(--g-aurora);
+  color: #fff;
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(5, 177, 114, 0.35);
+  transition: all var(--t-normal);
+}
+
+.nav__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(5, 177, 114, 0.55);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HERO — CELESTIAL AURORA BOREALIS EDITION
+   ═══════════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--c-night);
+  background-image: url('quadro-34.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* Smooth dark horizon fade blending pine trees into next section */
+.hero__horizon-fade {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 280px;
+  z-index: 2;
+  background: linear-gradient(to bottom, transparent 0%, rgba(3, 4, 12, 0.4) 40%, rgba(3, 4, 12, 0.85) 75%, #03040c 100%);
+  pointer-events: none;
+}
+
+/* Shimmering Star & Aurora Ray Canvas Overlay */
+.hero__star-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#star-canvas {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding-top: 150px;
+  padding-bottom: 120px;
+  text-align: center;
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 8px 18px;
+  border-radius: var(--r-full);
+  background: rgba(7, 9, 26, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  font-family: var(--f-heading);
+  font-size: 12px;
+  font-weight: 700;
+  color: #34d399;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-6);
+  box-shadow: 0 0 25px rgba(5, 177, 114, 0.25);
+}
+
+.hero__badge-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.7); opacity: 0.5; }
+}
+
+.hero__title {
+  font-family: var(--f-display);
+  font-size: clamp(3.5rem, 8vw, 7.2rem);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: -.03em;
+  margin-bottom: var(--s-6);
+  color: #ffffff;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.hero__title .word-stack {
+  display: block;
+}
+
+.hero__title .line-gradient {
+  background: var(--g-aurora-bright);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 35px rgba(52, 211, 153, 0.35));
+}
+
+.hero__title .line-outlined {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.hero__sub {
+  font-family: var(--f-sans);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  color: var(--c-text-muted);
+  max-width: 720px;
+  margin: 0 auto var(--s-10) auto;
+  line-height: 1.7;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-12);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 14px 32px;
+  border-radius: var(--r-full);
+  background: var(--g-aurora);
+  color: #ffffff;
+  font-family: var(--f-heading);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 35px rgba(5, 177, 114, 0.45);
+  transition: all var(--t-normal);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 45px rgba(5, 177, 114, 0.65);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 14px 30px;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: var(--f-heading);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--t-normal);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Floating Glassmorphism Stats Bar */
+.hero__stats-pill {
+  display: inline-grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-8);
+  padding: 18px 40px;
+  border-radius: var(--r-full);
+  background: rgba(7, 9, 26, 0.55);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .hero__stats-pill { grid-template-columns: repeat(2, 1fr); gap: var(--s-6); border-radius: var(--r-xl); }
+}
+
+.hero__stat-num {
+  font-family: var(--f-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: var(--g-aurora-bright);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.hero__stat-lbl {
+  font-family: var(--f-heading);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-dim);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PLAYGROUND SECTION — CELESTIAL THEME
+   ═══════════════════════════════════════════════════════════════════ */
+.pg-section {
+  background: var(--c-surface);
+  position: relative;
+  z-index: 5;
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+  padding: 100px 0;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 60px auto;
+}
+
+.eyebrow {
+  font-family: var(--f-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  background: var(--g-aurora-bright);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.display-2 {
+  font-family: var(--f-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: #fff;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--s-8);
+}
+
+@media (max-width: 960px) { .pg-grid { grid-template-columns: 1fr; } }
+
+.pg-stage-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+#playground-text {
+  font-family: var(--f-display);
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: -.02em;
+  user-select: none;
+}
+
+.pg-controls {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  padding: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.ctrl-group { display: flex; flex-direction: column; gap: var(--s-2); }
+.ctrl-label { font-family: var(--f-heading); font-size: 12px; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase; letter-spacing: .08em; }
+
+.ctrl-input, .ctrl-select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--c-border);
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  outline: none;
+}
+
+.ctrl-input:focus, .ctrl-select:focus { border-color: #34d399; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   CATALOG GRID SECTION
+   ═══════════════════════════════════════════════════════════════════ */
+.catalog-section {
+  padding: 100px 0;
+  position: relative;
+  z-index: 5;
+  background: var(--c-night);
+}
+
+.effects-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-8);
+  flex-wrap: wrap;
+}
+
+.effects-tabs {
+  display: flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.effects-tab {
+  padding: 8px 18px;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-muted);
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+
+.effects-tab:hover, .effects-tab.active {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #34d399;
+}
+
+.catalog-text-box {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-full);
+  padding: 8px 18px;
+  min-width: 280px;
+}
+
+.catalog-text-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13px;
+  width: 100%;
+}
+
+.effects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--s-6);
+}
+
+.effect-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all var(--t-normal);
+}
+
+.effect-card:hover {
+  border-color: rgba(52, 211, 153, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+}
+
+.effect-card__stage {
+  font-family: var(--f-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin: var(--s-3) 0;
+}
+
+.effect-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--c-text-dim);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     GLOBAL CURSOR FOLLOWER DOM
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="gcursor-dot"  id="gcursor-dot"  aria-hidden="true"></div>
+<div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FLOATING NAV BAR
+     ═══════════════════════════════════════════════════════════════════ -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="#top" aria-label="Aurora home">
+        <img src="../assets/branding/aurora_animated_logo.svg" class="nav__logo" alt="Aurora for Elementor">
+      </a>
+
+      <ul class="nav__links" role="list">
+        <li><a href="#playground">Playground</a></li>
+        <li><a href="#effects">Catalog</a></li>
+        <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+
+      <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__cta">
+        Download Free
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HERO — CELESTIAL AURORA BOREALIS EDITION (index2.html)
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="top" class="hero">
+  <!-- Shimmering Star Canvas Overlay -->
+  <div class="hero__star-canvas" aria-hidden="true">
+    <canvas id="star-canvas"></canvas>
+  </div>
+
+  <div class="container hero__content">
+    <div class="hero__badge">
+      <span class="hero__badge-dot"></span>
+      Open Source · GPL v3 · Free Forever
+    </div>
+
+    <h1 class="hero__title">
+      <span class="word-stack">Color &amp;</span>
+      <span class="word-stack line-outlined">Motion,</span>
+      <span class="word-stack line-gradient">Unleashed.</span>
+    </h1>
+
+    <p class="hero__sub">
+      The open-source Swiss Army knife for Elementor design. 70+ premium text animations, multi-stop gradients, glassmorphism, cursor follow — all from the Advanced tab.
+    </p>
+
+    <div class="hero__actions">
+      <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary" aria-label="Download Aurora for free on GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download Aurora Free
+      </a>
+      <a href="#playground" class="btn-ghost" aria-label="Try the live animation playground">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"></polygon></svg>
+        Live Text Playground
+      </a>
+    </div>
+
+    <!-- Floating Glassmorphism Stats Pill -->
+    <div class="hero__stats-pill">
+      <div>
+        <div class="hero__stat-num">70+</div>
+        <div class="hero__stat-lbl">Text Animations</div>
+      </div>
+      <div>
+        <div class="hero__stat-num">6</div>
+        <div class="hero__stat-lbl">Modules</div>
+      </div>
+      <div>
+        <div class="hero__stat-num">2</div>
+        <div class="hero__stat-lbl">Libraries</div>
+      </div>
+      <div>
+        <div class="hero__stat-num">$0</div>
+        <div class="hero__stat-lbl">Forever</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horizon fade blending tree silhouettes into dark body -->
+  <div class="hero__horizon-fade" aria-hidden="true"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PLAYGROUND SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="playground" class="pg-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Interactive Studio</div>
+      <h2 class="display-2">Live Motion Playground</h2>
+      <p style="color:var(--c-text-muted)">Test any of the 70 animations in real-time. Change text, split modes, durations, and watch it play instantly.</p>
+    </div>
+
+    <div class="pg-grid">
+      <div class="pg-stage-box" id="pg-stage">
+        <div id="playground-text">AURORA</div>
+      </div>
+
+      <div class="pg-controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Custom Text</span>
+          <input class="ctrl-input" id="ctrl-text" type="text" value="AURORA" maxlength="25">
+        </div>
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Animation Library</span>
+          <select class="ctrl-select" id="ctrl-anim-select"></select>
+        </div>
+
+        <button class="btn-primary" id="btn-replay-pg" style="width:100%;justify-content:center;margin-top:10px">
+          Replay Animation
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CATALOG GRID
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="effects" class="catalog-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Full Catalog</div>
+      <h2 class="display-2">70+ Text Effects Registry</h2>
+      <p style="color:var(--c-text-muted)">Hover over any card to re-trigger the animation. Type in the box below to customize text across all cards.</p>
+    </div>
+
+    <div class="effects-toolbar">
+      <div class="effects-tabs">
+        <button class="effects-tab active" data-filter="all">All 70</button>
+        <button class="effects-tab" data-filter="gsap">GSAP (26)</button>
+        <button class="effects-tab" data-filter="anime">Anime.js (44)</button>
+      </div>
+
+      <div class="catalog-text-box">
+        <input type="text" id="catalog-text-input" placeholder="Type custom text for all cards...">
+      </div>
+    </div>
+
+    <div class="effects-grid" id="effects-grid">
+      <!-- Cards rendered via JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Vendor Scripts -->
+<script src="../assets/js/vendor/gsap.min.js"></script>
+<script src="../assets/js/vendor/anime.min.js"></script>
+<script src="../assets/js/dist/aurora-text-editor.js"></script>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SHIMMERING STAR CANVAS OVERLAY
+     ═══════════════════════════════════════════════════════════════════ */
+  var canvas = document.getElementById('star-canvas');
+  if (canvas) {
+    var ctx = canvas.getContext('2d');
+    var w = 0, h = 0;
+    var stars = [];
+
+    function resize() {
+      w = canvas.width = canvas.parentElement.offsetWidth;
+      h = canvas.height = canvas.parentElement.offsetHeight;
+      initStars();
+    }
+
+    function initStars() {
+      stars = [];
+      var count = Math.floor((w * h) / 3000);
+      for (var i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * w,
+          y: Math.random() * (h * 0.75), // Concentrate in sky area
+          r: Math.random() * 1.4 + 0.3,
+          alpha: Math.random(),
+          speed: Math.random() * 0.02 + 0.005
+        });
+      }
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    function renderStars() {
+      ctx.clearRect(0, 0, w, h);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        s.alpha += s.speed;
+        if (s.alpha > 1 || s.alpha < 0.1) s.speed = -s.speed;
+        ctx.fillStyle = 'rgba(255, 255, 255, ' + Math.max(0.1, s.alpha).toFixed(2) + ')';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(renderStars);
+    }
+    requestAnimationFrame(renderStars);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     GSAP HERO ENTRANCE TIMELINE
+     ═══════════════════════════════════════════════════════════════════ */
+  function initHeroAnimations() {
+    if (typeof gsap === 'undefined') return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
+
+    tl.fromTo('.hero__badge',
+      { y: -30, opacity: 0, scale: 0.9 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.8, delay: 0.2 }
+    );
+
+    tl.fromTo('.hero__title .word-stack',
+      { y: 65, opacity: 0, skewY: 3 },
+      { y: 0, opacity: 1, skewY: 0, duration: 1.1, stagger: 0.15, ease: 'power4.out' },
+      '-=0.5'
+    );
+
+    tl.fromTo('.hero__sub',
+      { y: 25, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.9 },
+      '-=0.7'
+    );
+
+    tl.fromTo('.hero__actions .btn-primary, .hero__actions .btn-ghost',
+      { y: 20, opacity: 0, scale: 0.95 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.12, ease: 'back.out(1.7)' },
+      '-=0.6'
+    );
+
+    tl.fromTo('.hero__stats-pill',
+      { y: 30, opacity: 0, scale: 0.95 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.8 },
+      '-=0.4'
+    );
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroAnimations);
+  } else {
+    initHeroAnimations();
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     CURSOR FOLLOWER LOGIC
+     ═══════════════════════════════════════════════════════════════════ */
+  var dot = document.getElementById('gcursor-dot');
+  var ring = document.getElementById('gcursor-ring');
+
+  if (dot && ring) {
+    var cur = { x: -100, y: -100 };
+    var ringPos = { x: -100, y: -100 };
+
+    window.addEventListener('mousemove', function(e) {
+      cur.x = e.clientX;
+      cur.y = e.clientY;
+      if (!document.body.classList.contains('cursor-ready')) {
+        document.body.classList.add('cursor-ready');
+        ringPos.x = cur.x; ringPos.y = cur.y;
+      }
+    });
+
+    function renderCursor() {
+      ringPos.x += (cur.x - ringPos.x) * 0.18;
+      ringPos.y += (cur.y - ringPos.y) * 0.18;
+      dot.style.transform  = 'translate3d(' + cur.x.toFixed(2) + 'px,' + cur.y.toFixed(2) + 'px,0) translate(-50%,-50%)';
+      ring.style.transform = 'translate3d(' + ringPos.x.toFixed(2) + 'px,' + ringPos.y.toFixed(2) + 'px,0) translate(-50%,-50%)';
+      requestAnimationFrame(renderCursor);
+    }
+    requestAnimationFrame(renderCursor);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     CATALOG CARDS RENDERER
+     ═══════════════════════════════════════════════════════════════════ */
+  var effectsList = [
+    { id: 'gs-1', name: 'Tracking Expand', lib: 'gsap' },
+    { id: 'gs-2', name: 'Overflow Mask Up', lib: 'gsap' },
+    { id: 'gs-3', name: 'Staggered Blur In', lib: 'gsap' },
+    { id: 'gs-4', name: 'Elastic Scale Pop', lib: 'gsap' },
+    { id: 'gs-5', name: 'Flip Reveal 3D', lib: 'gsap' },
+    { id: 'gs-6', name: 'Wave Cascade', lib: 'gsap' },
+    { id: 'ml-1', name: 'Exponential Fade Up', lib: 'anime' },
+    { id: 'ml-2', name: 'Letter Scale Pop', lib: 'anime' },
+    { id: 'ml-3', name: 'Staggered Slide Up', lib: 'anime' },
+    { id: 'ml-4', name: 'Rotate In Elastic', lib: 'anime' },
+    { id: 'ml-5', name: 'Char Wave Cascade', lib: 'anime' }
+  ];
+
+  var $grid = document.getElementById('effects-grid');
+  var $select = document.getElementById('ctrl-anim-select');
+  var catalogCustomText = '';
+
+  if ($grid) {
+    effectsList.forEach(function(eff) {
+      // Option for select
+      if ($select) {
+        var opt = document.createElement('option');
+        opt.value = eff.id;
+        opt.textContent = eff.name + ' (' + eff.lib.toUpperCase() + ')';
+        $select.appendChild(opt);
+      }
+
+      // Card
+      var card = document.createElement('div');
+      card.className = 'effect-card';
+      card.dataset.lib = eff.lib;
+      card.innerHTML = '<div class="effect-card__meta"><span>' + eff.lib.toUpperCase() + '</span><span>' + eff.id + '</span></div>' +
+                       '<div class="effect-card__stage" id="stage-' + eff.id + '">' + (catalogCustomText || 'AURORA') + '</div>' +
+                       '<div class="effect-card__meta"><strong style="color:#fff">' + eff.name + '</strong><span>Hover to Run</span></div>';
+
+      card.addEventListener('mouseenter', function() {
+        var stage = card.querySelector('.effect-card__stage');
+        if (stage && window.AuroraTextEffects && window.AuroraTextEffects[eff.id]) {
+          stage.textContent = catalogCustomText || 'AURORA';
+          var units = AuroraSplit.chars(stage);
+          window.AuroraTextEffects[eff.id].run(units, { duration: 800, stagger: 35 }, stage);
+        }
+      });
+
+      $grid.appendChild(card);
+    });
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.effects-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var filter = this.dataset.filter;
+      document.querySelectorAll('.effects-tab').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      document.querySelectorAll('.effect-card').forEach(function(card) {
+        card.style.display = (filter === 'all' || card.dataset.lib === filter) ? 'flex' : 'none';
+      });
+    });
+  });
+
+  // Custom text input
+  var $textInput = document.getElementById('catalog-text-input');
+  if ($textInput) {
+    $textInput.addEventListener('input', function() {
+      catalogCustomText = this.value.trim();
+      document.querySelectorAll('.effect-card__stage').forEach(function(stg) {
+        stg.textContent = catalogCustomText || 'AURORA';
+      });
+    });
+  }
+
+  // Replay Playground
+  var $replayBtn = document.getElementById('btn-replay-pg');
+  if ($replayBtn) {
+    $replayBtn.addEventListener('click', function() {
+      var stage = document.getElementById('pg-stage');
+      var txtInput = document.getElementById('ctrl-text');
+      var animVal = $select ? $select.value : 'gs-1';
+      if (stage) {
+        stage.innerHTML = '<div id="playground-text">' + (txtInput.value || 'AURORA').toUpperCase() + '</div>';
+        var textEl = document.getElementById('playground-text');
+        var units = AuroraSplit.chars(textEl);
+        if (window.AuroraTextEffects && window.AuroraTextEffects[animVal]) {
+          window.AuroraTextEffects[animVal].run(units, { duration: 800, stagger: 35 }, textEl);
+        }
+      }
+    });
+  }
+
+})();
+</script>
+
+</body>
+</html>
