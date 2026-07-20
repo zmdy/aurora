@@ -881,6 +881,284 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .toggle-switch input:checked + .toggle-track::before { transform: translateX(18px); }
 
 /* ═══════════════════════════════════════════════════════════════════
+   COPY SNIPPET BUTTON & MODAL
+   ═══════════════════════════════════════════════════════════════════ */
+.btn-snippet {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 12px 20px;
+  border-radius: var(--r-sm);
+  background: rgba(124,92,255,.12);
+  border: 1px solid rgba(124,92,255,.3);
+  font-size: 13px;
+  font-weight: 700;
+  color: #a78bfa;
+  transition: all var(--t-fast);
+  letter-spacing: .03em;
+  margin-top: var(--s-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-snippet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(124,92,255,.15);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.btn-snippet:hover {
+  background: rgba(124,92,255,.2);
+  border-color: rgba(124,92,255,.55);
+  color: #c4b5fd;
+  transform: translateY(-1px);
+}
+
+.btn-snippet:hover::after { opacity: 1; }
+
+.btn-snippet.copied {
+  background: rgba(5,177,114,.15);
+  border-color: rgba(5,177,114,.4);
+  color: var(--c-green);
+}
+
+/* Snippet Modal */
+.snippet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(3,4,12,.85);
+  backdrop-filter: blur(12px) saturate(150%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-normal);
+}
+
+.snippet-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.snippet-modal {
+  background: var(--c-elevated);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07);
+  transform: translateY(20px) scale(.98);
+  transition: transform var(--t-spring);
+}
+
+.snippet-overlay.open .snippet-modal {
+  transform: translateY(0) scale(1);
+}
+
+.snippet-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s-5) var(--s-6);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+
+.snippet-modal__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.snippet-modal__title svg {
+  color: #a78bfa;
+}
+
+.snippet-modal__meta {
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+}
+
+.snippet-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.5);
+  transition: all var(--t-fast);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.snippet-close:hover {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+
+.snippet-modal__tabs {
+  display: flex;
+  gap: 2px;
+  padding: var(--s-3) var(--s-6) 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  flex-shrink: 0;
+}
+
+.snippet-tab {
+  padding: 8px 16px;
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,.4);
+  transition: all var(--t-fast);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.snippet-tab.active {
+  color: #a78bfa;
+  border-bottom-color: #7c5cff;
+  background: rgba(124,92,255,.08);
+}
+
+.snippet-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s-5) var(--s-6);
+}
+
+.snippet-code {
+  background: rgba(0,0,0,.5);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--r-md);
+  padding: var(--s-5);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 1.75;
+  color: rgba(255,255,255,.75);
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.snippet-code .sk  { color: #7c5cff; }
+.snippet-code .ss  { color: #05b172; }
+.snippet-code .sc  { color: rgba(255,255,255,.28); font-style: italic; }
+.snippet-code .sn  { color: #0099cc; }
+.snippet-code .sa  { color: #a78bfa; }
+
+.snippet-modal__footer {
+  padding: var(--s-4) var(--s-6);
+  border-top: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-shrink: 0;
+}
+
+.snippet-info {
+  font-size: 12px;
+  color: rgba(255,255,255,.3);
+  line-height: 1.5;
+}
+
+.btn-copy-snippet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 10px 22px;
+  border-radius: var(--r-full);
+  background: var(--g-aurora);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-night);
+  transition: opacity var(--t-fast), transform var(--t-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-copy-snippet:hover { opacity: .9; transform: translateY(-1px); }
+
+.btn-copy-snippet.copied {
+  background: rgba(5,177,114,.9);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL CURSOR FOLLOWER
+   ═══════════════════════════════════════════════════════════════════ */
+.gcursor-dot,
+.gcursor-ring {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+  top: 0; left: 0;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity .3s, width .2s, height .2s, background .2s;
+}
+
+.gcursor-dot {
+  width: 8px; height: 8px;
+  background: var(--c-green);
+  box-shadow: 0 0 12px rgba(5,177,114,.8), 0 0 24px rgba(5,177,114,.4);
+}
+
+.gcursor-ring {
+  width: 38px; height: 38px;
+  border: 1.5px solid rgba(5,177,114,.55);
+  background: transparent;
+}
+
+body.cursor-ready .gcursor-dot,
+body.cursor-ready .gcursor-ring { opacity: 1; }
+
+body.cursor-hover .gcursor-dot {
+  width: 14px; height: 14px;
+  background: var(--c-teal);
+  box-shadow: 0 0 16px rgba(0,153,204,.9);
+}
+
+body.cursor-hover .gcursor-ring {
+  width: 56px; height: 56px;
+  border-color: rgba(0,153,204,.4);
+}
+
+body.cursor-click .gcursor-dot {
+  width: 6px; height: 6px;
+  background: #fff;
+}
+
+body.cursor-click .gcursor-ring {
+  width: 28px; height: 28px;
+  border-color: rgba(255,255,255,.6);
+}
+
+@media (pointer: coarse) {
+  .gcursor-dot, .gcursor-ring { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    EFFECT GRID CATALOG
    ═══════════════════════════════════════════════════════════════════ */
 .effects-catalog {
@@ -1444,13 +1722,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       </p>
 
       <div class="hero__actions fade-in-up fade-in-up--4">
-        <a href="#playground" class="btn-primary" aria-label="Try the live animation playground">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-          Live Playground
+        <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary" aria-label="Download Aurora for free on GitHub">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Aurora Free
         </a>
-        <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-ghost" aria-label="View Aurora on GitHub">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z"/></svg>
-          View on GitHub
+        <a href="#playground" class="btn-ghost" aria-label="Try the live animation playground">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          Live Text Playground
         </a>
       </div>
 
@@ -1546,13 +1824,22 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
             <span class="pg-badge pg-badge--split" id="badge-split">CHARS</span>
             <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
           </div>
-          <button class="pg-replay-btn" id="btn-replay" aria-label="Replay animation">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M1 4v6h6M23 20v-6h-6"/>
-              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
-            </svg>
-            Replay
-          </button>
+          <div style="display:flex;gap:.5rem">
+            <button class="pg-replay-btn" id="btn-snippet" aria-label="Copy HTML+JS snippet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy Snippet
+            </button>
+            <button class="pg-replay-btn" id="btn-replay" aria-label="Replay animation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                <path d="M1 4v6h6M23 20v-6h-6"/>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+              </svg>
+              Replay
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1616,6 +1903,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
             <span class="toggle-track"></span>
           </label>
         </div>
+
+        <button class="btn-snippet" id="btn-snippet-2" aria-label="Generate and copy HTML snippet">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Copy HTML + JS Snippet
+        </button>
       </div>
     </div>
   </div>
@@ -2407,6 +2702,292 @@ document.querySelectorAll('.module-card, .arch-step, .cta-box').forEach(function
 document.querySelectorAll('.module-card').forEach(function(el, i) {
   el.style.transitionDelay = (i * .06) + 's';
 });
+
+/* ═══════════════════════════════════════════════════════════════════
+   SNIPPET GENERATOR
+   ═══════════════════════════════════════════════════════════════════ */
+var GSAP_CDN  = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+var ANIME_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js';
+var AURORA_CDN_CSS = 'https://cdn.jsdelivr.net/gh/zmdy/aurora@main/assets/css/text-animations.css';
+var AURORA_CDN_JS  = 'https://cdn.jsdelivr.net/gh/zmdy/aurora@main/assets/js/dist/aurora-text-editor.js';
+
+function generateSnippet() {
+  var text    = (document.getElementById('ctrl-text').value || 'AURORA').trim();
+  var lib     = pgState.lib;
+  var animId  = pgState.anim;
+  var split   = pgState.split;
+  var dur     = pgState.duration;
+  var stagger = pgState.stagger;
+  var delay   = pgState.delay;
+
+  var libScripts = lib === 'gsap'
+    ? '  <script src="' + GSAP_CDN + '"><\/script>'
+    : '  <script src="' + ANIME_CDN + '"><\/script>';
+
+  var snippet = [
+    '<!DOCTYPE html>',
+    '<html lang="en">',
+    '<head>',
+    '  <meta charset="UTF-8">',
+    '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+    '  <title>Aurora Animation — ' + animId + '</title>',
+    '',
+    '  <!-- Aurora CSS (text split helpers) -->',
+    '  <link rel="stylesheet" href="' + AURORA_CDN_CSS + '">',
+    '',
+    '  <style>',
+    '    * { box-sizing: border-box; margin: 0; padding: 0; }',
+    '    body {',
+    '      min-height: 100vh;',
+    '      display: flex;',
+    '      align-items: center;',
+    '      justify-content: center;',
+    '      background: #03040c;',
+    '      font-family: system-ui, sans-serif;',
+    '    }',
+    '    #aurora-text {',
+    '      font-size: clamp(3rem, 10vw, 8rem);',
+    '      font-weight: 900;',
+    '      color: #fff;',
+    '      letter-spacing: -.04em;',
+    '      text-align: center;',
+    '      cursor: default;',
+    '    }',
+    '  </style>',
+    '</head>',
+    '<body>',
+    '',
+    '  <div id="aurora-text">' + text + '</div>',
+    '',
+    '  <!-- Animation library -->',
+    libScripts,
+    '',
+    '  <!-- Aurora text effects bundle (all 70 effects) -->',
+    '  <script src="' + AURORA_CDN_JS + '"><\/script>',
+    '',
+    '  <script>',
+    '    // Aurora Text Animation — ' + animId + ' (' + lib.toUpperCase() + ')',
+    '    // Options: split-by=' + split + ', duration=' + dur + 'ms, stagger=' + stagger + 'ms, delay=' + delay + 'ms',
+    '    (function() {',
+    '      var el     = document.getElementById(\'aurora-text\');',
+    '      var effect = window.AuroraTextEffects && window.AuroraTextEffects[\''+animId+'\'];',
+    '      if (!effect) { console.warn(\'Aurora: effect \"'+animId+'\" not found.\'); return; }',
+    '',
+    '      var opts = {',
+    '        library:   \'' + lib + '\',',
+    '        animation: \'' + animId + '\',',
+    '        splitBy:   \'' + split + '\',',
+    '        duration:  ' + dur + ',',
+    '        stagger:   ' + stagger + ',',
+    '        delay:     ' + delay + ',',
+    '        replay:    true',
+    '      };',
+    '',
+    '      // Split text into units',
+    '      function splitChars(el) {',
+    '        var text = el.innerText;',
+    '        el.setAttribute(\'aria-label\', text);',
+    '        el.innerHTML = \'\';',
+    '        var chars = [];',
+    '        text.split(\' \').forEach(function(word, wi, arr) {',
+    '          var wrap = document.createElement(\'span\');',
+    '          wrap.style.cssText = \'display:inline-block;white-space:nowrap;\';',
+    '          Array.from(word).forEach(function(ch) {',
+    '            var s = document.createElement(\'span\');',
+    '            s.style.cssText = \'display:inline-block;will-change:transform,opacity;opacity:0;\';',
+    '            s.textContent = ch; wrap.appendChild(s); chars.push(s);',
+    '          });',
+    '          el.appendChild(wrap);',
+    '          if (wi < arr.length - 1) { var sp = document.createElement(\'span\'); sp.innerHTML = \'&nbsp;\'; el.appendChild(sp); }',
+    '        });',
+    '        return chars;',
+    '      }',
+    '',
+    '      function splitWords(el) {',
+    '        var text = el.innerText;',
+    '        el.setAttribute(\'aria-label\', text);',
+    '        el.innerHTML = \'\';',
+    '        return text.split(/\\s+/).filter(Boolean).map(function(w, i, a) {',
+    '          var s = document.createElement(\'span\');',
+    '          s.style.cssText = \'display:inline-block;will-change:transform,opacity;opacity:0;\';',
+    '          s.textContent = w + (i < a.length-1 ? \' \' : \'\'); el.appendChild(s); return s;',
+    '        });',
+    '      }',
+    '',
+    '      var units = [];',
+    '      if (!effect.selfManaged) {',
+    '        units = opts.splitBy === \'words\' ? splitWords(el) : splitChars(el);',
+    '      } else {',
+    '        el.style.opacity = \'0\';',
+    '      }',
+    '',
+    '      effect.run(units, opts, el);',
+    '    })();',
+    '  <\/script>',
+    '</body>',
+    '</html>'
+  ].join('\n');
+
+  return snippet;
+}
+
+function openSnippetModal() {
+  var overlay = document.getElementById('snippet-overlay');
+  if (!overlay) return;
+  var code = generateSnippet();
+  var el = document.getElementById('snippet-raw');
+  if (el) el.textContent = code;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSnippetModal() {
+  var overlay = document.getElementById('snippet-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copySnippet(btnEl) {
+  var code = generateSnippet();
+  navigator.clipboard.writeText(code).then(function() {
+    var orig = btnEl.innerHTML;
+    btnEl.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btnEl.classList.add('copied');
+    setTimeout(function() {
+      btnEl.innerHTML = orig;
+      btnEl.classList.remove('copied');
+    }, 2200);
+  }).catch(function() {
+    /* fallback: open modal so user can manually copy */
+    openSnippetModal();
+  });
+}
+
+document.getElementById('btn-snippet').addEventListener('click', function() { openSnippetModal(); });
+document.getElementById('btn-snippet-2').addEventListener('click', function() { openSnippetModal(); });
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL CURSOR FOLLOWER
+   ═══════════════════════════════════════════════════════════════════ */
+(function() {
+  /* Skip on touch devices */
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
+  var dot  = document.getElementById('gcursor-dot');
+  var ring = document.getElementById('gcursor-ring');
+  if (!dot || !ring) return;
+
+  var dx = 0, dy = 0;   /* dot real pos */
+  var rx = 0, ry = 0;   /* ring real pos */
+  var mx = -200, my = -200; /* mouse pos, starts off-screen */
+  var ready = false;
+
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX;
+    my = e.clientY;
+    if (!ready) {
+      ready = true;
+      dx = mx; dy = my;
+      rx = mx; ry = my;
+      document.body.classList.add('cursor-ready');
+    }
+  }, { passive: true });
+
+  document.addEventListener('mousedown', function() {
+    document.body.classList.add('cursor-click');
+  });
+  document.addEventListener('mouseup', function() {
+    document.body.classList.remove('cursor-click');
+  });
+
+  /* Hover detection for interactive elements */
+  var hoverSel = 'a, button, [role="button"], input, select, textarea, label, .effect-card, .module-card';
+  document.addEventListener('mouseover', function(e) {
+    if (e.target.closest(hoverSel)) document.body.classList.add('cursor-hover');
+  });
+  document.addEventListener('mouseout', function(e) {
+    if (e.target.closest(hoverSel)) document.body.classList.remove('cursor-hover');
+  });
+
+  /* Hide native cursor globally */
+  var style = document.createElement('style');
+  style.textContent = '* { cursor: none !important; }';
+  document.head.appendChild(style);
+
+  function loop() {
+    /* Dot tracks instantly */
+    dx += (mx - dx) * .55;
+    dy += (my - dy) * .55;
+    /* Ring lags behind */
+    rx += (mx - rx) * .11;
+    ry += (my - ry) * .11;
+
+    dot.style.transform  = 'translate3d(' + dx + 'px,' + dy + 'px,0) translate(-50%,-50%)';
+    ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) translate(-50%,-50%)';
+
+    requestAnimationFrame(loop);
+  }
+
+  loop();
+})();
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     GLOBAL CURSOR ELEMENTS
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="gcursor-dot"  id="gcursor-dot"  aria-hidden="true"></div>
+<div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SNIPPET MODAL
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="snippet-overlay" id="snippet-overlay" role="dialog" aria-modal="true" aria-label="Copy animation snippet">
+  <div class="snippet-modal">
+    <div class="snippet-modal__header">
+      <div class="snippet-modal__title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        HTML + JS Snippet
+      </div>
+      <button class="snippet-close" id="snippet-close" aria-label="Close snippet modal">×</button>
+    </div>
+
+    <div class="snippet-modal__body">
+      <pre class="snippet-code" id="snippet-raw"></pre>
+    </div>
+
+    <div class="snippet-modal__footer">
+      <p class="snippet-info">Uses CDN links for GSAP / Anime.js and Aurora's text bundle.<br>Drop this file anywhere — no build step needed.</p>
+      <button class="btn-copy-snippet" id="btn-copy-final" aria-label="Copy snippet to clipboard">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copy to Clipboard
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Init snippet modal interactions */
+document.getElementById('snippet-close').addEventListener('click', closeSnippetModal);
+
+document.getElementById('snippet-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSnippetModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeSnippetModal();
+});
+
+document.getElementById('btn-copy-final').addEventListener('click', function() {
+  copySnippet(this);
+});
+</script>
+
 </body>
 </html>
