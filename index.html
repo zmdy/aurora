@@ -2463,19 +2463,25 @@ function populateEffects() {
   $ctrlAnim.value = pgState.anim;
 }
 
-// Library tabs
-function switchLib(lib) {
+// Library tabs & effect selection
+function selectPlaygroundEffect(lib, animId) {
   pgState.lib = lib;
+  pgState.anim = animId;
   document.getElementById('tab-gsap').className = 'lib-tab' + (lib === 'gsap' ? ' active-gsap' : '');
   document.getElementById('tab-anime').className = 'lib-tab' + (lib === 'anime' ? ' active-anime' : '');
   document.getElementById('tab-gsap').setAttribute('aria-pressed', lib === 'gsap');
   document.getElementById('tab-anime').setAttribute('aria-pressed', lib === 'anime');
-  // Set a sensible default for the new library
-  pgState.anim = lib === 'gsap' ? 'gs-1' : 'ml-1';
   $badgeLib.textContent = lib.toUpperCase();
   $badgeLib.className = 'pg-badge pg-badge--' + (lib === 'gsap' ? 'gsap' : 'anime');
+  $badgeAnim.textContent = animId;
   populateEffects();
+  $ctrlAnim.value = animId;
   runPlayground();
+}
+
+function switchLib(lib) {
+  var defaultAnim = lib === 'gsap' ? 'gs-1' : 'ml-1';
+  selectPlaygroundEffect(lib, defaultAnim);
 }
 
 document.getElementById('tab-gsap').addEventListener('click', function() { switchLib('gsap'); });
@@ -2664,9 +2670,7 @@ function buildGrid(filter) {
     // Click to load in playground
     card.addEventListener('click', function() {
       $ctrlText.value = catalogCustomText || defaultWord;
-      pgState.anim = eff.id;
-      if (eff.lib !== pgState.lib) switchLib(eff.lib);
-      else { populateEffects(); runPlayground(); }
+      selectPlaygroundEffect(eff.lib, eff.id);
       document.getElementById('playground').scrollIntoView({ behavior: 'smooth' });
     });
 
