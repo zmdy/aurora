@@ -1165,11 +1165,64 @@ body.cursor-click .gcursor-ring {
   background: var(--c-night);
 }
 
+.effects-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-10);
+  flex-wrap: wrap;
+}
+
 .effects-tabs {
   display: flex;
   gap: var(--s-2);
-  margin-bottom: var(--s-10);
   flex-wrap: wrap;
+}
+
+.catalog-text-box {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-full);
+  padding: 8px 18px;
+  transition: all var(--t-fast);
+  min-width: 280px;
+  flex: 0 1 360px;
+}
+
+.catalog-text-box:focus-within {
+  border-color: rgba(5,177,114,.6);
+  background: rgba(255,255,255,.07);
+  box-shadow: 0 0 20px rgba(5,177,114,.18);
+}
+
+.catalog-text-box svg {
+  color: rgba(255,255,255,.45);
+  flex-shrink: 0;
+  transition: color var(--t-fast);
+}
+
+.catalog-text-box:focus-within svg {
+  color: var(--c-green);
+}
+
+.catalog-text-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.catalog-text-box input::placeholder {
+  color: rgba(255,255,255,.35);
+  font-weight: 400;
 }
 
 .effects-tab {
@@ -1927,13 +1980,23 @@ body.cursor-click .gcursor-ring {
       <p>Scroll into view to trigger. Each card runs the real plugin code — nothing is faked.</p>
     </div>
 
-    <div class="effects-tabs" role="tablist" aria-label="Filter animations by category">
-      <button class="effects-tab active" data-filter="all" role="tab" aria-selected="true">All 70</button>
-      <button class="effects-tab" data-filter="gsap" role="tab" aria-selected="false">GSAP (26)</button>
-      <button class="effects-tab" data-filter="anime" role="tab" aria-selected="false">Anime.js (44)</button>
-      <button class="effects-tab" data-filter="reveal" role="tab" aria-selected="false">Reveals</button>
-      <button class="effects-tab" data-filter="kinetic" role="tab" aria-selected="false">Kinetic</button>
-      <button class="effects-tab" data-filter="glitch" role="tab" aria-selected="false">Glitch</button>
+    <div class="effects-toolbar">
+      <div class="effects-tabs" role="tablist" aria-label="Filter animations by category">
+        <button class="effects-tab active" data-filter="all" role="tab" aria-selected="true">All 70</button>
+        <button class="effects-tab" data-filter="gsap" role="tab" aria-selected="false">GSAP (26)</button>
+        <button class="effects-tab" data-filter="anime" role="tab" aria-selected="false">Anime.js (44)</button>
+        <button class="effects-tab" data-filter="reveal" role="tab" aria-selected="false">Reveals</button>
+        <button class="effects-tab" data-filter="kinetic" role="tab" aria-selected="false">Kinetic</button>
+        <button class="effects-tab" data-filter="glitch" role="tab" aria-selected="false">Glitch</button>
+      </div>
+
+      <div class="catalog-text-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        <input type="text" id="catalog-text-input" placeholder="Type custom text for all cards..." aria-label="Custom text for catalog cards">
+      </div>
     </div>
 
     <div class="effects-grid" id="effects-grid">
@@ -2538,6 +2601,30 @@ setTimeout(runPlayground, 800);
    EFFECTS GRID
    ═══════════════════════════════════════════════════════════════════ */
 var activeFilter = 'all';
+var catalogCustomText = '';
+
+function runCardEffect(stage) {
+  var effId = stage.dataset.auroraAnimation;
+  var effect = window.AuroraTextEffects && window.AuroraTextEffects[effId];
+  if (!effect) return;
+
+  var word = catalogCustomText || stage.dataset.defaultText || 'AURORA';
+
+  stage._auroraOriginal = stage._auroraPristineHTML = word;
+  stage.innerHTML = '';
+  stage.textContent = word;
+  stage.style.opacity = '1';
+
+  var opts = { library: stage.dataset.auroraLibrary, animation: effId, splitBy: 'chars', duration: 800, stagger: 35, delay: 0, replay: true };
+  var units = [];
+  if (effect.selfManaged) {
+    stage.style.opacity = '0';
+  } else {
+    units = AuroraSplit.chars(stage);
+    units.forEach(function(u) { u.style.opacity = '0'; });
+  }
+  effect.run(units, opts, stage);
+}
 
 function buildGrid(filter) {
   var grid = document.getElementById('effects-grid');
@@ -2551,14 +2638,15 @@ function buildGrid(filter) {
   });
 
   filtered.forEach(function(eff, idx) {
-    var word = DEMO_WORDS[idx % DEMO_WORDS.length];
+    var defaultWord = DEMO_WORDS[idx % DEMO_WORDS.length];
+    var displayWord = catalogCustomText || defaultWord;
     var card = document.createElement('div');
     card.className = 'effect-card';
     card.dataset.id = eff.id;
     card.dataset.lib = eff.lib;
 
     card.innerHTML =
-      '<div class="effect-card__stage" data-aurora-enable="1" data-aurora-library="' + eff.lib + '" data-aurora-animation="' + eff.id + '" data-aurora-trigger="scroll" data-aurora-replay="1" data-aurora-duration="800" data-aurora-stagger="35">' + word + '</div>' +
+      '<div class="effect-card__stage" data-default-text="' + defaultWord + '" data-aurora-enable="1" data-aurora-library="' + eff.lib + '" data-aurora-animation="' + eff.id + '" data-aurora-trigger="scroll" data-aurora-replay="1" data-aurora-duration="800" data-aurora-stagger="35">' + displayWord + '</div>' +
       '<div class="effect-card__info">' +
         '<div>' +
           '<div class="effect-card__name">' + eff.name + '</div>' +
@@ -2567,9 +2655,15 @@ function buildGrid(filter) {
         '<span class="lib-chip lib-chip--' + eff.lib + '">' + (eff.lib === 'gsap' ? 'GSAP' : 'Anime') + '</span>' +
       '</div>';
 
+    // Hover to re-run animation
+    card.addEventListener('mouseenter', function() {
+      var stage = card.querySelector('.effect-card__stage');
+      if (stage) runCardEffect(stage);
+    });
+
     // Click to load in playground
     card.addEventListener('click', function() {
-      $ctrlText.value = word;
+      $ctrlText.value = catalogCustomText || defaultWord;
       pgState.anim = eff.id;
       if (eff.lib !== pgState.lib) switchLib(eff.lib);
       else { populateEffects(); runPlayground(); }
@@ -2583,30 +2677,24 @@ function buildGrid(filter) {
   var obs = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (!entry.isIntersecting) return;
-      var stage = entry.target;
-      var effId = stage.dataset.auroraAnimation;
-      var effect = window.AuroraTextEffects && window.AuroraTextEffects[effId];
-      if (!effect) return;
-
-      // Reset
-      stage._auroraOriginal = stage._auroraPristineHTML = stage.innerText || stage.textContent;
-      stage.textContent = stage._auroraOriginal;
-      stage.style.opacity = '1';
-
-      var opts = { library: stage.dataset.auroraLibrary, animation: effId, splitBy: 'chars', duration: 800, stagger: 35, delay: 0, replay: true };
-      var units = [];
-      if (effect.selfManaged) {
-        stage.style.opacity = '0';
-      } else {
-        units = AuroraSplit.chars(stage);
-        units.forEach(function(u) { u.style.opacity = '0'; });
-      }
-      effect.run(units, opts, stage);
+      runCardEffect(entry.target);
     });
   }, { threshold: .3 });
 
   grid.querySelectorAll('[data-aurora-enable="1"]').forEach(function(el) {
     obs.observe(el);
+  });
+}
+
+// Custom text input listener for catalog cards
+var $catalogInput = document.getElementById('catalog-text-input');
+if ($catalogInput) {
+  $catalogInput.addEventListener('input', function() {
+    catalogCustomText = this.value.trim();
+    document.querySelectorAll('.effect-card').forEach(function(card) {
+      var stage = card.querySelector('.effect-card__stage');
+      if (stage) runCardEffect(stage);
+    });
   });
 }
 
