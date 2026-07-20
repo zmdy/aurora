@@ -7,10 +7,10 @@
 <title>Aurora for Elementor — Color & Motion, Unleashed</title>
 <link rel="icon" href="assets/branding/aurora_favicon.svg" type="image/svg+xml">
 
-<!-- Inter + JetBrains Mono from Google Fonts -->
+<!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
 <!-- Plugin CSS -->
 <link href="assets/css/text-animations.css" rel="stylesheet">
@@ -32,9 +32,11 @@
   --g-aurora: linear-gradient(115deg, #05b172 0%, #0099cc 45%, #7c5cff 100%);
   --g-subtle: linear-gradient(135deg, rgba(5,177,114,.12) 0%, rgba(0,153,204,.08) 50%, rgba(124,92,255,.12) 100%);
 
-  /* Typography */
-  --f-sans:  'Inter', system-ui, sans-serif;
-  --f-mono:  'JetBrains Mono', monospace;
+  /* Typography Tokens — Distinctive Avant-Garde Scale */
+  --f-display: 'Syne', sans-serif;
+  --f-heading: 'Space Grotesk', system-ui, sans-serif;
+  --f-sans:    'Inter', system-ui, sans-serif;
+  --f-mono:    'JetBrains Mono', monospace;
 
   /* Spacing scale */
   --s-1:  .25rem;
@@ -113,7 +115,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 /* ═══════════════════════════════════════════════════════════════════
    TYPOGRAPHY SYSTEM
    ═══════════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--c-green) !important;
+  outline-offset: 3px !important;
+}
+
 .eyebrow {
+  font-family: var(--f-heading);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .2em;
@@ -126,20 +134,23 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .display-1 {
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  font-weight: 900;
+  font-family: var(--f-display);
+  font-size: clamp(3.2rem, 8vw, 6.5rem);
+  font-weight: 700;
   line-height: .95;
-  letter-spacing: -.04em;
-}
-
-.display-2 {
-  font-size: clamp(2.25rem, 5vw, 4rem);
-  font-weight: 800;
-  line-height: 1;
   letter-spacing: -.03em;
 }
 
+.display-2 {
+  font-family: var(--f-display);
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
 .display-3 {
+  font-family: var(--f-heading);
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
   line-height: 1.1;
@@ -153,31 +164,52 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   background-clip: text;
 }
 
-.text-muted { color: rgba(255,255,255,.45); }
-.text-dim   { color: rgba(255,255,255,.65); }
+.text-muted { color: rgba(255,255,255,.55); }
+.text-dim   { color: rgba(255,255,255,.75); }
 
 /* ═══════════════════════════════════════════════════════════════════
    NAV
    ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   NAV — FLOATING GLASSMORPHIC PILL BAR
+   ═══════════════════════════════════════════════════════════════════ */
 .nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 1.25rem;
+  left: 0; right: 0;
   z-index: 1000;
-  padding: var(--s-4) 0;
-  transition: background var(--t-normal), backdrop-filter var(--t-normal);
+  pointer-events: none;
+  transition: transform var(--t-normal);
 }
 
-.nav.scrolled {
-  background: rgba(3,4,12,.7);
-  backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid rgba(255,255,255,.05);
+.nav .container {
+  max-width: 1080px;
+  padding: 0 var(--s-4);
 }
 
 .nav__inner {
+  pointer-events: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-8);
+  padding: 10px 24px;
+  border-radius: var(--r-full);
+  background: rgba(7, 9, 26, 0.55);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+  transition: all var(--t-normal);
+}
+
+.nav.scrolled .nav__inner {
+  background: rgba(3, 4, 12, 0.88);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-color: rgba(5, 177, 114, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(5, 177, 114, 0.15);
+  transform: translateY(-2px);
 }
 
 .nav__logo {
@@ -193,6 +225,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .nav__links a {
+  font-family: var(--f-heading);
   font-size: 14px;
   font-weight: 500;
   color: rgba(255,255,255,.65);
@@ -205,9 +238,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex;
   align-items: center;
   gap: var(--s-3);
-  padding: 10px 22px;
+  padding: 9px 20px;
   border-radius: var(--r-full);
   background: var(--g-aurora);
+  font-family: var(--f-heading);
   font-size: 14px;
   font-weight: 700;
   color: var(--c-night) !important;
@@ -217,6 +251,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .nav__cta:hover { opacity: .9; transform: translateY(-1px); }
 
 @media (max-width: 768px) {
+  .nav { top: .75rem; }
   .nav__links { display: none; }
 }
 
@@ -229,6 +264,27 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex;
   align-items: center;
   overflow: hidden;
+}
+
+/* Dynamic moving mesh gradient background overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(5,177,114,.35) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(0,153,204,.30) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(124,92,255,.35) 0%, transparent 50%);
+  filter: blur(70px);
+  opacity: .85;
+  animation: hero-gradient-move 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes hero-gradient-move {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 50px) scale(1.12); }
+  100% { transform: translate(50px, -30px) scale(1.05); }
 }
 
 /* Aurora canvas background */
@@ -259,7 +315,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: relative;
   z-index: 2;
   width: 100%;
-  padding-top: 120px;
+  padding-top: 140px;
   padding-bottom: 80px;
 }
 
@@ -271,6 +327,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-radius: var(--r-full);
   border: 1px solid rgba(5,177,114,.35);
   background: rgba(5,177,114,.08);
+  font-family: var(--f-heading);
   font-size: 12px;
   font-weight: 600;
   color: var(--c-green);
@@ -292,10 +349,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .hero__title {
-  font-size: clamp(4rem, 10vw, 8.5rem);
-  font-weight: 900;
+  font-family: var(--f-display);
+  font-size: clamp(3.8rem, 9.5vw, 8.2rem);
+  font-weight: 700;
   line-height: .92;
-  letter-spacing: -.05em;
+  letter-spacing: -.03em;
   margin-bottom: var(--s-6);
 }
 
@@ -338,6 +396,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   padding: 15px 30px;
   border-radius: var(--r-full);
   background: var(--g-aurora);
+  font-family: var(--f-heading);
   font-size: 15px;
   font-weight: 700;
   color: var(--c-night);
@@ -366,6 +425,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   padding: 14px 28px;
   border-radius: var(--r-full);
   border: 1px solid rgba(255,255,255,.15);
+  font-family: var(--f-heading);
   font-size: 15px;
   font-weight: 600;
   color: rgba(255,255,255,.8);
@@ -393,9 +453,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .hero__stat-number {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -.03em;
+  font-family: var(--f-display);
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
   background: var(--g-aurora);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -403,10 +464,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .hero__stat-label {
+  font-family: var(--f-heading);
   font-size: 12px;
-  color: rgba(255,255,255,.4);
-  font-weight: 500;
-  letter-spacing: .05em;
+  color: rgba(255,255,255,.45);
+  font-weight: 600;
+  letter-spacing: .06em;
   text-transform: uppercase;
 }
 
@@ -1229,6 +1291,7 @@ body.cursor-click .gcursor-ring {
   padding: 8px 18px;
   border-radius: var(--r-full);
   border: 1px solid rgba(255,255,255,.1);
+  font-family: var(--f-heading);
   font-size: 12px;
   font-weight: 600;
   color: rgba(255,255,255,.45);
@@ -1306,9 +1369,10 @@ body.cursor-click .gcursor-ring {
 }
 
 .effect-card__name {
+  font-family: var(--f-heading);
   font-size: 13px;
   font-weight: 700;
-  color: rgba(255,255,255,.75);
+  color: rgba(255,255,255,.85);
   line-height: 1.2;
 }
 
@@ -1323,8 +1387,9 @@ body.cursor-click .gcursor-ring {
   align-items: center;
   padding: 3px 8px;
   border-radius: var(--r-full);
+  font-family: var(--f-heading);
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -1410,7 +1475,8 @@ body.cursor-click .gcursor-ring {
 }
 
 .module-card__title {
-  font-size: 17px;
+  font-family: var(--f-heading);
+  font-size: 18px;
   font-weight: 700;
   color: #fff;
   margin-bottom: var(--s-2);
@@ -1468,8 +1534,9 @@ body.cursor-click .gcursor-ring {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  font-weight: 800;
+  font-family: var(--f-heading);
+  font-size: 16px;
+  font-weight: 700;
   color: rgba(255,255,255,.3);
   margin-bottom: var(--s-5);
   background: var(--c-surface);
@@ -1478,7 +1545,8 @@ body.cursor-click .gcursor-ring {
 }
 
 .arch-step__title {
-  font-size: 15px;
+  font-family: var(--f-heading);
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: var(--s-2);
   color: rgba(255,255,255,.85);
@@ -2237,19 +2305,19 @@ body.cursor-click .gcursor-ring {
 
   var t = 0;
   function draw() {
-    t += .005;
+    t += .012;
     mouse.x += (target.x - mouse.x) * .03;
     mouse.y += (target.y - mouse.y) * .03;
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#03040c';
     ctx.fillRect(0, 0, w, h);
 
-    blobs.forEach(function(b) {
-      var dx = Math.sin(t * b.sp + b.ph) * .11;
-      var dy = Math.cos(t * b.sp * .8 + b.ph) * .09;
+    blobs.forEach(function(b, i) {
+      var dx = Math.sin(t * b.sp + b.ph) * .22;
+      var dy = Math.cos(t * b.sp * .85 + b.ph) * .18;
       var cx = (b.sx + dx + (mouse.x - .5) * b.pull) * w;
       var cy = (b.sy + dy + (mouse.y - .5) * b.pull) * h;
-      var r = b.r * Math.max(w, h);
+      var r = b.r * Math.max(w, h) * (1 + Math.sin(t * 0.5 + i) * 0.15);
       var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
       g.addColorStop(0, b.c);
       g.addColorStop(1, 'rgba(0,0,0,0)');
