@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurora Mesh Gradients &amp; Liquid Shaders Showcase</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #090b10;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-cyan: #0afbc1;
+      --accent-violet: #8b5cf6;
+      --glass-bg: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Header & Nav */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      background: rgba(9, 11, 16, 0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent-cyan);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      background: rgba(10, 251, 193, 0.1);
+      border: 1px solid rgba(10, 251, 193, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    p.subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Grid Section */
+    .grid-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 4rem 2rem 8rem;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .mesh-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .mesh-card {
+      position: relative;
+      height: 420px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .mesh-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(10, 251, 193, 0.4);
+    }
+
+    .card-info {
+      position: relative;
+      z-index: 10;
+      background: rgba(9, 11, 16, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 1rem 1.25rem;
+      border-radius: 14px;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">Aurora Mesh Shaders</div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Main Demo</a></li>
+      <li><a href="index2.html">Showcase 2</a></li>
+      <li><a href="#" class="active">Mesh Shaders</a></li>
+    </ul>
+  </header>
+
+  <!-- Hero Section with Paper Shader & Liquid Cursor -->
+  <section class="hero"
+           data-aurora-gradient-enable="yes"
+           data-aurora-gradient-target="background"
+           data-aurora-gradient-type="mesh"
+           data-aurora-gradient-mesh-style="paper"
+           data-aurora-gradient-distortion="45"
+           data-aurora-gradient-swirl="30"
+           data-aurora-gradient-scale="1.2"
+           data-aurora-gradient-grain-enable="1"
+           data-aurora-gradient-grain-intensity="40"
+           data-aurora-gradient-liquid-cursor="1"
+           data-aurora-gradient-cursor-radius="280"
+           data-aurora-gradient-stops='[{"color":"#513d61","offset":0},{"color":"#4e6c98","offset":25},{"color":"#61aa7","offset":50},{"color":"#84b8b0","offset":75},{"color":"#b4f2df","offset":100}]'
+           data-aurora-gradient-speed="6">
+    <div class="hero-content">
+      <div class="badge">✨ WebGL 60 FPS Mesh Engine</div>
+      <h1>Dithered Paper Shader &amp; Liquid Mesh Suite</h1>
+      <p class="subtitle">Move your cursor across the canvas to trigger real-time liquid fluid displacement over dithered film grain paper mesh gradients.</p>
+    </div>
+  </section>
+
+  <!-- Mesh Shaders Grid -->
+  <div class="grid-container">
+    <h2 class="section-title">5 WebGL Shader Presets</h2>
+
+    <div class="mesh-grid">
+      <!-- Card 1: Paper Shader -->
+      <div class="mesh-card"
+           data-aurora-gradient-enable="yes"
+           data-aurora-gradient-target="background"
+           data-aurora-gradient-type="mesh"
+           data-aurora-gradient-mesh-style="paper"
+           data-aurora-gradient-grain-enable="1"
+           data-aurora-gradient-grain-intensity="50"
+           data-aurora-gradient-liquid-cursor="1"
+           data-aurora-gradient-stops='[{"color":"#0afbc1","offset":0},{"color":"#8b5cf6","offset":50},{"color":"#ff3b94","offset":100}]'
+           data-aurora-gradient-speed="8">
+        <div class="card-info">
+          <div class="card-title">📄 Paper Shader</div>
+          <div class="card-desc">Simplex 3D noise with analog dither film grain overlay.</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Liquid Mesh -->
+      <div class="mesh-card"
+           data-aurora-gradient-enable="yes"
+           data-aurora-gradient-target="background"
+           data-aurora-gradient-type="mesh"
+           data-aurora-gradient-mesh-style="liquid"
+           data-aurora-gradient-distortion="60"
+           data-aurora-gradient-swirl="45"
+           data-aurora-gradient-liquid-cursor="1"
+           data-aurora-gradient-stops='[{"color":"#3b82f6","offset":0},{"color":"#10b981","offset":50},{"color":"#f59e0b","offset":100}]'
+           data-aurora-gradient-speed="6">
+        <div class="card-info">
+          <div class="card-title">💧 Liquid Mesh</div>
+          <div class="card-desc">Fluid domain warping &amp; swirl vector fields.</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Wave Mesh -->
+      <div class="mesh-card"
+           data-aurora-gradient-enable="yes"
+           data-aurora-gradient-target="background"
+           data-aurora-gradient-type="mesh"
+           data-aurora-gradient-mesh-style="wave"
+           data-aurora-gradient-distortion="50"
+           data-aurora-gradient-liquid-cursor="1"
+           data-aurora-gradient-stops='[{"color":"#ec4899","offset":0},{"color":"#8b5cf6","offset":50},{"color":"#06b6d4","offset":100}]'
+           data-aurora-gradient-speed="7">
+        <div class="card-info">
+          <div class="card-title">🌊 Wave Mesh</div>
+          <div class="card-desc">Undulating sinusoidal height displacement bands.</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Silk Shader -->
+      <div class="mesh-card"
+           data-aurora-gradient-enable="yes"
+           data-aurora-gradient-target="background"
+           data-aurora-gradient-type="mesh"
+           data-aurora-gradient-mesh-style="silk"
+           data-aurora-gradient-distortion="35"
+           data-aurora-gradient-liquid-cursor="1"
+           data-aurora-gradient-stops='[{"color":"#f43f5e","offset":0},{"color":"#fb923c","offset":50},{"color":"#facc15","offset":100}]'
+           data-aurora-gradient-speed="5">
+        <div class="card-info">
+          <div class="card-title">🎗️ Silk Shader</div>
+          <div class="card-desc">Specular directional sheen &amp; satin iridescence.</div>
+        </div>
+      </div>
+
+      <!-- Card 5: Stripe Mesh -->
+      <div class="mesh-card"
+           data-aurora-gradient-enable="yes"
+           data-aurora-gradient-target="background"
+           data-aurora-gradient-type="mesh"
+           data-aurora-gradient-mesh-style="stripe"
+           data-aurora-gradient-distortion="40"
+           data-aurora-gradient-swirl="30"
+           data-aurora-gradient-liquid-cursor="1"
+           data-aurora-gradient-stops='[{"color":"#a855f7","offset":0},{"color":"#06b6d4","offset":50},{"color":"#10b981","offset":100}]'
+           data-aurora-gradient-speed="8">
+        <div class="card-info">
+          <div class="card-title">💈 Stripe Mesh</div>
+          <div class="card-desc">Chromatic grid rotation with wave stripes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/vendor/aurora-shaders.js"></script>
+  <script src="../assets/js/gradient-module.js"></script>
+</body>
+</html>
