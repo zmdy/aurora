@@ -615,7 +615,10 @@ class Gradient_Controls extends Animation_Module {
 		}
 
 		$type = $settings['aurora_gradient_type'] ?? 'linear';
-		$type = in_array( $type, [ 'linear', 'radial', 'conic' ], true ) ? $type : 'linear';
+		$type = in_array( $type, [ 'linear', 'radial', 'conic', 'mesh' ], true ) ? $type : 'linear';
+
+		$mesh_style = $settings['aurora_gradient_mesh_style'] ?? 'paper';
+		$mesh_style = in_array( $mesh_style, [ 'paper', 'liquid', 'wave', 'silk', 'stripe' ], true ) ? $mesh_style : 'paper';
 
 		$style = $settings['aurora_gradient_animation_style'] ?? 'mesh';
 		$style = in_array( $style, [ 'mesh', 'loop' ], true ) ? $style : 'mesh';
@@ -635,6 +638,14 @@ class Gradient_Controls extends Animation_Module {
 			'data-aurora-gradient-enable'           => '1',
 			'data-aurora-gradient-target'           => esc_attr( $target ),
 			'data-aurora-gradient-type'             => esc_attr( $type ),
+			'data-aurora-gradient-mesh-style'       => esc_attr( $mesh_style ),
+			'data-aurora-gradient-distortion'       => esc_attr( (int) ( $settings['aurora_gradient_distortion']['size'] ?? 40 ) ),
+			'data-aurora-gradient-swirl'            => esc_attr( (int) ( $settings['aurora_gradient_swirl']['size'] ?? 25 ) ),
+			'data-aurora-gradient-scale'            => esc_attr( (float) ( $settings['aurora_gradient_scale']['size'] ?? 1.25 ) ),
+			'data-aurora-gradient-grain-enable'     => ( 'yes' === ( $settings['aurora_gradient_grain_enable'] ?? '' ) ) ? '1' : '0',
+			'data-aurora-gradient-grain-intensity' => esc_attr( (int) ( $settings['aurora_gradient_grain_intensity']['size'] ?? 35 ) ),
+			'data-aurora-gradient-liquid-cursor'    => ( 'yes' === ( $settings['aurora_gradient_liquid_cursor'] ?? '' ) ) ? '1' : '0',
+			'data-aurora-gradient-cursor-radius'    => esc_attr( (int) ( $settings['aurora_gradient_cursor_radius']['size'] ?? 250 ) ),
 			'data-aurora-gradient-angle'            => esc_attr( (int) ( $settings['aurora_gradient_angle']['size'] ?? 135 ) ),
 			'data-aurora-gradient-stops'            => esc_attr( wp_json_encode( $stops ) ),
 			'data-aurora-gradient-animate'          => $animate ? '1' : '0',
