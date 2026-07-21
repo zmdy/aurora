@@ -102,14 +102,21 @@ final class Asset_Manager {
 			true
 		);
 
+		// ── Vendor: WebGL Shaders Engine ──────────────────────────────────────
+		wp_enqueue_script(
+			'aurora-shaders',
+			AURORA_URL . 'assets/js/vendor/aurora-shaders.js',
+			[],
+			AURORA_VERSION,
+			true
+		);
+
 		// ── Gradient module ───────────────────────────────────────────────────
-		// Doesn't depend on GSAP/Anime.js — the whole effect (static, animated,
-		// mesh/loop, or the mouse-follow spotlight) is resolved in pure CSS
-		// (or a live inline style, for the spotlight) driven by the script itself.
+		// Depends on aurora-shaders for WebGL Mesh Shaders & Liquid Cursor Engine.
 		wp_enqueue_script(
 			'aurora-gradient-module',
 			AURORA_URL . 'assets/js/gradient-module.js',
-			[ 'jquery', 'elementor-frontend' ],
+			[ 'jquery', 'elementor-frontend', 'aurora-shaders' ],
 			AURORA_VERSION,
 			true
 		);
