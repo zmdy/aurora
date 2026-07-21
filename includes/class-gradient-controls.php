@@ -275,6 +275,88 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
+		// ── Film Grain Noise ──────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_grain_enable',
+			[
+				'label'              => esc_html__( 'Add Paper Film Grain', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => 'yes',
+				'description'        => esc_html__( 'Applies an analog paper film grain / dither texture overlay across the gradient mesh.', 'aurora-for-elementor' ),
+				'condition'          => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'mesh',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		$element->add_control(
+			'aurora_gradient_grain_intensity',
+			[
+				'label'     => esc_html__( 'Grain Intensity (%)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => 35 ],
+				'condition' => [
+					'aurora_gradient_enable'       => 'yes',
+					'aurora_gradient_type'         => 'mesh',
+					'aurora_gradient_grain_enable' => 'yes',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Liquid Cursor Follower ────────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_liquid_cursor',
+			[
+				'label'              => esc_html__( 'Liquid Cursor Distortion', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'description'        => esc_html__( 'Creates a dynamic fluid wave displacement as the mouse moves over the gradient mesh.', 'aurora-for-elementor' ),
+				'condition'          => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'mesh',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		$element->add_control(
+			'aurora_gradient_cursor_radius',
+			[
+				'label'     => esc_html__( 'Cursor Wave Radius (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 50,
+						'max'  => 800,
+						'step' => 10,
+					],
+				],
+				'default'   => [ 'size' => 250 ],
+				'condition' => [
+					'aurora_gradient_enable'        => 'yes',
+					'aurora_gradient_type'          => 'mesh',
+					'aurora_gradient_liquid_cursor' => 'yes',
+				],
+				'frontend_available' => true,
+			]
+		);
+
 		// ── Follow mouse (spotlight) ─────────────────────────────────────────
 		// Recenters the radial gradient on the live cursor position instead
 		// of a fixed point — e.g. the "spotlight" background used behind a
