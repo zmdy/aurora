@@ -900,6 +900,10 @@
      * @param {HTMLElement} el
      * @returns {Object}
      */
+    function isTrueVal(val) {
+        return val === '1' || val === 'yes' || val === 'true';
+    }
+
     function parseOptsFromDataset(el) {
         return {
             target: el.getAttribute('data-aurora-gradient-target') || 'background',
@@ -908,16 +912,16 @@
             distortion: parseInt(el.getAttribute('data-aurora-gradient-distortion'), 10) || 40,
             swirl: parseInt(el.getAttribute('data-aurora-gradient-swirl'), 10) || 25,
             scale: parseFloat(el.getAttribute('data-aurora-gradient-scale')) || 1.25,
-            grainEnable: el.getAttribute('data-aurora-gradient-grain-enable') === '1',
+            grainEnable: isTrueVal(el.getAttribute('data-aurora-gradient-grain-enable')),
             grainIntensity: parseInt(el.getAttribute('data-aurora-gradient-grain-intensity'), 10) || 35,
-            liquidCursor: el.getAttribute('data-aurora-gradient-liquid-cursor') === '1',
+            liquidCursor: isTrueVal(el.getAttribute('data-aurora-gradient-liquid-cursor')),
             cursorRadius: parseInt(el.getAttribute('data-aurora-gradient-cursor-radius'), 10) || 250,
             angle: parseInt(el.getAttribute('data-aurora-gradient-angle'), 10) || 135,
             stops: parseStops(el.getAttribute('data-aurora-gradient-stops')),
-            animate: el.getAttribute('data-aurora-gradient-animate') === '1',
+            animate: isTrueVal(el.getAttribute('data-aurora-gradient-animate')),
             style: el.getAttribute('data-aurora-gradient-style') || 'mesh',
             speed: parseInt(el.getAttribute('data-aurora-gradient-speed'), 10) || 8,
-            followMouse: el.getAttribute('data-aurora-gradient-follow-mouse') === '1',
+            followMouse: isTrueVal(el.getAttribute('data-aurora-gradient-follow-mouse')),
             spotlightRadius: parseInt(el.getAttribute('data-aurora-gradient-spotlight-radius'), 10) || 600,
             textMode: el.getAttribute('data-aurora-gradient-text-mode') || 'phrase'
         };
@@ -1102,7 +1106,7 @@
         // Fallback: no Elementor JS available — scan the page using the
         // data-aurora-gradient-* attributes rendered by PHP on the real frontend.
         if (typeof elementorFrontend === 'undefined') {
-            document.querySelectorAll('[data-aurora-gradient-enable="1"]').forEach(function (el) {
+            document.querySelectorAll('[data-aurora-gradient-enable="1"], [data-aurora-gradient-enable="yes"]').forEach(function (el) {
                 applyGradient(el, parseOptsFromDataset(el));
             });
         }
