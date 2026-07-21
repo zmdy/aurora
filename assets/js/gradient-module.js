@@ -233,7 +233,192 @@
      * the user disables the gradient toggle so the last render doesn't
      * silently linger on the DOM.
      */
+    var activeMeshShaders = new WeakMap();
+
+    function clearMeshShader(el) {
+        var active = activeMeshShaders.get(el);
+        if (active) {
+            if (active.observer) active.observer.disconnect();
+            if (active.rafId) cancelAnimationFrame(active.rafId);
+            if (active.mouseHandler) el.removeEventListener('mousemove', active.mouseHandler);
+            if (active.canvas && active.canvas.parentNode) {
+                active.canvas.parentNode.removeChild(active.canvas);
+            }
+            activeMeshShaders.delete(el);
+        }
+    }
+
+    function hexToRgbVec3(hex) {
+        if (!hex) return [0.0, 0.0, 0.0];
+        hex = hex.replace('#', '');
+        if (hex.length === 3) {
+            hex = hex.split('').map(function (c) { return c + c; }).join('');
+        }
+        var num = parseInt(hex, 16);
+        if (isNaN(num)) return [0.0, 0.0, 0.0];
+        return [
+            ((num >> 16) & 255) / 255.0,
+            ((num >> 8) & 255) / 255.0,
+            (num & 255) / 255.0
+        ];
+    }
+
+    function applyMeshShader(el, data) {
+        clearMeshShader(el);
+
+        if (typeof AuroraShaders === 'undefined') return;
+
+        var canvas = document.createElement('canvas');
+        canvas.className = 'aurora-mesh-canvas';
+        canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+
+        if (getComputedStyle(el).position === 'static') {
+            el.style.position = 'relative';
+        }
+        el.insertBefore(canvas, el.firstChild);
+
+        var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) return;
+
+        var vsSource = AuroraShaders.VERTEX_SHADER;
+        var fsSource = AuroraShaders.getFragmentShader(data.meshStyle || 'paper');
+
+        function compileShader(type, src) {
+            var s = gl.createShader(type);
+            gl.shaderSource(s, src);
+            gl.compileShader(s);
+            return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+        }
+
+        var vs = compileShader(gl.VERTEX_SHADER, vsSource);
+        var fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+        if (!vs || !fs) return;
+
+        var program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+
+        gl.useProgram(program);
+
+        var posBuf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+        var posLoc = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        var uRes = gl.getUniformLocation(program, 'u_resolution');
+        var uTime = gl.getUniformLocation(program, 'u_time');
+        var uMouse = gl.getUniformLocation(program, 'u_mouse');
+        var uDist = gl.getUniformLocation(program, 'u_distortion');
+        var uSwirl = gl.getUniformLocation(program, 'u_swirl');
+        var uScale = gl.getUniformLocation(program, 'u_scale');
+        var uAngle = gl.getUniformLocation(program, 'u_angle');
+        var uGrainEnable = gl.getUniformLocation(program, 'u_grain_enable');
+        var uGrainInt = gl.getUniformLocation(program, 'u_grain_intensity');
+        var uLiqCur = gl.getUniformLocation(program, 'u_liquid_cursor');
+        var uCurRad = gl.getUniformLocation(program, 'u_cursor_radius');
+        var uStopCount = gl.getUniformLocation(program, 'u_stop_count');
+
+        var stops = data.stops || [];
+        var stopCount = Math.min(stops.length, 6);
+        gl.uniform1i(uStopCount, stopCount);
+
+        for (var i = 0; i < stopCount; i++) {
+            var colorLoc = gl.getUniformLocation(program, 'u_stops[' + i + ']');
+            var offsetLoc = gl.getUniformLocation(program, 'u_offsets[' + i + ']');
+            var rgb = hexToRgbVec3(stops[i].color);
+            gl.uniform3f(colorLoc, rgb[0], rgb[1], rgb[2]);
+            var offsetVal = (stops[i].offset !== null && typeof stops[i].offset !== 'undefined')
+                ? parseFloat(stops[i].offset) / 100.0
+                : i / Math.max(1, stopCount - 1);
+            gl.uniform1f(offsetLoc, offsetVal);
+        }
+
+        gl.uniform1f(uDist, (data.distortion || 40) / 100.0);
+        gl.uniform1f(uSwirl, (data.swirl || 25) / 100.0);
+        gl.uniform1f(uScale, data.scale || 1.25);
+        gl.uniform1f(uAngle, data.angle || 135);
+        gl.uniform1f(uGrainEnable, data.grainEnable ? 1.0 : 0.0);
+        gl.uniform1f(uGrainInt, (data.grainIntensity || 35) / 100.0);
+        gl.uniform1f(uLiqCur, data.liquidCursor ? 1.0 : 0.0);
+        gl.uniform1f(uCurRad, data.cursorRadius || 250);
+
+        var mouse = { x: 0, y: 0 };
+        var targetMouse = { x: 0, y: 0 };
+        var mouseHandler = null;
+
+        if (data.liquidCursor) {
+            mouseHandler = function (e) {
+                var rect = el.getBoundingClientRect();
+                targetMouse.x = e.clientX - rect.left;
+                targetMouse.y = rect.height - (e.clientY - rect.top);
+            };
+            el.addEventListener('mousemove', mouseHandler);
+        }
+
+        function resizeCanvas() {
+            var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            var width = el.offsetWidth || 300;
+            var height = el.offsetHeight || 300;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.uniform2f(uRes, canvas.width, canvas.height);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        var startTime = performance.now();
+        var isVisible = true;
+        var rafId = null;
+
+        function render() {
+            if (!isVisible) return;
+            var elapsed = (performance.now() - startTime) * 0.001 * (data.speed ? data.speed / 8.0 : 1.0);
+
+            if (data.liquidCursor) {
+                mouse.x += (targetMouse.x - mouse.x) * 0.1;
+                mouse.y += (targetMouse.y - mouse.y) * 0.1;
+                gl.uniform2f(uMouse, mouse.x * (canvas.width / (el.offsetWidth || 1)), mouse.y * (canvas.height / (el.offsetHeight || 1)));
+            }
+
+            gl.uniform1f(uTime, elapsed);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            rafId = requestAnimationFrame(render);
+        }
+
+        var observer = null;
+        if (typeof IntersectionObserver !== 'undefined') {
+            observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    isVisible = entry.isIntersecting;
+                    if (isVisible) {
+                        render();
+                    } else if (rafId) {
+                        cancelAnimationFrame(rafId);
+                    }
+                });
+            }, { threshold: 0.05 });
+            observer.observe(el);
+        } else {
+            render();
+        }
+
+        activeMeshShaders.set(el, {
+            canvas: canvas,
+            observer: observer,
+            rafId: rafId,
+            mouseHandler: mouseHandler
+        });
+    }
+
     function clearBackgroundGradient(el) {
+        clearMeshShader(el);
         el.classList.remove('aurora-gradient-host');
         el.removeAttribute('data-aurora-gradient-instance');
         el.style.backgroundImage      = '';
@@ -246,6 +431,11 @@
 
     function applyBackground(el, data, id) {
         clearBackgroundGradient(el);
+
+        if (data.type === 'mesh') {
+            applyMeshShader(el, data);
+            return;
+        }
 
         if (data.followMouse) {
             startFollowMouse(el, el, data);
@@ -714,6 +904,14 @@
         return {
             target: el.getAttribute('data-aurora-gradient-target') || 'background',
             type: el.getAttribute('data-aurora-gradient-type') || 'linear',
+            meshStyle: el.getAttribute('data-aurora-gradient-mesh-style') || 'paper',
+            distortion: parseInt(el.getAttribute('data-aurora-gradient-distortion'), 10) || 40,
+            swirl: parseInt(el.getAttribute('data-aurora-gradient-swirl'), 10) || 25,
+            scale: parseFloat(el.getAttribute('data-aurora-gradient-scale')) || 1.25,
+            grainEnable: el.getAttribute('data-aurora-gradient-grain-enable') === '1',
+            grainIntensity: parseInt(el.getAttribute('data-aurora-gradient-grain-intensity'), 10) || 35,
+            liquidCursor: el.getAttribute('data-aurora-gradient-liquid-cursor') === '1',
+            cursorRadius: parseInt(el.getAttribute('data-aurora-gradient-cursor-radius'), 10) || 250,
             angle: parseInt(el.getAttribute('data-aurora-gradient-angle'), 10) || 135,
             stops: parseStops(el.getAttribute('data-aurora-gradient-stops')),
             animate: el.getAttribute('data-aurora-gradient-animate') === '1',
@@ -728,13 +926,6 @@
     // ─────────────────────────────────────────────────────────────────────────
     // ELEMENTOR INTEGRATION — FRONTEND HANDLER
     // ─────────────────────────────────────────────────────────────────────────
-    //
-    // Same pattern used in text-animations.js / children-animations.js:
-    // onElementChange() reflects control changes instantly in the editor
-    // preview; frontend/element_ready/global covers the first render both
-    // in the editor and on the real site. Unlike the text module, this one
-    // doesn't depend on any external library — so there's no
-    // waitForLibs()/library polling here.
 
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
@@ -768,14 +959,18 @@
 
             var type = this.getElementSettings('aurora_gradient_type') || 'linear';
 
-            // Same gating class-gradient-controls.php applies server-side:
-            // Follow Mouse only makes sense for radial gradients, and
-            // always wins over the time-based Animate option regardless of
-            // what's still saved on it.
             var followMouse = 'radial' === type && this.getElementSettings('aurora_gradient_follow_mouse') === 'yes';
 
             return {
                 type: type,
+                meshStyle: this.getElementSettings('aurora_gradient_mesh_style') || 'paper',
+                distortion: sizeOf(this.getElementSettings('aurora_gradient_distortion'), 40),
+                swirl: sizeOf(this.getElementSettings('aurora_gradient_swirl'), 25),
+                scale: sizeOf(this.getElementSettings('aurora_gradient_scale'), 1.25),
+                grainEnable: this.getElementSettings('aurora_gradient_grain_enable') === 'yes',
+                grainIntensity: sizeOf(this.getElementSettings('aurora_gradient_grain_intensity'), 35),
+                liquidCursor: this.getElementSettings('aurora_gradient_liquid_cursor') === 'yes',
+                cursorRadius: sizeOf(this.getElementSettings('aurora_gradient_cursor_radius'), 250),
                 angle: sizeOf(this.getElementSettings('aurora_gradient_angle'), 135),
                 stops: stops,
                 animate: !followMouse && this.getElementSettings('aurora_gradient_animate') === 'yes',
