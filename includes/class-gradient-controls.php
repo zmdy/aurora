@@ -203,7 +203,73 @@ class Gradient_Controls extends Animation_Module {
 				'default'            => [ 'size' => 135 ],
 				'condition'          => [
 					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => [ 'linear', 'conic' ],
+					'aurora_gradient_type'   => [ 'linear', 'conic', 'mesh' ],
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Mesh Distortion (%) ───────────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_distortion',
+			[
+				'label'     => esc_html__( 'Distortion (%)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => 40 ],
+				'condition' => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'mesh',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Mesh Swirl (%) ───────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_swirl',
+			[
+				'label'     => esc_html__( 'Swirl (%)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => 25 ],
+				'condition' => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'mesh',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Mesh Scale ───────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_scale',
+			[
+				'label'     => esc_html__( 'Scale', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 0.5,
+						'max'  => 3.0,
+						'step' => 0.05,
+					],
+				],
+				'default'   => [ 'size' => 1.25 ],
+				'condition' => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'mesh',
 				],
 				'frontend_available' => true,
 			]
