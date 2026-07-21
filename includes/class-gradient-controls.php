@@ -158,8 +158,31 @@ class Gradient_Controls extends Animation_Module {
 					'linear' => esc_html__( 'Linear', 'aurora-for-elementor' ),
 					'radial' => esc_html__( 'Radial', 'aurora-for-elementor' ),
 					'conic'  => esc_html__( 'Conic', 'aurora-for-elementor' ),
+					'mesh'   => esc_html__( 'Mesh Shader Engine', 'aurora-for-elementor' ),
 				],
 				'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Mesh Shader Style Preset ──────────────────────────────────────────
+		$element->add_control(
+			'aurora_gradient_mesh_style',
+			[
+				'label'              => esc_html__( 'Mesh Shader Style', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'paper',
+				'options'            => [
+					'paper'  => esc_html__( 'Paper Shader (Dithered Grain Noise)', 'aurora-for-elementor' ),
+					'liquid' => esc_html__( 'Liquid Mesh (Fluid Domain Warping)', 'aurora-for-elementor' ),
+					'wave'   => esc_html__( 'Wave Mesh (Undulating Color Bands)', 'aurora-for-elementor' ),
+					'silk'   => esc_html__( 'Silk Shader (Specular Sheen)', 'aurora-for-elementor' ),
+					'stripe' => esc_html__( 'Stripe Mesh (Chromatic Stripes)', 'aurora-for-elementor' ),
+				],
+				'condition'          => [
+					'aurora_gradient_enable' => 'yes',
+					'aurora_gradient_type'   => 'mesh',
+				],
 				'frontend_available' => true,
 			]
 		);
