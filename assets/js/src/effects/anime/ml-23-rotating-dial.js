@@ -14,8 +14,22 @@ var effect = {
         var chars = Array.from(original);
         var radius = Math.max(40, Math.min(120, chars.length * 8));
 
+        // Clear previous animation if any
+        if (textEl && textEl._auroraLoopAnim) {
+            if (typeof textEl._auroraLoopAnim.pause === 'function') {
+                textEl._auroraLoopAnim.pause();
+            }
+            textEl._auroraLoopAnim = null;
+        }
+
         textEl.innerHTML = '';
         textEl.style.opacity = '1';
+
+        // Respect reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            textEl.textContent = original;
+            return;
+        }
 
         var dial = document.createElement('div');
         dial.style.cssText = 'position:relative;display:inline-block;width:' + (radius * 2) + 'px;height:' + (radius * 2) + 'px;';
@@ -32,12 +46,16 @@ var effect = {
 
         textEl.appendChild(dial);
 
-        anime.animate(dial, {
+        var anim = anime.animate(dial, {
             rotate: 360,
             duration: Math.max(2000, opts.duration * 4),
             loop: true,
             ease: 'linear',
         });
+
+        if (textEl) {
+            textEl._auroraLoopAnim = anim;
+        }
     },
 };
 
