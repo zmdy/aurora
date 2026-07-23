@@ -730,8 +730,8 @@
 	$( function () { initStages(); } );
 
 	// Expose for other extensions
-	window.Aurora = window.Aurora || {};
-	window.Aurora.MorphCard = MorphCard;
-	window.Aurora.MorphCardSequence = Sequence;
+	window.AuroraPlugin = window.AuroraPlugin || {};
+	window.AuroraPlugin.MorphCard = MorphCard;
+	window.AuroraPlugin.MorphCardSequence = Sequence;
 
 } )( jQuery );
