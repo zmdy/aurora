@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-text-effects.mjs",
-    "pack": "bash scripts/pack-plugin.sh"
+    "pack": "node scripts/pack-plugin.mjs"
   },
   "devDependencies": {
     "vite": "^5.4.11"
