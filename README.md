@@ -352,7 +352,22 @@ Every GSAP effect (`gs-1`..`gs-26`) has an Anime.js effect with the same visual 
 | gs-12 Slot Machine | ml-30 Slot Machine | | gs-25 Perspective Fly | ml-43 Perspective Fly |
 | gs-13 Spin In | ml-31 Spin In | | gs-26 Cinema Title | ml-44 Cinema Title |
 
-(`ml-6`..`ml-11`, `ml-13`, `ml-15`..`ml-23` are Anime.js-original effects with no GSAP equivalent — no mapping needed for those.)
+### Packaging the plugin
+
+You can compile production-ready ZIP archives of the plugin for distribution. The packager automatically creates two separate editions in the project root:
+
+1. **`aurora-for-elementor-full.zip`**: The complete edition including all animation modules and libraries (GSAP, Anime.js, and Motion One).
+2. **`aurora-for-elementor-light.zip`**: A lightweight edition without the GSAP library. The plugin automatically detects the absence of GSAP at runtime, hiding GSAP options in the Elementor controls and falling back to Anime.js.
+
+The packaging tool is fully cross-platform and runs natively on Windows (via PowerShell), macOS, and Linux with no external dependencies.
+
+#### Compiling ZIPs
+
+```bash
+npm run pack
+```
+
+This runs `scripts/pack-plugin.mjs`, which copies only the release-necessary files (excluding `node_modules`, dev configs, tests, etc.) to a temporary directory, strips GSAP vendor files for the light edition, and generates both archives.
 
 ### Translations
 
