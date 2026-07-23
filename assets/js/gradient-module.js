@@ -190,6 +190,7 @@
      */
     function startFollowMouse(trackEl, styleTarget, data) {
         var pos = { x: 50, y: 50 }; // centered until the first mousemove
+        var ticking = false;
 
         function render() {
             styleTarget.style.backgroundImage = buildGradientCss('radial', 0, data.stops, {
@@ -200,13 +201,18 @@
         }
 
         function handler(e) {
-            var rect = trackEl.getBoundingClientRect();
-            pos.x = rect.width ? ( ( e.clientX - rect.left ) / rect.width ) * 100 : 50;
-            pos.y = rect.height ? ( ( e.clientY - rect.top ) / rect.height ) * 100 : 50;
-            render();
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(function() {
+                var rect = trackEl.getBoundingClientRect();
+                pos.x = rect.width ? ( ( e.clientX - rect.left ) / rect.width ) * 100 : 50;
+                pos.y = rect.height ? ( ( e.clientY - rect.top ) / rect.height ) * 100 : 50;
+                render();
+                ticking = false;
+            });
         }
 
-        trackEl.addEventListener('mousemove', handler);
+        trackEl.addEventListener('mousemove', handler, { passive: true });
         followMouseListeners.set(trackEl, handler);
         render();
     }
