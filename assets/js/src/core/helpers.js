@@ -26,10 +26,24 @@ export function scrambleTextEffect(el, finalText, duration, delay) {
     el.style.opacity = '1';
     el.style.fontVariantNumeric = 'tabular-nums';
 
-    setTimeout(function () {
+    if (el._auroraScrambleTimeout) {
+        clearTimeout(el._auroraScrambleTimeout);
+        el._auroraScrambleTimeout = null;
+    }
+    if (el._auroraScrambleInterval) {
+        clearInterval(el._auroraScrambleInterval);
+        el._auroraScrambleInterval = null;
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.textContent = finalText;
+        return;
+    }
+
+    el._auroraScrambleTimeout = setTimeout(function () {
         var steps = Math.max(10, Math.floor(duration / 40));
         var step = 0;
-        var handle = setInterval(function () {
+        el._auroraScrambleInterval = setInterval(function () {
             var progress = step / steps;
             var output = '';
             for (var i = 0; i < finalText.length; i++) {
@@ -44,7 +58,9 @@ export function scrambleTextEffect(el, finalText, duration, delay) {
             el.textContent = output;
             step++;
             if (step > steps) {
-                clearInterval(handle);
+                clearInterval(el._auroraScrambleInterval);
+                el._auroraScrambleInterval = null;
+                el._auroraScrambleTimeout = null;
                 el.textContent = finalText;
             }
         }, 40);

@@ -297,10 +297,41 @@ export function teardownTextAnimation(wrapper) {
     }
     detachHoverScatter(wrapper);
     var textEl = getTextTarget(wrapper);
-    if (textEl && typeof textEl._auroraPristineHTML !== 'undefined') {
-        textEl.innerHTML = textEl._auroraPristineHTML;
-        textEl.style.opacity = '';
-        textEl._auroraSplitInstance = null;
+    if (textEl) {
+        if (textEl._auroraScrambleTimeout) {
+            clearTimeout(textEl._auroraScrambleTimeout);
+            textEl._auroraScrambleTimeout = null;
+        }
+        if (textEl._auroraScrambleInterval) {
+            clearInterval(textEl._auroraScrambleInterval);
+            textEl._auroraScrambleInterval = null;
+        }
+        if (textEl._auroraTypeTimeout) {
+            clearTimeout(textEl._auroraTypeTimeout);
+            textEl._auroraTypeTimeout = null;
+        }
+        if (textEl._auroraTypeHandles) {
+            textEl._auroraTypeHandles.forEach(clearInterval);
+            textEl._auroraTypeHandles = null;
+        }
+        if (textEl._auroraWaveAnim) {
+            if (typeof textEl._auroraWaveAnim.pause === 'function') {
+                textEl._auroraWaveAnim.pause();
+            }
+            textEl._auroraWaveAnim = null;
+        }
+        if (textEl._auroraLoopAnim) {
+            if (typeof textEl._auroraLoopAnim.pause === 'function') {
+                textEl._auroraLoopAnim.pause();
+            }
+            textEl._auroraLoopAnim = null;
+        }
+
+        if (typeof textEl._auroraPristineHTML !== 'undefined') {
+            textEl.innerHTML = textEl._auroraPristineHTML;
+            textEl.style.opacity = '';
+            textEl._auroraSplitInstance = null;
+        }
     }
 }
 
