@@ -22,7 +22,7 @@ const TEMP_DIR = path.join(ROOT, '_dist_temp');
 const PLUGIN_SLUG = 'aurora-for-elementor';
 const TEMP_PLUGIN_PATH = path.join(TEMP_DIR, PLUGIN_SLUG);
 
-// Files and folders to exclude from final production packages
+// Files and folders to exclude from final production packages (relative to ROOT)
 const EXCLUDES = [
     '.git',
     '.github',
@@ -35,19 +35,30 @@ const EXCLUDES = [
     'package-lock.json',
     '.gitignore',
     '.DS_Store',
-    '_dist_temp'
+    '_dist_temp',
+    'README.md',
+    'readme.txt',
+    'LICENSE',
+    'index.html',
+    'showcase',
+    'assets/js/src'
 ];
 
 /**
  * Recursively copies a directory while excluding specified files/folders.
  */
 function copyRecursive(src, dest) {
+    const relativePath = path.relative(ROOT, src).replace(/\\/g, '/');
+    
+    // Skip matched exclusion paths
+    if (relativePath) {
+        if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
+            return;
+        }
+    }
+
     const stats = fs.statSync(src);
     const basename = path.basename(src);
-
-    if (EXCLUDES.includes(basename)) {
-        return;
-    }
 
     if (stats.isDirectory()) {
         if (!fs.existsSync(dest)) {
@@ -58,7 +69,6 @@ function copyRecursive(src, dest) {
             copyRecursive(path.join(src, file), path.join(dest, file));
         }
     } else {
-        // Exclude pre-existing zip files in root
         if (basename.endsWith('.zip')) {
             return;
         }
