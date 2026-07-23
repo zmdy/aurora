@@ -98,6 +98,9 @@
 			this.footer = rootEl.querySelector( '.morph-footer' );
 			this.mode   = null;
 			this._destroyed = false;
+			this._styleCache = {};
+			this._resizeClearCache = () => { this._styleCache = {}; };
+			window.addEventListener( 'resize', this._resizeClearCache );
 		}
 
 		destroy() {
@@ -111,6 +114,7 @@
 			if ( this._shimmerAnim && typeof this._shimmerAnim.pause === 'function' ) {
 				this._shimmerAnim.pause();
 			}
+			window.removeEventListener( 'resize', this._resizeClearCache );
 			const shimmers = this.image.querySelectorAll( '.morph-image-shimmer' );
 			shimmers.forEach( ( s ) => s.remove() );
 		}
@@ -461,9 +465,27 @@
 		_snapshotZoneOverlays() {
 			const zones = [ this.header, this.image, this.footer ].filter( Boolean );
 			const out = [];
+			const cacheKey = this.mode || 'instagram';
+			if ( ! this._styleCache[ cacheKey ] ) {
+				this._styleCache[ cacheKey ] = new Map();
+			}
+			const modeCache = this._styleCache[ cacheKey ];
+
 			zones.forEach( ( zone ) => {
 				if ( ! zone.innerHTML.trim() ) return;
-				const cs = getComputedStyle( zone );
+				let cs = modeCache.get( zone );
+				if ( ! cs ) {
+					const computed = getComputedStyle( zone );
+					cs = {
+						display:        computed.display,
+						flexDirection:  computed.flexDirection,
+						alignItems:     computed.alignItems,
+						justifyContent: computed.justifyContent,
+						gap:            computed.gap,
+						padding:        computed.padding
+					};
+					modeCache.set( zone, cs );
+				}
 				const overlay = document.createElement( 'div' );
 				overlay.className = 'morph-zone-overlay';
 				overlay.style.display        = cs.display;
