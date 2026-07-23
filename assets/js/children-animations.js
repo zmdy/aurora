@@ -436,7 +436,11 @@
                 return;
             }
             var opts = this.getOpts();
-            setTimeout(function () { initChildrenAnimation(wrapper, opts); }, 120);
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    initChildrenAnimation(wrapper, opts);
+                });
+            });
         };
 
         AuroraChildrenAnimationHandler.prototype.onInit = function () {
@@ -503,7 +507,11 @@
             // data-aurora-children-* attributes rendered by PHP on the real frontend.
             if (typeof elementorFrontend === 'undefined') {
                 document.querySelectorAll('[data-aurora-children-enable="1"]').forEach(function (el) {
-                    setTimeout(function () { initChildrenAnimation(el, parseOptsFromDataset(el)); }, 120);
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () {
+                            initChildrenAnimation(el, parseOptsFromDataset(el));
+                        });
+                    });
                 });
             }
         });

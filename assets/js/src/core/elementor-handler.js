@@ -71,7 +71,11 @@ function registerHandler() {
             return;
         }
         var opts = this.getOpts();
-        setTimeout(function () { initTextAnimation(wrapper, opts); }, 80);
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                initTextAnimation(wrapper, opts);
+            });
+        });
     };
 
     AuroraTextAnimationHandler.prototype.onInit = function () {
@@ -140,7 +144,11 @@ export function bootstrap() {
             // frontend.
             if (typeof elementorFrontend === 'undefined') {
                 document.querySelectorAll('[data-aurora-enable="1"]').forEach(function (el) {
-                    setTimeout(function () { initTextAnimation(el, parseOptsFromDataset(el)); }, 80);
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () {
+                            initTextAnimation(el, parseOptsFromDataset(el));
+                        });
+                    });
                 });
             }
         });
