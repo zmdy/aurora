@@ -240,6 +240,8 @@
         if (active) {
             if (active.observer) active.observer.disconnect();
             if (active.rafId) cancelAnimationFrame(active.rafId);
+            if (active.resizeHandler) window.removeEventListener('resize', active.resizeHandler);
+            if (active.resizeTimeout) clearTimeout(active.resizeTimeout);
             if (active.mouseHandler) el.removeEventListener('mousemove', active.mouseHandler);
             if (active.canvas && active.canvas.parentNode) {
                 active.canvas.parentNode.removeChild(active.canvas);
@@ -350,32 +352,54 @@
         var mouse = { x: 0, y: 0 };
         var targetMouse = { x: 0, y: 0 };
         var mouseHandler = null;
+        var cachedRect = null;
 
         if (data.liquidCursor) {
+            cachedRect = el.getBoundingClientRect();
             mouseHandler = function (e) {
-                var rect = el.getBoundingClientRect();
-                targetMouse.x = e.clientX - rect.left;
-                targetMouse.y = rect.height - (e.clientY - rect.top);
+                if (!cachedRect) return;
+                targetMouse.x = e.clientX - cachedRect.left;
+                targetMouse.y = cachedRect.height - (e.clientY - cachedRect.top);
             };
-            el.addEventListener('mousemove', mouseHandler);
+            el.addEventListener('mousemove', mouseHandler, { passive: true });
         }
 
-        function resizeCanvas() {
-            var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-            var width = el.offsetWidth || 300;
-            var height = el.offsetHeight || 300;
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            gl.viewport(0, 0, canvas.width, canvas.height);
-            gl.uniform2f(uRes, canvas.width, canvas.height);
+        var state = {
+            canvas: canvas,
+            observer: null,
+            rafId: null,
+            mouseHandler: mouseHandler,
+            resizeHandler: null,
+            resizeTimeout: null
+        };
+
+        function resizeCanvas(immediate) {
+            clearTimeout(state.resizeTimeout);
+            var doResize = function () {
+                var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                var width = el.offsetWidth || 300;
+                var height = el.offsetHeight || 300;
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+                gl.uniform2f(uRes, canvas.width, canvas.height);
+                if (data.liquidCursor) {
+                    cachedRect = el.getBoundingClientRect();
+                }
+            };
+            if (immediate === true) {
+                doResize();
+            } else {
+                state.resizeTimeout = setTimeout(doResize, 150);
+            }
         }
 
+        state.resizeHandler = resizeCanvas;
         window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        resizeCanvas(true);
 
         var startTime = performance.now();
         var isVisible = true;
-        var rafId = null;
 
         function render() {
             if (!isVisible) return;
@@ -389,7 +413,7 @@
 
             gl.uniform1f(uTime, elapsed);
             gl.drawArrays(gl.TRIANGLES, 0, 6);
-            rafId = requestAnimationFrame(render);
+            state.rafId = requestAnimationFrame(render);
         }
 
         var observer = null;
@@ -399,22 +423,19 @@
                     isVisible = entry.isIntersecting;
                     if (isVisible) {
                         render();
-                    } else if (rafId) {
-                        cancelAnimationFrame(rafId);
+                    } else if (state.rafId) {
+                        cancelAnimationFrame(state.rafId);
+                        state.rafId = null;
                     }
                 });
             }, { threshold: 0.05 });
             observer.observe(el);
+            state.observer = observer;
         } else {
             render();
         }
 
-        activeMeshShaders.set(el, {
-            canvas: canvas,
-            observer: observer,
-            rafId: rafId,
-            mouseHandler: mouseHandler
-        });
+        activeMeshShaders.set(el, state);
     }
 
     function clearBackgroundGradient(el) {
