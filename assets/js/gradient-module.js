@@ -1125,19 +1125,10 @@
     // Elementor can fire frontend/element_ready BEFORE any async callback,
     // and the event only fires once per element.
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        $(window).on('elementor/frontend/init', function () {
-            tryRegisterHandlerNow();
-        });
-        (function poll() {
-            var tries = 0;
-            var timer = setInterval(function () {
-                tries++;
-                if (tryRegisterHandlerNow() || tries > 50) {
-                    clearInterval(timer);
-                }
-            }, 100);
-        })();
-    }
+         $(window).on('elementor/frontend/init', function () {
+             tryRegisterHandlerNow();
+         });
+     }
 
     function bootstrap() {
         // Fallback: no Elementor JS available — scan the page using the

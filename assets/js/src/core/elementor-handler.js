@@ -126,15 +126,6 @@ export function bootstrap() {
         $(window).on('elementor/frontend/init', function () {
             tryRegisterHandlerNow();
         });
-        (function poll() {
-            var tries = 0;
-            var timer = setInterval(function () {
-                tries++;
-                if (tryRegisterHandlerNow() || tries > 50) {
-                    clearInterval(timer);
-                }
-            }, 100);
-        })();
     }
 
     function onReady() {
