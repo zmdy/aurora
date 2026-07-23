@@ -561,8 +561,14 @@
         var active = activeImageInteractions.get(wrapper);
         if (active) {
             if (active.observer) active.observer.disconnect();
+            if (active.liquidObserver) active.liquidObserver.disconnect();
             if (active.mouseMoveHandler) wrapper.removeEventListener('mousemove', active.mouseMoveHandler);
             if (active.mouseLeaveHandler) wrapper.removeEventListener('mouseleave', active.mouseLeaveHandler);
+            if (active.liquidEnterHandler) wrapper.removeEventListener('mouseenter', active.liquidEnterHandler);
+            if (active.liquidLeaveHandler) wrapper.removeEventListener('mouseleave', active.liquidLeaveHandler);
+            if (active.resizeHandler) window.removeEventListener('resize', active.resizeHandler);
+            if (active.resizeTimeout) clearTimeout(active.resizeTimeout);
+            if (active.rafId) cancelAnimationFrame(active.rafId);
             if (active.rgbContainer && active.rgbContainer.parentNode) {
                 active.rgbContainer.parentNode.removeChild(active.rgbContainer);
             }
@@ -682,19 +688,38 @@
             var points = [];
             var isHovered = false;
 
-            var resize = function () {
-                canvas.width = box.offsetWidth || 300;
-                canvas.height = box.offsetHeight || 300;
+            active.resizeTimeout = null;
+            var resize = function (immediate) {
+                clearTimeout(active.resizeTimeout);
+                var doResize = function () {
+                    if (active.canvas) {
+                        canvas.width = box.offsetWidth || 300;
+                        canvas.height = box.offsetHeight || 300;
+                    }
+                };
+                if (immediate === true) {
+                    doResize();
+                } else {
+                    active.resizeTimeout = setTimeout(doResize, 150);
+                }
             };
+            active.resizeHandler = resize;
             window.addEventListener('resize', resize);
-            resize();
+            resize(true);
 
-            wrapper.addEventListener('mouseenter', function () { isHovered = true; });
-            wrapper.addEventListener('mouseleave', function () { isHovered = false; });
+            var enterHandler = function () { isHovered = true; };
+            var leaveHandler = function () { isHovered = false; };
+            active.liquidEnterHandler = enterHandler;
+            active.liquidLeaveHandler = leaveHandler;
+            wrapper.addEventListener('mouseenter', enterHandler);
+            wrapper.addEventListener('mouseleave', leaveHandler);
 
             var time = 0;
+            var isVisible = true;
+            active.rafId = null;
+
             var render = function () {
-                if (!active.canvas) return;
+                if (!active.canvas || !isVisible) return;
                 time += 0.05;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -715,9 +740,25 @@
                     ctx.restore();
                 }
 
-                requestAnimationFrame(render);
+                active.rafId = requestAnimationFrame(render);
             };
-            render();
+
+            if (typeof IntersectionObserver !== 'undefined') {
+                active.liquidObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        isVisible = entry.isIntersecting;
+                        if (isVisible) {
+                            render();
+                        } else if (active.rafId) {
+                            cancelAnimationFrame(active.rafId);
+                            active.rafId = null;
+                        }
+                    });
+                }, { threshold: 0.05 });
+                active.liquidObserver.observe(wrapper);
+            } else {
+                render();
+            }
         }
 
         activeImageInteractions.set(wrapper, active);
