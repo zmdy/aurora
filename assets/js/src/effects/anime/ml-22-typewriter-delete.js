@@ -15,27 +15,56 @@ var effect = {
         textEl.style.opacity = '1';
         textEl.textContent = '';
 
+        // Clear any existing typewriter handles
+        if (textEl._auroraTypeTimeouts) {
+            textEl._auroraTypeTimeouts.forEach(clearTimeout);
+        }
+        textEl._auroraTypeTimeouts = [];
+
+        if (textEl._auroraTypeHandles) {
+            textEl._auroraTypeHandles.forEach(clearInterval);
+        }
+        textEl._auroraTypeHandles = [];
+
+        // Respect reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            textEl.textContent = original;
+            return;
+        }
+
         var typeSpeed = Math.max(20, Math.min(90, opts.duration / Math.max(1, original.length)));
         var deleteSpeed = typeSpeed * 0.6;
         var pauseAfterType = 900;
 
-        setTimeout(function () {
+        var safeTimeout = function (fn, delay) {
+            var t = setTimeout(fn, delay);
+            textEl._auroraTypeTimeouts.push(t);
+            return t;
+        };
+
+        var safeInterval = function (fn, delay) {
+            var i = setInterval(fn, delay);
+            textEl._auroraTypeHandles.push(i);
+            return i;
+        };
+
+        safeTimeout(function () {
             var i = 0;
-            var typeHandle = setInterval(function () {
+            var typeHandle = safeInterval(function () {
                 i++;
                 textEl.textContent = original.slice(0, i);
                 if (i >= original.length) {
                     clearInterval(typeHandle);
-                    setTimeout(function () {
+                    safeTimeout(function () {
                         var j = original.length;
-                        var deleteHandle = setInterval(function () {
+                        var deleteHandle = safeInterval(function () {
                             j--;
                             textEl.textContent = original.slice(0, j);
                             if (j <= 0) {
                                 clearInterval(deleteHandle);
-                                setTimeout(function () {
+                                safeTimeout(function () {
                                     var k = 0;
-                                    var retypeHandle = setInterval(function () {
+                                    var retypeHandle = safeInterval(function () {
                                         k++;
                                         textEl.textContent = original.slice(0, k);
                                         if (k >= original.length) clearInterval(retypeHandle);

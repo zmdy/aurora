@@ -306,9 +306,9 @@ export function teardownTextAnimation(wrapper) {
             clearInterval(textEl._auroraScrambleInterval);
             textEl._auroraScrambleInterval = null;
         }
-        if (textEl._auroraTypeTimeout) {
-            clearTimeout(textEl._auroraTypeTimeout);
-            textEl._auroraTypeTimeout = null;
+        if (textEl._auroraTypeTimeouts) {
+            textEl._auroraTypeTimeouts.forEach(clearTimeout);
+            textEl._auroraTypeTimeouts = null;
         }
         if (textEl._auroraTypeHandles) {
             textEl._auroraTypeHandles.forEach(clearInterval);
