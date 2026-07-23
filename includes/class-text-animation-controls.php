@@ -86,7 +86,7 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		$has_gsap = file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' );
+		$has_gsap = AURORA_HAS_GSAP;
 		$lib_options = [];
 		if ( $has_gsap ) {
 			$lib_options['gsap'] = esc_html__( 'GSAP', 'aurora-for-elementor' );

@@ -32,6 +32,7 @@ define( 'AURORA_URL',          plugin_dir_url( __FILE__ ) );
 define( 'AURORA_MIN_PHP',      '7.4' );
 define( 'AURORA_MIN_WP',       '5.9' );
 define( 'AURORA_MIN_ELEMENTOR', '3.0.0' );
+define( 'AURORA_HAS_GSAP',      file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' ) );
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 

@@ -30,7 +30,7 @@ final class Asset_Manager {
 			return;
 		}
 
-		$has_gsap = file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' );
+		$has_gsap = AURORA_HAS_GSAP;
 
 		// ── Vendor: GSAP 3.12 (local) ─────────────────────────────────────────
 		if ( $has_gsap ) {

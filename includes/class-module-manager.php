@@ -43,7 +43,7 @@ final class Module_Manager {
 			Image_Effects_Controls::class,
 		];
 
-		if ( file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' ) ) {
+		if ( AURORA_HAS_GSAP ) {
 			$modules[] = Children_Animation_Controls::class;
 		}
 
