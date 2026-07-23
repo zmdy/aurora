@@ -241,18 +241,22 @@
     // GLOBAL MOUSE TRACKING
     // ─────────────────────────────────────────────────────────────────────────
 
+    var cursorTicking = false;
     function onMouseMove(e) {
         pointerX = e.clientX;
         pointerY = e.clientY;
 
-        if (!zoneStack.length) return;
-        ensureCursorEls();
-
-        updateHoverState(e.target);
-        render();
+        if (!zoneStack.length || cursorTicking) return;
+        cursorTicking = true;
+        requestAnimationFrame(function() {
+            ensureCursorEls();
+            updateHoverState(e.target);
+            render();
+            cursorTicking = false;
+        });
     }
 
-    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
 
     // ─────────────────────────────────────────────────────────────────────────
     // ELEMENTOR INTEGRATION — FRONTEND HANDLER
