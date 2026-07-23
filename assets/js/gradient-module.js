@@ -331,13 +331,20 @@
         var uCurRad = gl.getUniformLocation(program, 'u_cursor_radius');
         var uStopCount = gl.getUniformLocation(program, 'u_stop_count');
 
+        var uStops = [];
+        var uOffsets = [];
+        for (var idx = 0; idx < 6; idx++) {
+            uStops.push(gl.getUniformLocation(program, 'u_stops[' + idx + ']'));
+            uOffsets.push(gl.getUniformLocation(program, 'u_offsets[' + idx + ']'));
+        }
+
         var stops = data.stops || [];
         var stopCount = Math.min(stops.length, 6);
         gl.uniform1i(uStopCount, stopCount);
 
         for (var i = 0; i < stopCount; i++) {
-            var colorLoc = gl.getUniformLocation(program, 'u_stops[' + i + ']');
-            var offsetLoc = gl.getUniformLocation(program, 'u_offsets[' + i + ']');
+            var colorLoc = uStops[i];
+            var offsetLoc = uOffsets[i];
             var rgb = hexToRgbVec3(stops[i].color);
             gl.uniform3f(colorLoc, rgb[0], rgb[1], rgb[2]);
             var offsetVal = (stops[i].offset !== null && typeof stops[i].offset !== 'undefined')
