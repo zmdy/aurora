@@ -87,19 +87,25 @@
         if (wrapper._auroraCursorZoneBound) return;
         wrapper._auroraCursorZoneBound = true;
 
-        wrapper.addEventListener('mouseenter', function () {
+        var enterHandler = function () {
             if (!zoneConfigs.has(wrapper)) return; // disabled since binding
             var idx = zoneStack.indexOf(wrapper);
             if (idx !== -1) zoneStack.splice(idx, 1);
             zoneStack.push(wrapper);
             updateAppearance();
-        });
+        };
 
-        wrapper.addEventListener('mouseleave', function () {
+        var leaveHandler = function () {
             var idx = zoneStack.indexOf(wrapper);
             if (idx !== -1) zoneStack.splice(idx, 1);
             updateAppearance();
-        });
+        };
+
+        wrapper._auroraCursorEnter = enterHandler;
+        wrapper._auroraCursorLeave = leaveHandler;
+
+        wrapper.addEventListener('mouseenter', enterHandler);
+        wrapper.addEventListener('mouseleave', leaveHandler);
     }
 
     /**
@@ -125,6 +131,18 @@
         var idx = zoneStack.indexOf(wrapper);
         if (idx !== -1) zoneStack.splice(idx, 1);
         updateAppearance();
+
+        if (wrapper._auroraCursorZoneBound) {
+            if (wrapper._auroraCursorEnter) {
+                wrapper.removeEventListener('mouseenter', wrapper._auroraCursorEnter);
+            }
+            if (wrapper._auroraCursorLeave) {
+                wrapper.removeEventListener('mouseleave', wrapper._auroraCursorLeave);
+            }
+            wrapper._auroraCursorEnter = null;
+            wrapper._auroraCursorLeave = null;
+            wrapper._auroraCursorZoneBound = false;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
