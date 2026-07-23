@@ -270,3 +270,11 @@
 		animation-duration: 1ms !important;
 	}
 }
+
+/* ── 3D Tilt ────────────────────────────────────────────────────────────── */
+.aurora-img-tilt-active {
+	transition: transform 0.1s ease-out, box-shadow 0.1s ease-out !important;
+}
+.aurora-img-tilt-reset {
+	transition: transform 0.5s ease, box-shadow 0.5s ease !important;
+}

@@ -579,6 +579,7 @@
                 active.img.style.transform = '';
                 active.img.style.filter = '';
                 active.img.style.opacity = '';
+                active.img.classList.remove('aurora-img-tilt-active', 'aurora-img-tilt-reset');
             }
             activeImageInteractions.delete(wrapper);
         }
@@ -625,8 +626,8 @@
         // 2. 3D Tilt interaction
         if (opts.effect === '3d-tilt') {
             box.style.perspective = '1000px';
-            img.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
             img.style.transformStyle = 'preserve-3d';
+            img.classList.add('aurora-img-tilt-active');
 
             var ticking = false;
             var mouseMoveHandler = function (e) {
@@ -636,6 +637,10 @@
                     if (!active.img) {
                         ticking = false;
                         return;
+                    }
+                    if (img.classList.contains('aurora-img-tilt-reset')) {
+                        img.classList.remove('aurora-img-tilt-reset');
+                        img.classList.add('aurora-img-tilt-active');
                     }
                     var rect = box.getBoundingClientRect();
                     var x = e.clientX - rect.left;
@@ -655,7 +660,8 @@
 
             var mouseLeaveHandler = function () {
                 ticking = false;
-                img.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
+                img.classList.remove('aurora-img-tilt-active');
+                img.classList.add('aurora-img-tilt-reset');
                 img.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
                 img.style.boxShadow = '';
             };
