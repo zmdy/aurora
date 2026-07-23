@@ -25,61 +25,119 @@
 
 .aurora-img-hover-active .elementor-widget-container img {
 	transition:
-		transform var(--aurora-img-hover-duration, 500ms) ease,
-		filter var(--aurora-img-hover-duration, 500ms) ease;
+		transform var(--aurora-img-hover-duration, 500ms) cubic-bezier(0.25, 0.8, 0.25, 1),
+		filter var(--aurora-img-hover-duration, 500ms) cubic-bezier(0.25, 0.8, 0.25, 1);
+	will-change: transform, filter;
 }
 
-/* ── Hover: Shine Sweep ──────────────────────────────────────────────────── */
-/* A skewed light band that sweeps across the image on hover — the effect
-   referenced by the user from the Schon theme's image hovers. */
+/* Helper support for both hover states and scroll-triggered appeared states */
+.aurora-img-hover-active[data-aurora-img-trigger="hover"]:hover,
+.aurora-img-hover-active.aurora-img-appeared {
+	/* Target hook for parent selectors */
+}
 
+/* ── Hover/Appear: Shine Sweep (NxWorld) ─────────────────────────────────── */
 .aurora-img-hover-active[data-aurora-img-hover="shine"] .elementor-widget-container::after {
 	content: "";
 	position: absolute;
 	top: 0;
-	left: -60%;
+	left: -75%;
 	width: var(--aurora-img-shine-width, 30%);
 	height: 100%;
-	background: linear-gradient(75deg, transparent 0%, var(--aurora-img-shine-color, #ffffff) 50%, transparent 100%);
-	opacity: 0.85;
+	background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, var(--aurora-img-shine-color, rgba(255,255,255,0.4)) 50%, rgba(255, 255, 255, 0) 100%);
 	pointer-events: none;
-	transform: skewX(-20deg) translateX(0);
-	transition: transform var(--aurora-img-hover-duration, 500ms) ease;
+	transform: skewX(-25deg);
 	z-index: 2;
 }
-
-.aurora-img-hover-active[data-aurora-img-hover="shine"]:hover .elementor-widget-container::after {
-	transform: skewX(-20deg) translateX(260%);
+.aurora-img-hover-active[data-aurora-img-hover="shine"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::after,
+.aurora-img-hover-active[data-aurora-img-hover="shine"].aurora-img-appeared .elementor-widget-container::after {
+	animation: aurora-shine-sweep var(--aurora-img-hover-duration, 750ms) ease-in-out forwards;
+}
+@keyframes aurora-shine-sweep {
+	0% { left: -75%; }
+	100% { left: 125%; }
 }
 
-/* ── Hover: Zoom In ──────────────────────────────────────────────────────── */
+/* ── Hover/Appear: Circle Ripple (NxWorld) ───────────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="circle"] .elementor-widget-container::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0;
+	height: 0;
+	background: var(--aurora-img-circle-color, rgba(255,255,255,0.25));
+	border-radius: 100%;
+	transform: translate(-50%, -50%);
+	opacity: 0;
+	z-index: 2;
+	pointer-events: none;
+}
+.aurora-img-hover-active[data-aurora-img-hover="circle"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::before,
+.aurora-img-hover-active[data-aurora-img-hover="circle"].aurora-img-appeared .elementor-widget-container::before {
+	animation: aurora-circle-ripple var(--aurora-img-hover-duration, 750ms) ease-out forwards;
+}
+@keyframes aurora-circle-ripple {
+	0% { opacity: 1; width: 0; height: 0; }
+	30% { opacity: 0.8; }
+	100% { opacity: 0; width: 250%; height: 250%; }
+}
 
-.aurora-img-hover-active[data-aurora-img-hover="zoom-in"]:hover .elementor-widget-container img {
+/* ── Hover/Appear: Blur Focus / Sharp Focus ────────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"] .elementor-widget-container img {
+	filter: blur(8px);
+}
+.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"].aurora-img-appeared .elementor-widget-container img {
+	filter: blur(0px);
+}
+
+.aurora-img-hover-active[data-aurora-img-hover="sharp-blur"] .elementor-widget-container img {
+	filter: blur(0px);
+}
+.aurora-img-hover-active[data-aurora-img-hover="sharp-blur"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="sharp-blur"].aurora-img-appeared .elementor-widget-container img {
+	filter: blur(8px);
+}
+
+/* ── Hover/Appear: Zoom In / Zoom Out ───────────────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="zoom-in"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="zoom-in"].aurora-img-appeared .elementor-widget-container img {
 	transform: scale(1.12);
 }
 
-/* ── Hover: Grayscale → Color ────────────────────────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="zoom-out"] .elementor-widget-container img {
+	transform: scale(1.12);
+}
+.aurora-img-hover-active[data-aurora-img-hover="zoom-out"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="zoom-out"].aurora-img-appeared .elementor-widget-container img {
+	transform: scale(1);
+}
 
+/* ── Hover/Appear: Grayscale / Colors ────────────────────────────────────── */
 .aurora-img-hover-active[data-aurora-img-hover="grayscale"] .elementor-widget-container img {
 	filter: grayscale(100%);
 }
-
-.aurora-img-hover-active[data-aurora-img-hover="grayscale"]:hover .elementor-widget-container img {
+.aurora-img-hover-active[data-aurora-img-hover="grayscale"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="grayscale"].aurora-img-appeared .elementor-widget-container img {
 	filter: grayscale(0%);
 }
 
-/* ── Hover: Blur → Sharp Focus ───────────────────────────────────────────── */
-
-.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"] .elementor-widget-container img {
-	filter: blur(6px);
+.aurora-img-hover-active[data-aurora-img-hover="grayscale-reverse"] .elementor-widget-container img {
+	filter: grayscale(0%);
+}
+.aurora-img-hover-active[data-aurora-img-hover="grayscale-reverse"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="grayscale-reverse"].aurora-img-appeared .elementor-widget-container img {
+	filter: grayscale(100%);
 }
 
-.aurora-img-hover-active[data-aurora-img-hover="blur-sharp"]:hover .elementor-widget-container img {
-	filter: blur(0);
+/* ── Hover/Appear: Rotate + Zoom ────────────────────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="rotate-zoom"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container img,
+.aurora-img-hover-active[data-aurora-img-hover="rotate-zoom"].aurora-img-appeared .elementor-widget-container img {
+	transform: scale(1.10) rotate(4deg);
 }
 
-/* ── Hover: Color Tint Overlay ───────────────────────────────────────────── */
-
+/* ── Hover/Appear: Color Tint Overlay ────────────────────────────────────── */
 .aurora-img-hover-active[data-aurora-img-hover="tint"] .elementor-widget-container::before {
 	content: "";
 	position: absolute;
@@ -90,37 +148,125 @@
 	transition: opacity var(--aurora-img-hover-duration, 500ms) ease;
 	z-index: 2;
 }
-
-.aurora-img-hover-active[data-aurora-img-hover="tint"]:hover .elementor-widget-container::before {
+.aurora-img-hover-active[data-aurora-img-hover="tint"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::before,
+.aurora-img-hover-active[data-aurora-img-hover="tint"].aurora-img-appeared .elementor-widget-container::before {
 	opacity: 0.35;
 }
 
-/* ── Hover: Brightness Pop ───────────────────────────────────────────────── */
-
-.aurora-img-hover-active[data-aurora-img-hover="brightness"]:hover .elementor-widget-container img {
-	filter: brightness(1.25);
+/* ── Hover/Appear: Slide Color Overlay (Framer) ────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"] .elementor-widget-container::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-color: var(--aurora-img-tint-color, #7c6cff);
+	z-index: 2;
+	pointer-events: none;
+	transition: transform var(--aurora-img-hover-duration, 600ms) cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+/* Slide Up */
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="up"] .elementor-widget-container::before {
+	transform: translateY(100%);
+}
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="up"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::before,
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="up"].aurora-img-appeared .elementor-widget-container::before {
+	transform: translateY(0);
+}
+/* Slide Down */
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="down"] .elementor-widget-container::before {
+	transform: translateY(-100%);
+}
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="down"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::before,
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="down"].aurora-img-appeared .elementor-widget-container::before {
+	transform: translateY(0);
+}
+/* Slide Left */
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="left"] .elementor-widget-container::before {
+	transform: translateX(100%);
+}
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="left"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::before,
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="left"].aurora-img-appeared .elementor-widget-container::before {
+	transform: translateX(0);
+}
+/* Slide Right */
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="right"] .elementor-widget-container::before {
+	transform: translateX(-100%);
+}
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="right"][data-aurora-img-trigger="hover"]:hover .elementor-widget-container::before,
+.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"][data-aurora-img-slide="right"].aurora-img-appeared .elementor-widget-container::before {
+	transform: translateX(0);
 }
 
-/* ── Hover: Rotate + Zoom ────────────────────────────────────────────────── */
+/* ── Hover/Appear: Chromatic RGB Split (Framer) ────────────────────────── */
+/* Handled partly in JS by creating multiple image layer wrappers.
+   The CSS configures their mixture and absolute overlay offsets. */
+.aurora-rgb-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: block;
+	overflow: hidden;
+}
+.aurora-rgb-layer {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: center;
+	mix-blend-mode: screen;
+	opacity: 0;
+	transition: transform var(--aurora-img-hover-duration, 500ms) cubic-bezier(0.25, 0.8, 0.25, 1),
+	            opacity var(--aurora-img-hover-duration, 500ms) ease;
+}
+.aurora-rgb-layer-r {
+	background-color: #ff0000;
+	mix-blend-mode: multiply;
+}
+.aurora-rgb-layer-g {
+	background-color: #00ff00;
+	mix-blend-mode: multiply;
+}
+.aurora-rgb-layer-b {
+	background-color: #0000ff;
+	mix-blend-mode: multiply;
+}
+.aurora-img-hover-active[data-aurora-img-hover="rgb-split"][data-aurora-img-trigger="hover"]:hover .aurora-rgb-layer,
+.aurora-img-hover-active[data-aurora-img-hover="rgb-split"].aurora-img-appeared .aurora-rgb-layer {
+	opacity: 1;
+}
+.aurora-img-hover-active[data-aurora-img-hover="rgb-split"][data-aurora-img-trigger="hover"]:hover .aurora-rgb-layer-r,
+.aurora-img-hover-active[data-aurora-img-hover="rgb-split"].aurora-img-appeared .aurora-rgb-layer-r {
+	transform: translate3d(var(--aurora-img-rgb-amount, 8px), 0, 0);
+}
+.aurora-img-hover-active[data-aurora-img-hover="rgb-split"][data-aurora-img-trigger="hover"]:hover .aurora-rgb-layer-b,
+.aurora-img-hover-active[data-aurora-img-hover="rgb-split"].aurora-img-appeared .aurora-rgb-layer-b {
+	transform: translate3d(calc(-1 * var(--aurora-img-rgb-amount, 8px)), 0, 0);
+}
 
-.aurora-img-hover-active[data-aurora-img-hover="rotate-zoom"]:hover .elementor-widget-container img {
-	transform: rotate(3deg) scale(1.08);
+/* ── Hover/Appear: Pixelate (Framer) ────────────────────────────────────── */
+.aurora-img-hover-active[data-aurora-img-hover="pixelate"] img {
+	image-rendering: pixelated;
+	filter: contrast(1.1);
+}
+/* Trigger JS dynamic pixelation render, or CSS fallback */
+.aurora-img-hover-active[data-aurora-img-hover="pixelate"][data-aurora-img-trigger="hover"]:hover img,
+.aurora-img-hover-active[data-aurora-img-hover="pixelate"].aurora-img-appeared img {
+	image-rendering: auto;
+	filter: contrast(1);
 }
 
 /* ── Entrance: overlay panels (wipe-left, wipe-up, curtain) ─────────────── */
-/* Created at runtime by image-effects.js; color comes from the user's
-   Overlay Color control and is set inline, so it isn't repeated here. */
-
 .aurora-img-entrance-overlay {
 	will-change: transform;
 }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
-
 @media (prefers-reduced-motion: reduce) {
 	.aurora-img-hover-active .elementor-widget-container img,
 	.aurora-img-hover-active[data-aurora-img-hover="shine"] .elementor-widget-container::after,
-	.aurora-img-hover-active[data-aurora-img-hover="tint"] .elementor-widget-container::before {
+	.aurora-img-hover-active[data-aurora-img-hover="tint"] .elementor-widget-container::before,
+	.aurora-img-hover-active[data-aurora-img-hover="slide-overlay"] .elementor-widget-container::before {
 		transition-duration: 1ms !important;
+		animation-duration: 1ms !important;
 	}
 }
