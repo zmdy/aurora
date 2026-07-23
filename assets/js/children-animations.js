@@ -289,14 +289,11 @@
      * @param {Object}      opts
      */
     function initChildrenAnimation(wrapper, opts) {
-        console.log('[Aurora:children] initChildrenAnimation()', { wrapper: wrapper, opts: opts });
         if (typeof gsap === 'undefined') {
-            console.log('[Aurora:children] gsap unavailable, aborting.');
             return;
         }
 
         var children = getChildren(wrapper, opts.selector);
-        console.log('[Aurora:children] children found ->', children.length, children);
 
         // Cancel any observer from a previous initialization.
         if (wrapper._auroraChildrenObserver) {
@@ -397,7 +394,6 @@
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
-            console.log('[Aurora:children] elementorModules.frontend.handlers not yet available.');
             return false;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
@@ -405,7 +401,6 @@
             // before .hooks is attached (happens in the editor), and without
             // this guard the addAction() call below would throw an
             // uncaught TypeError, aborting the whole script (fallback/polling/bootstrap).
-            console.log('[Aurora:children] elementorFrontend.hooks not yet available.');
             return false;
         }
 
@@ -436,35 +431,29 @@
         AuroraChildrenAnimationHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
             var enabled = this.isEnabled();
-            console.log('[Aurora:children] runAnimation()', { wrapper: wrapper, enabled: enabled });
             if (!enabled) {
                 teardownChildrenAnimation(wrapper);
                 return;
             }
             var opts = this.getOpts();
-            console.log('[Aurora:children] opts ->', opts);
             setTimeout(function () { initChildrenAnimation(wrapper, opts); }, 120);
         };
 
         AuroraChildrenAnimationHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
-            console.log('[Aurora:children] onInit()', this.$element[0]);
             this.runAnimation();
         };
 
         AuroraChildrenAnimationHandler.prototype.onElementChange = function (propertyName) {
-            console.log('[Aurora:children] onElementChange()', propertyName);
             if (propertyName.indexOf('aurora_children_') === 0) {
                 this.runAnimation();
             }
         };
 
         elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
-            console.log('[Aurora:children] frontend/element_ready/global ->', $element);
             elementorFrontend.elementsHandler.addHandler(AuroraChildrenAnimationHandler, { $element: $element });
         });
 
-        console.log('[Aurora:children] Handler registered successfully.');
         return true;
     }
 
@@ -493,9 +482,7 @@
     }
 
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        console.log('[Aurora:children] Not registered yet — waiting for the elementor/frontend/init event and polling as a fallback...');
         $(window).on('elementor/frontend/init', function () {
-            console.log('[Aurora:children] elementor/frontend/init event fired.');
             tryRegisterHandlerNow();
         });
         (function poll() {
@@ -510,14 +497,11 @@
     }
 
     function bootstrap() {
-        console.log('[Aurora:children] bootstrap() started.');
         waitForGsap(function () {
-            console.log('[Aurora:children] waitForGsap resolved. gsap?', typeof gsap !== 'undefined');
 
             // Fallback: no Elementor JS available — scan the page using the
             // data-aurora-children-* attributes rendered by PHP on the real frontend.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[Aurora:children] Elementor JS unavailable — using data-aurora-children-* fallback.');
                 document.querySelectorAll('[data-aurora-children-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initChildrenAnimation(el, parseOptsFromDataset(el)); }, 120);
                 });

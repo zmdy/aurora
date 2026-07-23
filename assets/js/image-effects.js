@@ -498,21 +498,16 @@
      * @param {Object}      opts
      */
     function initImgEntrance(wrapper, opts) {
-        console.log('[Aurora:image-fx] initImgEntrance()', { wrapper: wrapper, opts: opts });
-
         if (opts.library === 'animejs') {
             if (typeof anime === 'undefined') {
-                console.log('[Aurora:image-fx] anime.js unavailable, aborting.');
                 return;
             }
         } else if (typeof gsap === 'undefined') {
-            console.log('[Aurora:image-fx] gsap unavailable, aborting.');
             return;
         }
 
         var target = getImgTarget(wrapper);
         if (!target) {
-            console.log('[Aurora:image-fx] no <img> found inside wrapper, aborting.');
             return;
         }
 
@@ -783,11 +778,9 @@
      */
     function registerHandler() {
         if (typeof elementorModules === 'undefined' || !elementorModules.frontend || !elementorModules.frontend.handlers) {
-            console.log('[Aurora:image-fx] elementorModules.frontend.handlers not yet available.');
             return false;
         }
         if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks || typeof elementorFrontend.hooks.addAction !== 'function') {
-            console.log('[Aurora:image-fx] elementorFrontend.hooks not yet available.');
             return false;
         }
 
@@ -835,8 +828,6 @@
             var entranceEnabled = this.getElementSettings('aurora_img_entrance_enable') === 'yes';
             var hoverEnabled = this.getElementSettings('aurora_img_hover_enable') === 'yes';
 
-            console.log('[Aurora:image-fx] runAnimation()', { wrapper: wrapper, entranceEnabled: entranceEnabled, hoverEnabled: hoverEnabled });
-
             if (!entranceEnabled) {
                 teardownImgEntrance(wrapper);
             } else {
@@ -854,23 +845,19 @@
 
         AuroraImageEffectsHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
-            console.log('[Aurora:image-fx] onInit()', this.$element[0]);
             this.runAnimation();
         };
 
         AuroraImageEffectsHandler.prototype.onElementChange = function (propertyName) {
-            console.log('[Aurora:image-fx] onElementChange()', propertyName);
             if (propertyName.indexOf('aurora_img_entrance_') === 0 || propertyName.indexOf('aurora_img_hover_') === 0) {
                 this.runAnimation();
             }
         };
 
         elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
-            console.log('[Aurora:image-fx] frontend/element_ready/global ->', $element);
             elementorFrontend.elementsHandler.addHandler(AuroraImageEffectsHandler, { $element: $element });
         });
 
-        console.log('[Aurora:image-fx] Handler registered successfully.');
         return true;
     }
 
@@ -897,9 +884,7 @@
     }
 
     if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        console.log('[Aurora:image-fx] Not registered yet — waiting for the elementor/frontend/init event and polling as a fallback...');
         $(window).on('elementor/frontend/init', function () {
-            console.log('[Aurora:image-fx] elementor/frontend/init event fired.');
             tryRegisterHandlerNow();
         });
         (function poll() {
@@ -925,15 +910,12 @@
     }
 
     function bootstrap() {
-        console.log('[Aurora:image-fx] bootstrap() started.');
         waitForEntranceLibs(function () {
-            console.log('[Aurora:image-fx] waitForEntranceLibs resolved. gsap?', typeof gsap !== 'undefined', 'anime?', typeof anime !== 'undefined');
 
             // Fallback: no Elementor JS available — scan the page using the
             // data-aurora-img-entrance-* attributes rendered by PHP on the
             // real frontend.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[Aurora:image-fx] Elementor JS unavailable — using data-aurora-img-entrance-* / hover fallbacks.');
                 document.querySelectorAll('[data-aurora-img-entrance-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initImgEntrance(el, parseOptsFromDataset(el)); }, 120);
                 });

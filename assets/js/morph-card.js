@@ -25,11 +25,7 @@
 ( function ( $ ) {
 	'use strict';
 
-	// ── Guard: skip if Motion One never loaded ──────────────────────────────
-	if ( typeof window.Motion === 'undefined' ) {
-		// eslint-disable-next-line no-console
-		console.warn( '[Aurora Morph Card] Motion One is missing — sequence disabled.' );
-	}
+
 
 	// ── MorphCard ───────────────────────────────────────────────────────────
 	class MorphCard {
