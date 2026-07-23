@@ -167,50 +167,56 @@ class Image_Effects_Controls extends Animation_Module {
 		);
 
 		// ── Entrance: library ─────────────────────────────────────────────────
+		$has_gsap = file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' );
+		$lib_options = [];
+		if ( $has_gsap ) {
+			$lib_options['gsap'] = esc_html__( 'GSAP', 'aurora-for-elementor' );
+		}
+		$lib_options['animejs'] = esc_html__( 'Anime.js', 'aurora-for-elementor' );
+
 		$element->add_control(
 			'aurora_img_entrance_library',
 			[
 				'label'              => esc_html__( 'Library', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SELECT,
-				'default'            => 'gsap',
-				'options'            => [
-					'gsap'    => esc_html__( 'GSAP', 'aurora-for-elementor' ),
-					'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ),
-				],
+				'default'            => $has_gsap ? 'gsap' : 'animejs',
+				'options'            => $lib_options,
 				'condition'          => [ 'aurora_img_entrance_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Entrance: effect — GSAP ───────────────────────────────────────────
-		$element->add_control(
-			'aurora_img_entrance_effect',
-			[
-				'label'              => esc_html__( 'Entrance Effect', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::SELECT,
-				'default'            => 'fade-up',
-				'options'            => [
-					'fade-up'     => esc_html__( 'Fade Up', 'aurora-for-elementor' ),
-					'fade-in'     => esc_html__( 'Fade In', 'aurora-for-elementor' ),
-					'slide-left'  => esc_html__( 'Slide from Left', 'aurora-for-elementor' ),
-					'slide-right' => esc_html__( 'Slide from Right', 'aurora-for-elementor' ),
-					'zoom-in'     => esc_html__( 'Zoom In', 'aurora-for-elementor' ),
-					'zoom-out'    => esc_html__( 'Zoom Out', 'aurora-for-elementor' ),
-					'flip-3d'     => esc_html__( 'Flip 3D', 'aurora-for-elementor' ),
-					'blur-reveal' => esc_html__( 'Blur Reveal', 'aurora-for-elementor' ),
-					'skew-reveal' => esc_html__( 'Skew Reveal', 'aurora-for-elementor' ),
-					'wipe-left'   => esc_html__( 'Wipe Reveal (Left → Right)', 'aurora-for-elementor' ),
-					'wipe-up'     => esc_html__( 'Wipe Reveal (Bottom → Top)', 'aurora-for-elementor' ),
-					'curtain'     => esc_html__( 'Curtain Reveal (Split Center)', 'aurora-for-elementor' ),
-					'iris'        => esc_html__( 'Iris Reveal (Circle Expand)', 'aurora-for-elementor' ),
-				],
-				'condition'          => [
-					'aurora_img_entrance_enable'  => 'yes',
-					'aurora_img_entrance_library' => 'gsap',
-				],
-				'frontend_available' => true,
-			]
-		);
+		if ( $has_gsap ) {
+			// ── Entrance: effect — GSAP ───────────────────────────────────────────
+			$element->add_control(
+				'aurora_img_entrance_effect',
+				[
+					'label'              => esc_html__( 'Entrance Effect', 'aurora-for-elementor' ),
+					'type'               => Controls_Manager::SELECT,
+					'default'            => 'fade-up',
+					'options'            => [
+						'fade-up'     => esc_html__( 'Fade Up', 'aurora-for-elementor' ),
+						'fade-in'     => esc_html__( 'Fade In', 'aurora-for-elementor' ),
+						'slide-left'  => esc_html__( 'Slide from Left', 'aurora-for-elementor' ),
+						'slide-right' => esc_html__( 'Slide from Right', 'aurora-for-elementor' ),
+						'zoom-in'     => esc_html__( 'Zoom In', 'aurora-for-elementor' ),
+						'zoom-out'    => esc_html__( 'Zoom Out', 'aurora-for-elementor' ),
+						'flip-3d'     => esc_html__( 'Flip 3D', 'aurora-for-elementor' ),
+						'blur-reveal' => esc_html__( 'Blur Reveal', 'aurora-for-elementor' ),
+						'skew-reveal' => esc_html__( 'Skew Reveal', 'aurora-for-elementor' ),
+						'wipe-left'   => esc_html__( 'Wipe Reveal (Left → Right)', 'aurora-for-elementor' ),
+						'wipe-up'     => esc_html__( 'Wipe Reveal (Bottom → Top)', 'aurora-for-elementor' ),
+						'curtain'     => esc_html__( 'Curtain Reveal (Split Center)', 'aurora-for-elementor' ),
+						'iris'        => esc_html__( 'Iris Reveal (Circle Expand)', 'aurora-for-elementor' ),
+					],
+					'condition'          => [
+						'aurora_img_entrance_enable'  => 'yes',
+						'aurora_img_entrance_library' => 'gsap',
+					],
+					'frontend_available' => true,
+				]
+			);
+		}
 
 		// ── Entrance: effect — Anime.js ────────────────────────────────────────
 		// Leans into what Anime.js is best at — spring/elastic-feeling settles —

@@ -86,64 +86,70 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
+		$has_gsap = file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' );
+		$lib_options = [];
+		if ( $has_gsap ) {
+			$lib_options['gsap'] = esc_html__( 'GSAP', 'aurora-for-elementor' );
+		}
+		$lib_options['animejs'] = esc_html__( 'Anime.js', 'aurora-for-elementor' );
+
 		// ── Library ───────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_text_library',
 			[
 				'label'              => esc_html__( 'Library', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SELECT,
-				'default'            => 'gsap',
-				'options'            => [
-					'gsap'    => esc_html__( 'GSAP', 'aurora-for-elementor' ),
-					'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ),
-				],
+				'default'            => $has_gsap ? 'gsap' : 'animejs',
+				'options'            => $lib_options,
 				'condition'          => [ 'aurora_text_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Animation Type — GSAP ─────────────────────────────────────────────
-		$element->add_control(
-			'aurora_text_animation_gsap',
-			[
-				'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'gs-1',
-				'options'   => [
-					'gs-1'  => esc_html__( 'Fade Up',         'aurora-for-elementor' ),
-					'gs-2'  => esc_html__( 'Clip Reveal',     'aurora-for-elementor' ),
-					'gs-3'  => esc_html__( 'Scramble Text',   'aurora-for-elementor' ),
-					'gs-4'  => esc_html__( 'Elastic Bounce',  'aurora-for-elementor' ),
-					'gs-5'  => esc_html__( '3D Flip',         'aurora-for-elementor' ),
-					'gs-6'  => esc_html__( 'Slide In',        'aurora-for-elementor' ),
-					'gs-7'  => esc_html__( 'Scale Up',        'aurora-for-elementor' ),
-					'gs-8'  => esc_html__( 'Wave',            'aurora-for-elementor' ),
-					'gs-9'  => esc_html__( 'Bounce Drop',     'aurora-for-elementor' ),
-					'gs-10' => esc_html__( 'Glitch',          'aurora-for-elementor' ),
-					'gs-11' => esc_html__( 'Rotate In',       'aurora-for-elementor' ),
-					'gs-12' => esc_html__( 'Slot Machine',    'aurora-for-elementor' ),
-					'gs-13' => esc_html__( 'Spin In',         'aurora-for-elementor' ),
-					'gs-14' => esc_html__( 'Neon Flicker',    'aurora-for-elementor' ),
-					'gs-15' => esc_html__( 'CRT Boot',        'aurora-for-elementor' ),
-					'gs-16' => esc_html__( 'Domino Fall',     'aurora-for-elementor' ),
-					'gs-17' => esc_html__( 'Pendulum Swing',  'aurora-for-elementor' ),
-					'gs-18' => esc_html__( 'Unfold 3D',       'aurora-for-elementor' ),
-					'gs-19' => esc_html__( 'Stretch Warp',    'aurora-for-elementor' ),
-					'gs-20' => esc_html__( 'Heartbeat',       'aurora-for-elementor' ),
-					'gs-21' => esc_html__( 'Vertical Blinds', 'aurora-for-elementor' ),
-					'gs-22' => esc_html__( 'Rubber Stamp',    'aurora-for-elementor' ),
-					'gs-23' => esc_html__( 'VHS Tracking',    'aurora-for-elementor' ),
-					'gs-24' => esc_html__( 'Liquid Fill Reveal', 'aurora-for-elementor' ),
-					'gs-25' => esc_html__( 'Perspective Fly', 'aurora-for-elementor' ),
-					'gs-26' => esc_html__( 'Cinema Title',    'aurora-for-elementor' ),
-				],
-				'condition' => [
-					'aurora_text_enable'  => 'yes',
-					'aurora_text_library' => 'gsap',
-				],
-				'frontend_available' => true,
-			]
-		);
+		if ( $has_gsap ) {
+			// ── Animation Type — GSAP ─────────────────────────────────────────────
+			$element->add_control(
+				'aurora_text_animation_gsap',
+				[
+					'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
+					'type'      => Controls_Manager::SELECT,
+					'default'   => 'gs-1',
+					'options'   => [
+						'gs-1'  => esc_html__( 'Fade Up',         'aurora-for-elementor' ),
+						'gs-2'  => esc_html__( 'Clip Reveal',     'aurora-for-elementor' ),
+						'gs-3'  => esc_html__( 'Scramble Text',   'aurora-for-elementor' ),
+						'gs-4'  => esc_html__( 'Elastic Bounce',  'aurora-for-elementor' ),
+						'gs-5'  => esc_html__( '3D Flip',         'aurora-for-elementor' ),
+						'gs-6'  => esc_html__( 'Slide In',        'aurora-for-elementor' ),
+						'gs-7'  => esc_html__( 'Scale Up',        'aurora-for-elementor' ),
+						'gs-8'  => esc_html__( 'Wave',            'aurora-for-elementor' ),
+						'gs-9'  => esc_html__( 'Bounce Drop',     'aurora-for-elementor' ),
+						'gs-10' => esc_html__( 'Glitch',          'aurora-for-elementor' ),
+						'gs-11' => esc_html__( 'Rotate In',       'aurora-for-elementor' ),
+						'gs-12' => esc_html__( 'Slot Machine',    'aurora-for-elementor' ),
+						'gs-13' => esc_html__( 'Spin In',         'aurora-for-elementor' ),
+						'gs-14' => esc_html__( 'Neon Flicker',    'aurora-for-elementor' ),
+						'gs-15' => esc_html__( 'CRT Boot',        'aurora-for-elementor' ),
+						'gs-16' => esc_html__( 'Domino Fall',     'aurora-for-elementor' ),
+						'gs-17' => esc_html__( 'Pendulum Swing',  'aurora-for-elementor' ),
+						'gs-18' => esc_html__( 'Unfold 3D',       'aurora-for-elementor' ),
+						'gs-19' => esc_html__( 'Stretch Warp',    'aurora-for-elementor' ),
+						'gs-20' => esc_html__( 'Heartbeat',       'aurora-for-elementor' ),
+						'gs-21' => esc_html__( 'Vertical Blinds', 'aurora-for-elementor' ),
+						'gs-22' => esc_html__( 'Rubber Stamp',    'aurora-for-elementor' ),
+						'gs-23' => esc_html__( 'VHS Tracking',    'aurora-for-elementor' ),
+						'gs-24' => esc_html__( 'Liquid Fill Reveal', 'aurora-for-elementor' ),
+						'gs-25' => esc_html__( 'Perspective Fly', 'aurora-for-elementor' ),
+						'gs-26' => esc_html__( 'Cinema Title',    'aurora-for-elementor' ),
+					],
+					'condition' => [
+						'aurora_text_enable'  => 'yes',
+						'aurora_text_library' => 'gsap',
+					],
+					'frontend_available' => true,
+				]
+			);
+		}
 
 		// ── Animation Type — Anime.js ─────────────────────────────────────────
 		$element->add_control(

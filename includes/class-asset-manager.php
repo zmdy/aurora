@@ -30,14 +30,18 @@ final class Asset_Manager {
 			return;
 		}
 
+		$has_gsap = file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' );
+
 		// ── Vendor: GSAP 3.12 (local) ─────────────────────────────────────────
-		wp_enqueue_script(
-			'aurora-gsap',
-			AURORA_URL . 'assets/js/vendor/gsap.min.js',
-			[],
-			'3.12.5',
-			true
-		);
+		if ( $has_gsap ) {
+			wp_enqueue_script(
+				'aurora-gsap',
+				AURORA_URL . 'assets/js/vendor/gsap.min.js',
+				[],
+				'3.12.5',
+				true
+			);
+		}
 
 		// ── Vendor: Anime.js 4.4 (local, UMD global) ──────────────────────────
 		wp_enqueue_script(
@@ -83,24 +87,31 @@ final class Asset_Manager {
 		$is_editor_context = \Elementor\Plugin::$instance->editor->is_edit_mode()
 			|| \Elementor\Plugin::$instance->preview->is_preview_mode();
 
+		$text_deps = [ 'jquery', 'aurora-animejs', 'elementor-frontend' ];
+		if ( $has_gsap ) {
+			$text_deps[] = 'aurora-gsap';
+		}
+
 		wp_enqueue_script(
 			'aurora-text-core',
 			AURORA_URL . ( $is_editor_context
 				? 'assets/js/dist/aurora-text-editor.js'
 				: 'assets/js/dist/aurora-text-core.js' ),
-			[ 'jquery', 'aurora-gsap', 'aurora-animejs', 'elementor-frontend' ],
+			$text_deps,
 			AURORA_VERSION,
 			true
 		);
 
 		// ── Children animations ───────────────────────────────────────────────
-		wp_enqueue_script(
-			'aurora-children-animations',
-			AURORA_URL . 'assets/js/children-animations.js',
-			[ 'jquery', 'aurora-gsap', 'elementor-frontend' ],
-			AURORA_VERSION,
-			true
-		);
+		if ( $has_gsap ) {
+			wp_enqueue_script(
+				'aurora-children-animations',
+				AURORA_URL . 'assets/js/children-animations.js',
+				[ 'jquery', 'aurora-gsap', 'elementor-frontend' ],
+				AURORA_VERSION,
+				true
+			);
+		}
 
 		// ── Vendor: WebGL Shaders Engine ──────────────────────────────────────
 		wp_enqueue_script(
@@ -136,10 +147,15 @@ final class Asset_Manager {
 		// Handles the entrance animations (GSAP or Anime.js, user-selectable,
 		// + IntersectionObserver for the scroll trigger) — the hover effects
 		// are pure CSS, see assets/css/image-effects.css.
+		$img_deps = [ 'jquery', 'aurora-animejs', 'elementor-frontend' ];
+		if ( $has_gsap ) {
+			$img_deps[] = 'aurora-gsap';
+		}
+
 		wp_enqueue_script(
 			'aurora-image-effects',
 			AURORA_URL . 'assets/js/image-effects.js',
-			[ 'jquery', 'aurora-gsap', 'aurora-animejs', 'elementor-frontend' ],
+			$img_deps,
 			AURORA_VERSION,
 			true
 		);

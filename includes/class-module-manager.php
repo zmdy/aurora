@@ -35,7 +35,19 @@ final class Module_Manager {
 	 * Instantiates all registered modules.
 	 */
 	public static function init(): void {
-		foreach ( self::$modules as $module_class ) {
+		$modules = [
+			Text_Animation_Controls::class,
+			Gradient_Controls::class,
+			Glassmorphism_Controls::class,
+			Cursor_Follow_Controls::class,
+			Image_Effects_Controls::class,
+		];
+
+		if ( file_exists( AURORA_PATH . 'assets/js/vendor/gsap.min.js' ) ) {
+			$modules[] = Children_Animation_Controls::class;
+		}
+
+		foreach ( $modules as $module_class ) {
 			new $module_class();
 		}
 	}
