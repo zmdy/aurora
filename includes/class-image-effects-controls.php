@@ -78,12 +78,20 @@ class Image_Effects_Controls extends Animation_Module {
 	/** Valid hover effect keys. */
 	const HOVER_EFFECTS = [
 		'shine',
-		'zoom-in',
-		'grayscale',
+		'circle',
 		'blur-sharp',
-		'tint',
-		'brightness',
+		'sharp-blur',
+		'zoom-in',
+		'zoom-out',
+		'grayscale',
+		'grayscale-reverse',
 		'rotate-zoom',
+		'tint',
+		'slide-overlay',
+		'3d-tilt',
+		'rgb-split',
+		'liquid-warp',
+		'pixelate',
 	];
 
 	protected function get_section_id(): string {
@@ -361,21 +369,46 @@ class Image_Effects_Controls extends Animation_Module {
 			]
 		);
 
+		// ── Hover: trigger ───────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_img_hover_trigger',
+			[
+				'label'              => esc_html__( 'Activation Trigger', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'hover',
+				'options'            => [
+					'hover'  => esc_html__( 'On Hover Only', 'aurora-for-elementor' ),
+					'appear' => esc_html__( 'On Appear (Scroll Reveal)', 'aurora-for-elementor' ),
+					'both'   => esc_html__( 'Both (On Appear & On Hover)', 'aurora-for-elementor' ),
+				],
+				'condition'          => [ 'aurora_img_hover_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
 		// ── Hover: effect ─────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_img_hover_effect',
 			[
-				'label'              => esc_html__( 'Hover Effect', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Image Effect Preset', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SELECT,
 				'default'            => 'shine',
 				'options'            => [
-					'shine'       => esc_html__( 'Shine Sweep', 'aurora-for-elementor' ),
-					'zoom-in'     => esc_html__( 'Zoom In', 'aurora-for-elementor' ),
-					'grayscale'   => esc_html__( 'Grayscale → Color', 'aurora-for-elementor' ),
-					'blur-sharp'  => esc_html__( 'Blur → Sharp Focus', 'aurora-for-elementor' ),
-					'tint'        => esc_html__( 'Color Tint Overlay', 'aurora-for-elementor' ),
-					'brightness'  => esc_html__( 'Brightness Pop', 'aurora-for-elementor' ),
-					'rotate-zoom' => esc_html__( 'Rotate + Zoom', 'aurora-for-elementor' ),
+					'shine'             => esc_html__( 'Shine Sweep (NxWorld)', 'aurora-for-elementor' ),
+					'circle'            => esc_html__( 'Circle Ripple (NxWorld)', 'aurora-for-elementor' ),
+					'blur-sharp'        => esc_html__( 'Blur → Sharp Focus', 'aurora-for-elementor' ),
+					'sharp-blur'        => esc_html__( 'Sharp → Blur Focus', 'aurora-for-elementor' ),
+					'zoom-in'           => esc_html__( 'Zoom In', 'aurora-for-elementor' ),
+					'zoom-out'          => esc_html__( 'Zoom Out', 'aurora-for-elementor' ),
+					'grayscale'         => esc_html__( 'Grayscale → Color', 'aurora-for-elementor' ),
+					'grayscale-reverse' => esc_html__( 'Color → Grayscale', 'aurora-for-elementor' ),
+					'rotate-zoom'       => esc_html__( 'Rotate + Zoom', 'aurora-for-elementor' ),
+					'tint'              => esc_html__( 'Color Tint Overlay', 'aurora-for-elementor' ),
+					'slide-overlay'     => esc_html__( 'Slide Color Overlay (Framer)', 'aurora-for-elementor' ),
+					'3d-tilt'           => esc_html__( 'Interactive 3D Tilt (Framer)', 'aurora-for-elementor' ),
+					'rgb-split'         => esc_html__( 'Chromatic RGB Split (Framer)', 'aurora-for-elementor' ),
+					'liquid-warp'       => esc_html__( 'Liquid Warp Distortion (Framer)', 'aurora-for-elementor' ),
+					'pixelate'          => esc_html__( 'Retro Pixelate Reveal', 'aurora-for-elementor' ),
 				],
 				'condition'          => [ 'aurora_img_hover_enable' => 'yes' ],
 				'frontend_available' => true,
@@ -437,16 +470,74 @@ class Image_Effects_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Hover: tint color (tint only) ─────────────────────────────────────
+		// ── Hover: tint color (tint or slide-overlay) ─────────────────────────
 		$element->add_control(
 			'aurora_img_hover_tint_color',
 			[
-				'label'              => esc_html__( 'Tint Color', 'aurora-for-elementor' ),
+				'label'              => esc_html__( 'Color / Overlay Tint', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::COLOR,
 				'default'            => '#7c6cff',
 				'condition'          => [
 					'aurora_img_hover_enable' => 'yes',
-					'aurora_img_hover_effect' => 'tint',
+					'aurora_img_hover_effect' => [ 'tint', 'slide-overlay' ],
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Hover: slide overlay direction ────────────────────────────────────
+		$element->add_control(
+			'aurora_img_hover_slide_dir',
+			[
+				'label'              => esc_html__( 'Slide Direction', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'up',
+				'options'            => [
+					'up'    => esc_html__( 'Slide Up', 'aurora-for-elementor' ),
+					'down'  => esc_html__( 'Slide Down', 'aurora-for-elementor' ),
+					'left'  => esc_html__( 'Slide Left', 'aurora-for-elementor' ),
+					'right' => esc_html__( 'Slide Right', 'aurora-for-elementor' ),
+				],
+				'condition'          => [
+					'aurora_img_hover_enable' => 'yes',
+					'aurora_img_hover_effect' => 'slide-overlay',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Hover: RGB Split Amount ───────────────────────────────────────────
+		$element->add_control(
+			'aurora_img_hover_rgb_amount',
+			[
+				'label'     => esc_html__( 'RGB Split Amount (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 1,
+						'max'  => 30,
+						'step' => 1,
+					],
+				],
+				'default'            => [ 'size' => 8 ],
+				'condition'          => [
+					'aurora_img_hover_enable' => 'yes',
+					'aurora_img_hover_effect' => 'rgb-split',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Hover: Circle Radius/Scale ────────────────────────────────────────
+		$element->add_control(
+			'aurora_img_hover_circle_color',
+			[
+				'label'              => esc_html__( 'Circle Overlay Color', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::COLOR,
+				'default'            => 'rgba(255,255,255,0.25)',
+				'condition'          => [
+					'aurora_img_hover_enable' => 'yes',
+					'aurora_img_hover_effect' => 'circle',
 				],
 				'frontend_available' => true,
 			]
@@ -500,11 +591,14 @@ class Image_Effects_Controls extends Animation_Module {
 			$attrs['data-aurora-img-entrance-replay']    = 'yes' === ( $settings['aurora_img_entrance_replay'] ?? '' ) ? '1' : '0';
 		}
 
-		// ── Hover (pure CSS — no JS involved) ─────────────────────────────────
+		// ── Hover / Appear (CSS + JS dynamic bindings) ────────────────────────
 		if ( ! empty( $settings['aurora_img_hover_enable'] ) && 'yes' === $settings['aurora_img_hover_enable'] ) {
 
 			$hover = $settings['aurora_img_hover_effect'] ?? 'shine';
 			$hover = in_array( $hover, self::HOVER_EFFECTS, true ) ? $hover : 'shine';
+
+			$trigger = $settings['aurora_img_hover_trigger'] ?? 'hover';
+			$trigger = in_array( $trigger, [ 'hover', 'appear', 'both' ], true ) ? $trigger : 'hover';
 
 			$duration = max( 100, (int) ( $settings['aurora_img_hover_duration']['size'] ?? 500 ) );
 
@@ -512,20 +606,29 @@ class Image_Effects_Controls extends Animation_Module {
 			$shine_color = $shine_color ? $shine_color : '#ffffff';
 			$shine_width = max( 10, min( 100, (int) ( $settings['aurora_img_hover_shine_width']['size'] ?? 30 ) ) );
 
+			$circle_color = $settings['aurora_img_hover_circle_color'] ?? 'rgba(255,255,255,0.25)';
+
 			$tint_color = sanitize_hex_color( $settings['aurora_img_hover_tint_color'] ?? '#7c6cff' );
 			$tint_color = $tint_color ? $tint_color : '#7c6cff';
 
+			$slide_dir = $settings['aurora_img_hover_slide_dir'] ?? 'up';
+			$rgb_amount = max( 1, (int) ( $settings['aurora_img_hover_rgb_amount']['size'] ?? 8 ) );
+
 			$style = sprintf(
-				'--aurora-img-hover-duration:%dms;--aurora-img-shine-color:%s;--aurora-img-shine-width:%d%%;--aurora-img-tint-color:%s;',
+				'--aurora-img-hover-duration:%dms;--aurora-img-shine-color:%s;--aurora-img-shine-width:%d%%;--aurora-img-tint-color:%s;--aurora-img-circle-color:%s;--aurora-img-rgb-amount:%dpx;',
 				$duration,
 				$shine_color,
 				$shine_width,
-				$tint_color
+				$tint_color,
+				$circle_color,
+				$rgb_amount
 			);
 
-			$attrs['class']                 = trim( ( $attrs['class'] ?? '' ) . ' aurora-img-hover-active' );
-			$attrs['style']                 = esc_attr( ( $attrs['style'] ?? '' ) . $style );
-			$attrs['data-aurora-img-hover'] = esc_attr( $hover );
+			$attrs['class']                  = trim( ( $attrs['class'] ?? '' ) . ' aurora-img-hover-active' );
+			$attrs['style']                  = esc_attr( ( $attrs['style'] ?? '' ) . $style );
+			$attrs['data-aurora-img-hover']  = esc_attr( $hover );
+			$attrs['data-aurora-img-trigger'] = esc_attr( $trigger );
+			$attrs['data-aurora-img-slide']   = esc_attr( $slide_dir );
 		}
 
 		return $attrs;
