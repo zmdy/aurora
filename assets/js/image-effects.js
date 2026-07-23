@@ -628,28 +628,39 @@
             img.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
             img.style.transformStyle = 'preserve-3d';
 
+            var ticking = false;
             var mouseMoveHandler = function (e) {
-                var rect = box.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                var px = (x / rect.width) * 2 - 1; // -1 to 1
-                var py = (y / rect.height) * 2 - 1; // -1 to 1
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(function() {
+                    if (!active.img) {
+                        ticking = false;
+                        return;
+                    }
+                    var rect = box.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    var px = (x / rect.width) * 2 - 1; // -1 to 1
+                    var py = (y / rect.height) * 2 - 1; // -1 to 1
 
-                var maxTilt = 15; // degrees
-                var rx = -py * maxTilt;
-                var ry = px * maxTilt;
+                    var maxTilt = 15; // degrees
+                    var rx = -py * maxTilt;
+                    var ry = px * maxTilt;
 
-                img.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale3d(1.05, 1.05, 1.05)';
-                img.style.boxShadow = (-ry * 2) + 'px ' + (rx * 2) + 'px 25px rgba(0,0,0,0.3)';
+                    img.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale3d(1.05, 1.05, 1.05)';
+                    img.style.boxShadow = (-ry * 2) + 'px ' + (rx * 2) + 'px 25px rgba(0,0,0,0.3)';
+                    ticking = false;
+                });
             };
 
             var mouseLeaveHandler = function () {
+                ticking = false;
                 img.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
                 img.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
                 img.style.boxShadow = '';
             };
 
-            wrapper.addEventListener('mousemove', mouseMoveHandler);
+            wrapper.addEventListener('mousemove', mouseMoveHandler, { passive: true });
             wrapper.addEventListener('mouseleave', mouseLeaveHandler);
             active.mouseMoveHandler = mouseMoveHandler;
             active.mouseLeaveHandler = mouseLeaveHandler;
