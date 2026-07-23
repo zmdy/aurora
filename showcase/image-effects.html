@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurora Cinematic Image Effects Showcase</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <!-- Aurora Image Effects Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/image-effects.css">
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --card-bg: rgba(255, 255, 255, 0.02);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --accent-cyan: #0afbc1;
+      --accent-violet: #8b5cf6;
+      --glass-glow: rgba(10, 251, 193, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Ambient background glows */
+    .aurora-bg {
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80vw;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, rgba(10, 251, 193, 0.03) 50%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      background: rgba(7, 9, 14, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent-cyan);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 10rem 2rem 5rem;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      background: rgba(10, 251, 193, 0.08);
+      border: 1px solid rgba(10, 251, 193, 0.25);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Main Container */
+    .showcase-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem 10rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Grid Layout */
+    .effects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 2.5rem;
+    }
+
+    /* Effect Card */
+    .effect-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .effect-card:hover {
+      border-color: rgba(10, 251, 193, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--glass-glow);
+    }
+
+    /* Image Wrapper mockup imitating Elementor structure */
+    .image-wrapper-mockup {
+      width: 100%;
+      height: 250px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: #11141b;
+    }
+
+    /* Imitating Elementor's .elementor-widget-container */
+    .elementor-widget-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .elementor-widget-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Card Details */
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .card-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      min-height: 2.7rem;
+    }
+
+    /* Controls Panel inside Card */
+    .card-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 1rem;
+      margin-top: auto;
+    }
+
+    .trigger-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .trigger-select:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      color: #07090e;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(10, 251, 193, 0.3);
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 3rem 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      z-index: 2;
+      position: relative;
+    }
+
+    footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aurora-bg"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand">AURORA</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Showcase</a></li>
+      <li><a href="mesh-gradients.html">Mesh Gradients</a></li>
+      <li><a href="image-effects.html" class="active">Image Hover FX</a></li>
+    </ul>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge">🔥 Image Effects Module 2.0</div>
+    <h1 class="hero-title">Cinematic <span>Image FX & Hover Suite</span></h1>
+    <p class="hero-subtitle">
+      A premium collection of high-performance hover, reveal, and viewport-entrance effects. Custom built for Awwwards-level interactive graphics and layouts.
+    </p>
+  </section>
+
+  <!-- Showcase Grid -->
+  <main class="showcase-container">
+    <div class="effects-grid">
+
+      <!-- Shine Sweep -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="shine"
+             data-aurora-img-trigger="hover"
+             style="--aurora-img-hover-duration: 800ms; --aurora-img-shine-color: rgba(255,255,255,0.4); --aurora-img-shine-width: 35%;">
+          <div class="elementor-widget-container">
+            <img src="abstract-swirls-of-blue-light-in-a-dark-void-2026-03-17-20-15-05-utc.jpg" alt="Blue Swirls">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Shine Sweep</h3>
+          <p class="card-description">Classic diagonal gleam sweep across the image wrapper. Ideal for premium product listings and button surfaces.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'shine')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'shine')">Re-run</button>
+        </div>
+      </div>
+
+      <!-- Circle Ripple -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="circle"
+             data-aurora-img-trigger="hover"
+             style="--aurora-img-hover-duration: 800ms; --aurora-img-circle-color: rgba(255,255,255,0.3);">
+          <div class="elementor-widget-container">
+            <img src="abstract-blurred-light-gradient-with-grainy-textur-2026-07-15-16-09-51-utc.jpg" alt="Grainy Swirl">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Circle Ripple</h3>
+          <p class="card-description">A light circular highlight zooms out from the point of mouse center and fades out, creating a water ripple effect.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'circle')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'circle')">Re-run</button>
+        </div>
+      </div>
+
+      <!-- Blur Focus -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="blur-sharp"
+             data-aurora-img-trigger="hover"
+             style="--aurora-img-hover-duration: 600ms;">
+          <div class="elementor-widget-container">
+            <img src="milky-way-galaxy-with-star-and-space-dust-in-the-u-2026-01-08-05-54-05-utc.jpg" alt="Galaxy">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Blur → Sharp</h3>
+          <p class="card-description">Soft blur focus transitions to a sharp image structure. Simulates cinematic lens focusing on intersection or hover.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'blur-sharp')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'blur-sharp')">Re-run</button>
+        </div>
+      </div>
+
+      <!-- 3D Interactive Tilt -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="3d-tilt"
+             data-aurora-img-trigger="hover">
+          <div class="elementor-widget-container">
+            <img src="quadro-34.png" alt="Quadro Abstract">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">3D Interactive Tilt</h3>
+          <p class="card-description">Calculates mouse coordinates to dynamically tilt the image block in 3D perspective with realistic shadow offsets.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" disabled>
+            <option value="hover">On Hover Only</option>
+          </select>
+          <button class="action-btn" disabled>Re-run</button>
+        </div>
+      </div>
+
+      <!-- Chromatic RGB Split -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="rgb-split"
+             data-aurora-img-trigger="hover"
+             style="--aurora-img-hover-duration: 500ms; --aurora-img-rgb-amount: 10px;">
+          <div class="elementor-widget-container">
+            <img src="quadro-50.png" alt="Quadro Red">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Chromatic RGB Split</h3>
+          <p class="card-description">Deconstructs the image into red and blue channel slices shifting on active mouse states to create chromatic aberration.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'rgb-split')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'rgb-split')">Re-run</button>
+        </div>
+      </div>
+
+      <!-- Slide Overlay -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="slide-overlay"
+             data-aurora-img-trigger="hover"
+             data-aurora-img-slide="up"
+             style="--aurora-img-hover-duration: 600ms; --aurora-img-tint-color: #8b5cf6;">
+          <div class="elementor-widget-container">
+            <img src="abstract-swirls-of-blue-light-in-a-dark-void-2026-03-17-20-15-05-utc.jpg" alt="Blue Void">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Slide Overlay</h3>
+          <p class="card-description">A solid color block panel slides smoothly over the image. Direction configurable to Up, Down, Left, or Right.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'slide-overlay')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'slide-overlay')">Re-run</button>
+        </div>
+      </div>
+
+      <!-- Liquid Warp -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="liquid-warp"
+             data-aurora-img-trigger="hover"
+             style="--aurora-img-hover-duration: 1000ms;">
+          <div class="elementor-widget-container">
+            <img src="abstract-blurred-light-gradient-with-grainy-textur-2026-07-15-16-09-51-utc.jpg" alt="Grainy Abstract">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Liquid Warp</h3>
+          <p class="card-description">Interactive canvas displacement map creating fluid ripples and wave movement responding to hover triggers.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'liquid-warp')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'liquid-warp')">Re-run</button>
+        </div>
+      </div>
+
+      <!-- Retro Pixelate -->
+      <div class="effect-card">
+        <div class="image-wrapper-mockup aurora-img-hover-active"
+             data-aurora-img-hover="pixelate"
+             data-aurora-img-trigger="hover"
+             style="--aurora-img-hover-duration: 700ms;">
+          <div class="elementor-widget-container">
+            <img src="milky-way-galaxy-with-star-and-space-dust-in-the-u-2026-01-08-05-54-05-utc.jpg" alt="Milky Way">
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Retro Pixelate</h3>
+          <p class="card-description">Starts with a low-res pixelated filter structure and resolves to a crystal-clear original rendering.</p>
+        </div>
+        <div class="card-controls">
+          <select class="trigger-select" onchange="updateTrigger(this, 'pixelate')">
+            <option value="hover">On Hover</option>
+            <option value="appear">On Appear</option>
+            <option value="both">Both</option>
+          </select>
+          <button class="action-btn" onclick="triggerAppearEffect(this, 'pixelate')">Re-run</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Aurora Image Effects Studio. Designed for <a href="https://elementor.com" target="_blank">Elementor Page Builder</a>.</p>
+  </footer>
+
+  <!-- Frontend Image FX Engine script -->
+  <script src="../assets/js/image-effects.js"></script>
+
+  <script>
+    // Updates the data-trigger attribute dynamically and re-inits the script interaction helper
+    function updateTrigger(selectEl, effectKey) {
+      var card = selectEl.closest('.effect-card');
+      var wrapper = card.querySelector('.image-wrapper-mockup');
+      var val = selectEl.value;
+
+      wrapper.setAttribute('data-aurora-img-trigger', val);
+
+      // Re-initialize logic
+      if (window.initImageInteractions) {
+        var opts = {
+          enable: true,
+          effect: wrapper.getAttribute('data-aurora-img-hover') || 'shine',
+          trigger: val,
+          slide: wrapper.getAttribute('data-aurora-img-slide') || 'up',
+          threshold: 0.15
+        };
+        initImageInteractions(wrapper, opts);
+      }
+    }
+
+    // Force run/replay the appear/entrance animation state helper
+    function triggerAppearEffect(btnEl, effectKey) {
+      var card = btnEl.closest('.effect-card');
+      var wrapper = card.querySelector('.image-wrapper-mockup');
+
+      wrapper.classList.remove('aurora-img-appeared');
+
+      // Trigger reflow to restart CSS keyframe/transition animation
+      void wrapper.offsetWidth;
+
+      wrapper.classList.add('aurora-img-appeared');
+    }
+
+    // Initialize all mock elements interaction when script finishes loading
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.initImageInteractions) {
+        document.querySelectorAll('.image-wrapper-mockup').forEach(function(wrapper) {
+          var opts = {
+            enable: true,
+            effect: wrapper.getAttribute('data-aurora-img-hover') || 'shine',
+            trigger: wrapper.getAttribute('data-aurora-img-trigger') || 'hover',
+            slide: wrapper.getAttribute('data-aurora-img-slide') || 'up',
+            threshold: 0.15
+          };
+          initImageInteractions(wrapper, opts);
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
