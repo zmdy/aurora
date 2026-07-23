@@ -236,6 +236,166 @@ body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(0.5); }
   background-repeat: no-repeat;
 }
 
+/* Dynamic moving mesh gradient background overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  z-index: 1;
+  background: radial-gradient(circle at 20% 30%, rgba(5,177,114,.45) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(0,153,204,.40) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(124,92,255,.45) 0%, transparent 50%);
+  filter: blur(60px);
+  mix-blend-mode: color-dodge;
+  opacity: .85;
+  animation: hero-gradient-move 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes hero-gradient-move {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 50px) scale(1.12); }
+  100% { transform: translate(50px, -30px) scale(1.05); }
+}
+
+/* Interactive Aurora canvas background */
+.hero__canvas-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#aurora-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HERO 2 — WEBGL SHADER EDITION STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+.hero--webgl {
+  background-image: url('quadro-34.png');
+  background-size: cover;
+  background-position: center top;
+  border-top: 1px solid var(--c-border);
+}
+
+.hero__webgl-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#webgl-aurora-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero__badge--webgl {
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  box-shadow: 0 0 25px rgba(2, 132, 199, 0.25);
+}
+
+.hero__badge-dot--cyan {
+  background: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+.line-gradient-webgl {
+  background: linear-gradient(115deg, #38bdf8 0%, #34d399 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.4));
+}
+
+.btn-primary--cyan {
+  background: linear-gradient(115deg, #0284c7 0%, #05b172 50%, #7c5cff 100%);
+  box-shadow: 0 10px 35px rgba(2, 132, 199, 0.45);
+}
+
+.btn-primary--cyan:hover {
+  box-shadow: 0 16px 45px rgba(2, 132, 199, 0.65);
+}
+
+.hero__stats-pill--webgl {
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.hero__stat-num--cyan {
+  background: linear-gradient(115deg, #38bdf8 0%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HERO 3 — CODEPEN WAVE RIBBONS EDITION STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+.hero--ribbons {
+  background-image: url('quadro-34.png');
+  background-size: cover;
+  background-position: center top;
+  border-top: 1px solid var(--c-border);
+}
+
+.hero__ribbons-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#aurora-ribbons-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero__badge--ribbons {
+  border-color: rgba(167, 139, 250, 0.4);
+  color: #a78bfa;
+  box-shadow: 0 0 25px rgba(124, 92, 255, 0.25);
+}
+
+.hero__badge-dot--violet {
+  background: #a78bfa;
+  box-shadow: 0 0 10px #a78bfa;
+}
+
+.line-gradient-ribbons {
+  background: linear-gradient(115deg, #a78bfa 0%, #34d399 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 35px rgba(167, 139, 250, 0.4));
+}
+
+.btn-primary--violet {
+  background: linear-gradient(115deg, #7c5cff 0%, #05b172 50%, #0099cc 100%);
+  box-shadow: 0 10px 35px rgba(124, 92, 255, 0.45);
+}
+
+.btn-primary--violet:hover {
+  box-shadow: 0 16px 45px rgba(124, 92, 255, 0.65);
+}
+
+.hero__stats-pill--ribbons {
+  border-color: rgba(167, 139, 250, 0.25);
+}
+
+.hero__stat-num--violet {
+  background: linear-gradient(115deg, #a78bfa 0%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* Smooth dark horizon fade blending pine trees into next section */
 .hero__horizon-fade {
   position: absolute;
@@ -659,6 +819,9 @@ body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(0.5); }
       </a>
 
       <ul class="nav__links" role="list">
+        <li><a href="#top">Hero 1 (Canvas)</a></li>
+        <li><a href="#webgl-hero">Hero 2 (WebGL)</a></li>
+        <li><a href="#ribbon-hero">Hero 3 (CodePen Waves)</a></li>
         <li><a href="#playground">Playground</a></li>
         <li><a href="#effects">Catalog</a></li>
         <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
@@ -675,6 +838,11 @@ body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(0.5); }
      HERO — CELESTIAL AURORA BOREALIS EDITION (index2.html)
      ═══════════════════════════════════════════════════════════════════ -->
 <section id="top" class="hero">
+  <!-- Interactive Aurora Gradient Canvas -->
+  <div class="hero__canvas-bg" aria-hidden="true">
+    <canvas id="aurora-canvas"></canvas>
+  </div>
+
   <!-- Shimmering Star Canvas Overlay -->
   <div class="hero__star-canvas" aria-hidden="true">
     <canvas id="star-canvas"></canvas>
@@ -724,6 +892,128 @@ body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(0.5); }
       <div>
         <div class="hero__stat-num">$0</div>
         <div class="hero__stat-lbl">Forever</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horizon fade blending tree silhouettes into dark body -->
+  <div class="hero__horizon-fade" aria-hidden="true"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HERO 2 — REALTIME WEBGL 3D AURORA BOREALIS SHADER PREVIEW
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="webgl-hero" class="hero hero--webgl">
+  <!-- WebGL Aurora Shader Canvas -->
+  <div class="hero__webgl-bg" aria-hidden="true">
+    <canvas id="webgl-aurora-canvas"></canvas>
+  </div>
+
+  <div class="container hero__content">
+    <div class="hero__badge hero__badge--webgl">
+      <span class="hero__badge-dot hero__badge-dot--cyan"></span>
+      WebGL 3D Shader Preview · Real-Time Northern Lights Physics
+    </div>
+
+    <h1 class="hero__title">
+      <span class="word-stack">Real-Time GLSL</span>
+      <span class="word-stack line-gradient-webgl">Aurora Shader.</span>
+      <span class="word-stack line-outlined">GPU Accelerated.</span>
+    </h1>
+
+    <p class="hero__sub">
+      Domain-warped GLSL Fragment Shader curtains with 3-layer raymarching turbulence, real-time mouse interaction, and sub-5MB VRAM footprint.
+    </p>
+
+    <div class="hero__actions">
+      <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary btn-primary--cyan" aria-label="Download Aurora for free on GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download Aurora Free
+      </a>
+      <a href="#playground" class="btn-ghost" aria-label="Try the live animation playground">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"></polygon></svg>
+        Try Interactive Studio
+      </a>
+    </div>
+
+    <!-- Floating Glassmorphism Stats Pill -->
+    <div class="hero__stats-pill hero__stats-pill--webgl">
+      <div>
+        <div class="hero__stat-num hero__stat-num--cyan">60 FPS</div>
+        <div class="hero__stat-lbl">WebGL Raymarching</div>
+      </div>
+      <div>
+        <div class="hero__stat-num hero__stat-num--cyan">&lt; 15 KB</div>
+        <div class="hero__stat-lbl">Shader Code Size</div>
+      </div>
+      <div>
+        <div class="hero__stat-num hero__stat-num--cyan">&lt; 2%</div>
+        <div class="hero__stat-lbl">CPU Usage</div>
+      </div>
+      <div>
+        <div class="hero__stat-num hero__stat-num--cyan">100%</div>
+        <div class="hero__stat-lbl">Interactive Physics</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horizon fade blending tree silhouettes into dark body -->
+  <div class="hero__horizon-fade" aria-hidden="true"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HERO 3 — CODEPEN FLOWING AURORA WAVE RIBBONS EDITION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="ribbon-hero" class="hero hero--ribbons">
+  <!-- Flowing Simplex 3D Noise Aurora Canvas Overlay -->
+  <div class="hero__ribbons-bg" aria-hidden="true">
+    <canvas id="aurora-ribbons-canvas"></canvas>
+  </div>
+
+  <div class="container hero__content">
+    <div class="hero__badge hero__badge--ribbons">
+      <span class="hero__badge-dot hero__badge-dot--violet"></span>
+      CodePen Simplex 3D Edition · Stefan Gustavson Noise Algorithm
+    </div>
+
+    <h1 class="hero__title">
+      <span class="word-stack">Simplex 3D Noise,</span>
+      <span class="word-stack line-gradient-ribbons">Glowing Aurora.</span>
+      <span class="word-stack line-outlined">CodePen Port.</span>
+    </h1>
+
+    <p class="hero__sub">
+      Exact JavaScript implementation of Stefan Gustavson &amp; McCullough's 3D Simplex noise algorithm modulating dynamic multi-stop linear gradients across night sky pixel coordinates.
+    </p>
+
+    <div class="hero__actions">
+      <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary btn-primary--violet" aria-label="Download Aurora for free on GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download Aurora Free
+      </a>
+      <a href="#playground" class="btn-ghost" aria-label="Try the live animation playground">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"></polygon></svg>
+        Try Interactive Studio
+      </a>
+    </div>
+
+    <!-- Floating Glassmorphism Stats Pill -->
+    <div class="hero__stats-pill hero__stats-pill--ribbons">
+      <div>
+        <div class="hero__stat-num hero__stat-num--violet">Simplex 3D</div>
+        <div class="hero__stat-lbl">Noise Function</div>
+      </div>
+      <div>
+        <div class="hero__stat-num hero__stat-num--violet">5 Color</div>
+        <div class="hero__stat-lbl">Dynamic Stops</div>
+      </div>
+      <div>
+        <div class="hero__stat-num hero__stat-num--violet">60 FPS</div>
+        <div class="hero__stat-lbl">Buffer Upscaling</div>
+      </div>
+      <div>
+        <div class="hero__stat-num hero__stat-num--violet">100%</div>
+        <div class="hero__stat-lbl">CodePen Port</div>
       </div>
     </div>
   </div>
@@ -804,6 +1094,394 @@ body.cursor-click .gcursor-dot { transform: translate(-50%, -50%) scale(0.5); }
 <script>
 (function() {
   'use strict';
+
+  /* ═══════════════════════════════════════════════════════════════════
+     INTERACTIVE AURORA GRADIENT CANVAS
+     ═══════════════════════════════════════════════════════════════════ */
+  var aCanvas = document.getElementById('aurora-canvas');
+  if (aCanvas) {
+    var actx = aCanvas.getContext('2d');
+    var adpr = Math.min(window.devicePixelRatio || 1, 2);
+    var aw = 0, ah = 0;
+    var amouse = { x: .5, y: .4 };
+    var atarget = { x: .5, y: .4 };
+    var aReduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var ablobs = [
+      { c: 'rgba(5,177,114,.55)',  sx:.28, sy:.30, r:.58, sp:.52, ph: 0.0, pull: .16 },
+      { c: 'rgba(0,153,204,.40)',  sx:.72, sy:.25, r:.62, sp:.40, ph: 2.1, pull:-.14 },
+      { c: 'rgba(124,92,255,.38)', sx:.55, sy:.72, r:.50, sp:.36, ph: 4.2, pull: .20 },
+      { c: 'rgba(0,153,204,.22)',  sx:.18, sy:.78, r:.44, sp:.60, ph: 1.4, pull:-.10 },
+    ];
+
+    function aResize() {
+      aw = aCanvas.parentElement.offsetWidth;
+      ah = aCanvas.parentElement.offsetHeight;
+      aCanvas.width = aw * adpr;
+      aCanvas.height = ah * adpr;
+      actx.setTransform(adpr, 0, 0, adpr, 0, 0);
+    }
+
+    aCanvas.parentElement.addEventListener('mousemove', function(e) {
+      var r = aCanvas.parentElement.getBoundingClientRect();
+      atarget.x = (e.clientX - r.left) / r.width;
+      atarget.y = (e.clientY - r.top) / r.height;
+    });
+
+    window.addEventListener('resize', aResize);
+    aResize();
+
+    if (!aReduceMotion) {
+      var at = 0;
+      function aDraw() {
+        at += .012;
+        amouse.x += (atarget.x - amouse.x) * .03;
+        amouse.y += (atarget.y - amouse.y) * .03;
+        actx.clearRect(0, 0, aw, ah);
+
+        ablobs.forEach(function(b, i) {
+          var dx = Math.sin(at * b.sp + b.ph) * .22;
+          var dy = Math.cos(at * b.sp * .85 + b.ph) * .18;
+          var cx = (b.sx + dx + (amouse.x - .5) * b.pull) * aw;
+          var cy = (b.sy + dy + (amouse.y - .5) * b.pull) * ah;
+          var r = b.r * Math.max(aw, ah) * (1 + Math.sin(at * 0.5 + i) * 0.15);
+          var g = actx.createRadialGradient(cx, cy, 0, cx, cy, r);
+          g.addColorStop(0, b.c);
+          g.addColorStop(1, 'rgba(0,0,0,0)');
+          actx.fillStyle = g;
+          actx.fillRect(0, 0, aw, ah);
+        });
+        requestAnimationFrame(aDraw);
+      }
+      requestAnimationFrame(aDraw);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     REALTIME WEBGL AURORA BOREALIS FRAGMENT SHADER
+     ═══════════════════════════════════════════════════════════════════ */
+  (function initWebGLAurora() {
+    var canvas = document.getElementById('webgl-aurora-canvas');
+    if (!canvas) return;
+
+    var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return;
+
+    var vsSource = 'attribute vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }';
+    var fsSource = [
+      'precision highp float;',
+      'uniform vec2 u_resolution;',
+      'uniform float u_time;',
+      'uniform vec2 u_mouse;',
+
+      'mat2 rotate2D(float angle) {',
+      '    float s = sin(angle), c = cos(angle);',
+      '    return mat2(c, -s, s, c);',
+      '}',
+
+      'float hash(vec2 p) {',
+      '    p = fract(p * vec2(234.34, 435.345));',
+      '    p += dot(p, p + 34.23);',
+      '    return fract(p.x * p.y);',
+      '}',
+
+      'float noise(vec2 p) {',
+      '    vec2 i = floor(p);',
+      '    vec2 f = fract(p);',
+      '    f = f * f * (3.0 - 2.0 * f);',
+      '    float a = hash(i);',
+      '    float b = hash(i + vec2(1.0, 0.0));',
+      '    float c = hash(i + vec2(0.0, 1.0));',
+      '    float d = hash(i + vec2(1.0, 1.0));',
+      '    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);',
+      '}',
+
+      'float fbm(vec2 p) {',
+      '    float val = 0.0, amp = 0.5;',
+      '    mat2 rot = rotate2D(0.45);',
+      '    for (int i = 0; i < 5; i++) {',
+      '        val += amp * noise(p);',
+      '        p = rot * p * 2.02;',
+      '        amp *= 0.5;',
+      '    }',
+      '    return val;',
+      '}',
+
+      'void main() {',
+      '    vec2 uv = gl_FragCoord.xy / u_resolution.xy;',
+      '    vec2 mouseNorm = (u_mouse - u_resolution * 0.5) / u_resolution.y;',
+
+      '    vec3 skyBase = mix(vec3(0.01, 0.02, 0.06), vec3(0.03, 0.06, 0.14), uv.y);',
+
+      '    float starHash = hash(floor(gl_FragCoord.xy * 0.8));',
+      '    float starDist = fract(starHash * 43758.5453);',
+      '    float star = smoothstep(0.994, 0.998, starDist) * (sin(u_time * 2.0 + starHash * 10.0) * 0.4 + 0.6);',
+      '    star *= smoothstep(0.1, 0.4, uv.y);',
+
+      '    vec3 auroraAcc = vec3(0.0);',
+      '    for (int i = 0; i < 3; i++) {',
+      '        float fi = float(i);',
+      '        float speed = 0.03 + fi * 0.015;',
+      '        vec2 st = vec2(uv.x * (2.0 + fi * 0.5), uv.y * 1.2);',
+      '        st.x += u_time * speed + mouseNorm.x * (0.15 + fi * 0.05);',
+
+      '        vec2 q = vec2(fbm(st + vec2(0.0, u_time * 0.025 + fi)), fbm(st + vec2(1.5, u_time * 0.02 + fi * 0.3)));',
+      '        vec2 r = vec2(fbm(st + 1.2 * q + vec2(2.8, 5.1) + 0.1 * u_time), fbm(st + 1.2 * q + vec2(7.1, 2.4) + 0.08 * u_time));',
+
+      '        float f = fbm(st + r);',
+
+      '        float rayFreq = 35.0 + fi * 10.0;',
+      '        float rays = sin(uv.x * rayFreq + f * 10.0 + u_time * 0.25) * 0.5 + 0.5;',
+      '        rays = pow(rays, 2.8);',
+
+      '        float heightFade = smoothstep(0.1 + fi * 0.05, 0.55 + fi * 0.1, uv.y) * smoothstep(0.98, 0.5, uv.y);',
+
+      '        vec3 colEmerald = vec3(0.02, 0.95, 0.45);',
+      '        vec3 colTeal    = vec3(0.0, 0.70, 0.95);',
+      '        vec3 colViolet  = vec3(0.65, 0.25, 0.98);',
+
+      '        float colorPos = smoothstep(0.2, 0.75, uv.y + f * 0.25);',
+      '        vec3 layerColor = mix(colEmerald, mix(colTeal, colViolet, colorPos), colorPos);',
+
+      '        float layerIntensity = (f * 0.75 + rays * 0.4) * heightFade * (0.9 - fi * 0.2);',
+      '        layerIntensity = clamp(layerIntensity, 0.0, 1.0);',
+
+      '        auroraAcc += layerColor * layerIntensity;',
+      '    }',
+
+      '    vec3 finalColor = skyBase + vec3(star) * 0.8 + auroraAcc;',
+      '    gl_FragColor = vec4(finalColor, 0.85);',
+      '}'
+    ].join('\n');
+
+    function createShader(gl, type, source) {
+      var shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    var vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    var fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+    if (!vs || !fs) return;
+
+    var program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+
+    gl.useProgram(program);
+
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+      -1,  1,
+       1, -1,
+       1,  1
+    ]), gl.STATIC_DRAW);
+
+    var positionLocation = gl.getAttribLocation(program, 'position');
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    var resLocation = gl.getUniformLocation(program, 'u_resolution');
+    var timeLocation = gl.getUniformLocation(program, 'u_time');
+    var mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+
+    var mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    var targetMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+    canvas.parentElement.addEventListener('mousemove', function(e) {
+      var rect = canvas.parentElement.getBoundingClientRect();
+      targetMouse.x = e.clientX - rect.left;
+      targetMouse.y = rect.height - (e.clientY - rect.top);
+    });
+
+    function resize() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var width = canvas.parentElement.offsetWidth;
+      var height = canvas.parentElement.offsetHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(resLocation, canvas.width, canvas.height);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    var startTime = performance.now();
+    function render() {
+      var now = performance.now();
+      var elapsed = (now - startTime) * 0.001;
+
+      mouse.x += (targetMouse.x - mouse.x) * 0.05;
+      mouse.y += (targetMouse.y - mouse.y) * 0.05;
+
+      gl.uniform1f(timeLocation, elapsed);
+      gl.uniform2f(mouseLocation, mouse.x * (canvas.width / canvas.parentElement.offsetWidth), mouse.y * (canvas.height / canvas.parentElement.offsetHeight));
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════════
+     CODEPEN SIMPLEX NOISE 3D GRADIENT AURORA (Stefan Gustavson / McCullough / Koo)
+     ═══════════════════════════════════════════════════════════════════ */
+  (function initAuroraRibbons() {
+    var canvas = document.getElementById('aurora-ribbons-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    // Simplex Noise 3D Implementation from Stefan Gustavson / McCullough / Koo
+    var SimplexNoise = function(r) {
+      if (r == undefined) r = Math;
+      this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+      this.p = [];
+      for (var i=0; i<256; i++) { this.p[i] = Math.floor(r.random()*256); }
+      this.perm = [];
+      for (var i=0; i<512; i++) { this.perm[i]=this.p[i & 255]; }
+    };
+
+    SimplexNoise.prototype.dot = function(g, x, y, z) {
+      return g[0]*x + g[1]*y + (z !== undefined ? g[2]*z : 0);
+    };
+
+    SimplexNoise.prototype.noise3d = function(xin, yin, zin) {
+      var n0, n1, n2, n3;
+      var F3 = 1.0/3.0;
+      var s = (xin+yin+zin)*F3;
+      var i = Math.floor(xin+s), j = Math.floor(yin+s), k = Math.floor(zin+s);
+      var G3 = 1.0/6.0;
+      var t = (i+j+k)*G3;
+      var X0 = i-t, Y0 = j-t, Z0 = k-t;
+      var x0 = xin-X0, y0 = yin-Y0, z0 = zin-Z0;
+      var i1, j1, k1, i2, j2, k2;
+      if(x0>=y0) {
+        if(y0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=1; k2=0; }
+        else if(x0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=0; k2=1; }
+        else { i1=0; j1=0; k1=1; i2=1; j2=0; k2=1; }
+      } else {
+        if(y0<z0) { i1=0; j1=0; k1=1; i2=0; j2=1; k2=1; }
+        else if(x0<z0) { i1=0; j1=1; k1=0; i2=0; j2=1; k2=1; }
+        else { i1=0; j1=1; k1=0; i2=1; j2=1; k2=0; }
+      }
+      var x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3;
+      var x2 = x0 - i2 + 2.0*G3, y2 = y0 - j2 + 2.0*G3, z2 = z0 - k2 + 2.0*G3;
+      var x3 = x0 - 1.0 + 3.0*G3, y3 = y0 - 1.0 + 3.0*G3, z3 = z0 - 1.0 + 3.0*G3;
+      var ii = i & 255, jj = j & 255, kk = k & 255;
+      var gi0 = this.perm[ii+this.perm[jj+this.perm[kk]]] % 12;
+      var gi1 = this.perm[ii+i1+this.perm[jj+j1+this.perm[kk+k1]]] % 12;
+      var gi2 = this.perm[ii+i2+this.perm[jj+j2+this.perm[kk+k2]]] % 12;
+      var gi3 = this.perm[ii+1+this.perm[jj+1+this.perm[kk+1]]] % 12;
+      var t0 = 0.6 - x0*x0 - y0*y0 - z0*z0;
+      n0 = t0<0 ? 0.0 : Math.pow(t0, 4) * this.dot(this.grad3[gi0], x0, y0, z0);
+      var t1 = 0.6 - x1*x1 - y1*y1 - z1*z1;
+      n1 = t1<0 ? 0.0 : Math.pow(t1, 4) * this.dot(this.grad3[gi1], x1, y1, z1);
+      var t2 = 0.6 - x2*x2 - y2*y2 - z2*z2;
+      n2 = t2<0 ? 0.0 : Math.pow(t2, 4) * this.dot(this.grad3[gi2], x2, y2, z2);
+      var t3 = 0.6 - x3*x3 - y3*y3 - z3*z3;
+      n3 = t3<0 ? 0.0 : Math.pow(t3, 4) * this.dot(this.grad3[gi3], x3, y3, z3);
+      return 32.0*(n0 + n1 + n2 + n3);
+    };
+
+    var simplex = new SimplexNoise();
+
+    var bufferWidth = 480;
+    var bufferHeight = 300;
+    var offCanvas = document.createElement('canvas');
+    offCanvas.width = bufferWidth;
+    offCanvas.height = bufferHeight;
+    var offCtx = offCanvas.getContext('2d');
+
+    function resize() {
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    function renderAurora() {
+      var time = Date.now() / 4000;
+      offCtx.clearRect(0, 0, bufferWidth, bufferHeight);
+
+      // Create CodePen dynamic multi-color gradient
+      var gradient = offCtx.createLinearGradient(0, 0, bufferHeight / 0.4, bufferHeight * 0.9);
+      gradient.addColorStop(0, 'rgba(86,59,148,1)');
+      gradient.addColorStop((Math.sin(time) + 1) * 0.5 * 0.2, 'rgba(178,64,95,0.3)');
+      gradient.addColorStop((Math.cos(time) + 1) * 0.5 * 0.2 + 0.444, 'rgba(0,220,90,0.7)');
+      gradient.addColorStop(0.7, 'rgba(55,60,140,0.3)');
+      gradient.addColorStop(1, 'rgba(0,220,90,0.6)');
+
+      offCtx.fillStyle = gradient;
+      offCtx.fillRect(0, 0, bufferWidth, bufferHeight);
+
+      // Darkening vertical gradient overlay
+      offCtx.save();
+      offCtx.globalCompositeOperation = 'source-over';
+      var darkGrad = offCtx.createLinearGradient(0, 0, 0, bufferHeight * 0.5);
+      darkGrad.addColorStop(0, 'rgba(0,0,0,0.01)');
+      darkGrad.addColorStop(1, 'rgba(0,0,0,0.85)');
+      offCtx.fillStyle = darkGrad;
+      offCtx.fillRect(0, 0, bufferWidth, bufferHeight);
+      offCtx.restore();
+
+      // Read image data and apply Simplex Noise 3D modulation
+      var image = offCtx.createImageData(bufferWidth, bufferHeight);
+      var image2 = offCtx.getImageData(0, 0, bufferWidth, bufferHeight);
+      var data = image.data;
+      var data2 = image2.data;
+
+      var octaves = 0.3;
+      var scaleX = 4 / octaves;
+      var scaleY = 0.25 / octaves;
+      var len = data.length;
+
+      for (var i = 0, j = 0; i < len; i += 4, j++) {
+        var h = (j / bufferWidth) | 0;
+        var w = j % bufferWidth;
+
+        var n = 0;
+        var frequency = 0.3;
+        var persistence = 1.5;
+        var amplitude;
+
+        for (var oi = 0; oi < octaves; oi++) {
+          frequency *= 2;
+          amplitude = Math.pow(persistence, oi);
+          n += simplex.noise3d((w / bufferWidth) * frequency * scaleX, (h / bufferHeight) * frequency * scaleY, time) * amplitude;
+        }
+
+        var factor = n * 0.5 + 0.5;
+        data[i]     = (factor * data2[i]) | 0;
+        data[i + 1] = (factor * data2[i + 1]) | 0;
+        data[i + 2] = (factor * data2[i + 2]) | 0;
+        data[i + 3] = data2[i + 3];
+      }
+
+      offCtx.putImageData(image, 0, 0);
+
+      // Draw smoothed offscreen buffer to full resolution main canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(offCanvas, 0, 0, canvas.width, canvas.height);
+
+      requestAnimationFrame(renderAurora);
+    }
+
+    requestAnimationFrame(renderAurora);
+  })();
 
   /* ═══════════════════════════════════════════════════════════════════
      SHIMMERING STAR CANVAS OVERLAY
