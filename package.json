@@ -5,7 +5,8 @@
   "description": "Build tooling for Aurora for Elementor. Aurora itself ships as plain PHP/JS/CSS (no build step required to run the plugin) — Vite here is only a developer convenience for maintaining the Text Animation module's per-effect source files (assets/js/src/) and compiling them into the flat, framework-free bundles the plugin actually loads (assets/js/dist/). The compiled dist/ files ARE committed, so end users never need Node/npm.",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-text-effects.mjs"
+    "build": "node scripts/build-text-effects.mjs",
+    "pack": "bash scripts/pack-plugin.sh"
   },
   "devDependencies": {
     "vite": "^5.4.11"
