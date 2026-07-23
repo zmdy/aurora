@@ -195,12 +195,15 @@ export function detachHoverScatter(wrapper) {
  */
 export function initTextAnimation(wrapper, opts) {
     var textEl = getTextTarget(wrapper);
+    if (textEl) {
+        textEl._auroraLeaves = null;
+    }
 
     // Store (only once) the target's original HTML, so it can be restored
     // before each reinitialization.
-    if (typeof textEl._auroraPristineHTML === 'undefined') {
+    if (textEl && typeof textEl._auroraPristineHTML === 'undefined') {
         textEl._auroraPristineHTML = textEl.innerHTML;
-    } else {
+    } else if (textEl) {
         textEl.innerHTML = textEl._auroraPristineHTML;
     }
 
@@ -326,6 +329,8 @@ export function teardownTextAnimation(wrapper) {
             }
             textEl._auroraLoopAnim = null;
         }
+
+        textEl._auroraLeaves = null;
 
         if (typeof textEl._auroraPristineHTML !== 'undefined') {
             textEl.innerHTML = textEl._auroraPristineHTML;

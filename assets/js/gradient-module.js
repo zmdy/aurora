@@ -527,7 +527,10 @@
      * the whole text visually disappears.
      */
     function findTextLeaves(textEl) {
-        return textEl.querySelectorAll('.aurora-char, .aurora-word, .aurora-line-wrap .aurora-word, .letter, .word');
+        if (!textEl._auroraLeaves) {
+            textEl._auroraLeaves = textEl.querySelectorAll('.aurora-char, .aurora-word, .aurora-line-wrap .aurora-word, .letter, .word');
+        }
+        return textEl._auroraLeaves;
     }
 
     /**
