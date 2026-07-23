@@ -556,6 +556,178 @@
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // DYNAMIC INTERACTIONS (3D TILT, RGB SPLIT LAYERS, LIQUID WARP, APPEAR TRIGGER)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    var activeImageInteractions = new WeakMap();
+
+    function clearImageInteractions(wrapper) {
+        var active = activeImageInteractions.get(wrapper);
+        if (active) {
+            if (active.observer) active.observer.disconnect();
+            if (active.mouseMoveHandler) wrapper.removeEventListener('mousemove', active.mouseMoveHandler);
+            if (active.mouseLeaveHandler) wrapper.removeEventListener('mouseleave', active.mouseLeaveHandler);
+            if (active.rgbContainer && active.rgbContainer.parentNode) {
+                active.rgbContainer.parentNode.removeChild(active.rgbContainer);
+            }
+            if (active.canvas && active.canvas.parentNode) {
+                active.canvas.parentNode.removeChild(active.canvas);
+            }
+            if (active.img) {
+                active.img.style.transform = '';
+                active.img.style.filter = '';
+                active.img.style.opacity = '';
+            }
+            activeImageInteractions.delete(wrapper);
+        }
+        wrapper.classList.remove('aurora-img-appeared');
+    }
+
+    function initImageInteractions(wrapper, opts) {
+        clearImageInteractions(wrapper);
+
+        var target = getImgTarget(wrapper);
+        if (!target) return;
+
+        var img = target.img;
+        var box = target.box;
+
+        var active = {
+            img: img,
+            observer: null,
+            mouseMoveHandler: null,
+            mouseLeaveHandler: null,
+            rgbContainer: null,
+            canvas: null
+        };
+
+        // 1. Appear trigger (scroll intersection observer)
+        if (opts.trigger === 'appear' || opts.trigger === 'both') {
+            var threshold = opts.threshold || 0.15;
+            var obs = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        wrapper.classList.add('aurora-img-appeared');
+                        if (opts.trigger === 'appear') {
+                            obs.unobserve(entry.target);
+                        }
+                    } else if (opts.trigger === 'both') {
+                        wrapper.classList.remove('aurora-img-appeared');
+                    }
+                });
+            }, { threshold: threshold });
+            obs.observe(wrapper);
+            active.observer = obs;
+        }
+
+        // 2. 3D Tilt interaction
+        if (opts.effect === '3d-tilt') {
+            box.style.perspective = '1000px';
+            img.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
+            img.style.transformStyle = 'preserve-3d';
+
+            var mouseMoveHandler = function (e) {
+                var rect = box.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                var px = (x / rect.width) * 2 - 1; // -1 to 1
+                var py = (y / rect.height) * 2 - 1; // -1 to 1
+
+                var maxTilt = 15; // degrees
+                var rx = -py * maxTilt;
+                var ry = px * maxTilt;
+
+                img.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale3d(1.05, 1.05, 1.05)';
+                img.style.boxShadow = (-ry * 2) + 'px ' + (rx * 2) + 'px 25px rgba(0,0,0,0.3)';
+            };
+
+            var mouseLeaveHandler = function () {
+                img.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
+                img.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                img.style.boxShadow = '';
+            };
+
+            wrapper.addEventListener('mousemove', mouseMoveHandler);
+            wrapper.addEventListener('mouseleave', mouseLeaveHandler);
+            active.mouseMoveHandler = mouseMoveHandler;
+            active.mouseLeaveHandler = mouseLeaveHandler;
+        }
+
+        // 3. RGB Chromatic Split (construct overlay layers)
+        if (opts.effect === 'rgb-split') {
+            ensureRelative(box);
+            var src = img.getAttribute('src');
+
+            var rgbContainer = document.createElement('div');
+            rgbContainer.className = 'aurora-rgb-container';
+            rgbContainer.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:2;mix-blend-mode:screen;';
+
+            var channels = ['r', 'g', 'b'];
+            channels.forEach(function (ch) {
+                var layer = document.createElement('div');
+                layer.className = 'aurora-rgb-layer aurora-rgb-layer-' + ch;
+                layer.style.cssText = 'position:absolute;inset:0;background-image:url(' + src + ');background-size:cover;background-position:center;mix-blend-mode:screen;opacity:0;';
+                rgbContainer.appendChild(layer);
+            });
+
+            box.appendChild(rgbContainer);
+            active.rgbContainer = rgbContainer;
+        }
+
+        // 4. Liquid Warp distortion canvas overlay
+        if (opts.effect === 'liquid-warp') {
+            ensureRelative(box);
+            var canvas = document.createElement('canvas');
+            canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+            box.appendChild(canvas);
+            active.canvas = canvas;
+
+            var ctx = canvas.getContext('2d');
+            var points = [];
+            var isHovered = false;
+
+            var resize = function () {
+                canvas.width = box.offsetWidth || 300;
+                canvas.height = box.offsetHeight || 300;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            wrapper.addEventListener('mouseenter', function () { isHovered = true; });
+            wrapper.addEventListener('mouseleave', function () { isHovered = false; });
+
+            var time = 0;
+            var render = function () {
+                if (!active.canvas) return;
+                time += 0.05;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (isHovered || wrapper.classList.contains('aurora-img-appeared')) {
+                    // Draw wavy/liquified displacement overlay
+                    ctx.save();
+                    ctx.globalAlpha = 0.25;
+                    ctx.strokeStyle = 'rgba(10,251,193,0.3)';
+                    ctx.lineWidth = 2;
+
+                    ctx.beginPath();
+                    for (var x = 0; x < canvas.width; x += 15) {
+                        var y = (canvas.height * 0.5) + Math.sin(x * 0.03 + time) * 15;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                requestAnimationFrame(render);
+            };
+            render();
+        }
+
+        activeImageInteractions.set(wrapper, active);
+    }
+
     /**
      * Reverts the entrance state of a wrapper (used when the "Enable
      * Entrance Animation" control is dynamically turned off in the editor).
@@ -627,7 +799,8 @@
         AuroraImageEffectsHandler.prototype.constructor = AuroraImageEffectsHandler;
 
         AuroraImageEffectsHandler.prototype.isEnabled = function () {
-            return this.getElementSettings('aurora_img_entrance_enable') === 'yes';
+            return this.getElementSettings('aurora_img_entrance_enable') === 'yes' ||
+                   this.getElementSettings('aurora_img_hover_enable') === 'yes';
         };
 
         AuroraImageEffectsHandler.prototype.getOpts = function () {
@@ -647,17 +820,36 @@
             };
         };
 
+        AuroraImageEffectsHandler.prototype.getHoverOpts = function () {
+            return {
+                enable    : this.getElementSettings('aurora_img_hover_enable') === 'yes',
+                effect    : this.getElementSettings('aurora_img_hover_effect') || 'shine',
+                trigger   : this.getElementSettings('aurora_img_hover_trigger') || 'hover',
+                slide     : this.getElementSettings('aurora_img_hover_slide_dir') || 'up',
+                threshold : 0.15
+            };
+        };
+
         AuroraImageEffectsHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
-            var enabled = this.isEnabled();
-            console.log('[Aurora:image-fx] runAnimation()', { wrapper: wrapper, enabled: enabled });
-            if (!enabled) {
+            var entranceEnabled = this.getElementSettings('aurora_img_entrance_enable') === 'yes';
+            var hoverEnabled = this.getElementSettings('aurora_img_hover_enable') === 'yes';
+
+            console.log('[Aurora:image-fx] runAnimation()', { wrapper: wrapper, entranceEnabled: entranceEnabled, hoverEnabled: hoverEnabled });
+
+            if (!entranceEnabled) {
                 teardownImgEntrance(wrapper);
-                return;
+            } else {
+                var opts = this.getOpts();
+                setTimeout(function () { initImgEntrance(wrapper, opts); }, 120);
             }
-            var opts = this.getOpts();
-            console.log('[Aurora:image-fx] opts ->', opts);
-            setTimeout(function () { initImgEntrance(wrapper, opts); }, 120);
+
+            if (!hoverEnabled) {
+                clearImageInteractions(wrapper);
+            } else {
+                var hoverOpts = this.getHoverOpts();
+                setTimeout(function () { initImageInteractions(wrapper, hoverOpts); }, 120);
+            }
         };
 
         AuroraImageEffectsHandler.prototype.onInit = function () {
@@ -668,7 +860,7 @@
 
         AuroraImageEffectsHandler.prototype.onElementChange = function (propertyName) {
             console.log('[Aurora:image-fx] onElementChange()', propertyName);
-            if (propertyName.indexOf('aurora_img_entrance_') === 0) {
+            if (propertyName.indexOf('aurora_img_entrance_') === 0 || propertyName.indexOf('aurora_img_hover_') === 0) {
                 this.runAnimation();
             }
         };
@@ -721,6 +913,17 @@
         })();
     }
 
+    function parseHoverOptsFromDataset(wrapper) {
+        var ds = wrapper.dataset;
+        return {
+            enable    : wrapper.classList.contains('aurora-img-hover-active'),
+            effect    : ds.auroraImgHover || 'shine',
+            trigger   : ds.auroraImgTrigger || 'hover',
+            slide     : ds.auroraImgSlide || 'up',
+            threshold : 0.15
+        };
+    }
+
     function bootstrap() {
         console.log('[Aurora:image-fx] bootstrap() started.');
         waitForEntranceLibs(function () {
@@ -730,9 +933,12 @@
             // data-aurora-img-entrance-* attributes rendered by PHP on the
             // real frontend.
             if (typeof elementorFrontend === 'undefined') {
-                console.log('[Aurora:image-fx] Elementor JS unavailable — using data-aurora-img-entrance-* fallback.');
+                console.log('[Aurora:image-fx] Elementor JS unavailable — using data-aurora-img-entrance-* / hover fallbacks.');
                 document.querySelectorAll('[data-aurora-img-entrance-enable="1"]').forEach(function (el) {
                     setTimeout(function () { initImgEntrance(el, parseOptsFromDataset(el)); }, 120);
+                });
+                document.querySelectorAll('.aurora-img-hover-active').forEach(function (el) {
+                    setTimeout(function () { initImageInteractions(el, parseHoverOptsFromDataset(el)); }, 120);
                 });
             }
         });
