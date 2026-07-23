@@ -125,7 +125,7 @@ export function splitIntoLines(el) {
     // Step 2: group by offsetTop.
     var lineMap = {};
     wordSpans.forEach(function (span) {
-        var top = Math.round(span.getBoundingClientRect().top);
+        var top = span.offsetTop;
         if (!lineMap[top]) lineMap[top] = [];
         lineMap[top].push(span);
     });
