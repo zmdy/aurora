@@ -97,6 +97,22 @@
 			this.image  = rootEl.querySelector( '.morph-image' );
 			this.footer = rootEl.querySelector( '.morph-footer' );
 			this.mode   = null;
+			this._destroyed = false;
+		}
+
+		destroy() {
+			this._destroyed = true;
+			if ( this._captionTimeout ) clearTimeout( this._captionTimeout );
+			if ( this._typewriterTimeout ) clearTimeout( this._typewriterTimeout );
+			if ( this._shimmerTimeout ) clearTimeout( this._shimmerTimeout );
+			if ( this._lettersAnim && typeof this._lettersAnim.pause === 'function' ) {
+				this._lettersAnim.pause();
+			}
+			if ( this._shimmerAnim && typeof this._shimmerAnim.pause === 'function' ) {
+				this._shimmerAnim.pause();
+			}
+			const shimmers = this.image.querySelectorAll( '.morph-image-shimmer' );
+			shimmers.forEach( ( s ) => s.remove() );
 		}
 
 		// ── Rendering: template dispatchers ─────────────────────────────────
@@ -505,7 +521,7 @@
 			// gives the frame morph time to advance so the reveal doesn't
 			// race with the shape change.
 			return new Promise( ( resolve ) => {
-				setTimeout( () => {
+				this._captionTimeout = setTimeout( () => {
 					const textEl = this.footer.querySelector( '.morph-caption-text' );
 					if ( ! textEl ) { resolve( this ); return; }
 					const revealPromise = 'letters' === t.captionEffect
@@ -530,11 +546,11 @@
 				el.textContent = '';
 				let i = 0;
 				const step = () => {
-					if ( ! el.isConnected ) { resolve( this ); return; }
+					if ( this._destroyed || ! el.isConnected ) { resolve( this ); return; }
 					if ( i < text.length ) {
 						el.textContent += text.charAt( i );
 						i++;
-						setTimeout( step, timing.typewriterMinDelay + Math.random() * timing.typewriterMaxDelay );
+						this._typewriterTimeout = setTimeout( step, timing.typewriterMinDelay + Math.random() * timing.typewriterMaxDelay );
 					} else {
 						resolve( this );
 					}
@@ -567,7 +583,7 @@
 			const letters = el.querySelectorAll( '.letter' );
 			if ( ! letters.length ) return Promise.resolve( this );
 			return new Promise( ( resolve ) => {
-				window.anime( {
+				this._lettersAnim = window.anime( {
 					targets:  letters,
 					opacity:  [ 0, 1 ],
 					translateY: [ 35, 0 ],
@@ -605,9 +621,9 @@
 			this.image.appendChild( shimmer );
 			requestAnimationFrame( () => shimmer.classList.add( 'is-active' ) );
 			return new Promise( ( resolve ) => {
-				setTimeout( () => {
-					animate( shimmer, { opacity: [ 1, 0 ] }, { duration: 0.4, easing: 'ease-out' } )
-						.finished.then( () => { shimmer.remove(); resolve( this ); } );
+				this._shimmerTimeout = setTimeout( () => {
+					this._shimmerAnim = animate( shimmer, { opacity: [ 1, 0 ] }, { duration: 0.4, easing: 'ease-out' } );
+					this._shimmerAnim.finished.then( () => { shimmer.remove(); resolve( this ); } );
 				}, duration * 1000 );
 			} );
 		}
@@ -705,6 +721,7 @@
 		destroy() {
 			this._destroyed = true;
 			if ( this._timer ) clearTimeout( this._timer );
+			if ( this.card ) this.card.destroy();
 		}
 	}
 
