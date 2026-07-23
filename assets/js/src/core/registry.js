@@ -37,8 +37,9 @@
  */
 export function registerEffect(effect) {
     if (typeof window === 'undefined' || !effect || !effect.id) return;
-    window.AuroraTextEffects = window.AuroraTextEffects || {};
-    window.AuroraTextEffects[effect.id] = effect;
+    window.AuroraPlugin = window.AuroraPlugin || {};
+    window.AuroraPlugin.TextEffects = window.AuroraPlugin.TextEffects || {};
+    window.AuroraPlugin.TextEffects[effect.id] = effect;
 }
 
 /**
@@ -48,6 +49,6 @@ export function registerEffect(effect) {
  * @returns {AuroraTextEffect|undefined}
  */
 export function getEffect(id) {
-    if (typeof window === 'undefined' || !window.AuroraTextEffects) return undefined;
-    return window.AuroraTextEffects[id];
+    if (typeof window === 'undefined' || !window.AuroraPlugin || !window.AuroraPlugin.TextEffects) return undefined;
+    return window.AuroraPlugin.TextEffects[id];
 }
