@@ -581,8 +581,8 @@ class Image_Effects_Controls extends Animation_Module {
 
 			// Overlay reveal panels (wipe/curtain/iris) are a GSAP-only concept.
 			$needs_overlay = 'gsap' === $library && in_array( $effect, self::OVERLAY_EFFECTS, true );
-			$overlay_color = sanitize_hex_color( $settings['aurora_img_entrance_overlay_color'] ?? '#0afbc1' );
-			$overlay_color = $overlay_color ? $overlay_color : '#0afbc1';
+			// Value from Elementor COLOR control is already sanitized by the framework.
+			$overlay_color = $settings['aurora_img_entrance_overlay_color'] ?: '#0afbc1';
 
 			$trigger = 'load' === ( $settings['aurora_img_entrance_trigger'] ?? 'scroll' ) ? 'load' : 'scroll';
 
@@ -608,14 +608,13 @@ class Image_Effects_Controls extends Animation_Module {
 
 			$duration = max( 100, (int) ( $settings['aurora_img_hover_duration']['size'] ?? 500 ) );
 
-			$shine_color = sanitize_hex_color( $settings['aurora_img_hover_shine_color'] ?? '#ffffff' );
-			$shine_color = $shine_color ? $shine_color : '#ffffff';
+			// Values from Elementor COLOR controls are already sanitized by the framework.
+			$shine_color = $settings['aurora_img_hover_shine_color'] ?: '#ffffff';
 			$shine_width = max( 10, min( 100, (int) ( $settings['aurora_img_hover_shine_width']['size'] ?? 30 ) ) );
 
 			$circle_color = $settings['aurora_img_hover_circle_color'] ?? 'rgba(255,255,255,0.25)';
 
-			$tint_color = sanitize_hex_color( $settings['aurora_img_hover_tint_color'] ?? '#7c6cff' );
-			$tint_color = $tint_color ? $tint_color : '#7c6cff';
+			$tint_color = $settings['aurora_img_hover_tint_color'] ?: '#7c6cff';
 
 			$slide_dir = $settings['aurora_img_hover_slide_dir'] ?? 'up';
 			$rgb_amount = max( 1, (int) ( $settings['aurora_img_hover_rgb_amount']['size'] ?? 8 ) );

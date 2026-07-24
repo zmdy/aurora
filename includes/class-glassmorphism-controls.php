@@ -228,8 +228,8 @@ class Glassmorphism_Controls extends Animation_Module {
 			return [];
 		}
 
-		$tint = sanitize_hex_color( $settings['aurora_glass_tint'] ?? '#ffffff' );
-		$tint = $tint ? $tint : '#ffffff';
+		// Value from Elementor COLOR control is already sanitized by the framework.
+		$tint = $settings['aurora_glass_tint'] ?: '#ffffff';
 		list( $r, $g, $b ) = $this->hex_to_rgb( $tint );
 
 		$blur           = max( 0, min( 40, (int) ( $settings['aurora_glass_blur']['size'] ?? 12 ) ) );

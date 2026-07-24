@@ -245,10 +245,9 @@ class Cursor_Follow_Controls extends Animation_Module {
 			return [];
 		}
 
-		$dot_color  = sanitize_hex_color( $settings['aurora_cursor_dot_color'] ?? '#ff7a2f' );
-		$dot_color  = $dot_color ? $dot_color : '#ff7a2f';
-		$ring_color = sanitize_hex_color( $settings['aurora_cursor_ring_color'] ?? '#7c6cff' );
-		$ring_color = $ring_color ? $ring_color : '#7c6cff';
+		// Values from Elementor COLOR controls are already sanitized by the framework.
+		$dot_color  = $settings['aurora_cursor_dot_color'] ?: '#ff7a2f';
+		$ring_color = $settings['aurora_cursor_ring_color'] ?: '#7c6cff';
 
 		$raw_interactive_selector = $settings['aurora_cursor_interactive_selector'] ?? 'a, button, .cursor-pointer';
 		$interactive_selector     = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_interactive_selector );
