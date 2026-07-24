@@ -634,6 +634,8 @@ class Gradient_Controls extends Animation_Module {
 		$text_mode = $settings['aurora_gradient_text_mode'] ?? 'phrase';
 		$text_mode = in_array( $text_mode, [ 'phrase', 'per-letter' ], true ) ? $text_mode : 'phrase';
 
+		$this->enqueue_gradient_scripts( $type );
+
 		return [
 			'data-aurora-gradient-enable'           => '1',
 			'data-aurora-gradient-target'           => esc_attr( $target ),
@@ -655,5 +657,56 @@ class Gradient_Controls extends Animation_Module {
 			'data-aurora-gradient-spotlight-radius' => esc_attr( max( 50, (int) ( $settings['aurora_gradient_spotlight_radius']['size'] ?? 600 ) ) ),
 			'data-aurora-gradient-text-mode'        => esc_attr( $text_mode ),
 		];
+	}
+
+	/**
+	 * Enqueues the Gradient module's own JS on the real frontend, only for
+	 * pages that actually have an element with Gradient enabled — mirrors
+	 * Text_Animation_Controls::enqueue_effect_script()'s pattern (called
+	 * from get_render_attributes(), during elementor/frontend/element/
+	 * before_render — early enough that wp_enqueue_script() calls made
+	 * here still get printed before wp_footer).
+	 *
+	 * Skipped entirely inside the editor/preview context: there,
+	 * Asset_Manager already loads both scripts unconditionally, since
+	 * every Gradient control is `frontend_available` (previews live,
+	 * entirely in JS) — if the script weren't already on the page the
+	 * first time a user enables Gradient on some element, the Frontend
+	 * Handler would never exist and nothing would happen until the next
+	 * save/reload.
+	 *
+	 * `aurora-gradient-module` is enqueued for ANY enabled gradient (it
+	 * also drives the plain CSS linear/radial/conic paths); `aurora-shaders`
+	 * — the WebGL vendor lib — only when this specific element uses the
+	 * Mesh Shader Engine, since that's the only path that needs it.
+	 *
+	 * @param string $type Resolved gradient type ('linear'|'radial'|'conic'|'mesh').
+	 */
+	private function enqueue_gradient_scripts( string $type ): void {
+
+		if ( \Elementor\Plugin::$instance->editor->is_edit_mode()
+			|| \Elementor\Plugin::$instance->preview->is_preview_mode() ) {
+			return;
+		}
+
+		if ( 'mesh' === $type ) {
+			wp_enqueue_script(
+				'aurora-shaders',
+				AURORA_URL . 'assets/js/vendor/aurora-shaders.js',
+				[],
+				AURORA_VERSION,
+				true
+			);
+		}
+
+		wp_enqueue_script(
+			'aurora-gradient-module',
+			AURORA_URL . 'assets/js/gradient-module.js',
+			'mesh' === $type
+				? [ 'jquery', 'elementor-frontend', 'aurora-shaders' ]
+				: [ 'jquery', 'elementor-frontend' ],
+			AURORA_VERSION,
+			true
+		);
 	}
 }

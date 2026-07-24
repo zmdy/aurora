@@ -124,24 +124,39 @@ final class Asset_Manager {
 			);
 		}
 
-		// ── Vendor: WebGL Shaders Engine ──────────────────────────────────────
-		wp_enqueue_script(
-			'aurora-shaders',
-			AURORA_URL . 'assets/js/vendor/aurora-shaders.js',
-			[],
-			AURORA_VERSION,
-			true
-		);
+		// ── Vendor: WebGL Shaders Engine + Gradient module ────────────────────
+		// Inside the editor/preview iframe both are always loaded — same
+		// reasoning as the Text Animation bundle above: a "frontend_available"
+		// control (like every Gradient control) previews live, entirely in
+		// JS, the moment the user flips it on, with no PHP re-render in
+		// between. If the script weren't already on the page, the Frontend
+		// Handler would never exist and the live preview would silently do
+		// nothing until the next save/reload.
+		//
+		// On the real frontend there's no such live-editing concern, so
+		// both scripts are instead conditionally enqueued from
+		// Gradient_Controls::get_render_attributes() — only when a page
+		// actually has an element with Gradient enabled (and aurora-shaders
+		// only when that element specifically uses the WebGL Mesh Shader
+		// type), the same pattern already used for Text Animation's
+		// per-effect chunks.
+		if ( $is_editor_context ) {
+			wp_enqueue_script(
+				'aurora-shaders',
+				AURORA_URL . 'assets/js/vendor/aurora-shaders.js',
+				[],
+				AURORA_VERSION,
+				true
+			);
 
-		// ── Gradient module ───────────────────────────────────────────────────
-		// Depends on aurora-shaders for WebGL Mesh Shaders & Liquid Cursor Engine.
-		wp_enqueue_script(
-			'aurora-gradient-module',
-			AURORA_URL . 'assets/js/gradient-module.js',
-			[ 'jquery', 'elementor-frontend', 'aurora-shaders' ],
-			AURORA_VERSION,
-			true
-		);
+			wp_enqueue_script(
+				'aurora-gradient-module',
+				AURORA_URL . 'assets/js/gradient-module.js',
+				[ 'jquery', 'elementor-frontend', 'aurora-shaders' ],
+				AURORA_VERSION,
+				true
+			);
+		}
 
 		// ── Cursor Follow module ──────────────────────────────────────────────
 		// No external dependency beyond 'elementor-frontend' for the Frontend
