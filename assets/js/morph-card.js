@@ -758,13 +758,23 @@
 		} );
 	};
 
-	$( window ).on( 'elementor/frontend/init', () => {
-		if ( window.elementorFrontend && window.elementorFrontend.hooks ) {
-			window.elementorFrontend.hooks.addAction( 'frontend/element_ready/aurora_morph_card.default', ( $scope ) => {
-				initStages( $scope );
-			} );
-		}
-	} );
+	let morphCardHandlerRegistered = false;
+
+	function tryRegisterMorphHandler() {
+		if ( morphCardHandlerRegistered ) return true;
+		if ( typeof window.elementorFrontend === 'undefined' || ! window.elementorFrontend.hooks ) return false;
+		window.elementorFrontend.hooks.addAction( 'frontend/element_ready/aurora_morph_card.default', ( $scope ) => {
+			initStages( $scope );
+		} );
+		morphCardHandlerRegistered = true;
+		return true;
+	}
+
+	if ( ! tryRegisterMorphHandler() ) {
+		$( window ).on( 'elementor/frontend/init', () => {
+			tryRegisterMorphHandler();
+		} );
+	}
 
 	$( function () { initStages(); } );
 
