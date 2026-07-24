@@ -30,6 +30,17 @@ final class Asset_Manager {
 			return;
 		}
 
+		// Only load assets on pages that were actually built with Elementor.
+		// In the editor, elementor/preview/enqueue_styles fires separately, so
+		// enqueue_frontend_assets() is only reached for real frontend requests.
+		$elementor = \Elementor\Plugin::$instance;
+		if ( ! is_admin() && isset( $elementor->db ) && is_singular() ) {
+			$post_id = get_queried_object_id();
+			if ( $post_id && ! $elementor->db->is_built_with_elementor( $post_id ) ) {
+				return;
+			}
+		}
+
 		$has_gsap = AURORA_HAS_GSAP;
 
 		// ── Vendor: GSAP 3.12 (local) ─────────────────────────────────────────
