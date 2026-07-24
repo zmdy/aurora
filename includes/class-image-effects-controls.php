@@ -120,12 +120,18 @@ class Image_Effects_Controls extends Animation_Module {
 	 * "section_style_image" (a Style-tab section) — hooking after that
 	 * still lets us place our new section in the Advanced tab, since the
 	 * 'tab' argument of start_controls_section() is independent of which
-	 * hook triggered it. Kept the "common" hook too, harmlessly, since
-	 * applies_to_element() already filters it out.
+	 * hook triggered it.
+	 *
+	 * No longer hooking "common" at all (previously kept "harmlessly"
+	 * since applies_to_element() always filtered it out anyway): a
+	 * third-party plugin's Navigator Indicator was measurably degrading
+	 * (multi-second main-thread blocks) partly because of the sheer number
+	 * of registered control-section callbacks Elementor accumulates per
+	 * widget across active plugins — every no-op hook we drop reduces that
+	 * surface, for every widget on the page, for free.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/image/section_style_image/after_section_end', 'priority' => 10 ],
 		];
 	}

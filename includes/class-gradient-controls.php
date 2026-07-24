@@ -67,10 +67,18 @@ class Gradient_Controls extends Animation_Module {
 	 * enough; the 'tab' argument of start_controls_section() is independent
 	 * of which hook triggered it, so the new section still lands in the
 	 * Advanced tab.
+	 *
+	 * Deliberately NOT hooking 'common/section_effects' at all: since
+	 * applies_to_element() never matches there (see above), it would fire
+	 * add_controls() on literally every widget on the page for nothing —
+	 * a third-party plugin's Navigator Indicator was measurably degrading
+	 * (multi-second main-thread blocks) partly because of the sheer number
+	 * of registered control-section callbacks Elementor accumulates per
+	 * widget across active plugins; every no-op hook we can drop reduces
+	 * that surface for free.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 30 ],
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 20 ],

@@ -48,23 +48,27 @@ class Glassmorphism_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Needs the "common" hook (widgets) in addition to the structural ones —
-	 * applies_to_element() filters so the section only actually shows up on
-	 * the Image widget. Also adds a dedicated hook targeting a section that
-	 * genuinely belongs to the Image widget itself: debug logging proved
-	 * the 'common'/'common-optimized' callback is invoked with a shared
-	 * pseudo-element (its own get_name() is literally "common"/
-	 * "common-optimized", never "image"), so an inclusion check for a
-	 * specific widget type can never pass there. The Image widget doesn't
-	 * register its own "section_effects" (that only exists under
-	 * "common"), but it does register its own "section_style_image" (a
-	 * Style-tab section) — hooking after that still lets us place our new
-	 * section in the Advanced tab, since the 'tab' argument of
-	 * start_controls_section() is independent of which hook triggered it.
+	 * The Image widget doesn't register its own "section_effects" (that
+	 * only exists under "common"), but it does register its own
+	 * "section_style_image" (a Style-tab section) — hooking after that
+	 * still lets us place our new section in the Advanced tab, since the
+	 * 'tab' argument of start_controls_section() is independent of which
+	 * hook triggered it. Structural elements (section/column/container)
+	 * get their own dedicated hooks below.
+	 *
+	 * Deliberately NOT hooking 'common/section_effects': debug logging
+	 * proved that callback is invoked with a shared pseudo-element whose
+	 * get_name() is literally "common"/"common-optimized" (never "image"
+	 * or any real widget name), so applies_to_element()'s inclusion check
+	 * can never pass there — it would only fire add_controls() on every
+	 * widget on the page for nothing. A third-party plugin's Navigator
+	 * Indicator was measurably degrading (multi-second main-thread blocks)
+	 * partly because of the sheer number of registered control-section
+	 * callbacks Elementor accumulates per widget across active plugins;
+	 * every no-op hook we can drop reduces that surface for free.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 40 ],
 			[ 'hook' => 'elementor/element/image/section_style_image/after_section_end', 'priority' => 40 ],
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 30 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 30 ],
