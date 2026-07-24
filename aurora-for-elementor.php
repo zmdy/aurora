@@ -75,13 +75,14 @@ function aurora_init() {
 
 	// Autoloads Aurora\Foo_Bar => includes/class-foo-bar.php. Lets new
 	// modules be added without ever touching a require_once here.
+	$aurora_prefix     = __NAMESPACE__ . '\\';
+	$aurora_prefix_len = strlen( $aurora_prefix );
 	spl_autoload_register(
-		function ( $class ) {
-			$prefix = __NAMESPACE__ . '\\';
-			if ( 0 !== strpos( $class, $prefix ) ) {
+		static function ( $class ) use ( $aurora_prefix, $aurora_prefix_len ) {
+			if ( 0 !== strpos( $class, $aurora_prefix ) ) {
 				return;
 			}
-			$name = substr( $class, strlen( $prefix ) );
+			$name = substr( $class, $aurora_prefix_len );
 			$file = AURORA_PATH . 'includes/class-' . strtolower( str_replace( '_', '-', $name ) ) . '.php';
 			if ( file_exists( $file ) ) {
 				require $file;
