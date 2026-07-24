@@ -271,7 +271,83 @@
         ];
     }
 
+    /**
+     * Pushes the current `data` (distortion/swirl/scale/angle/grain/liquid
+     * cursor/color stops) onto an ALREADY-RUNNING shader's uniforms —
+     * called instead of a full rebuild whenever only these values changed
+     * and the shader program itself (meshStyle) is still the same one.
+     *
+     * This is what makes dragging a slider in the editor cheap: previously
+     * every single settings change (including color/angle/distortion
+     * tweaks that don't need a different shader at all) went through
+     * applyMeshShader()'s full path — new <canvas>, new WebGL context,
+     * shader recompile/link — dozens of times per second while dragging.
+     * That's expensive on its own, and because browsers cap the number of
+     * simultaneously "live" WebGL contexts (Chrome ~16), rapid recreation
+     * could exhaust the budget and degrade the whole editor tab, not just
+     * this widget. Uniform updates are just a few gl.uniform*() calls —
+     * effectively free by comparison.
+     *
+     * @param {Object} state Active mesh state (see applyMeshShader()).
+     * @param {Object} data  Latest resolved Gradient options.
+     */
+    function updateMeshUniforms(state, data) {
+        var gl = state.gl;
+        var u = state.uniforms;
+
+        gl.useProgram(state.program);
+
+        gl.uniform1f(u.uDist, (data.distortion || 40) / 100.0);
+        gl.uniform1f(u.uSwirl, (data.swirl || 25) / 100.0);
+        gl.uniform1f(u.uScale, data.scale || 1.25);
+        gl.uniform1f(u.uAngle, data.angle || 135);
+        gl.uniform1f(u.uGrainEnable, data.grainEnable ? 1.0 : 0.0);
+        gl.uniform1f(u.uGrainInt, (data.grainIntensity || 35) / 100.0);
+        gl.uniform1f(u.uLiqCur, data.liquidCursor ? 1.0 : 0.0);
+        gl.uniform1f(u.uCurRad, data.cursorRadius || 250);
+
+        var stops = data.stops || [];
+        var stopCount = Math.min(stops.length, 6);
+        gl.uniform1i(u.uStopCount, stopCount);
+        for (var i = 0; i < stopCount; i++) {
+            var rgb = hexToRgbVec3(stops[i].color);
+            gl.uniform3f(u.uStops[i], rgb[0], rgb[1], rgb[2]);
+            var offsetVal = (stops[i].offset !== null && typeof stops[i].offset !== 'undefined')
+                ? parseFloat(stops[i].offset) / 100.0
+                : i / Math.max(1, stopCount - 1);
+            gl.uniform1f(u.uOffsets[i], offsetVal);
+        }
+
+        // Liquid Cursor can be toggled on/off without a shader change —
+        // attach/detach its mousemove listener to match the new value.
+        if (data.liquidCursor && !state.mouseHandler) {
+            state.cachedRect = state.el.getBoundingClientRect();
+            state.mouseHandler = function (e) {
+                if (!state.cachedRect) return;
+                state.targetMouse.x = e.clientX - state.cachedRect.left;
+                state.targetMouse.y = state.cachedRect.height - (e.clientY - state.cachedRect.top);
+            };
+            state.el.addEventListener('mousemove', state.mouseHandler, { passive: true });
+        } else if (!data.liquidCursor && state.mouseHandler) {
+            state.el.removeEventListener('mousemove', state.mouseHandler);
+            state.mouseHandler = null;
+        }
+
+        state.data = data;
+    }
+
     function applyMeshShader(el, data) {
+        var meshStyle = data.meshStyle || 'paper';
+        var existing = activeMeshShaders.get(el);
+
+        // Fast path: same element, same compiled shader — just push the
+        // new values onto the already-running WebGL context instead of
+        // tearing everything down and rebuilding it from scratch.
+        if (existing && existing.meshStyle === meshStyle && existing.gl && !existing.gl.isContextLost()) {
+            updateMeshUniforms(existing, data);
+            return;
+        }
+
         clearMeshShader(el);
 
         if (typeof AuroraShaders === 'undefined') return;
@@ -289,7 +365,7 @@
         if (!gl) return;
 
         var vsSource = AuroraShaders.VERTEX_SHADER;
-        var fsSource = AuroraShaders.getFragmentShader(data.meshStyle || 'paper');
+        var fsSource = AuroraShaders.getFragmentShader(meshStyle);
 
         function compileShader(type, src) {
             var s = gl.createShader(type);
@@ -318,73 +394,48 @@
         gl.enableVertexAttribArray(posLoc);
         gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-        var uRes = gl.getUniformLocation(program, 'u_resolution');
-        var uTime = gl.getUniformLocation(program, 'u_time');
-        var uMouse = gl.getUniformLocation(program, 'u_mouse');
-        var uDist = gl.getUniformLocation(program, 'u_distortion');
-        var uSwirl = gl.getUniformLocation(program, 'u_swirl');
-        var uScale = gl.getUniformLocation(program, 'u_scale');
-        var uAngle = gl.getUniformLocation(program, 'u_angle');
-        var uGrainEnable = gl.getUniformLocation(program, 'u_grain_enable');
-        var uGrainInt = gl.getUniformLocation(program, 'u_grain_intensity');
-        var uLiqCur = gl.getUniformLocation(program, 'u_liquid_cursor');
-        var uCurRad = gl.getUniformLocation(program, 'u_cursor_radius');
-        var uStopCount = gl.getUniformLocation(program, 'u_stop_count');
-
-        var uStops = [];
-        var uOffsets = [];
+        var uniforms = {
+            uRes: gl.getUniformLocation(program, 'u_resolution'),
+            uTime: gl.getUniformLocation(program, 'u_time'),
+            uMouse: gl.getUniformLocation(program, 'u_mouse'),
+            uDist: gl.getUniformLocation(program, 'u_distortion'),
+            uSwirl: gl.getUniformLocation(program, 'u_swirl'),
+            uScale: gl.getUniformLocation(program, 'u_scale'),
+            uAngle: gl.getUniformLocation(program, 'u_angle'),
+            uGrainEnable: gl.getUniformLocation(program, 'u_grain_enable'),
+            uGrainInt: gl.getUniformLocation(program, 'u_grain_intensity'),
+            uLiqCur: gl.getUniformLocation(program, 'u_liquid_cursor'),
+            uCurRad: gl.getUniformLocation(program, 'u_cursor_radius'),
+            uStopCount: gl.getUniformLocation(program, 'u_stop_count'),
+            uStops: [],
+            uOffsets: []
+        };
         for (var idx = 0; idx < 6; idx++) {
-            uStops.push(gl.getUniformLocation(program, 'u_stops[' + idx + ']'));
-            uOffsets.push(gl.getUniformLocation(program, 'u_offsets[' + idx + ']'));
-        }
-
-        var stops = data.stops || [];
-        var stopCount = Math.min(stops.length, 6);
-        gl.uniform1i(uStopCount, stopCount);
-
-        for (var i = 0; i < stopCount; i++) {
-            var colorLoc = uStops[i];
-            var offsetLoc = uOffsets[i];
-            var rgb = hexToRgbVec3(stops[i].color);
-            gl.uniform3f(colorLoc, rgb[0], rgb[1], rgb[2]);
-            var offsetVal = (stops[i].offset !== null && typeof stops[i].offset !== 'undefined')
-                ? parseFloat(stops[i].offset) / 100.0
-                : i / Math.max(1, stopCount - 1);
-            gl.uniform1f(offsetLoc, offsetVal);
-        }
-
-        gl.uniform1f(uDist, (data.distortion || 40) / 100.0);
-        gl.uniform1f(uSwirl, (data.swirl || 25) / 100.0);
-        gl.uniform1f(uScale, data.scale || 1.25);
-        gl.uniform1f(uAngle, data.angle || 135);
-        gl.uniform1f(uGrainEnable, data.grainEnable ? 1.0 : 0.0);
-        gl.uniform1f(uGrainInt, (data.grainIntensity || 35) / 100.0);
-        gl.uniform1f(uLiqCur, data.liquidCursor ? 1.0 : 0.0);
-        gl.uniform1f(uCurRad, data.cursorRadius || 250);
-
-        var mouse = { x: 0, y: 0 };
-        var targetMouse = { x: 0, y: 0 };
-        var mouseHandler = null;
-        var cachedRect = null;
-
-        if (data.liquidCursor) {
-            cachedRect = el.getBoundingClientRect();
-            mouseHandler = function (e) {
-                if (!cachedRect) return;
-                targetMouse.x = e.clientX - cachedRect.left;
-                targetMouse.y = cachedRect.height - (e.clientY - cachedRect.top);
-            };
-            el.addEventListener('mousemove', mouseHandler, { passive: true });
+            uniforms.uStops.push(gl.getUniformLocation(program, 'u_stops[' + idx + ']'));
+            uniforms.uOffsets.push(gl.getUniformLocation(program, 'u_offsets[' + idx + ']'));
         }
 
         var state = {
+            el: el,
             canvas: canvas,
+            gl: gl,
+            program: program,
+            uniforms: uniforms,
+            meshStyle: meshStyle,
+            data: data,
             observer: null,
             rafId: null,
-            mouseHandler: mouseHandler,
+            mouseHandler: null,
+            cachedRect: null,
+            mouse: { x: 0, y: 0 },
+            targetMouse: { x: 0, y: 0 },
             resizeHandler: null,
             resizeTimeout: null
         };
+
+        // Seeds the uniforms for the very first frame and wires up the
+        // Liquid Cursor listener if enabled from the start.
+        updateMeshUniforms(state, data);
 
         function resizeCanvas(immediate) {
             clearTimeout(state.resizeTimeout);
@@ -395,9 +446,9 @@
                 canvas.width = width * dpr;
                 canvas.height = height * dpr;
                 gl.viewport(0, 0, canvas.width, canvas.height);
-                gl.uniform2f(uRes, canvas.width, canvas.height);
-                if (data.liquidCursor) {
-                    cachedRect = el.getBoundingClientRect();
+                gl.uniform2f(uniforms.uRes, canvas.width, canvas.height);
+                if (state.data.liquidCursor) {
+                    state.cachedRect = el.getBoundingClientRect();
                 }
             };
             if (immediate === true) {
@@ -416,15 +467,18 @@
 
         function render() {
             if (!isVisible) return;
-            var elapsed = (performance.now() - startTime) * 0.001 * (data.speed ? data.speed / 8.0 : 1.0);
+            var liveData = state.data;
+            var elapsed = (performance.now() - startTime) * 0.001 * (liveData.speed ? liveData.speed / 8.0 : 1.0);
 
-            if (data.liquidCursor) {
-                mouse.x += (targetMouse.x - mouse.x) * 0.1;
-                mouse.y += (targetMouse.y - mouse.y) * 0.1;
-                gl.uniform2f(uMouse, mouse.x * (canvas.width / (el.offsetWidth || 1)), mouse.y * (canvas.height / (el.offsetHeight || 1)));
+            if (liveData.liquidCursor) {
+                state.mouse.x += (state.targetMouse.x - state.mouse.x) * 0.1;
+                state.mouse.y += (state.targetMouse.y - state.mouse.y) * 0.1;
+                gl.uniform2f(uniforms.uMouse,
+                    state.mouse.x * (canvas.width / (el.offsetWidth || 1)),
+                    state.mouse.y * (canvas.height / (el.offsetHeight || 1)));
             }
 
-            gl.uniform1f(uTime, elapsed);
+            gl.uniform1f(uniforms.uTime, elapsed);
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             state.rafId = requestAnimationFrame(render);
         }
@@ -464,12 +518,27 @@
     }
 
     function applyBackground(el, data, id) {
-        clearBackgroundGradient(el);
-
         if (data.type === 'mesh') {
+            // Don't run clearBackgroundGradient() here — it calls
+            // clearMeshShader(), which would defeat applyMeshShader()'s own
+            // fast path (reusing the live WebGL context across settings
+            // changes) on every single call. Only strip the CSS-gradient
+            // residue that a PREVIOUS non-mesh configuration might have
+            // left behind; the mesh shader itself decides whether it needs
+            // a full rebuild (shader style changed) or just an update.
+            el.classList.remove('aurora-gradient-host');
+            el.removeAttribute('data-aurora-gradient-instance');
+            el.style.backgroundImage    = '';
+            el.style.backgroundSize     = '';
+            el.style.backgroundPosition = '';
+            el.style.backgroundRepeat   = '';
+            injectCss(el, '');
+            stopFollowMouse(el);
             applyMeshShader(el, data);
             return;
         }
+
+        clearBackgroundGradient(el);
 
         if (data.followMouse) {
             startFollowMouse(el, el, data);
