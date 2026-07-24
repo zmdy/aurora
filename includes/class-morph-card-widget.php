@@ -812,7 +812,8 @@ class Morph_Card_Widget extends Widget_Base {
 				break;
 
 			case 'custom':
-				$bg = sanitize_hex_color( $raw['custom_bg_color'] ?? '#ffffff' );
+				// Values from Elementor COLOR control are already sanitized by the framework.
+				$bg = $raw['custom_bg_color'] ?: '#ffffff';
 
 				// Max width: SLIDER with size_units returns { size, unit }.
 				$mw_raw   = is_array( $raw['custom_max_width'] ?? null ) ? $raw['custom_max_width'] : [];
@@ -861,8 +862,17 @@ class Morph_Card_Widget extends Widget_Base {
 				// Header/footer HTML is passed through wp_kses_post so users
 				// can style the card freely but can't inject <script> or
 				// event handlers via a saved widget.
-				$state['headerHtml'] = wp_kses_post( (string) ( $raw['custom_header_html'] ?? '' ) );
-				$state['footerHtml'] = wp_kses_post( (string) ( $raw['custom_footer_html'] ?? '' ) );
+				static $kses_cache = [];
+				$h_key = $raw['custom_header_html'] ?? '';
+				$f_key = $raw['custom_footer_html'] ?? '';
+				if ( ! isset( $kses_cache[ $h_key ] ) ) {
+					$kses_cache[ $h_key ] = wp_kses_post( (string) $h_key );
+				}
+				if ( ! isset( $kses_cache[ $f_key ] ) ) {
+					$kses_cache[ $f_key ] = wp_kses_post( (string) $f_key );
+				}
+				$state['headerHtml'] = $kses_cache[ $h_key ];
+				$state['footerHtml'] = $kses_cache[ $f_key ];
 				break;
 		}
 
