@@ -86,12 +86,12 @@ class Text_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		$has_gsap = AURORA_HAS_GSAP;
-		$lib_options = [];
-		if ( $has_gsap ) {
-			$lib_options['gsap'] = esc_html__( 'GSAP', 'aurora-for-elementor' );
+		static $lib_options = null;
+		if ( null === $lib_options ) {
+			$lib_options = AURORA_HAS_GSAP
+				? [ 'gsap' => esc_html__( 'GSAP', 'aurora-for-elementor' ), 'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ) ]
+				: [ 'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ) ];
 		}
-		$lib_options['animejs'] = esc_html__( 'Anime.js', 'aurora-for-elementor' );
 
 		// ── Library ───────────────────────────────────────────────────────────
 		$element->add_control(

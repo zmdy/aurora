@@ -167,12 +167,14 @@ class Image_Effects_Controls extends Animation_Module {
 		);
 
 		// ── Entrance: library ─────────────────────────────────────────────────
-		$has_gsap = AURORA_HAS_GSAP;
-		$lib_options = [];
-		if ( $has_gsap ) {
-			$lib_options['gsap'] = esc_html__( 'GSAP', 'aurora-for-elementor' );
+		static $lib_options = null;
+		static $has_gsap    = null;
+		if ( null === $lib_options ) {
+			$has_gsap    = AURORA_HAS_GSAP;
+			$lib_options = $has_gsap
+				? [ 'gsap' => esc_html__( 'GSAP', 'aurora-for-elementor' ), 'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ) ]
+				: [ 'animejs' => esc_html__( 'Anime.js', 'aurora-for-elementor' ) ];
 		}
-		$lib_options['animejs'] = esc_html__( 'Anime.js', 'aurora-for-elementor' );
 
 		$element->add_control(
 			'aurora_img_entrance_library',
