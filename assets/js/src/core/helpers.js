@@ -8,7 +8,7 @@
  * resplitNative).
  */
 
-/* global anime */
+import { anime } from './anime-ref.js';
 
 export var SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
 

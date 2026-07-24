@@ -1,4 +1,4 @@
-/* global anime */
+import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 // Anime.js port of gs-14 Neon Flicker (see ml-24's and ml-28's header

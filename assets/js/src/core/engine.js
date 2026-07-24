@@ -9,10 +9,11 @@
  * (effects arrive as separate, PHP-selected script chunks).
  */
 
-/* global gsap, anime */
+/* global gsap */
 
 import { getTextTarget, splitText } from './dom.js';
 import { getEffect } from './registry.js';
+import { anime } from './anime-ref.js';
 
 /**
  * Normalizes an Elementor slider value ({size, unit}, number, or string).

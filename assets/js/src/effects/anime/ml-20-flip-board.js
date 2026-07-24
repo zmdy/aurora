@@ -1,4 +1,4 @@
-/* global anime */
+import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 var effect = {

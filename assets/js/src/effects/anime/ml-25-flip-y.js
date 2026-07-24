@@ -1,4 +1,4 @@
-/* global anime */
+import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 // Anime.js port of gs-5 3D Flip (rotationY) — mirrors ml-6 Flip X but on

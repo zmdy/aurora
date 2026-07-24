@@ -1,4 +1,4 @@
-/* global anime */
+import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 // Anime.js port of gs-19 Stretch Warp (see ml-24's header comment).

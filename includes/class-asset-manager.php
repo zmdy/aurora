@@ -63,6 +63,21 @@ final class Asset_Manager {
 			true
 		);
 
+		// Some other Elementor add-ons bundle their own (often older) copy
+		// of Anime.js and assign it to the very same `window.anime` global.
+		// Whichever script runs last on the page wins that global, which can
+		// silently break Aurora's animations if a conflicting plugin script
+		// loads after ours. Stashing our own reference on a namespaced global
+		// immediately after our vendor script runs — before any other plugin
+		// gets a chance to overwrite `window.anime` — lets Aurora's JS read a
+		// reference that's guaranteed to stay ours (see core/anime-ref.js,
+		// bundled into every Text Animation chunk).
+		wp_add_inline_script(
+			'aurora-animejs',
+			'window.AuroraAnimeJS = window.anime;',
+			'after'
+		);
+
 		// ── Vendor: Motion One 11 (local) ─────────────────────────────────────
 		// Used by the Morph Card widget for the smooth frame interpolation
 		// between templates (radius/padding/rotate/height) — a domain where

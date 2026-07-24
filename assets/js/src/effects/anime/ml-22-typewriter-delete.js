@@ -1,4 +1,3 @@
-/* global anime */
 import { registerEffect } from '../../core/registry.js';
 
 var effect = {
