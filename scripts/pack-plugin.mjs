@@ -48,31 +48,26 @@ const EXCLUDES = [
  * Recursively copies a directory while excluding specified files/folders.
  */
 function copyRecursive(src, dest) {
-    const relativePath = path.relative(ROOT, src).replace(/\\/g, '/');
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
     
-    // Skip matched exclusion paths
-    if (relativePath) {
+    const items = fs.readdirSync(src);
+    for (const item of items) {
+        const fullSrc = path.join(src, item);
+        const relativePath = path.relative(ROOT, fullSrc).replace(/\\/g, '/');
+        
+        if (item.endsWith('.zip')) continue;
         if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
-            return;
+            continue;
         }
-    }
 
-    const stats = fs.statSync(src);
-    const basename = path.basename(src);
-
-    if (stats.isDirectory()) {
-        if (!fs.existsSync(dest)) {
-            fs.mkdirSync(dest, { recursive: true });
-        }
-        const files = fs.readdirSync(src);
-        for (const file of files) {
-            copyRecursive(path.join(src, file), path.join(dest, file));
-        }
-    } else {
-        if (basename.endsWith('.zip')) {
-            return;
-        }
-        fs.copyFileSync(src, dest);
+        fs.cpSync(fullSrc, path.join(dest, item), {
+            recursive: true,
+            force: true,
+            filter: (source) => {
+                const innerRelative = path.relative(ROOT, source).replace(/\\/g, '/');
+                return !EXCLUDES.some(ex => innerRelative === ex || innerRelative.startsWith(ex + '/'));
+            }
+        });
     }
 }
 
