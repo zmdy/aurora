@@ -1,4 +1,4 @@
-/* global gsap */
+import { gsap } from '../../core/gsap-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 var effect = {

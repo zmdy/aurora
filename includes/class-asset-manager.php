@@ -52,6 +52,18 @@ final class Asset_Manager {
 				'3.12.5',
 				true
 			);
+
+			// GSAP is bundled by a huge number of WordPress themes and
+			// Elementor add-ons, all assigning it to the same `window.gsap`
+			// global — same collision risk as Anime.js above. Stash our own
+			// copy on a namespaced global right after our vendor script runs
+			// (see core/gsap-ref.js, bundled into every GSAP-based Text
+			// Animation chunk).
+			wp_add_inline_script(
+				'aurora-gsap',
+				'window.AuroraGSAP = window.gsap;',
+				'after'
+			);
 		}
 
 		// ── Vendor: Anime.js 4.4 (local, UMD global) ──────────────────────────
@@ -89,6 +101,17 @@ final class Asset_Manager {
 			[],
 			'11.0.0',
 			true
+		);
+
+		// Same `window.X` collision risk as GSAP/Anime.js above, just
+		// lower odds in practice since fewer add-ons bundle Motion One —
+		// still worth closing off the same way. morph-card.js reads
+		// `window.AuroraMotionOne` in preference to the bare
+		// `window.Motion` global.
+		wp_add_inline_script(
+			'aurora-motion-one',
+			'window.AuroraMotionOne = window.Motion;',
+			'after'
 		);
 
 		// ── Text animations ───────────────────────────────────────────────────

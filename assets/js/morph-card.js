@@ -25,7 +25,14 @@
 ( function ( $ ) {
 	'use strict';
 
-
+	// Captured once, at this script's own load time, instead of reading the
+	// live `window.Motion`/`window.anime` globals at every call site below —
+	// see Asset_Manager::enqueue_frontend_assets() and core/gsap-ref.js /
+	// core/anime-ref.js for the same reasoning applied to GSAP/Anime.js:
+	// other themes/plugins bundling their own copy of either library can
+	// otherwise clobber these globals after this script has already loaded.
+	var AuroraMotion = window.AuroraMotionOne || window.Motion;
+	var AuroraAnime  = window.AuroraAnimeJS   || window.anime;
 
 	// ── MorphCard ───────────────────────────────────────────────────────────
 	class MorphCard {
@@ -368,7 +375,7 @@
 		 * original prototype lives.
 		 */
 		morphTo( state, timing = {} ) {
-			if ( typeof window.Motion === 'undefined' ) {
+			if ( typeof AuroraMotion === 'undefined' ) {
 				this.renderState( state );
 				return Promise.resolve( this );
 			}
@@ -422,7 +429,7 @@
 		 * fade back". Same principle as Framer Motion's AnimatePresence.
 		 */
 		_morphFrame( state, timing ) {
-			const { animate } = window.Motion;
+			const { animate } = AuroraMotion;
 			const t = Object.assign( {}, MorphCard.DEFAULT_MORPH_TIMING, timing );
 
 			const durationMs = Math.round( ( t.frameDuration || 1.6 ) * 1000 );
@@ -501,7 +508,7 @@
 		}
 
 		_morphToPolaroid( state, timing ) {
-			const { animate } = window.Motion;
+			const { animate } = AuroraMotion;
 			const t = Object.assign( {}, MorphCard.DEFAULT_MORPH_TIMING, timing );
 
 			// Frame morph — same engine as every other target: arm CSS
@@ -582,7 +589,7 @@
 		}
 
 		_revealCaptionLetters( el, text, timing ) {
-			if ( typeof window.anime === 'undefined' ) {
+			if ( typeof AuroraAnime === 'undefined' ) {
 				el.textContent = text;
 				return Promise.resolve( this );
 			}
@@ -605,13 +612,13 @@
 			const letters = el.querySelectorAll( '.letter' );
 			if ( ! letters.length ) return Promise.resolve( this );
 			return new Promise( ( resolve ) => {
-				this._lettersAnim = window.anime( {
+				this._lettersAnim = AuroraAnime.animate( {
 					targets:  letters,
 					opacity:  [ 0, 1 ],
 					translateY: [ 35, 0 ],
 					rotateX:  [ -45, 0 ],
 					filter:   [ 'blur(12px)', 'blur(0px)' ],
-					delay:    window.anime.stagger( timing.lettersStagger, { start: timing.lettersStartDelay } ),
+					delay:    AuroraAnime.stagger( timing.lettersStagger, { start: timing.lettersStartDelay } ),
 					duration: timing.lettersDuration,
 					easing:   'easeOutExpo',
 					complete: () => resolve( this )
@@ -636,8 +643,8 @@
 		}
 
 		_playShimmerOnImage( duration ) {
-			if ( typeof window.Motion === 'undefined' ) return Promise.resolve();
-			const { animate } = window.Motion;
+			if ( typeof AuroraMotion === 'undefined' ) return Promise.resolve();
+			const { animate } = AuroraMotion;
 			const shimmer = document.createElement( 'div' );
 			shimmer.className = 'morph-image-shimmer';
 			this.image.appendChild( shimmer );
@@ -706,8 +713,8 @@
 			// loads (editor iframe quirks, network failure, etc.) — Motion
 			// then just re-animates from wherever it is.
 			this.cardEl.style.opacity = '1';
-			if ( typeof window.Motion !== 'undefined' ) {
-				const { animate } = window.Motion;
+			if ( typeof AuroraMotion !== 'undefined' ) {
+				const { animate } = AuroraMotion;
 				animate( this.cardEl, { opacity: [ 0, 1 ], scale: [ 0.92, 1 ], y: [ 30, 0 ] }, { duration: 0.9, delay: 0.2, easing: [ 0.22, 1, 0.36, 1 ] } );
 			}
 			if ( inEditor ) return;

@@ -8,11 +8,18 @@
  * @version 1.0.0
  */
 
-/* global gsap, elementorFrontend, jQuery */
+/* global elementorFrontend, jQuery */
 (function ($) {
     'use strict';
 
     if (typeof $ === 'undefined') return;
+
+    // Captured once, at this script's own load time, instead of reading the
+    // live `window.gsap` global at every call site below — see
+    // Asset_Manager::enqueue_frontend_assets() and core/gsap-ref.js for why:
+    // other themes/plugins bundling their own GSAP can otherwise clobber
+    // `window.gsap` after this script has already loaded.
+    var gsap = window.AuroraGSAP || window.gsap;
 
     // ─────────────────────────────────────────────────────────────────────────
     // OPTION PARSING

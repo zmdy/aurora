@@ -21,11 +21,20 @@
  * @version 1.1.0
  */
 
-/* global gsap, anime, elementorFrontend, jQuery */
+/* global elementorFrontend, jQuery */
 (function ($) {
     'use strict';
 
     if (typeof $ === 'undefined') return;
+
+    // Captured once, at this script's own load time, instead of reading the
+    // live `window.gsap`/`window.anime` globals at every call site below —
+    // see Asset_Manager::enqueue_frontend_assets() and core/gsap-ref.js /
+    // core/anime-ref.js for why: other themes/plugins bundling their own
+    // copy of either library can otherwise clobber these globals after this
+    // script has already loaded.
+    var gsap = window.AuroraGSAP || window.gsap;
+    var anime = window.AuroraAnimeJS || window.anime;
 
     // ─────────────────────────────────────────────────────────────────────────
     // OPTION PARSING

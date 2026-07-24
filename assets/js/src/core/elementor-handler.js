@@ -8,7 +8,7 @@
  * frontend) — this file doesn't need to know or care which.
  */
 
-/* global gsap, anime, elementorFrontend, elementorModules, jQuery */
+/* global elementorFrontend, elementorModules, jQuery */
 
 import { initTextAnimation, teardownTextAnimation, parseOptsFromDataset, sizeOf, waitForLibs } from './engine.js';
 
