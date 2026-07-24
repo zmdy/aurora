@@ -249,13 +249,20 @@ class Cursor_Follow_Controls extends Animation_Module {
 		$dot_color  = $settings['aurora_cursor_dot_color'] ?: '#ff7a2f';
 		$ring_color = $settings['aurora_cursor_ring_color'] ?: '#7c6cff';
 
+		static $selector_cache = [];
 		$raw_interactive_selector = $settings['aurora_cursor_interactive_selector'] ?? 'a, button, .cursor-pointer';
-		$interactive_selector     = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_interactive_selector );
-		$interactive_selector     = $interactive_selector ?: 'a, button, .cursor-pointer';
+		if ( ! isset( $selector_cache[ $raw_interactive_selector ] ) ) {
+			$selector_cache[ $raw_interactive_selector ] = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_interactive_selector )
+				?: 'a, button, .cursor-pointer';
+		}
+		$interactive_selector = $selector_cache[ $raw_interactive_selector ];
 
 		$raw_image_selector = $settings['aurora_cursor_image_selector'] ?? 'img, .zoom-target';
-		$image_selector     = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_image_selector );
-		$image_selector     = $image_selector ?: 'img, .zoom-target';
+		if ( ! isset( $selector_cache[ $raw_image_selector ] ) ) {
+			$selector_cache[ $raw_image_selector ] = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_image_selector )
+				?: 'img, .zoom-target';
+		}
+		$image_selector = $selector_cache[ $raw_image_selector ];
 
 		return [
 			'data-aurora-cursor-enable'               => '1',

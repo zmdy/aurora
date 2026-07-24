@@ -236,10 +236,14 @@ class Children_Animation_Controls extends Animation_Module {
 			return [];
 		}
 
-		// Sanitize the CSS selector (allow only valid characters).
+		// Sanitize the CSS selector (allow only valid characters). Cache per raw value.
+		static $selector_cache = [];
 		$raw_selector = $settings['aurora_children_selector'] ?? '.elementor-widget';
-		$selector     = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_selector );
-		$selector     = $selector ?: '.elementor-widget';
+		if ( ! isset( $selector_cache[ $raw_selector ] ) ) {
+			$selector_cache[ $raw_selector ] = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_selector )
+				?: '.elementor-widget';
+		}
+		$selector = $selector_cache[ $raw_selector ];
 
 		return [
 			'data-aurora-children-enable'    => '1',
