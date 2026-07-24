@@ -173,6 +173,10 @@ abstract class Animation_Module {
 			return;
 		}
 		if ( $id ) {
+			// Cap at 200 entries to avoid unbounded growth inside Elementor Loop templates.
+			if ( count( $this->rendered_ids ) >= 200 ) {
+				$this->rendered_ids = [];
+			}
 			$this->rendered_ids[ $id ] = true;
 		}
 
