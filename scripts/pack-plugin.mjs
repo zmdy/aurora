@@ -44,7 +44,22 @@ const EXCLUDES = [
     'LICENSE',
     'index.html',
     'showcase',
-    'assets/js/src'
+    'assets/js/src',
+
+    // Development & marketing branding assets (not needed by production plugin)
+    'assets/branding/brandguide.html',
+    'assets/branding/fonts',
+    'assets/branding/aurora_animated_logo.svg',
+    'assets/branding/aurora_blob_base_shape.svg',
+    'assets/branding/aurora_favicon.svg',
+    'assets/branding/aurora_favicon_green.svg',
+    'assets/branding/logo_aurora.svg',
+    'assets/branding/logo_aurora_tagline.svg',
+    'assets/branding/icons/tdesign',
+    'assets/branding/icons/aurora_icon_blue_contributing.svg',
+    'assets/branding/icons/aurora_icon_blue_features.svg',
+    'assets/branding/icons/aurora_icon_blue_install.svg',
+    'assets/branding/icons/aurora_icon_blue_specs.svg'
 ];
 
 /**
@@ -54,7 +69,7 @@ function copyRecursive(src, dest) {
     const relativePath = path.relative(ROOT, src).replace(/\\/g, '/');
 
     if (relativePath) {
-        if (src.endsWith('.zip')) return;
+        if (src.endsWith('.zip') || path.basename(src) === '.DS_Store') return;
         if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
             return;
         }
