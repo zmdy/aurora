@@ -118,8 +118,8 @@ function zipFolder(destZipPath) {
         ].join(' ');
         execSync(`powershell -NoProfile -Command "${ps}"`, { stdio: 'inherit' });
     } else {
-        // Use standard Unix zip utility
-        const cmd = `zip -q -r "${destZipPath}" "${PLUGIN_SLUG}"`;
+        // Use standard Unix zip utility with level 5 fast compression
+        const cmd = `zip -5 -q -r "${destZipPath}" "${PLUGIN_SLUG}"`;
         execSync(cmd, { cwd: TEMP_DIR, stdio: 'inherit' });
     }
 }
