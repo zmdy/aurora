@@ -99,14 +99,14 @@ class Text_Animation_Controls extends Animation_Module {
 			[
 				'label'              => esc_html__( 'Library', 'aurora-for-elementor' ),
 				'type'               => Controls_Manager::SELECT,
-				'default'            => $has_gsap ? 'gsap' : 'animejs',
+				'default'            => AURORA_HAS_GSAP ? 'gsap' : 'animejs',
 				'options'            => $lib_options,
 				'condition'          => [ 'aurora_text_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		if ( $has_gsap ) {
+		if ( AURORA_HAS_GSAP ) {
 			// ── Animation Type — GSAP ─────────────────────────────────────────────
 			$element->add_control(
 				'aurora_text_animation_gsap',
