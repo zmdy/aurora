@@ -1,15 +1,16 @@
 <?php
 /**
  * Text Animation Controls — injects controls into the Advanced tab of
- * every Elementor widget and adds the data-attributes on the frontend.
+ * text-bearing Elementor widgets and adds the data-attributes on the frontend.
  *
  * Implements only what's specific to this module; the shared plumbing
  * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
- * All settings are stored under a single Repeater key (aurora_text_config)
- * to minimise Aurora's contribution to the Backbone settings model's key
- * count — each registered control adds one key that every tree-walking
- * editor plugin (e.g. Navigator Indicator) pays to clone via .toJSON().
+ * Scope is restricted to text-bearing widgets (Heading, Text Editor, Button,
+ * Icon Box, Image Box, Testimonial, Alert, Text Path) where animating text
+ * is a valid product feature. Non-textual widgets (Image, Video, Map, Divider,
+ * Spacer, etc.) and structural containers return false in applies_to_element(),
+ * preventing 0-value control keys on unrelated elements.
  *
  * @package Aurora
  */
@@ -18,7 +19,6 @@ namespace Aurora;
 
 use Elementor\Controls_Manager;
 use Elementor\Element_Base;
-use Elementor\Repeater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,8 +29,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Text_Animation_Controls extends Animation_Module {
 
-	/** Structural elements where this module must NOT appear — see applies_to_element(). */
-	const UNSUPPORTED_ELEMENTS = [ 'section', 'column', 'container' ];
+	/** Text-bearing Elementor widgets supported by this module. */
+	const SUPPORTED_ELEMENTS = [
+		'heading',
+		'text-editor',
+		'button',
+		'icon-box',
+		'image-box',
+		'testimonial',
+		'alert',
+		'text-path',
+	];
 
 	protected function get_section_id(): string {
 		return 'aurora_text_section';
@@ -41,20 +50,10 @@ class Text_Animation_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Only appears on actual widgets (Heading, Text Editor, Button, etc.),
-	 * matching the "Available on any Elementor widget" behavior described
-	 * in the README. The base class only registers this module on the
-	 * "common" hook (shared by every element type, including structural
-	 * ones), so without this override the section would also show up on
-	 * Section/Column/Container. That's not just cosmetic: getTextTarget()
-	 * falls back to the wrapper itself when no known text selector
-	 * matches, and splitText() then wipes the wrapper's innerHTML to
-	 * rebuild it from its flattened text — which would destroy every
-	 * widget nested inside a structural element if the module were
-	 * mistakenly enabled there.
+	 * Only appears on actual text-bearing widgets.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
-		return ! in_array( $element->get_name(), self::UNSUPPORTED_ELEMENTS, true );
+		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
 	/**
@@ -72,25 +71,23 @@ class Text_Animation_Controls extends Animation_Module {
 	// ── Controls ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Registers all Text Animation settings under a single Repeater key so the
-	 * Backbone model carries 1 key instead of 14 per widget.
+	 * Fields of the "Text Animation" section.
 	 *
-	 * @param Element_Base $element  Element instance.
+	 * @param Element_Base $element Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
-		$repeater = new Repeater();
-
 		// ── Enable ────────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_enable',
 			[
-				'label'        => esc_html__( 'Enable Text Animation', 'aurora-for-elementor' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Yes', 'aurora-for-elementor' ),
-				'label_off'    => esc_html__( 'No', 'aurora-for-elementor' ),
-				'return_value' => 'yes',
-				'default'      => '',
+				'label'              => esc_html__( 'Enable Text Animation', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'frontend_available' => true,
 			]
 		);
 
@@ -102,20 +99,21 @@ class Text_Animation_Controls extends Animation_Module {
 		}
 
 		// ── Library ───────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_library',
 			[
-				'label'     => esc_html__( 'Library', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => AURORA_HAS_GSAP ? 'gsap' : 'animejs',
-				'options'   => $lib_options,
-				'condition' => [ 'aurora_text_enable' => 'yes' ],
+				'label'              => esc_html__( 'Library', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => AURORA_HAS_GSAP ? 'gsap' : 'animejs',
+				'options'            => $lib_options,
+				'condition'          => [ 'aurora_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
 		if ( AURORA_HAS_GSAP ) {
 			// ── Animation Type — GSAP ─────────────────────────────────────────────
-			$repeater->add_control(
+			$element->add_control(
 				'aurora_text_animation_gsap',
 				[
 					'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
@@ -153,12 +151,13 @@ class Text_Animation_Controls extends Animation_Module {
 						'aurora_text_enable'  => 'yes',
 						'aurora_text_library' => 'gsap',
 					],
+					'frontend_available' => true,
 				]
 			);
 		}
 
 		// ── Animation Type — Anime.js ─────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_animation_anime',
 			[
 				'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
@@ -218,11 +217,12 @@ class Text_Animation_Controls extends Animation_Module {
 					'aurora_text_enable'  => 'yes',
 					'aurora_text_library' => 'animejs',
 				],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Split by ──────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_split_by',
 			[
 				'label'     => esc_html__( 'Split by', 'aurora-for-elementor' ),
@@ -234,36 +234,38 @@ class Text_Animation_Controls extends Animation_Module {
 					'lines' => esc_html__( 'Lines', 'aurora-for-elementor' ),
 				],
 				'condition' => [
-					'aurora_text_enable'           => 'yes',
+					'aurora_text_enable'       => 'yes',
 					// These GSAP effects manage their own DOM (they set
 					// selfManaged: true in their effect file) and ignore
 					// this control entirely — see core/engine.js's
 					// isSelfManaged().
 					'aurora_text_animation_gsap!' => [ 'gs-3', 'gs-24', 'gs-25', 'gs-26' ],
 				],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Duration ──────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_duration',
 			[
-				'label'     => esc_html__( 'Duration (ms)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
+				'label'      => esc_html__( 'Duration (ms)', 'aurora-for-elementor' ),
+				'type'       => Controls_Manager::SLIDER,
+				'range'      => [
 					'px' => [
 						'min'  => 100,
 						'max'  => 4000,
 						'step' => 50,
 					],
 				],
-				'default'   => [ 'size' => 800 ],
-				'condition' => [ 'aurora_text_enable' => 'yes' ],
+				'default'    => [ 'size' => 800 ],
+				'condition'  => [ 'aurora_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Initial delay ─────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_delay',
 			[
 				'label'     => esc_html__( 'Initial delay (ms)', 'aurora-for-elementor' ),
@@ -277,11 +279,12 @@ class Text_Animation_Controls extends Animation_Module {
 				],
 				'default'   => [ 'size' => 0 ],
 				'condition' => [ 'aurora_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Stagger delay between units ───────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_stagger',
 			[
 				'label'     => esc_html__( 'Delay between units (ms)', 'aurora-for-elementor' ),
@@ -295,14 +298,15 @@ class Text_Animation_Controls extends Animation_Module {
 				],
 				'default'   => [ 'size' => 30 ],
 				'condition' => [
-					'aurora_text_enable'           => 'yes',
-					'aurora_text_animation_gsap!'  => 'gs-3',
+					'aurora_text_enable'       => 'yes',
+					'aurora_text_animation_gsap!' => 'gs-3',
 				],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Trigger ───────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_trigger',
 			[
 				'label'     => esc_html__( 'Trigger on', 'aurora-for-elementor' ),
@@ -313,11 +317,12 @@ class Text_Animation_Controls extends Animation_Module {
 					'load'   => esc_html__( 'Page load', 'aurora-for-elementor' ),
 				],
 				'condition' => [ 'aurora_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Threshold ─────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_threshold',
 			[
 				'label'     => esc_html__( 'Visibility threshold (%)', 'aurora-for-elementor' ),
@@ -331,14 +336,15 @@ class Text_Animation_Controls extends Animation_Module {
 				],
 				'default'   => [ 'size' => 20 ],
 				'condition' => [
-					'aurora_text_enable'  => 'yes',
-					'aurora_text_trigger' => 'scroll',
+					'aurora_text_enable'   => 'yes',
+					'aurora_text_trigger'  => 'scroll',
 				],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Replay ────────────────────────────────────────────────────────────
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_replay',
 			[
 				'label'        => esc_html__( 'Replay on re-entering viewport', 'aurora-for-elementor' ),
@@ -351,34 +357,28 @@ class Text_Animation_Controls extends Animation_Module {
 					'aurora_text_enable'  => 'yes',
 					'aurora_text_trigger' => 'scroll',
 				],
+				'frontend_available' => true,
 			]
 		);
 
 		// ── Hover Scatter (independent of the entrance effect above) ─────────
-		// Always powered by Anime.js (regardless of the Library choice above,
-		// since Anime.js is loaded site-wide as a shared dependency) — each
-		// split unit jumps to a random offset/rotation on mouseenter and
-		// settles back with an elastic ease on mouseleave. Reuses the SAME
-		// split produced for the entrance effect (see initTextAnimation() in
-		// text-animations.js) rather than splitting the text a second time,
-		// so it needs Enable Text Animation on too; pairs best with
-		// "Split by: Characters" for the classic "each letter scatters" look.
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_hover_enable',
 			[
-				'label'        => esc_html__( 'Hover Scatter', 'aurora-for-elementor' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Yes', 'aurora-for-elementor' ),
-				'label_off'    => esc_html__( 'No', 'aurora-for-elementor' ),
-				'return_value' => 'yes',
-				'default'      => '',
-				'separator'    => 'before',
-				'description'  => esc_html__( 'Independent of the entrance effect above — on hover, each split unit jumps to a random position and settles back on mouse out. Always uses Anime.js. Works best with "Split by: Characters".', 'aurora-for-elementor' ),
-				'condition'    => [ 'aurora_text_enable' => 'yes' ],
+				'label'              => esc_html__( 'Hover Scatter', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'separator'          => 'before',
+				'description'        => esc_html__( 'Independent of the entrance effect above — on hover, each split unit jumps to a random position and settles back on mouse out. Always uses Anime.js. Works best with "Split by: Characters".', 'aurora-for-elementor' ),
+				'condition'          => [ 'aurora_text_enable' => 'yes' ],
+				'frontend_available' => true,
 			]
 		);
 
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_hover_intensity',
 			[
 				'label'     => esc_html__( 'Scatter Intensity (px)', 'aurora-for-elementor' ),
@@ -390,15 +390,16 @@ class Text_Animation_Controls extends Animation_Module {
 						'step' => 1,
 					],
 				],
-				'default'   => [ 'size' => 24 ],
-				'condition' => [
+				'default'            => [ 'size' => 24 ],
+				'condition'          => [
 					'aurora_text_enable'       => 'yes',
 					'aurora_text_hover_enable' => 'yes',
 				],
+				'frontend_available' => true,
 			]
 		);
 
-		$repeater->add_control(
+		$element->add_control(
 			'aurora_text_hover_duration',
 			[
 				'label'     => esc_html__( 'Scatter/Settle Duration (ms)', 'aurora-for-elementor' ),
@@ -410,25 +411,12 @@ class Text_Animation_Controls extends Animation_Module {
 						'step' => 50,
 					],
 				],
-				'default'   => [ 'size' => 350 ],
-				'condition' => [
+				'default'            => [ 'size' => 350 ],
+				'condition'          => [
 					'aurora_text_enable'       => 'yes',
 					'aurora_text_hover_enable' => 'yes',
 				],
-			]
-		);
-
-		// ── Single-row Repeater ───────────────────────────────────────────────
-		$element->add_control(
-			'aurora_text_config',
-			[
-				'type'               => Controls_Manager::REPEATER,
-				'fields'             => $repeater->get_controls(),
-				'default'            => [ [] ],
-				'max_items'          => 1,
-				'prevent_empty'      => true,
 				'frontend_available' => true,
-				'title_field'        => esc_html__( 'Text Animation Settings', 'aurora-for-elementor' ),
 			]
 		);
 	}
@@ -437,7 +425,6 @@ class Text_Animation_Controls extends Animation_Module {
 
 	/**
 	 * Converts the saved settings into the wrapper's data-attributes.
-	 * Reads from the first (and only) Repeater row.
 	 * Returns an empty array when the animation is disabled.
 	 *
 	 * @param array             $settings  Element settings.
@@ -446,35 +433,33 @@ class Text_Animation_Controls extends Animation_Module {
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {
 
-		$cfg = $settings['aurora_text_config'][0] ?? [];
-
-		if ( empty( $cfg['aurora_text_enable'] ) || 'yes' !== $cfg['aurora_text_enable'] ) {
+		if ( empty( $settings['aurora_text_enable'] ) || 'yes' !== $settings['aurora_text_enable'] ) {
 			return [];
 		}
 
-		$library   = $cfg['aurora_text_library'] ?? 'gsap';
+		$library   = $settings['aurora_text_library'] ?? 'gsap';
 		$animation = 'gsap' === $library
-			? ( $cfg['aurora_text_animation_gsap'] ?? 'gs-1' )
-			: ( $cfg['aurora_text_animation_anime'] ?? 'ml-1' );
+			? ( $settings['aurora_text_animation_gsap'] ?? 'gs-1' )
+			: ( $settings['aurora_text_animation_anime'] ?? 'ml-1' );
 
 		$this->enqueue_effect_script( $animation, $library );
 
-		$hover_enable = 'yes' === ( $cfg['aurora_text_hover_enable'] ?? '' );
+		$hover_enable = 'yes' === ( $settings['aurora_text_hover_enable'] ?? '' );
 
 		return [
 			'data-aurora-enable'          => '1',
 			'data-aurora-library'         => esc_attr( $library ),
 			'data-aurora-animation'       => esc_attr( $animation ),
-			'data-aurora-split-by'        => esc_attr( $cfg['aurora_text_split_by'] ?? 'chars' ),
-			'data-aurora-duration'        => esc_attr( $cfg['aurora_text_duration']['size'] ?? 800 ),
-			'data-aurora-delay'           => esc_attr( $cfg['aurora_text_delay']['size'] ?? 0 ),
-			'data-aurora-stagger'         => esc_attr( $cfg['aurora_text_stagger']['size'] ?? 30 ),
-			'data-aurora-trigger'         => esc_attr( $cfg['aurora_text_trigger'] ?? 'scroll' ),
-			'data-aurora-threshold'       => esc_attr( ( $cfg['aurora_text_threshold']['size'] ?? 20 ) / 100 ),
-			'data-aurora-replay'          => ( 'yes' === ( $cfg['aurora_text_replay'] ?? '' ) ) ? '1' : '0',
+			'data-aurora-split-by'        => esc_attr( $settings['aurora_text_split_by'] ?? 'chars' ),
+			'data-aurora-duration'        => esc_attr( $settings['aurora_text_duration']['size'] ?? 800 ),
+			'data-aurora-delay'           => esc_attr( $settings['aurora_text_delay']['size'] ?? 0 ),
+			'data-aurora-stagger'         => esc_attr( $settings['aurora_text_stagger']['size'] ?? 30 ),
+			'data-aurora-trigger'         => esc_attr( $settings['aurora_text_trigger'] ?? 'scroll' ),
+			'data-aurora-threshold'       => esc_attr( ( $settings['aurora_text_threshold']['size'] ?? 20 ) / 100 ),
+			'data-aurora-replay'          => ( 'yes' === ( $settings['aurora_text_replay'] ?? '' ) ) ? '1' : '0',
 			'data-aurora-hover-enable'    => $hover_enable ? '1' : '0',
-			'data-aurora-hover-intensity' => esc_attr( max( 5, (int) ( $cfg['aurora_text_hover_intensity']['size'] ?? 24 ) ) ),
-			'data-aurora-hover-duration'  => esc_attr( max( 100, (int) ( $cfg['aurora_text_hover_duration']['size'] ?? 350 ) ) ),
+			'data-aurora-hover-intensity' => esc_attr( max( 5, (int) ( $settings['aurora_text_hover_intensity']['size'] ?? 24 ) ) ),
+			'data-aurora-hover-duration'  => esc_attr( max( 100, (int) ( $settings['aurora_text_hover_duration']['size'] ?? 350 ) ) ),
 		];
 	}
 
