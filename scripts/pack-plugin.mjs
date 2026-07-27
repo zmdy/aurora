@@ -51,26 +51,26 @@ const EXCLUDES = [
  * Recursively copies a directory while excluding specified files/folders.
  */
 function copyRecursive(src, dest) {
-    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-    
-    const items = fs.readdirSync(src);
-    for (const item of items) {
-        const fullSrc = path.join(src, item);
-        const relativePath = path.relative(ROOT, fullSrc).replace(/\\/g, '/');
-        
-        if (item.endsWith('.zip')) continue;
-        if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
-            continue;
-        }
+    const relativePath = path.relative(ROOT, src).replace(/\\/g, '/');
 
-        fs.cpSync(fullSrc, path.join(dest, item), {
-            recursive: true,
-            force: true,
-            filter: (source) => {
-                const innerRelative = path.relative(ROOT, source).replace(/\\/g, '/');
-                return !EXCLUDES.some(ex => innerRelative === ex || innerRelative.startsWith(ex + '/'));
-            }
-        });
+    if (relativePath) {
+        if (src.endsWith('.zip')) return;
+        if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
+            return;
+        }
+    }
+
+    const stats = fs.statSync(src);
+    if (stats.isDirectory()) {
+        if (!fs.existsSync(dest)) {
+            fs.mkdirSync(dest, { recursive: true });
+        }
+        const entries = fs.readdirSync(src);
+        for (const entry of entries) {
+            copyRecursive(path.join(src, entry), path.join(dest, entry));
+        }
+    } else {
+        fs.copyFileSync(src, dest);
     }
 }
 
