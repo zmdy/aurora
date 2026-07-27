@@ -8,6 +8,11 @@
  * Implements only what's specific to this module; the shared plumbing
  * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
+ * All settings are stored under a single Repeater key (aurora_cursor_config)
+ * to minimise Aurora's contribution to the Backbone settings model's key
+ * count — each registered control adds one key that every tree-walking
+ * editor plugin (e.g. Navigator Indicator) pays to clone via .toJSON().
+ *
  * @package Aurora
  */
 
@@ -15,6 +20,7 @@ namespace Aurora;
 
 use Elementor\Controls_Manager;
 use Elementor\Element_Base;
+use Elementor\Repeater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -48,63 +54,55 @@ class Cursor_Follow_Controls extends Animation_Module {
 		];
 	}
 
-	protected function get_render_hooks(): array {
-		return [
-			'elementor/frontend/element/before_render',
-			'elementor/frontend/widget/before_render',
-		];
-	}
-
-	// ── Controls ─────────────────────────────────────────────────────────────
-
 	/**
-	 * Fields of the "Cursor Follow" section.
+	 * Registers all Cursor Follow settings under a single Repeater key so the
+	 * Backbone model carries 1 key instead of 10, regardless of whether the
+	 * effect is in use on a given widget.
 	 *
-	 * @param Element_Base $element Element instance.
+	 * @param Element_Base $element  Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
+		$repeater = new Repeater();
+
 		// ── Enable ────────────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_enable',
 			[
-				'label'              => esc_html__( 'Enable Cursor Follow', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
-				'return_value'       => 'yes',
-				'default'            => '',
-				'description'        => esc_html__( 'Replaces the native cursor with a two-part custom cursor (dot + trailing ring) while the pointer is inside this element.', 'aurora-for-elementor' ),
-				'frontend_available' => true,
+				'label'        => esc_html__( 'Enable Cursor Follow', 'aurora-for-elementor' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'    => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value' => 'yes',
+				'default'      => '',
+				'description'  => esc_html__( 'Replaces the native cursor with a two-part custom cursor (dot + trailing ring) while the pointer is inside this element.', 'aurora-for-elementor' ),
 			]
 		);
 
 		// ── Dot color ─────────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_dot_color',
 			[
-				'label'              => esc_html__( 'Dot Color', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::COLOR,
-				'default'            => '#ff7a2f',
-				'condition'          => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
+				'label'     => esc_html__( 'Dot Color', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ff7a2f',
+				'condition' => [ 'aurora_cursor_enable' => 'yes' ],
 			]
 		);
 
 		// ── Ring color ────────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_ring_color',
 			[
-				'label'              => esc_html__( 'Ring Color', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::COLOR,
-				'default'            => '#7c6cff',
-				'condition'          => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
+				'label'     => esc_html__( 'Ring Color', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#7c6cff',
+				'condition' => [ 'aurora_cursor_enable' => 'yes' ],
 			]
 		);
 
 		// ── Dot size ──────────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_dot_size',
 			[
 				'label'     => esc_html__( 'Dot Size (px)', 'aurora-for-elementor' ),
@@ -116,14 +114,13 @@ class Cursor_Follow_Controls extends Animation_Module {
 						'step' => 1,
 					],
 				],
-				'default'            => [ 'size' => 8 ],
-				'condition'          => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
+				'default'   => [ 'size' => 8 ],
+				'condition' => [ 'aurora_cursor_enable' => 'yes' ],
 			]
 		);
 
 		// ── Ring size ─────────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_ring_size',
 			[
 				'label'       => esc_html__( 'Ring Size (px)', 'aurora-for-elementor' ),
@@ -135,15 +132,14 @@ class Cursor_Follow_Controls extends Animation_Module {
 						'step' => 1,
 					],
 				],
-				'default'            => [ 'size' => 24 ],
-				'description'        => esc_html__( 'Resting size of the trailing ring, before any hover scaling is applied.', 'aurora-for-elementor' ),
-				'condition'          => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
+				'default'     => [ 'size' => 24 ],
+				'description' => esc_html__( 'Resting size of the trailing ring, before any hover scaling is applied.', 'aurora-for-elementor' ),
+				'condition'   => [ 'aurora_cursor_enable' => 'yes' ],
 			]
 		);
 
 		// ── Trail delay ───────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_trail_delay',
 			[
 				'label'       => esc_html__( 'Trail Delay (ms)', 'aurora-for-elementor' ),
@@ -155,15 +151,14 @@ class Cursor_Follow_Controls extends Animation_Module {
 						'step' => 10,
 					],
 				],
-				'default'            => [ 'size' => 150 ],
-				'description'        => esc_html__( 'How long the outer ring takes to catch up with the dot. The dot itself always tracks the mouse instantly.', 'aurora-for-elementor' ),
-				'condition'          => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
+				'default'     => [ 'size' => 150 ],
+				'description' => esc_html__( 'How long the outer ring takes to catch up with the dot. The dot itself always tracks the mouse instantly.', 'aurora-for-elementor' ),
+				'condition'   => [ 'aurora_cursor_enable' => 'yes' ],
 			]
 		);
 
 		// ── Interactive elements ──────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_interactive_selector',
 			[
 				'label'       => esc_html__( 'Interactive Elements Selector', 'aurora-for-elementor' ),
@@ -172,12 +167,11 @@ class Cursor_Follow_Controls extends Animation_Module {
 				'placeholder' => 'a, button, .cursor-pointer',
 				'description' => esc_html__( 'CSS selector for elements that should shrink/highlight the ring on hover (links, buttons, etc.).', 'aurora-for-elementor' ),
 				'condition'   => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
 			]
 		);
 
 		// ── Interactive hover scale ───────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_interactive_scale',
 			[
 				'label'     => esc_html__( 'Interactive Hover Scale', 'aurora-for-elementor' ),
@@ -191,12 +185,11 @@ class Cursor_Follow_Controls extends Animation_Module {
 				],
 				'default'   => [ 'size' => 1.5 ],
 				'condition' => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
 			]
 		);
 
 		// ── Image elements ────────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_image_selector',
 			[
 				'label'       => esc_html__( 'Image Elements Selector', 'aurora-for-elementor' ),
@@ -205,12 +198,11 @@ class Cursor_Follow_Controls extends Animation_Module {
 				'placeholder' => 'img, .zoom-target',
 				'description' => esc_html__( 'CSS selector for elements that should grow/highlight the ring on hover (images, galleries, etc.).', 'aurora-for-elementor' ),
 				'condition'   => [ 'aurora_cursor_enable' => 'yes' ],
-				'frontend_available' => true,
 			]
 		);
 
 		// ── Image hover scale ─────────────────────────────────────────────────
-		$element->add_control(
+		$repeater->add_control(
 			'aurora_cursor_image_scale',
 			[
 				'label'     => esc_html__( 'Image Hover Scale', 'aurora-for-elementor' ),
@@ -224,40 +216,56 @@ class Cursor_Follow_Controls extends Animation_Module {
 				],
 				'default'   => [ 'size' => 2.33 ],
 				'condition' => [ 'aurora_cursor_enable' => 'yes' ],
+			]
+		);
+
+		// ── Single-row Repeater ───────────────────────────────────────────────
+		// max_items=1 and prevent_empty=true keep it as exactly one permanent
+		// settings block. The list management UI (Add/Remove/Drag) is hidden
+		// via editor.css so the UX is indistinguishable from flat controls.
+		$element->add_control(
+			'aurora_cursor_config',
+			[
+				'type'               => Controls_Manager::REPEATER,
+				'fields'             => $repeater->get_controls(),
+				'default'            => [ [] ],
+				'max_items'          => 1,
+				'prevent_empty'      => true,
 				'frontend_available' => true,
+				'title_field'        => esc_html__( 'Cursor Settings', 'aurora-for-elementor' ),
 			]
 		);
 	}
 
-	// ── Render Attributes ─────────────────────────────────────────────────────
-
 	/**
-	 * Converts the saved settings into the wrapper's data-attributes.
-	 * Returns an empty array when the effect is disabled.
+	 * Builds the data-attributes that the cursor-follow JS module reads.
+	 * Reads from the first (and only) Repeater row.
 	 *
-	 * @param array             $settings Element settings.
-	 * @param Element_Base|null $element  Unused in this module.
+	 * @param array             $settings  Element settings from get_settings_for_display().
+	 * @param Element_Base|null $element   Unused.
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {
 
-		if ( empty( $settings['aurora_cursor_enable'] ) || 'yes' !== $settings['aurora_cursor_enable'] ) {
+		$cfg = $settings['aurora_cursor_config'][0] ?? [];
+
+		if ( empty( $cfg['aurora_cursor_enable'] ) || 'yes' !== $cfg['aurora_cursor_enable'] ) {
 			return [];
 		}
 
 		// Values from Elementor COLOR controls are already sanitized by the framework.
-		$dot_color  = $settings['aurora_cursor_dot_color'] ?: '#ff7a2f';
-		$ring_color = $settings['aurora_cursor_ring_color'] ?: '#7c6cff';
+		$dot_color  = $cfg['aurora_cursor_dot_color'] ?: '#ff7a2f';
+		$ring_color = $cfg['aurora_cursor_ring_color'] ?: '#7c6cff';
 
 		static $selector_cache = [];
-		$raw_interactive_selector = $settings['aurora_cursor_interactive_selector'] ?? 'a, button, .cursor-pointer';
+		$raw_interactive_selector = $cfg['aurora_cursor_interactive_selector'] ?? 'a, button, .cursor-pointer';
 		if ( ! isset( $selector_cache[ $raw_interactive_selector ] ) ) {
 			$selector_cache[ $raw_interactive_selector ] = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_interactive_selector )
 				?: 'a, button, .cursor-pointer';
 		}
 		$interactive_selector = $selector_cache[ $raw_interactive_selector ];
 
-		$raw_image_selector = $settings['aurora_cursor_image_selector'] ?? 'img, .zoom-target';
+		$raw_image_selector = $cfg['aurora_cursor_image_selector'] ?? 'img, .zoom-target';
 		if ( ! isset( $selector_cache[ $raw_image_selector ] ) ) {
 			$selector_cache[ $raw_image_selector ] = preg_replace( '/[^a-zA-Z0-9_\-\.\s,:#>+~\[\]=^$*|()]/', '', $raw_image_selector )
 				?: 'img, .zoom-target';
@@ -268,13 +276,13 @@ class Cursor_Follow_Controls extends Animation_Module {
 			'data-aurora-cursor-enable'               => '1',
 			'data-aurora-cursor-dot-color'             => esc_attr( $dot_color ),
 			'data-aurora-cursor-ring-color'            => esc_attr( $ring_color ),
-			'data-aurora-cursor-dot-size'               => esc_attr( (int) ( $settings['aurora_cursor_dot_size']['size'] ?? 8 ) ),
-			'data-aurora-cursor-ring-size'              => esc_attr( (int) ( $settings['aurora_cursor_ring_size']['size'] ?? 24 ) ),
-			'data-aurora-cursor-trail-delay'            => esc_attr( (int) ( $settings['aurora_cursor_trail_delay']['size'] ?? 150 ) ),
+			'data-aurora-cursor-dot-size'               => esc_attr( (int) ( $cfg['aurora_cursor_dot_size']['size'] ?? 8 ) ),
+			'data-aurora-cursor-ring-size'              => esc_attr( (int) ( $cfg['aurora_cursor_ring_size']['size'] ?? 24 ) ),
+			'data-aurora-cursor-trail-delay'            => esc_attr( (int) ( $cfg['aurora_cursor_trail_delay']['size'] ?? 150 ) ),
 			'data-aurora-cursor-interactive-selector'   => esc_attr( $interactive_selector ),
-			'data-aurora-cursor-interactive-scale'      => esc_attr( $settings['aurora_cursor_interactive_scale']['size'] ?? 1.5 ),
+			'data-aurora-cursor-interactive-scale'      => esc_attr( $cfg['aurora_cursor_interactive_scale']['size'] ?? 1.5 ),
 			'data-aurora-cursor-image-selector'         => esc_attr( $image_selector ),
-			'data-aurora-cursor-image-scale'            => esc_attr( $settings['aurora_cursor_image_scale']['size'] ?? 2.33 ),
+			'data-aurora-cursor-image-scale'            => esc_attr( $cfg['aurora_cursor_image_scale']['size'] ?? 2.33 ),
 		];
 	}
 }
