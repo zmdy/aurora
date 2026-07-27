@@ -42,30 +42,3 @@
 .elementor-panel-heading-toggle[data-collapse_id="aurora_glass_section"] + .elementor-panel-heading-title::before {
 	background-image: url('../branding/icons/aurora_icon_green_module_glassmorphism.svg');
 }
-
-/* ── Single-row Repeater chrome suppression ─────────────────────────────────
- * The three aurora_*_config controls are REPEATER controls used as fixed
- * single-setting-blocks (max_items=1, prevent_empty=true) rather than true
- * lists. Elementor always renders the Repeater's list management controls
- * (Add Item footer, drag handle, Remove button), which don't make sense for
- * a fixed single row. We hide them here instead of forking the Repeater
- * control class, which would require maintaining a custom Backbone view.
- *
- * Selector breakdown:
- *   .elementor-control-aurora_*_config  → scoped to each Aurora Repeater only
- *   .elementor-repeater-add             → the "Add Item" footer button
- *   .elementor-repeater-tool-remove     → the "×" remove button on each row
- *   .elementor-repeater-row-handle      → the drag handle on each row
- * -------------------------------------------------------------------------- */
-.elementor-control-aurora_cursor_config .elementor-repeater-add,
-.elementor-control-aurora_cursor_config .elementor-repeater-tool-remove,
-.elementor-control-aurora_cursor_config .elementor-repeater-row-handle,
-.elementor-control-aurora_children_config .elementor-repeater-add,
-.elementor-control-aurora_children_config .elementor-repeater-tool-remove,
-.elementor-control-aurora_children_config .elementor-repeater-row-handle,
-.elementor-control-aurora_text_config .elementor-repeater-add,
-.elementor-control-aurora_text_config .elementor-repeater-tool-remove,
-.elementor-control-aurora_text_config .elementor-repeater-row-handle {
-	display: none !important;
-}
-
