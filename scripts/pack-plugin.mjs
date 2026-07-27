@@ -26,11 +26,14 @@ const TEMP_PLUGIN_PATH = path.join(TEMP_DIR, PLUGIN_SLUG);
 const EXCLUDES = [
     '.git',
     '.github',
+    '.claude',
     'node_modules',
     '_tests',
     'scripts',
     '.agents',
     '.gemini',
+    'docs',
+    'site_memoriarte',
     'package.json',
     'package-lock.json',
     '.gitignore',
@@ -83,9 +86,37 @@ function zipFolder(destZipPath) {
     }
 
     if (isWindows) {
-        // Use Windows PowerShell Compress-Archive (native, no third-party zip tool required)
-        const cmd = `powershell -Command "Compress-Archive -Path '${TEMP_PLUGIN_PATH}' -DestinationPath '${destZipPath}' -Force"`;
-        execSync(cmd, { stdio: 'inherit' });
+        // Neither PowerShell 5.1's Compress-Archive nor its bundled
+        // .NET Framework ZipFile.CreateFromDirectory writes ZIP entries
+        // with the RFC-required forward-slash separators — both emit
+        // backslashes, which WordPress's PclZip extractor treats as
+        // part of a single flat filename. The extracted folder ends up
+        // empty of the plugin file WordPress is looking for, hence
+        // "Plugin file does not exist". Sidestep both by opening a
+        // ZipArchive by hand and CreateEntry-ing each file with an
+        // explicit forward-slash name.
+        const src = TEMP_PLUGIN_PATH.replace(/'/g, "''");
+        const dst = destZipPath.replace(/'/g, "''");
+        const ps = [
+            "$ErrorActionPreference='Stop';",
+            "Add-Type -AssemblyName 'System.IO.Compression';",
+            "Add-Type -AssemblyName 'System.IO.Compression.FileSystem';",
+            `$src='${src}'; $dst='${dst}';`,
+            "$root = Split-Path $src -Parent;",
+            "$zip = [System.IO.Compression.ZipFile]::Open($dst, [System.IO.Compression.ZipArchiveMode]::Create);",
+            "try {",
+            "  Get-ChildItem -Path $src -Recurse -File | ForEach-Object {",
+            "    $rel = $_.FullName.Substring($root.Length + 1).Replace('\\','/');",
+            "    $entry = $zip.CreateEntry($rel, [System.IO.Compression.CompressionLevel]::Optimal);",
+            "    $stream = $entry.Open();",
+            "    try {",
+            "      $bytes = [System.IO.File]::ReadAllBytes($_.FullName);",
+            "      $stream.Write($bytes, 0, $bytes.Length);",
+            "    } finally { $stream.Dispose(); }",
+            "  }",
+            "} finally { $zip.Dispose(); }"
+        ].join(' ');
+        execSync(`powershell -NoProfile -Command "${ps}"`, { stdio: 'inherit' });
     } else {
         // Use standard Unix zip utility
         const cmd = `zip -q -r "${destZipPath}" "${PLUGIN_SLUG}"`;
