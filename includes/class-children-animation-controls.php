@@ -1,10 +1,16 @@
 <?php
 /**
  * Children Animation Controls — injects staggered children-element
- * animation controls into the Advanced tab of every Elementor element.
+ * animation controls into the Advanced tab of structural Elementor
+ * elements (section, column, container).
  *
  * Implements only what's specific to this module; the shared plumbing
  * (hooks, deduplication, section assembly) lives in Animation_Module.
+ *
+ * Scope is restricted to structural elements (section/column/container)
+ * where animating child elements is a valid product feature. The common
+ * hook is omitted so 0 controls are registered on standard non-container
+ * widgets (Heading, Button, Spacer, etc.).
  *
  * @package Aurora
  */
@@ -23,6 +29,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Children_Animation_Controls extends Animation_Module {
 
+	/** Elements where this module appears: structural containers only. */
+	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container' ];
+
 	protected function get_section_id(): string {
 		return 'aurora_children_section';
 	}
@@ -32,25 +41,31 @@ class Children_Animation_Controls extends Animation_Module {
 	}
 
 	/**
-	 * This module acts on widgets, sections, columns and containers —
-	 * unlike the default (widgets only) used by most modules.
+	 * Only registers on the three structural element types.
+	 * The 'common' hook is omitted: applies_to_element() would block every
+	 * call there (common's element name is never section/column/container),
+	 * so registering on it would only fire a no-op callback for every widget
+	 * on every page load.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			// priority 20 so it comes after text animation (10) on widgets.
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 10 ],
 		];
 	}
 
-	// ── Controls ─────────────────────────────────────────────────────────────
+	/**
+	 * Only appears on section, column, and container elements.
+	 */
+	protected function applies_to_element( Element_Base $element ): bool {
+		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
+	}
 
 	/**
-	 * Fields of the "Animate Children Elements" section.
+	 * Registers fields for Animate Children Elements.
 	 *
-	 * @param Element_Base $element  Element instance.
+	 * @param Element_Base $element Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
@@ -79,13 +94,13 @@ class Children_Animation_Controls extends Animation_Module {
 					'fade-up'    => esc_html__( 'Fade Up',      'aurora-for-elementor' ),
 					'fade-down'  => esc_html__( 'Fade Down',    'aurora-for-elementor' ),
 					'fade-in'    => esc_html__( 'Fade In',      'aurora-for-elementor' ),
-					'slide-left' => esc_html__( 'Slide Left', 'aurora-for-elementor' ),
+					'slide-left' => esc_html__( 'Slide Left',   'aurora-for-elementor' ),
 					'slide-right'=> esc_html__( 'Slide Right',  'aurora-for-elementor' ),
 					'zoom-in'    => esc_html__( 'Zoom In',      'aurora-for-elementor' ),
 					'zoom-out'   => esc_html__( 'Zoom Out',     'aurora-for-elementor' ),
 					'flip-up'    => esc_html__( 'Flip Up',      'aurora-for-elementor' ),
-					'rotate-in'  => esc_html__( 'Rotate In',   'aurora-for-elementor' ),
-					'bounce-in'  => esc_html__( 'Bounce In',   'aurora-for-elementor' ),
+					'rotate-in'  => esc_html__( 'Rotate In',    'aurora-for-elementor' ),
+					'bounce-in'  => esc_html__( 'Bounce In',    'aurora-for-elementor' ),
 				],
 				'condition' => [ 'aurora_children_enable' => 'yes' ],
 				'frontend_available' => true,
@@ -220,14 +235,11 @@ class Children_Animation_Controls extends Animation_Module {
 		);
 	}
 
-	// ── Render Attributes ─────────────────────────────────────────────────────
-
 	/**
-	 * Converts the saved settings into the wrapper's data-attributes.
-	 * Returns an empty array when the animation is disabled.
+	 * Builds the data-attributes that the children-animations JS module reads.
 	 *
-	 * @param array             $settings  Element settings.
-	 * @param Element_Base|null $element   Unused in this module.
+	 * @param array             $settings  Element settings from get_settings_for_display().
+	 * @param Element_Base|null $element   Unused.
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {

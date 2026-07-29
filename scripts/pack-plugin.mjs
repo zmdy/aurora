@@ -44,33 +44,48 @@ const EXCLUDES = [
     'LICENSE',
     'index.html',
     'showcase',
-    'assets/js/src'
+    'assets/js/src',
+
+    // Development & marketing branding assets (not needed by production plugin)
+    'assets/branding/brandguide.html',
+    'assets/branding/fonts',
+    'assets/branding/aurora_animated_logo.svg',
+    'assets/branding/aurora_blob_base_shape.svg',
+    'assets/branding/aurora_favicon.svg',
+    'assets/branding/aurora_favicon_green.svg',
+    'assets/branding/logo_aurora.svg',
+    'assets/branding/logo_aurora_tagline.svg',
+    'assets/branding/icons/tdesign',
+    'assets/branding/icons/aurora_icon_blue_contributing.svg',
+    'assets/branding/icons/aurora_icon_blue_features.svg',
+    'assets/branding/icons/aurora_icon_blue_install.svg',
+    'assets/branding/icons/aurora_icon_blue_specs.svg'
 ];
 
 /**
  * Recursively copies a directory while excluding specified files/folders.
  */
 function copyRecursive(src, dest) {
-    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-    
-    const items = fs.readdirSync(src);
-    for (const item of items) {
-        const fullSrc = path.join(src, item);
-        const relativePath = path.relative(ROOT, fullSrc).replace(/\\/g, '/');
-        
-        if (item.endsWith('.zip')) continue;
-        if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
-            continue;
-        }
+    const relativePath = path.relative(ROOT, src).replace(/\\/g, '/');
 
-        fs.cpSync(fullSrc, path.join(dest, item), {
-            recursive: true,
-            force: true,
-            filter: (source) => {
-                const innerRelative = path.relative(ROOT, source).replace(/\\/g, '/');
-                return !EXCLUDES.some(ex => innerRelative === ex || innerRelative.startsWith(ex + '/'));
-            }
-        });
+    if (relativePath) {
+        if (src.endsWith('.zip') || path.basename(src) === '.DS_Store') return;
+        if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
+            return;
+        }
+    }
+
+    const stats = fs.statSync(src);
+    if (stats.isDirectory()) {
+        if (!fs.existsSync(dest)) {
+            fs.mkdirSync(dest, { recursive: true });
+        }
+        const entries = fs.readdirSync(src);
+        for (const entry of entries) {
+            copyRecursive(path.join(src, entry), path.join(dest, entry));
+        }
+    } else {
+        fs.copyFileSync(src, dest);
     }
 }
 
@@ -118,8 +133,8 @@ function zipFolder(destZipPath) {
         ].join(' ');
         execSync(`powershell -NoProfile -Command "${ps}"`, { stdio: 'inherit' });
     } else {
-        // Use standard Unix zip utility
-        const cmd = `zip -q -r "${destZipPath}" "${PLUGIN_SLUG}"`;
+        // Use standard Unix zip utility with level 5 fast compression
+        const cmd = `zip -5 -q -r "${destZipPath}" "${PLUGIN_SLUG}"`;
         execSync(cmd, { cwd: TEMP_DIR, stdio: 'inherit' });
     }
 }

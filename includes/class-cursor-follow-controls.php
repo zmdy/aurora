@@ -8,6 +8,11 @@
  * Implements only what's specific to this module; the shared plumbing
  * (hooks, deduplication, section assembly) lives in Animation_Module.
  *
+ * Scope is restricted to containers and interactive elements where a
+ * custom cursor zone makes sense (section, column, container, image,
+ * icon-box, button). Deliberately omits the common hook to prevent 0-value
+ * keys on standard non-interactive widgets.
+ *
  * @package Aurora
  */
 
@@ -25,6 +30,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Cursor_Follow_Controls extends Animation_Module {
 
+	/** Elements where this module appears: structural containers and key interactive widgets. */
+	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container', 'image', 'icon-box', 'button' ];
+
 	protected function get_section_id(): string {
 		return 'aurora_cursor_section';
 	}
@@ -34,31 +42,30 @@ class Cursor_Follow_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Like Children_Animation_Controls, this module is meant to be usable
-	 * on sections/columns/containers (typically a hero or the whole page
-	 * wrapper) as well as on individual widgets, so it registers on every
-	 * structural hook in addition to the shared "common" one.
+	 * Registers on structural elements and supported widget style sections.
+	 * The 'common' hook is omitted to prevent loading 0-value control keys on
+	 * non-supported widgets.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 50 ],
+			[ 'hook' => 'elementor/element/image/section_style_image/after_section_end', 'priority' => 50 ],
+			[ 'hook' => 'elementor/element/icon-box/section_style_box/after_section_end', 'priority' => 50 ],
+			[ 'hook' => 'elementor/element/button/section_style/after_section_end', 'priority' => 50 ],
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 40 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 40 ],
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 40 ],
 		];
 	}
 
-	protected function get_render_hooks(): array {
-		return [
-			'elementor/frontend/element/before_render',
-			'elementor/frontend/widget/before_render',
-		];
+	/**
+	 * Only appears on supported elements.
+	 */
+	protected function applies_to_element( Element_Base $element ): bool {
+		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
-	// ── Controls ─────────────────────────────────────────────────────────────
-
 	/**
-	 * Fields of the "Cursor Follow" section.
+	 * Registers fields for Cursor Follow.
 	 *
 	 * @param Element_Base $element Element instance.
 	 */
@@ -229,14 +236,11 @@ class Cursor_Follow_Controls extends Animation_Module {
 		);
 	}
 
-	// ── Render Attributes ─────────────────────────────────────────────────────
-
 	/**
-	 * Converts the saved settings into the wrapper's data-attributes.
-	 * Returns an empty array when the effect is disabled.
+	 * Builds the data-attributes that the cursor-follow JS module reads.
 	 *
-	 * @param array             $settings Element settings.
-	 * @param Element_Base|null $element  Unused in this module.
+	 * @param array             $settings  Element settings from get_settings_for_display().
+	 * @param Element_Base|null $element   Unused.
 	 * @return array<string, string>
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {

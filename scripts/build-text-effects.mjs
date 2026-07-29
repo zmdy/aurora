@@ -24,7 +24,7 @@
  * Run with: npm run build
  */
 
-import { build } from 'vite';
+import { build } from 'esbuild';
 import { readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -36,8 +36,7 @@ const DIST = path.join(ROOT, 'assets/js/dist');
 
 /**
  * Discovers every effect file under src/effects/{gsap,anime}/ and derives
- * its effect id from the filename convention `{id}-{slug}.js`
- * (e.g. `gs-1-fade-up.js` -> `gs-1`, `ml-15-continuous-wave.js` -> `ml-15`).
+ * its effect id from the filename convention `{id}-{slug}.js`.
  */
 function discoverEffects() {
     const effects = [];
@@ -56,64 +55,44 @@ function discoverEffects() {
     return effects;
 }
 
-/**
- * Runs one isolated Vite build producing a single flat IIFE file.
- *
- * @param {string} entry     Absolute path to the JS entry file.
- * @param {string} outDir    Absolute output directory.
- * @param {string} fileName  Exact output filename (with .js extension).
- * @param {string} globalName  Unused in practice (our entries have no
- *                              meaningful default export consumed as a
- *                              global), but iife/umd formats require SOME
- *                              name to be configured.
- */
-async function buildOne(entry, outDir, fileName, globalName) {
-    await build({
-        root: ROOT,
-        logLevel: 'warn',
-        build: {
-            outDir,
-            emptyOutDir: false,
-            minify: 'esbuild',
-            sourcemap: false,
-            lib: {
-                entry,
-                formats: ['iife'],
-                name: globalName,
-                fileName: () => fileName,
-            },
-        },
-    });
-    console.log(`[build] ${path.relative(ROOT, entry)} -> ${path.relative(ROOT, path.join(outDir, fileName))}`);
-}
-
 async function main() {
+    const startTime = Date.now();
     const effects = discoverEffects();
 
-    await buildOne(
-        path.join(SRC, 'entries/editor.js'),
-        DIST,
-        'aurora-text-editor.js',
-        'AuroraTextEditorBundle'
-    );
+    // Compile bundles and all effect chunks concurrently via esbuild
+    const tasks = [
+        build({
+            entryPoints: [path.join(SRC, 'entries/editor.js')],
+            outfile: path.join(DIST, 'aurora-text-editor.js'),
+            bundle: true,
+            minify: true,
+            format: 'iife',
+            globalName: 'AuroraTextEditorBundle',
+        }),
+        build({
+            entryPoints: [path.join(SRC, 'entries/frontend-core.js')],
+            outfile: path.join(DIST, 'aurora-text-core.js'),
+            bundle: true,
+            minify: true,
+            format: 'iife',
+            globalName: 'AuroraTextCoreBundle',
+        }),
+        ...effects.map((effect) =>
+            build({
+                entryPoints: [effect.file],
+                outfile: path.join(DIST, 'effects', `${effect.id}.js`),
+                bundle: true,
+                minify: true,
+                format: 'iife',
+                globalName: `AuroraEffect_${effect.id.replace('-', '_')}`,
+            })
+        ),
+    ];
 
-    await buildOne(
-        path.join(SRC, 'entries/frontend-core.js'),
-        DIST,
-        'aurora-text-core.js',
-        'AuroraTextCoreBundle'
-    );
+    await Promise.all(tasks);
 
-    for (const effect of effects) {
-        await buildOne(
-            effect.file,
-            path.join(DIST, 'effects'),
-            `${effect.id}.js`,
-            `AuroraEffect_${effect.id.replace('-', '_')}`
-        );
-    }
-
-    console.log(`[build] Done. ${effects.length} effect chunks + 2 bundles written to assets/js/dist/.`);
+    const elapsed = Date.now() - startTime;
+    console.log(`[build] Done in ${elapsed}ms. ${effects.length} effect chunks + 2 bundles written to assets/js/dist/.`);
 }
 
 main().catch((err) => {

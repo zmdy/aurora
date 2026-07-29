@@ -1,10 +1,16 @@
 <?php
 /**
  * Text Animation Controls — injects controls into the Advanced tab of
- * every Elementor widget and adds the data-attributes on the frontend.
+ * text-bearing Elementor widgets and adds the data-attributes on the frontend.
  *
  * Implements only what's specific to this module; the shared plumbing
  * (hooks, deduplication, section assembly) lives in Animation_Module.
+ *
+ * Scope is restricted to text-bearing widgets (Heading, Text Editor, Button,
+ * Icon Box, Image Box, Testimonial, Alert, Text Path) where animating text
+ * is a valid product feature. Non-textual widgets (Image, Video, Map, Divider,
+ * Spacer, etc.) and structural containers return false in applies_to_element(),
+ * preventing 0-value control keys on unrelated elements.
  *
  * @package Aurora
  */
@@ -23,8 +29,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Text_Animation_Controls extends Animation_Module {
 
-	/** Structural elements where this module must NOT appear — see applies_to_element(). */
-	const UNSUPPORTED_ELEMENTS = [ 'section', 'column', 'container' ];
+	/** Text-bearing Elementor widgets supported by this module. */
+	const SUPPORTED_ELEMENTS = [
+		'heading',
+		'text-editor',
+		'button',
+		'icon-box',
+		'image-box',
+		'testimonial',
+		'alert',
+		'text-path',
+	];
 
 	protected function get_section_id(): string {
 		return 'aurora_text_section';
@@ -35,20 +50,10 @@ class Text_Animation_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Only appears on actual widgets (Heading, Text Editor, Button, etc.),
-	 * matching the "Available on any Elementor widget" behavior described
-	 * in the README. The base class only registers this module on the
-	 * "common" hook (shared by every element type, including structural
-	 * ones), so without this override the section would also show up on
-	 * Section/Column/Container. That's not just cosmetic: getTextTarget()
-	 * falls back to the wrapper itself when no known text selector
-	 * matches, and splitText() then wipes the wrapper's innerHTML to
-	 * rebuild it from its flattened text — which would destroy every
-	 * widget nested inside a structural element if the module were
-	 * mistakenly enabled there.
+	 * Only appears on actual text-bearing widgets.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
-		return ! in_array( $element->get_name(), self::UNSUPPORTED_ELEMENTS, true );
+		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
 	/**
@@ -68,7 +73,7 @@ class Text_Animation_Controls extends Animation_Module {
 	/**
 	 * Fields of the "Text Animation" section.
 	 *
-	 * @param Element_Base $element  Element instance.
+	 * @param Element_Base $element Element instance.
 	 */
 	protected function register_fields( Element_Base $element ): void {
 
@@ -357,14 +362,6 @@ class Text_Animation_Controls extends Animation_Module {
 		);
 
 		// ── Hover Scatter (independent of the entrance effect above) ─────────
-		// Always powered by Anime.js (regardless of the Library choice above,
-		// since Anime.js is loaded site-wide as a shared dependency) — each
-		// split unit jumps to a random offset/rotation on mouseenter and
-		// settles back with an elastic ease on mouseleave. Reuses the SAME
-		// split produced for the entrance effect (see initTextAnimation() in
-		// text-animations.js) rather than splitting the text a second time,
-		// so it needs Enable Text Animation on too; pairs best with
-		// "Split by: Characters" for the classic "each letter scatters" look.
 		$element->add_control(
 			'aurora_text_hover_enable',
 			[
