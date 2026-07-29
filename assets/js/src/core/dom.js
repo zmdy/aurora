@@ -89,12 +89,19 @@ export function splitIntoWords(el) {
     el.setAttribute('aria-label', text);
     el.innerHTML = '';
 
+    // Trailing separator is U+00A0 (non-breaking space), not an ASCII
+    // space. Regular whitespace at the trailing edge of an inline-block
+    // span is treated as collapsible by the browser: once an effect
+    // touches the span (transform, letter-spacing, opacity …) the browser
+    // can decide to drop the trailing whitespace altogether, producing
+    // the "all words glued together" regression the user reported. NBSP
+    // never collapses.
     return text.split(/\s+/).filter(Boolean).map(function (word, i, arr) {
         var span = document.createElement('span');
         span.className = 'aurora-word';
         span.style.cssText = 'display:inline-block;will-change:transform,opacity;';
         span.setAttribute('aria-hidden', 'true');
-        span.textContent = word + (i < arr.length - 1 ? ' ' : '');
+        span.textContent = word + (i < arr.length - 1 ? '\u00A0' : '');
         el.appendChild(span);
         return span;
     });
@@ -117,7 +124,7 @@ export function splitIntoLines(el) {
     var wordSpans = words.map(function (word, i, arr) {
         var span = document.createElement('span');
         span.style.cssText = 'display:inline-block;';
-        span.textContent = word + (i < arr.length - 1 ? ' ' : '');
+        span.textContent = word + (i < arr.length - 1 ? '\u00A0' : '');
         el.appendChild(span);
         return span;
     });
