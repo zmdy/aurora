@@ -189,6 +189,20 @@
 .aurora-morph-card-stage .morph-profile-grid-item { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: var(--amc-bg-card); }
 .aurora-morph-card-stage .morph-profile-grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+/* Placeholder tile shown when no gridPhotos URLs are configured yet —
+   a subtle diagonal stripe pattern reads "empty slot" without being
+   ugly. Same size as a real tile so the card layout doesn't jump when
+   photos get filled in. */
+.aurora-morph-card-stage .morph-profile-grid-item-empty {
+	background: repeating-linear-gradient(
+		45deg,
+		var(--amc-bg-card),
+		var(--amc-bg-card) 8px,
+		#ecebe7 8px,
+		#ecebe7 16px
+	);
+}
+
 /* Overlay layer: absolutely-positioned clone of a zone's OLD content
    parked on top of the new content during a morph. The overlay is only
    present while _morphFrame / _morphToPolaroid are running — it hides

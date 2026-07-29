@@ -67,12 +67,16 @@
 		};
 
 		// Proportions of each polaroid size (mirrors the .card-polaroid CSS rules).
+		// Rotate stays at 0 for every preset — the classic "-2deg photograph"
+		// tilt now belongs to the widget-level Rotation slider (Appearance
+		// section), so the template presets don't force a tilt on users
+		// who want their polaroid straight.
 		static POLAROID_SIZES = {
-			'normal':        { photoRatio: '1 / 1', radius: 3, paddingTop: 16, paddingSides: 16, paddingBottom: 56, rotate: -2 },
-			'instax':        { photoRatio: '3 / 4', radius: 3, paddingTop: 14, paddingSides: 14, paddingBottom: 64, rotate: -2 },
-			'instax-square': { photoRatio: '1 / 1', radius: 3, paddingTop: 14, paddingSides: 14, paddingBottom: 48, rotate: -2 },
-			'horizontal':    { photoRatio: '4 / 3', radius: 3, paddingTop: 14, paddingSides: 14, paddingBottom: 48, rotate: -2 },
-			'mini':          { photoRatio: '3 / 4', radius: 3, paddingTop: 10, paddingSides: 10, paddingBottom: 40, rotate: -2 }
+			'normal':        { photoRatio: '1 / 1', radius: 3, paddingTop: 16, paddingSides: 16, paddingBottom: 56, rotate: 0 },
+			'instax':        { photoRatio: '3 / 4', radius: 3, paddingTop: 14, paddingSides: 14, paddingBottom: 64, rotate: 0 },
+			'instax-square': { photoRatio: '1 / 1', radius: 3, paddingTop: 14, paddingSides: 14, paddingBottom: 48, rotate: 0 },
+			'horizontal':    { photoRatio: '4 / 3', radius: 3, paddingTop: 14, paddingSides: 14, paddingBottom: 48, rotate: 0 },
+			'mini':          { photoRatio: '3 / 4', radius: 3, paddingTop: 10, paddingSides: 10, paddingBottom: 40, rotate: 0 }
 		};
 
 		// Timing defaults shared across the frame/caption interpolation. Can be
@@ -328,11 +332,19 @@
 				</div>
 			`;
 
+			// Empty gallery falls back to 9 placeholder tiles so the
+			// profile template still LOOKS like a profile in the editor
+			// before the user has filled in URLs — otherwise the grid
+			// zone renders empty and the card looks broken.
+			const gridItems = photos.length
+				? photos.map( ( src ) => `<div class="morph-profile-grid-item"><img src="${ src }" alt=""></div>` )
+				: Array.from( { length: 9 }, () => '<div class="morph-profile-grid-item morph-profile-grid-item-empty"></div>' );
+
 			this.image.className     = 'morph-image';
 			this.image.style.display = '';
 			this.image.innerHTML = `
 				<div class="morph-profile-grid">
-					${ photos.map( ( src ) => `<div class="morph-profile-grid-item"><img src="${ src }" alt=""></div>` ).join( '' ) }
+					${ gridItems.join( '' ) }
 				</div>
 			`;
 

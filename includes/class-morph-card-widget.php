@@ -56,6 +56,18 @@ class Morph_Card_Widget extends Widget_Base {
 		return [ 'aurora', 'morph', 'card', 'instagram', 'polaroid', 'transform' ];
 	}
 
+	/**
+	 * The Instagram/Profile templates render Font Awesome glyphs
+	 * (like/comment/save icons, tab bar, envelope). Elementor ships FA
+	 * as its own icon library — depending on those handles here makes
+	 * Elementor pull them in on any page that hosts a Morph Card
+	 * widget, in both editor and frontend, without us re-registering
+	 * or bundling our own copy.
+	 */
+	public function get_style_depends(): array {
+		return [ 'elementor-icons-fa-solid', 'elementor-icons-fa-regular', 'elementor-icons-fa-brands' ];
+	}
+
 	// ── Controls ─────────────────────────────────────────────────────────────
 
 	protected function register_controls(): void {
@@ -807,8 +819,13 @@ class Morph_Card_Widget extends Widget_Base {
 				$state['posts']      = max( 0, (int) ( $raw['profile_posts'] ?? 0 ) );
 				$state['followers']  = max( 0, (int) ( $raw['profile_followers'] ?? 0 ) );
 				$state['following']  = max( 0, (int) ( $raw['profile_following'] ?? 0 ) );
-				$grid                = array_filter( array_map( 'trim', explode( "\n", (string) ( $raw['profile_grid_photos'] ?? '' ) ) ) );
-				$state['gridPhotos'] = array_values( array_map( 'esc_url_raw', $grid ) );
+				// preg_split with \r?\n handles Windows CRLF line endings —
+				// explode("\n", ...) alone leaves stray \r on each URL and
+				// esc_url_raw then strips them to empty strings, silently
+				// hiding every image on Windows-authored posts.
+				$grid_raw            = preg_split( '/\r?\n/', (string) ( $raw['profile_grid_photos'] ?? '' ) );
+				$grid                = array_filter( array_map( 'trim', is_array( $grid_raw ) ? $grid_raw : [] ) );
+				$state['gridPhotos'] = array_values( array_filter( array_map( 'esc_url_raw', $grid ) ) );
 				break;
 
 			case 'custom':
