@@ -2584,7 +2584,7 @@ body.cursor-click .gcursor-ring {
 <!-- Plugin Vendor Libraries -->
 <script src="assets/js/vendor/gsap.min.js"></script>
 <script src="assets/js/vendor/anime.min.js"></script>
-<!-- Full editor bundle — all 82 effects registered into window.AuroraTextEffects -->
+<!-- Full editor bundle — all 82 effects registered into window.AuroraPlugin.TextEffects -->
 <script src="assets/js/dist/aurora-text-editor.js"></script>
 
 <script>
@@ -2957,7 +2957,7 @@ function detachHover(el) {
 
 function runPlayground() {
   var text = ($ctrlText.value || 'AURORA').toUpperCase().trim();
-  var effect = window.AuroraTextEffects && window.AuroraTextEffects[pgState.anim];
+  var effect = window.AuroraPlugin && window.AuroraPlugin.TextEffects && window.AuroraPlugin.TextEffects[pgState.anim];
   if (!effect) return;
 
   // Reset
@@ -3022,7 +3022,7 @@ var catalogCustomText = '';
 
 function runCardEffect(stage) {
   var effId = stage.dataset.auroraAnimation;
-  var effect = window.AuroraTextEffects && window.AuroraTextEffects[effId];
+  var effect = window.AuroraPlugin && window.AuroraPlugin.TextEffects && window.AuroraPlugin.TextEffects[effId];
   if (!effect) return;
 
   var word = catalogCustomText || stage.dataset.defaultText || 'AURORA';
@@ -3273,7 +3273,7 @@ function generateSnippet() {
     '    // Options: split-by=' + split + ', duration=' + dur + 'ms, stagger=' + stagger + 'ms, delay=' + delay + 'ms',
     '    (function() {',
     '      var el     = document.getElementById(\'aurora-text\');',
-    '      var effect = window.AuroraTextEffects && window.AuroraTextEffects[\''+animId+'\'];',
+    '      var effect = window.AuroraPlugin && window.AuroraPlugin.TextEffects && window.AuroraPlugin.TextEffects[\''+animId+'\'];',
     '      if (!effect) { console.warn(\'Aurora: effect \"'+animId+'\" not found.\'); return; }',
     '',
     '      var opts = {',
@@ -3350,7 +3350,7 @@ function generateLeanSnippet() {
   /* Minified IIFE — self-contained init, no external helpers needed */
   var mini = '!function(){' +
     'var e=document.getElementById("aurora-text"),' +
-    'f=window.AuroraTextEffects&&window.AuroraTextEffects["' + animId + '"];' +
+    'f=window.AuroraPlugin&&window.AuroraPlugin.TextEffects&&window.AuroraPlugin.TextEffects["' + animId + '"];' +
     'if(!f)return;' +
     'var o={library:"' + lib + '",animation:"' + animId + '",splitBy:"' + split + '",duration:' + dur + ',stagger:' + stg + ',delay:' + dly + ',replay:!0};' +
     'var u=[];' +
