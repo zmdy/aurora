@@ -3,7 +3,8 @@ import { registerEffect } from '../../core/registry.js';
 
 // Anime.js port of gs-28 Stagger Flip 3D — identical two-perpendicular-
 // face cube DOM (front + top, joined at a 90° edge, see gs-28's header
-// comment for why this replaced the earlier opposite-face 180° version),
+// comment for why this replaced the earlier opposite-face 180° version)
+// and the same repeatable hover flourish (roll away, snap back instantly),
 // driven by anime.animate() instead of GSAP.
 var effect = {
     id: 'ml-46',
@@ -60,6 +61,27 @@ var effect = {
             delay: function (el, i) { return opts.delay + i * opts.stagger; },
             ease: 'outBack',
         });
+
+        if (!textEl || !cubes.length) return;
+
+        if (textEl._auroraFlipHover) {
+            textEl.removeEventListener('mouseenter', textEl._auroraFlipHover);
+        }
+
+        var busy = false;
+        function onEnter() {
+            if (busy) return;
+            busy = true;
+            cubes.forEach(function (cube, i) {
+                var start = i * 25;
+                anime.animate(cube, { rotateX: [0, 90], duration: 220, delay: start, ease: 'inQuad' });
+                anime.animate(cube, { rotateX: 0, duration: 0, delay: start + 220 });
+            });
+            setTimeout(function () { busy = false; }, cubes.length * 25 + 260);
+        }
+
+        textEl.addEventListener('mouseenter', onEnter);
+        textEl._auroraFlipHover = onEnter;
     },
 };
 

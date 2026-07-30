@@ -340,6 +340,11 @@ export function teardownTextAnimation(wrapper) {
             textEl.removeEventListener('mouseenter', textEl._auroraRollHover);
             textEl._auroraRollHover = null;
         }
+        // gs-28/ml-46 Stagger Flip 3D's independent hover handler.
+        if (textEl._auroraFlipHover) {
+            textEl.removeEventListener('mouseenter', textEl._auroraFlipHover);
+            textEl._auroraFlipHover = null;
+        }
         // gs-33/ml-51 Letter Swap's independent hover handlers.
         if (textEl._auroraSwapHover) {
             textEl.removeEventListener('mouseenter', textEl._auroraSwapHover.enter);

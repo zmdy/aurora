@@ -13,6 +13,14 @@ import { registerEffect } from '../../core/registry.js';
 // rotating the whole cube -90° brings it around like a die rolling onto
 // its next face, rather than a card flipping to its backside.
 //
+// The reference's actual interaction is a REPEATABLE hover flourish, not
+// a one-shot reveal: each character rolls away to the second face, then
+// snaps back instantly (duration 0) — invisible to the eye since the
+// snap happens the instant the roll completes, so hovering repeatedly
+// keeps re-triggering the same quick roll. The entrance below only
+// covers the initial reveal; the independent mouseenter handler after it
+// is what reproduces that repeatable flourish.
+//
 // Self-managed: builds its own per-character cube DOM instead of using
 // the generic split `units` (a flat span can't have two perpendicular 3D
 // faces).
@@ -91,6 +99,28 @@ var effect = {
                 stagger: opts.stagger / 1000,
             }
         );
+
+        if (!textEl || !cubes.length) return;
+
+        // Independent of the entrance above — replaces any handler left
+        // over from a previous init instead of stacking a second one.
+        if (textEl._auroraFlipHover) {
+            textEl.removeEventListener('mouseenter', textEl._auroraFlipHover);
+        }
+
+        var busy = false;
+        function onEnter() {
+            if (busy) return;
+            busy = true;
+            var tl = gsap.timeline({ onComplete: function () { busy = false; } });
+            cubes.forEach(function (cube, i) {
+                tl.to(cube, { rotationX: 90, duration: 0.22, ease: 'power2.in' }, i * 0.025)
+                  .set(cube, { rotationX: 0 });
+            });
+        }
+
+        textEl.addEventListener('mouseenter', onEnter);
+        textEl._auroraFlipHover = onEnter;
     },
 };
 
