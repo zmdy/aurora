@@ -364,6 +364,17 @@ export function teardownTextAnimation(wrapper) {
             textEl._auroraMeshText.cleanup();
             textEl._auroraMeshText = null;
         }
+        // gs-30/ml-48 Text Reveal Wall's per-line tweens, restart timeout,
+        // resize listener and IntersectionObserver.
+        if (textEl._auroraRevealWall) {
+            textEl._auroraRevealWall.cleanup();
+            textEl._auroraRevealWall = null;
+        }
+        // gs-35/ml-53 Appear Text's looping timeline + IntersectionObserver.
+        if (textEl._auroraKineticGrid) {
+            textEl._auroraKineticGrid.cleanup();
+            textEl._auroraKineticGrid = null;
+        }
 
         textEl._auroraLeaves = null;
 

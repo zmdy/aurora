@@ -334,7 +334,7 @@ Nothing else in the codebase needs to change — no manifest to update, no ids t
 
 #### GSAP → Anime.js parity
 
-Every GSAP effect (`gs-1`..`gs-34`) has an Anime.js effect with the same visual result, so the Library control is a real choice rather than Anime.js being a smaller fallback set. This exists to prepare for an eventual WordPress.org submission: GSAP's core license (GreenSock's "Standard No-Charge License") isn't GPL-compatible, while Anime.js is MIT. GSAP is still bundled and selectable today — nothing has been removed — but if GSAP is ever dropped, no effect is lost; the Library default just needs to switch to `animejs` and each `aurora_text_animation_gsap` value needs to be remapped to its Anime.js counterpart below.
+Every GSAP effect (`gs-1`..`gs-35`) has an Anime.js effect with the same visual result, so the Library control is a real choice rather than Anime.js being a smaller fallback set. This exists to prepare for an eventual WordPress.org submission: GSAP's core license (GreenSock's "Standard No-Charge License") isn't GPL-compatible, while Anime.js is MIT. GSAP is still bundled and selectable today — nothing has been removed — but if GSAP is ever dropped, no effect is lost; the Library default just needs to switch to `animejs` and each `aurora_text_animation_gsap` value needs to be remapped to its Anime.js counterpart below.
 
 | GSAP | Anime.js | | GSAP | Anime.js |
 |---|---|---|---|---|
@@ -355,6 +355,7 @@ Every GSAP effect (`gs-1`..`gs-34`) has an Anime.js effect with the same visual 
 | gs-28 Stagger Flip 3D | ml-46 Stagger Flip 3D | | gs-31 Letter Roll | ml-49 Letter Roll |
 | gs-29 Scroll Highlight | ml-47 Scroll Highlight | | gs-32 Elastic Text | ml-50 Elastic Text |
 | gs-33 Letter Swap | ml-51 Letter Swap | | gs-34 Mesh Text Hover | ml-52 Mesh Text Hover |
+| gs-35 Appear Text | ml-53 Appear Text | | | |
 
 ### Packaging the plugin
 

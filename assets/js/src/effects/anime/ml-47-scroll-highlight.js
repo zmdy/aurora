@@ -2,8 +2,9 @@ import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 // Anime.js port of gs-29 Scroll Highlight — identical hand-rolled scroll
-// math (no ScrollTrigger-equivalent needed either way), units lit up with
-// anime.animate() instead of gsap.set()/inline transitions.
+// math (see gs-29's header comment for the full derivation of the "top
+// center"/"bottom center" scrub progress formula and the per-unit virtual
+// timeline), units lit via direct style writes instead of gsap.set().
 var effect = {
     id: 'ml-47',
     run: function (units, opts, textEl) {
@@ -15,11 +16,18 @@ var effect = {
             textEl._auroraScrollHighlight = null;
         }
 
-        var lit = getComputedStyle(textEl).color || '#ffffff';
-        var dim = 'rgba(128, 128, 128, 0.32)';
+        var litColor = getComputedStyle(textEl).color || 'rgb(255, 255, 255)';
+        var m = litColor.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/);
+        var r = m ? m[1] : 255, g = m ? m[2] : 255, b = m ? m[3] : 255;
+        var dimColor = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.15)';
 
-        anime.animate(units, { opacity: 1, color: dim, duration: 0 });
-        units.forEach(function (u) { u.style.transition = 'color 0.2s linear'; });
+        anime.animate(units, { opacity: 1, color: dimColor, duration: 0 });
+
+        var dur = Math.max(0.05, opts.duration / 1000);
+        var stagger = Math.max(0, opts.stagger / 1000);
+        var totalDuration = dur + (units.length - 1) * stagger;
+
+        function easeOut(t) { return 1 - Math.pow(1 - t, 1.8); }
 
         var ticking = false;
 
@@ -27,12 +35,17 @@ var effect = {
             ticking = false;
             var rect = textEl.getBoundingClientRect();
             var vh = window.innerHeight || document.documentElement.clientHeight;
-            var start = vh * 0.85;
-            var end = vh * 0.25;
-            var progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
-            var litCount = Math.round(progress * units.length);
+            var viewportCenter = vh / 2;
+            var progress = rect.height > 0
+                ? Math.max(0, Math.min(1, (viewportCenter - rect.top) / rect.height))
+                : 0;
+            var playhead = progress * totalDuration;
+
             units.forEach(function (u, i) {
-                u.style.color = i < litCount ? lit : dim;
+                var local = dur > 0 ? (playhead - i * stagger) / dur : (playhead >= i * stagger ? 1 : 0);
+                local = Math.max(0, Math.min(1, local));
+                var t = easeOut(local);
+                u.style.color = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + (0.15 + 0.85 * t).toFixed(3) + ')';
             });
         }
 
