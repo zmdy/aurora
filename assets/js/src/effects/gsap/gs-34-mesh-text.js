@@ -165,6 +165,12 @@ var effect = {
             ctx2d.font = fontStyle + ' ' + fontWeight + ' ' + Math.round(fontSize * dpr) + 'px ' + fontFamily;
             ctx2d.fillText(original, off.width / 2, off.height / 2);
             gl.bindTexture(gl.TEXTURE_2D, tex);
+            // The 2D canvas stores row 0 at the top, but WebGL texture v=0
+            // is the bottom row by convention — without this flip the
+            // baked text renders upside-down (mirrored on the vertical
+            // axis), which is what made characters like S/E come out
+            // looking reversed.
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
         }

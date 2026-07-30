@@ -141,6 +141,9 @@ var effect = {
             ctx2d.font = fontStyle + ' ' + fontWeight + ' ' + Math.round(fontSize * dpr) + 'px ' + fontFamily;
             ctx2d.fillText(original, off.width / 2, off.height / 2);
             gl.bindTexture(gl.TEXTURE_2D, tex);
+            // Same fix as gs-34: flip the source row order so the baked
+            // text texture isn't upside-down relative to the quad's UVs.
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
         }
