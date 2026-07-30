@@ -340,6 +340,19 @@ export function teardownTextAnimation(wrapper) {
             textEl.removeEventListener('mouseenter', textEl._auroraRollHover);
             textEl._auroraRollHover = null;
         }
+        // gs-33/ml-51 Letter Swap's independent hover handlers.
+        if (textEl._auroraSwapHover) {
+            textEl.removeEventListener('mouseenter', textEl._auroraSwapHover.enter);
+            textEl.removeEventListener('mouseleave', textEl._auroraSwapHover.leave);
+            textEl._auroraSwapHover.pause();
+            textEl._auroraSwapHover = null;
+        }
+        // gs-34/ml-52 Mesh Text Hover's WebGL context, RAF loop, resize/
+        // pointer listeners and IntersectionObserver.
+        if (textEl._auroraMeshText) {
+            textEl._auroraMeshText.cleanup();
+            textEl._auroraMeshText = null;
+        }
 
         textEl._auroraLeaves = null;
 

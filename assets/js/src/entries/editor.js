@@ -47,6 +47,8 @@ import '../effects/gsap/gs-29-scroll-highlight.js';
 import '../effects/gsap/gs-30-text-reveal-wall.js';
 import '../effects/gsap/gs-31-letter-roll.js';
 import '../effects/gsap/gs-32-elastic-text.js';
+import '../effects/gsap/gs-33-letter-swap.js';
+import '../effects/gsap/gs-34-mesh-text.js';
 
 import '../effects/anime/ml-1-float-up.js';
 import '../effects/anime/ml-2-scale-in.js';
@@ -108,6 +110,8 @@ import '../effects/anime/ml-47-scroll-highlight.js';
 import '../effects/anime/ml-48-text-reveal-wall.js';
 import '../effects/anime/ml-49-letter-roll.js';
 import '../effects/anime/ml-50-elastic-text.js';
+import '../effects/anime/ml-51-letter-swap.js';
+import '../effects/anime/ml-52-mesh-text.js';
 
 import { bootstrap } from '../core/elementor-handler.js';
 

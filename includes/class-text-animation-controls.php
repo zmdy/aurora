@@ -156,6 +156,8 @@ class Text_Animation_Controls extends Animation_Module {
 						'gs-30' => esc_html__( 'Text Reveal Wall', 'aurora-for-elementor' ),
 						'gs-31' => esc_html__( 'Letter Roll',     'aurora-for-elementor' ),
 						'gs-32' => esc_html__( 'Elastic Text (Cursor Spring)', 'aurora-for-elementor' ),
+						'gs-33' => esc_html__( 'Letter Swap',     'aurora-for-elementor' ),
+						'gs-34' => esc_html__( 'Mesh Text Hover', 'aurora-for-elementor' ),
 					],
 					'condition' => [
 						'aurora_text_enable'  => 'yes',
@@ -229,6 +231,8 @@ class Text_Animation_Controls extends Animation_Module {
 					'ml-48' => esc_html__( 'Text Reveal Wall',      'aurora-for-elementor' ),
 					'ml-49' => esc_html__( 'Letter Roll',           'aurora-for-elementor' ),
 					'ml-50' => esc_html__( 'Elastic Text (Cursor Spring)', 'aurora-for-elementor' ),
+					'ml-51' => esc_html__( 'Letter Swap',           'aurora-for-elementor' ),
+					'ml-52' => esc_html__( 'Mesh Text Hover',       'aurora-for-elementor' ),
 				],
 				'condition' => [
 					'aurora_text_enable'  => 'yes',
@@ -256,7 +260,7 @@ class Text_Animation_Controls extends Animation_Module {
 					// selfManaged: true in their effect file) and ignore
 					// this control entirely — see core/engine.js's
 					// isSelfManaged().
-					'aurora_text_animation_gsap!' => [ 'gs-3', 'gs-24', 'gs-25', 'gs-26', 'gs-28', 'gs-30', 'gs-32' ],
+					'aurora_text_animation_gsap!' => [ 'gs-3', 'gs-24', 'gs-25', 'gs-26', 'gs-28', 'gs-30', 'gs-32', 'gs-33', 'gs-34' ],
 				],
 				'frontend_available' => true,
 			]

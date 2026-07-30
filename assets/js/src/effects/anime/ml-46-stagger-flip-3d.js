@@ -1,7 +1,9 @@
 import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
-// Anime.js port of gs-28 Stagger Flip 3D — identical two-face cube DOM,
+// Anime.js port of gs-28 Stagger Flip 3D — identical two-perpendicular-
+// face cube DOM (front + top, joined at a 90° edge, see gs-28's header
+// comment for why this replaced the earlier opposite-face 180° version),
 // driven by anime.animate() instead of GSAP.
 var effect = {
     id: 'ml-46',
@@ -10,6 +12,8 @@ var effect = {
         var original = textEl._auroraOriginal || textEl.innerText;
         textEl.innerHTML = '';
         textEl.style.opacity = '1';
+
+        var half = Math.max(6, parseFloat(getComputedStyle(textEl).fontSize) * 0.55);
 
         var cubes = [];
         var words = original.split(' ');
@@ -25,14 +29,16 @@ var effect = {
 
                 var front = document.createElement('span');
                 front.textContent = ch;
-                front.style.cssText = 'display:inline-block;backface-visibility:hidden;-webkit-backface-visibility:hidden;';
+                front.style.cssText = 'display:inline-block;backface-visibility:hidden;-webkit-backface-visibility:hidden;'
+                    + 'transform:translateZ(' + half + 'px);-webkit-transform:translateZ(' + half + 'px);';
 
-                var back = document.createElement('span');
-                back.textContent = ch;
-                back.style.cssText = 'display:inline-block;position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateX(180deg);-webkit-transform:rotateX(180deg);';
+                var top = document.createElement('span');
+                top.textContent = ch;
+                top.style.cssText = 'display:inline-block;position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;'
+                    + 'transform:rotateX(90deg) translateZ(' + half + 'px);-webkit-transform:rotateX(90deg) translateZ(' + half + 'px);';
 
                 cube.appendChild(front);
-                cube.appendChild(back);
+                cube.appendChild(top);
                 wordWrap.appendChild(cube);
                 cubes.push(cube);
             });
@@ -48,7 +54,7 @@ var effect = {
         });
 
         anime.animate(cubes, {
-            rotateX: [-180, 0],
+            rotateX: [90, 0],
             opacity: [0, 1],
             duration: Math.max(300, opts.duration),
             delay: function (el, i) { return opts.delay + i * opts.stagger; },
