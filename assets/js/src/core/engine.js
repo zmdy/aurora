@@ -329,6 +329,17 @@ export function teardownTextAnimation(wrapper) {
             }
             textEl._auroraLoopAnim = null;
         }
+        // gs-29/ml-47 Scroll Highlight's window-level scroll/resize binding.
+        if (textEl._auroraScrollHighlight) {
+            window.removeEventListener('scroll', textEl._auroraScrollHighlight);
+            window.removeEventListener('resize', textEl._auroraScrollHighlight);
+            textEl._auroraScrollHighlight = null;
+        }
+        // gs-31/ml-49 Letter Roll's independent hover handler.
+        if (textEl._auroraRollHover) {
+            textEl.removeEventListener('mouseenter', textEl._auroraRollHover);
+            textEl._auroraRollHover = null;
+        }
 
         textEl._auroraLeaves = null;
 

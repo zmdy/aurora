@@ -30,7 +30,9 @@
 /* ─── Perspective for 3D animations ──────────────────────────────────────── */
 
 [data-aurora-animation="gs-5"] .elementor-widget-container,
-[data-aurora-animation="ml-6"] .elementor-widget-container {
+[data-aurora-animation="ml-6"] .elementor-widget-container,
+[data-aurora-animation="gs-31"] .elementor-widget-container,
+[data-aurora-animation="ml-49"] .elementor-widget-container {
     perspective: 600px;
 }
 
@@ -38,7 +40,13 @@
 
 [data-aurora-animation="gs-2"] .aurora-char,
 [data-aurora-animation="gs-2"] .aurora-word,
-[data-aurora-animation="gs-2"] .aurora-line {
+[data-aurora-animation="gs-2"] .aurora-line,
+[data-aurora-animation="gs-31"] .aurora-char,
+[data-aurora-animation="gs-31"] .aurora-word,
+[data-aurora-animation="gs-31"] .aurora-line,
+[data-aurora-animation="ml-49"] .aurora-char,
+[data-aurora-animation="ml-49"] .aurora-word,
+[data-aurora-animation="ml-49"] .aurora-line {
     overflow: hidden;
     vertical-align: bottom;
 }

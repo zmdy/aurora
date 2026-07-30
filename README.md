@@ -334,7 +334,7 @@ Nothing else in the codebase needs to change — no manifest to update, no ids t
 
 #### GSAP → Anime.js parity
 
-Every GSAP effect (`gs-1`..`gs-26`) has an Anime.js effect with the same visual result, so the Library control is a real choice rather than Anime.js being a smaller fallback set. This exists to prepare for an eventual WordPress.org submission: GSAP's core license (GreenSock's "Standard No-Charge License") isn't GPL-compatible, while Anime.js is MIT. GSAP is still bundled and selectable today — nothing has been removed — but if GSAP is ever dropped, no effect is lost; the Library default just needs to switch to `animejs` and each `aurora_text_animation_gsap` value needs to be remapped to its Anime.js counterpart below.
+Every GSAP effect (`gs-1`..`gs-32`) has an Anime.js effect with the same visual result, so the Library control is a real choice rather than Anime.js being a smaller fallback set. This exists to prepare for an eventual WordPress.org submission: GSAP's core license (GreenSock's "Standard No-Charge License") isn't GPL-compatible, while Anime.js is MIT. GSAP is still bundled and selectable today — nothing has been removed — but if GSAP is ever dropped, no effect is lost; the Library default just needs to switch to `animejs` and each `aurora_text_animation_gsap` value needs to be remapped to its Anime.js counterpart below.
 
 | GSAP | Anime.js | | GSAP | Anime.js |
 |---|---|---|---|---|
@@ -351,6 +351,9 @@ Every GSAP effect (`gs-1`..`gs-26`) has an Anime.js effect with the same visual 
 | gs-11 Rotate In | ml-29 Rotate In | | gs-24 Liquid Fill Reveal | ml-42 Liquid Fill Reveal |
 | gs-12 Slot Machine | ml-30 Slot Machine | | gs-25 Perspective Fly | ml-43 Perspective Fly |
 | gs-13 Spin In | ml-31 Spin In | | gs-26 Cinema Title | ml-44 Cinema Title |
+| gs-27 Text Emerge | ml-45 Text Emerge | | gs-30 Text Reveal Wall | ml-48 Text Reveal Wall |
+| gs-28 Stagger Flip 3D | ml-46 Stagger Flip 3D | | gs-31 Letter Roll | ml-49 Letter Roll |
+| gs-29 Scroll Highlight | ml-47 Scroll Highlight | | gs-32 Elastic Text | ml-50 Elastic Text |
 
 ### Packaging the plugin
 

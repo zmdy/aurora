@@ -41,6 +41,12 @@ import '../effects/gsap/gs-23-vhs-tracking.js';
 import '../effects/gsap/gs-24-liquid-fill.js';
 import '../effects/gsap/gs-25-perspective-fly.js';
 import '../effects/gsap/gs-26-cinema-title.js';
+import '../effects/gsap/gs-27-text-emerge.js';
+import '../effects/gsap/gs-28-stagger-flip-3d.js';
+import '../effects/gsap/gs-29-scroll-highlight.js';
+import '../effects/gsap/gs-30-text-reveal-wall.js';
+import '../effects/gsap/gs-31-letter-roll.js';
+import '../effects/gsap/gs-32-elastic-text.js';
 
 import '../effects/anime/ml-1-float-up.js';
 import '../effects/anime/ml-2-scale-in.js';
@@ -93,6 +99,15 @@ import '../effects/anime/ml-41-vhs-tracking.js';
 import '../effects/anime/ml-42-liquid-fill.js';
 import '../effects/anime/ml-43-perspective-fly.js';
 import '../effects/anime/ml-44-cinema-title.js';
+
+// ml-45+ : Anime.js ports of the six new effects above (gs-27..gs-32),
+// same parity convention as ml-24+.
+import '../effects/anime/ml-45-text-emerge.js';
+import '../effects/anime/ml-46-stagger-flip-3d.js';
+import '../effects/anime/ml-47-scroll-highlight.js';
+import '../effects/anime/ml-48-text-reveal-wall.js';
+import '../effects/anime/ml-49-letter-roll.js';
+import '../effects/anime/ml-50-elastic-text.js';
 
 import { bootstrap } from '../core/elementor-handler.js';
 
