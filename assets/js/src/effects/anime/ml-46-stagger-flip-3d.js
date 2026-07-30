@@ -1,11 +1,10 @@
 import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
-// Anime.js port of gs-28 Stagger Flip 3D — identical two-perpendicular-
-// face cube DOM (front + top, joined at a 90° edge, see gs-28's header
-// comment for why this replaced the earlier opposite-face 180° version)
-// and the same repeatable hover flourish (roll away, snap back instantly),
-// driven by anime.animate() instead of GSAP.
+// Anime.js port of gs-28 Stagger Flip 3D — identical pivot + cube + two-
+// face DOM (see gs-28's header comment for the exact geometry and why
+// the pivot's static translateZ(-half) matters), driven by anime.animate()
+// instead of GSAP.
 var effect = {
     id: 'ml-46',
     selfManaged: true,
@@ -21,26 +20,31 @@ var effect = {
 
         words.forEach(function (word, wi) {
             var wordWrap = document.createElement('span');
-            wordWrap.style.cssText = 'display:inline-block;white-space:nowrap;perspective:900px;';
+            wordWrap.style.cssText = 'display:inline-block;white-space:nowrap;perspective:800px;';
 
             Array.from(word).forEach(function (ch) {
+                var pivot = document.createElement('span');
+                pivot.style.cssText = 'display:inline-block;position:relative;transform-style:preserve-3d;'
+                    + 'transform:translateZ(' + (-half) + 'px);-webkit-transform:translateZ(' + (-half) + 'px);';
+
                 var cube = document.createElement('span');
                 cube.className = 'aurora-flip-cube';
                 cube.style.cssText = 'display:inline-block;position:relative;transform-style:preserve-3d;';
 
                 var front = document.createElement('span');
                 front.textContent = ch;
-                front.style.cssText = 'display:inline-block;backface-visibility:hidden;-webkit-backface-visibility:hidden;'
+                front.style.cssText = 'display:inline-block;position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;'
                     + 'transform:translateZ(' + half + 'px);-webkit-transform:translateZ(' + half + 'px);';
 
-                var top = document.createElement('span');
-                top.textContent = ch;
-                top.style.cssText = 'display:inline-block;position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;'
-                    + 'transform:rotateX(90deg) translateZ(' + half + 'px);-webkit-transform:rotateX(90deg) translateZ(' + half + 'px);';
+                var second = document.createElement('span');
+                second.textContent = ch;
+                second.style.cssText = 'display:inline-block;position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;'
+                    + 'transform:rotateX(-90deg) translateZ(' + half + 'px);-webkit-transform:rotateX(-90deg) translateZ(' + half + 'px);';
 
                 cube.appendChild(front);
-                cube.appendChild(top);
-                wordWrap.appendChild(cube);
+                cube.appendChild(second);
+                pivot.appendChild(cube);
+                wordWrap.appendChild(pivot);
                 cubes.push(cube);
             });
 
