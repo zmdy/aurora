@@ -2,9 +2,10 @@ import { anime } from '../../core/anime-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
 // Anime.js port of gs-28 Stagger Flip 3D — identical pivot + cube + two-
-// face DOM (see gs-28's header comment for the exact geometry and why
-// the pivot's static translateZ(-half) matters), driven by anime.animate()
-// instead of GSAP.
+// face DOM and identical trigger behavior (one `play()` used for both
+// the entrance and every hover afterward — see gs-28's header comment
+// for why an entrance-only "reveal" was wrong), driven by
+// anime.animate() instead of GSAP.
 var effect = {
     id: 'ml-46',
     selfManaged: true,
@@ -58,32 +59,31 @@ var effect = {
             }
         });
 
-        anime.animate(cubes, {
-            rotateX: [90, 0],
-            opacity: [0, 1],
-            duration: Math.max(300, opts.duration),
-            delay: function (el, i) { return opts.delay + i * opts.stagger; },
-            ease: 'outBack',
-        });
-
-        if (!textEl || !cubes.length) return;
+        if (!cubes.length) return;
 
         if (textEl._auroraFlipHover) {
             textEl.removeEventListener('mouseenter', textEl._auroraFlipHover);
         }
 
         var busy = false;
-        function onEnter() {
+
+        function play(withInitialDelay) {
             if (busy) return;
             busy = true;
+            var base = withInitialDelay ? opts.delay : 0;
+            var duration = Math.max(200, opts.duration);
+            var stagger = Math.max(0, opts.stagger);
             cubes.forEach(function (cube, i) {
-                var start = i * 25;
-                anime.animate(cube, { rotateX: [0, 90], duration: 220, delay: start, ease: 'inQuad' });
-                anime.animate(cube, { rotateX: 0, duration: 0, delay: start + 220 });
+                var at = base + i * stagger;
+                anime.animate(cube, { rotateX: [0, 90], duration: duration, delay: at, ease: 'inQuad' });
+                anime.animate(cube, { rotateX: 0, duration: 0, delay: at + duration });
             });
-            setTimeout(function () { busy = false; }, cubes.length * 25 + 260);
+            setTimeout(function () { busy = false; }, base + cubes.length * stagger + duration + 40);
         }
 
+        play(true);
+
+        function onEnter() { play(false); }
         textEl.addEventListener('mouseenter', onEnter);
         textEl._auroraFlipHover = onEnter;
     },

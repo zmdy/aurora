@@ -1,12 +1,15 @@
 import { gsap } from '../../core/gsap-ref.js';
 import { registerEffect } from '../../core/registry.js';
 
-// Stagger Flip 3D — matches the Originkit reference's exact cube math
-// (previously two attempts at this got the geometry wrong — see below).
-// Reference structure per character, translated from its single combined
-// `transform: translateZ(-0.5lh) rotateX(θ)` CSS string into three nested
-// elements so GSAP's native `rotationX` property can drive the rotation
-// directly instead of needing a hand-written transform string:
+// Stagger Flip 3D — matches the Originkit reference's exact cube math AND
+// its actual trigger behavior (two earlier attempts at this got both
+// wrong — see below).
+//
+// Cube geometry, per character, translated from the reference's single
+// combined `transform: translateZ(-0.5lh) rotateX(θ)` CSS string into
+// three nested elements so GSAP's native `rotationX` property can drive
+// the rotation directly instead of needing a hand-written transform
+// string:
 //
 //   pivot (static, never animated) — transform: translateZ(-half)
 //     cube (animated: rotationX 0..90 via GSAP)
@@ -16,9 +19,8 @@ import { registerEffect } from '../../core/registry.js';
 // `pivot`'s constant translateZ(-half) plus `cube`'s animated rotateX
 // compose (parent-then-child) into exactly the same matrix as the
 // reference's one-element "translateZ(-half) rotateX(θ)" — this is what
-// makes the rotation pivot around the hinge BETWEEN the two faces
-// instead of around the wrong point, which is what made earlier versions
-// of this effect look wrong even though they were technically "3D".
+// makes the rotation pivot around the hinge BETWEEN the two faces instead
+// of around the wrong point.
 //
 // At cube rotationX=0: front face's own rotation (0) + cube's rotation
 // (0) = flat, facing the viewer. Second face's own rotation (-90) + cube's
@@ -27,12 +29,17 @@ import { registerEffect } from '../../core/registry.js';
 // cube's +90 cancel to 0 (flat, facing the viewer) — the two faces swap
 // which one is forward, like a die rolling onto its next face.
 //
-// The reference's actual interaction is a REPEATABLE hover flourish: each
-// character rolls to the second face then snaps back instantly (duration
-// 0), so hovering repeatedly keeps re-triggering the same quick roll. The
-// entrance below covers the initial reveal (rolling INTO the resting/
-// front-face state); the independent mouseenter handler after it
-// reproduces the repeatable away-and-snap-back flourish.
+// Trigger behavior: the reference has no separate "reveal" animation for
+// mount/scroll at all — `animation === "enter"` just calls the SAME
+// playAnimation() used for hover, once. Text is visible at rest the whole
+// time; playAnimation() rolls each character to the second face then
+// snaps back instantly (duration 0), staggered per character. An earlier
+// version of this file invented a distinct opacity/rotation "reveal" for
+// the entrance trigger that doesn't exist in the reference — that's why
+// the first play looked different from every hover afterward. Fixed by
+// using one `play()` function for both triggers; the only difference is
+// the entrance honors the "Initial delay" control before starting, hover
+// doesn't.
 //
 // Self-managed: builds its own per-character cube DOM instead of using
 // the generic split `units` (a flat span can't have two perpendicular 3D
@@ -98,40 +105,42 @@ var effect = {
             }
         });
 
-        // Entrance: each cube rolls in FROM the second face (rotationX
-        // 90 — the front face rotated away, second face facing the
-        // reader) TO the resting front face (rotationX 0).
-        gsap.fromTo(cubes,
-            { rotationX: 90, opacity: 0 },
-            {
-                rotationX: 0,
-                opacity: 1,
-                duration: Math.max(0.3, opts.duration / 1000),
-                delay: opts.delay / 1000,
-                ease: 'back.out(1.6)',
-                stagger: opts.stagger / 1000,
-            }
-        );
+        if (!cubes.length) return;
 
-        if (!textEl || !cubes.length) return;
-
-        // Independent of the entrance above — replaces any handler left
-        // over from a previous init instead of stacking a second one.
+        // Replace any handler/timeline left over from a previous init
+        // instead of stacking a second one on top of it.
         if (textEl._auroraFlipHover) {
             textEl.removeEventListener('mouseenter', textEl._auroraFlipHover);
         }
+        if (textEl._auroraFlipTimeline) {
+            textEl._auroraFlipTimeline.kill();
+        }
 
         var busy = false;
-        function onEnter() {
+
+        // The one and only animation: roll each cube to the second face,
+        // then snap it back to resting the instant its own roll finishes
+        // — staggered per character. Used for both the entrance (once,
+        // honoring the "Initial delay" control) and every hover
+        // afterward (no initial delay, so it responds immediately).
+        function play(withInitialDelay) {
             if (busy) return;
             busy = true;
             var tl = gsap.timeline({ onComplete: function () { busy = false; } });
+            var base = withInitialDelay ? opts.delay / 1000 : 0;
+            var duration = Math.max(0.2, opts.duration / 1000);
+            var stagger = Math.max(0, opts.stagger / 1000);
             cubes.forEach(function (cube, i) {
-                tl.to(cube, { rotationX: 90, duration: 0.22, ease: 'power2.in' }, i * 0.025)
+                var at = base + i * stagger;
+                tl.to(cube, { rotationX: 90, duration: duration, ease: 'power2.in' }, at)
                   .set(cube, { rotationX: 0 });
             });
+            textEl._auroraFlipTimeline = tl;
         }
 
+        play(true);
+
+        function onEnter() { play(false); }
         textEl.addEventListener('mouseenter', onEnter);
         textEl._auroraFlipHover = onEnter;
     },

@@ -340,10 +340,16 @@ export function teardownTextAnimation(wrapper) {
             textEl.removeEventListener('mouseenter', textEl._auroraRollHover);
             textEl._auroraRollHover = null;
         }
-        // gs-28/ml-46 Stagger Flip 3D's independent hover handler.
+        // gs-28/ml-46 Stagger Flip 3D's independent hover handler + timeline.
         if (textEl._auroraFlipHover) {
             textEl.removeEventListener('mouseenter', textEl._auroraFlipHover);
             textEl._auroraFlipHover = null;
+        }
+        if (textEl._auroraFlipTimeline) {
+            if (typeof textEl._auroraFlipTimeline.kill === 'function') {
+                textEl._auroraFlipTimeline.kill();
+            }
+            textEl._auroraFlipTimeline = null;
         }
         // gs-33/ml-51 Letter Swap's independent hover handlers.
         if (textEl._auroraSwapHover) {
