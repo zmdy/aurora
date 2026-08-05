@@ -13,7 +13,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
 <!-- Plugin CSS -->
+<!-- Plugin CSS Modules -->
 <link href="assets/css/text-animations.css" rel="stylesheet">
+<link href="assets/css/gradient-module.css" rel="stylesheet">
+<link href="assets/css/glass-module.css" rel="stylesheet">
+<link href="assets/css/cursor-follow.css" rel="stylesheet">
+<link href="assets/css/image-effects.css" rel="stylesheet">
+<link href="assets/css/morph-card.css" rel="stylesheet">
+<link href="assets/css/editor.css" rel="stylesheet">
 
 <style>
 /* ═══════════════════════════════════════════════════════════════════
@@ -71,6 +78,259 @@
   --t-normal: 300ms cubic-bezier(.4,0,.2,1);
   --t-slow:   500ms cubic-bezier(.4,0,.2,1);
   --t-spring: 600ms cubic-bezier(.34,1.56,.64,1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   EXTENDED MULTI-MODULE SHOWCASE STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+.morph-showcase-box {
+  background: rgba(7, 9, 26, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-xl);
+  padding: var(--s-8);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-8);
+  align-items: center;
+}
+@media (max-width: 992px) {
+  .morph-showcase-box { grid-template-columns: 1fr; }
+}
+.morph-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 420px;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, rgba(124, 92, 255, 0.15), transparent 70%);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+  overflow: hidden;
+}
+.morph-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.morph-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-family: var(--f-heading);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t-normal);
+}
+.morph-btn:hover, .morph-btn.active {
+  background: rgba(5, 177, 114, 0.12);
+  border-color: var(--c-green);
+  color: var(--c-green);
+  transform: translateX(4px);
+}
+
+/* Image Effects Studio */
+.img-effects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s-6);
+  margin-top: var(--s-8);
+}
+.hover-effect-card {
+  background: rgba(13, 16, 48, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-lg);
+  padding: var(--s-4);
+  text-align: center;
+  transition: transform var(--t-normal), border-color var(--t-normal);
+}
+.hover-effect-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--c-teal);
+}
+.hover-effect-card__img-box {
+  width: 100%;
+  height: 180px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: var(--s-3);
+}
+.hover-effect-card__img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+/* Glassmorphism Builder */
+.glass-builder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-8);
+  background: rgba(7, 9, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--r-xl);
+  padding: var(--s-8);
+  backdrop-filter: blur(20px);
+}
+@media (max-width: 992px) {
+  .glass-builder-grid { grid-template-columns: 1fr; }
+}
+.glass-preview-stage {
+  min-height: 380px;
+  border-radius: var(--r-lg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #7c5cff, #05b172, #0099cc);
+  background-size: 200% 200%;
+  animation: mesh-bg-move 8s ease infinite;
+  overflow: hidden;
+  padding: var(--s-6);
+}
+@keyframes mesh-bg-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.glass-sample-card {
+  width: 100%;
+  max-width: 320px;
+  padding: var(--s-6);
+  border-radius: 20px;
+  color: #fff;
+  transition: all 0.2s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Elementor Panel Mockup */
+.el-mockup-container {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: var(--s-6);
+  background: #17181c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 992px) {
+  .el-mockup-container { grid-template-columns: 1fr; }
+}
+.el-sidebar {
+  background: #1e1f25;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+.el-sidebar-header {
+  padding: 16px 20px;
+  background: #17181c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--f-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: #a4a7b5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.el-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.el-tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7b7e8d;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.el-tab-item.active {
+  color: #92003b;
+  border-bottom: 2px solid #92003b;
+  background: rgba(146, 0, 59, 0.08);
+}
+.el-accordion-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.el-accordion-header {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: #d5d7e0;
+  cursor: pointer;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  border: none;
+  transition: background 0.2s ease;
+}
+.el-accordion-header:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.el-accordion-header.active {
+  color: var(--c-green);
+  background: rgba(5, 177, 114, 0.08);
+}
+.el-accordion-body {
+  padding: 16px 18px;
+  background: #17181c;
+  display: none;
+}
+.el-accordion-body.active {
+  display: block;
+}
+.el-field-group {
+  margin-bottom: 14px;
+}
+.el-field-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8e92a2;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.el-field-input, .el-field-select {
+  width: 100%;
+  background: #252730;
+  border: 1px solid #343744;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 12px;
+  font-family: var(--f-sans);
+}
+.el-canvas-preview {
+  padding: var(--s-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #0b0c14;
+  position: relative;
+  min-height: 480px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -2000,9 +2260,11 @@ body.cursor-click .gcursor-ring {
 
       <ul class="nav__links" role="list">
         <li><a href="#playground">Playground</a></li>
-        <li><a href="#effects">Effects</a></li>
-        <li><a href="#deep-dive">Features</a></li>
-        <li><a href="#editions">Editions</a></li>
+        <li><a href="#morph-card">Morph Card</a></li>
+        <li><a href="#image-effects">Image Effects</a></li>
+        <li><a href="#gradient-spotlight">Spotlight</a></li>
+        <li><a href="#glassmorphism">Glassmorphism</a></li>
+        <li><a href="#elementor-panel">Elementor Panel</a></li>
         <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
 
@@ -2330,6 +2592,326 @@ body.cursor-click .gcursor-ring {
 <!-- ═══════════════════════════════════════════════════════════════════
      DEEP DIVE FEATURE SHOWCASE
      ═══════════════════════════════════════════════════════════════════ -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     01. MORPH CARD WIDGET SHOWCASE SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="morph-card" class="section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Exclusive Elementor Widget</div>
+      <h2 class="display-2" style="margin-top:1rem">Morph Card Widget</h2>
+      <p>Dynamic cards with fluid motion physics powered by Motion One &amp; Anime.js.</p>
+    </div>
+
+    <div class="morph-showcase-box">
+      <div class="morph-stage">
+        <!-- Native Morph Card Container -->
+        <div class="morph-card" id="demo-morph-card" data-template="instagram" style="width:100%;max-width:340px;background:rgba(13,16,48,0.85);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.6);backdrop-filter:blur(20px)">
+          <div class="morph-card__header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div class="morph-card__avatar" style="width:44px;height:44px;border-radius:50%;background:var(--g-aurora);padding:2px">
+              <img src="assets/branding/aurora_favicon.svg" alt="Avatar" style="width:100%;height:100%;border-radius:50%;background:#03040c;object-fit:cover">
+            </div>
+            <div>
+              <h4 id="morph-title" style="font-family:var(--f-heading);font-size:15px;font-weight:700;color:#fff;margin:0">@aurora.design</h4>
+              <span id="morph-subtitle" style="font-size:12px;color:rgba(255,255,255,0.55)">Motion System Active</span>
+            </div>
+          </div>
+
+          <div class="morph-card__image" style="width:100%;height:200px;border-radius:16px;overflow:hidden;margin-bottom:16px;position:relative">
+            <img id="morph-img" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop" alt="Morph Preview" style="width:100%;height:100%;object-fit:cover">
+            <div class="morph-card__badge" style="position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:99px;background:rgba(5,177,114,0.85);backdrop-filter:blur(8px);font-family:var(--f-mono);font-size:11px;font-weight:700;color:#03040c">STATE 01</div>
+          </div>
+
+          <div class="morph-card__footer">
+            <p id="morph-desc" style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:12px">Seamless transition of border-radius, opacity, padding, and 3D rotation without DOM reflows.</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-family:var(--f-mono);font-size:11px;color:var(--c-green)">
+              <span>ENGINE: MOTION ONE</span>
+              <span>100% HARDWARE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="morph-btn-group">
+        <div class="eyebrow" style="margin-bottom:0.5rem">Select Card Template State</div>
+        <button class="morph-btn active" data-state="instagram">
+          <span>📸 Instagram Post</span>
+          <small style="opacity:0.6">Square / Modern</small>
+        </button>
+        <button class="morph-btn" data-state="profile">
+          <span>👤 Creative Profile</span>
+          <small style="opacity:0.6">Badge / Compact</small>
+        </button>
+        <button class="morph-btn" data-state="polaroid">
+          <span>🖼️ Vintage Polaroid</span>
+          <small style="opacity:0.6">Rotated / Frame</small>
+        </button>
+        <button class="morph-btn" data-state="custom">
+          <span>🎨 Custom Gradient</span>
+          <small style="opacity:0.6">Glow / Neon</small>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     02. IMAGE EFFECTS STUDIO SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="image-effects" class="section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Module 06 — Image Effects</div>
+      <h2 class="display-2" style="margin-top:1rem">Image Reveal &amp; Hover Studio</h2>
+      <p>13 Entrance reveal animations (Wipe, Curtain, Iris, GSAP 3D) plus 7 pure-CSS hover effects.</p>
+    </div>
+
+    <!-- Entrance Animation Interactive Tester -->
+    <div style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);margin-bottom:var(--s-8);backdrop-filter:blur(20px)">
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:var(--s-8);align-items:center">
+        <div style="height:380px;border-radius:var(--r-lg);overflow:hidden;position:relative;background:#000;display:flex;align-items:center;justify-content:center">
+          <div id="img-reveal-wrapper" class="aurora-img-wrapper" style="width:100%;height:100%;position:relative;overflow:hidden">
+            <img id="img-reveal-target" src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=1000&auto=format&fit=crop" alt="Studio Preview" style="width:100%;height:100%;object-fit:cover">
+            <div id="img-reveal-overlay" class="aurora-reveal-overlay" style="position:absolute;inset:0;background:var(--c-green);z-index:2;transform:scaleX(0);transform-origin:left"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+          <div class="ctrl-group">
+            <span class="ctrl-label">Entrance Effect (13 Options)</span>
+            <select class="ctrl-select" id="select-img-reveal">
+              <option value="wipe-lr">Wipe Reveal (Left → Right)</option>
+              <option value="wipe-bt">Wipe Reveal (Bottom → Top)</option>
+              <option value="curtain">Curtain Reveal (Split Center)</option>
+              <option value="iris">Iris Reveal (Circle Expand)</option>
+              <option value="gsap-3d">GSAP 3D Flip</option>
+              <option value="blur">Blur Reveal</option>
+              <option value="skew">Skew Reveal</option>
+              <option value="zoom-in">Zoom In</option>
+              <option value="zoom-out">Zoom Out</option>
+              <option value="fade-up" selected>Fade Up</option>
+              <option value="slide-left">Slide Left</option>
+              <option value="slide-right">Slide Right</option>
+              <option value="fade-in">Fade In</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Overlay Panel Color</span>
+            <div style="display:flex;gap:8px">
+              <button class="color-dot active" data-color="#05b172" style="width:32px;height:32px;border-radius:50%;background:#05b172;border:2px solid #fff;cursor:pointer"></button>
+              <button class="color-dot" data-color="#7c5cff" style="width:32px;height:32px;border-radius:50%;background:#7c5cff;border:2px solid transparent;cursor:pointer"></button>
+              <button class="color-dot" data-color="#0099cc" style="width:32px;height:32px;border-radius:50%;background:#0099cc;border:2px solid transparent;cursor:pointer"></button>
+              <button class="color-dot" data-color="#ffffff" style="width:32px;height:32px;border-radius:50%;background:#ffffff;border:2px solid transparent;cursor:pointer"></button>
+            </div>
+          </div>
+
+          <button class="pg-replay-btn" id="btn-replay-img" style="margin-top:12px;width:100%;justify-content:center;padding:14px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            Replay Entrance Animation
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 CSS Hover Effects Showcase Grid -->
+    <div class="eyebrow" style="margin-bottom:1rem">7 Hover Effects (100% Pure CSS)</div>
+    <div class="img-effects-grid">
+      <div class="hover-effect-card">
+        <div class="hover-effect-card__img-box aurora-hover-shine">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop" alt="Shine Sweep">
+        </div>
+        <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">1. Shine Sweep</h4>
+        <p class="text-muted" style="font-size:12px">Angled light band sweeping across image</p>
+      </div>
+
+      <div class="hover-effect-card">
+        <div class="hover-effect-card__img-box aurora-hover-zoom">
+          <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400&auto=format&fit=crop" alt="Zoom In">
+        </div>
+        <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">2. Zoom In</h4>
+        <p class="text-muted" style="font-size:12px">Smooth expansion contained inside mask</p>
+      </div>
+
+      <div class="hover-effect-card">
+        <div class="hover-effect-card__img-box aurora-hover-grayscale">
+          <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop" alt="Grayscale to Color">
+        </div>
+        <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">3. Grayscale → Color</h4>
+        <p class="text-muted" style="font-size:12px">Black &amp; white at rest, full color on hover</p>
+      </div>
+
+      <div class="hover-effect-card">
+        <div class="hover-effect-card__img-box aurora-hover-blur">
+          <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=400&auto=format&fit=crop" alt="Blur Focus">
+        </div>
+        <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">4. Blur → Sharp</h4>
+        <p class="text-muted" style="font-size:12px">Blurred at rest, sharp focus on hover</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     03. GRADIENT & SPOTLIGHT STUDIO SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="gradient-spotlight" class="section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Module 03 — Gradient &amp; Spotlight</div>
+      <h2 class="display-2" style="margin-top:1rem">Multi-stop Gradient &amp; Spotlight</h2>
+      <p>Multi-stop gradients featuring a real-time Spotlight mode that tracks your cursor.</p>
+    </div>
+
+    <div style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);backdrop-filter:blur(20px)">
+      <div id="spotlight-interactive-box" style="width:100%;height:320px;border-radius:var(--r-lg);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 50%, rgba(5,177,114,0.4) 0%, rgba(0,153,204,0.2) 40%, rgba(3,4,12,0.95) 80%);border:1px solid rgba(255,255,255,0.1);cursor:crosshair">
+        <div style="text-align:center;pointer-events:none;z-index:2">
+          <h3 class="display-3" style="color:#fff;margin-bottom:8px">Spotlight Follow Mouse</h3>
+          <p class="text-muted">Move your cursor inside this container to watch the radial spotlight follow your pointer live.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     04. GLASSMORPHISM BUILDER SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="glassmorphism" class="section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Module 04 — Glassmorphism</div>
+      <h2 class="display-2" style="margin-top:1rem">Frosted Glass Builder</h2>
+      <p>Adjust glass parameters in real-time and view the inline CSS generated by PHP.</p>
+    </div>
+
+    <div class="glass-builder-grid">
+      <div class="glass-preview-stage">
+        <div class="glass-sample-card" id="glass-target-card" style="background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px">
+          <h4 style="font-family:var(--f-heading);font-size:18px;font-weight:700;margin-bottom:8px">Glassmorphic Panel</h4>
+          <p style="font-size:13px;opacity:0.85;line-height:1.6">Translucent backdrop blur, opacity, and border radius computed at render time.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Backdrop Blur (<span id="val-glass-blur">20px</span>)</span>
+          <input type="range" class="ctrl-range" id="slider-glass-blur" min="0" max="40" value="20">
+        </div>
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Background Opacity (<span id="val-glass-bg">15%</span>)</span>
+          <input type="range" class="ctrl-range" id="slider-glass-bg" min="0" max="100" value="15">
+        </div>
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Border Opacity (<span id="val-glass-border">20%</span>)</span>
+          <input type="range" class="ctrl-range" id="slider-glass-border" min="0" max="100" value="20">
+        </div>
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Border Radius (<span id="val-glass-radius">24px</span>)</span>
+          <input type="range" class="ctrl-range" id="slider-glass-radius" min="0" max="50" value="24">
+        </div>
+
+        <div style="margin-top:12px;background:#03040c;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-family:var(--f-mono);font-size:11px;color:var(--c-green)">
+          <span style="color:rgba(255,255,255,0.4)">// PHP Inline Style Output:</span><br>
+          <code id="code-glass-output">style="background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px"</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     05. ELEMENTOR PANEL MOCKUP SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="elementor-panel" class="section-gap-lg">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Native Editor Experience</div>
+      <h2 class="display-2" style="margin-top:1rem">Seamless Elementor Integration</h2>
+      <p>Controls injected directly into the Advanced tab of the Elementor editor panel.</p>
+    </div>
+
+    <div class="el-mockup-container">
+      <!-- Sidebar Panel -->
+      <div class="el-sidebar">
+        <div class="el-sidebar-header">
+          <span>EDIT HEADING</span>
+          <small style="color:#92003b">ELEMENTOR PRO</small>
+        </div>
+        <div class="el-tabs-nav">
+          <button class="el-tab-item">Content</button>
+          <button class="el-tab-item">Style</button>
+          <button class="el-tab-item active">Advanced</button>
+        </div>
+
+        <div style="overflow-y:auto;flex:1">
+          <!-- Accordion 1: Text Animation -->
+          <div class="el-accordion-section">
+            <button class="el-accordion-header active" data-target="panel-text">
+              <span>✨ Text Animation (Aurora)</span>
+              <span>▼</span>
+            </button>
+            <div class="el-accordion-body active" id="panel-text">
+              <div class="el-field-group">
+                <label class="el-field-label">Enable Animation</label>
+                <select class="el-field-select"><option>Yes</option><option>No</option></select>
+              </div>
+              <div class="el-field-group">
+                <label class="el-field-label">Library</label>
+                <select class="el-field-select"><option>GSAP 3.12</option><option>Anime.js 4.4</option></select>
+              </div>
+              <div class="el-field-group">
+                <label class="el-field-label">Effect Type</label>
+                <select class="el-field-select"><option>Fade Up (gs-1)</option><option>Clip Reveal (gs-2)</option><option>Scramble Text (gs-3)</option></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accordion 2: Gradient -->
+          <div class="el-accordion-section">
+            <button class="el-accordion-header" data-target="panel-gradient">
+              <span>🌈 Gradient (Aurora)</span>
+              <span>▶</span>
+            </button>
+            <div class="el-accordion-body" id="panel-gradient">
+              <div class="el-field-group">
+                <label class="el-field-label">Motion Mode</label>
+                <select class="el-field-select"><option>Follow Mouse (Spotlight)</option><option>WebGL Mesh</option><option>Color Loop</option></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accordion 3: Glassmorphism -->
+          <div class="el-accordion-section">
+            <button class="el-accordion-header" data-target="panel-glass">
+              <span>🧊 Glassmorphism (Aurora)</span>
+              <span>▶</span>
+            </button>
+            <div class="el-accordion-body" id="panel-glass">
+              <div class="el-field-group">
+                <label class="el-field-label">Backdrop Blur</label>
+                <input type="range" class="ctrl-range" value="20">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Canvas Preview -->
+      <div class="el-canvas-preview">
+        <div style="position:absolute;top:16px;left:20px;font-family:var(--f-mono);font-size:11px;color:rgba(255,255,255,0.4)">ELEMENTOR LIVE PREVIEW CANVAS</div>
+        <div id="el-canvas-heading" style="font-family:var(--f-display);font-size:3rem;font-weight:700;color:#fff;text-align:center">
+          ELEMENTOR PRO
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="deep-dive" class="deep-dive-section section-gap-lg" style="background:var(--c-night)">
   <div class="container">
     <div class="section-header">
@@ -2582,10 +3164,24 @@ body.cursor-click .gcursor-ring {
      SCRIPTS
      ═══════════════════════════════════════════════════════════════════ -->
 <!-- Plugin Vendor Libraries -->
+<!-- Plugin Vendor Libraries & Modules -->
+<script src="assets/js/vendor/jquery.min.js"></script>
 <script src="assets/js/vendor/gsap.min.js"></script>
 <script src="assets/js/vendor/anime.min.js"></script>
-<!-- Full editor bundle — all 88 effects registered into window.AuroraPlugin.TextEffects -->
+<script src="assets/js/vendor/motion.min.js"></script>
+<script src="assets/js/vendor/aurora-shaders.js"></script>
+<script>
+  if (typeof gsap !== 'undefined') window.AuroraGSAP = window.gsap;
+  if (typeof anime !== 'undefined') window.AuroraAnimeJS = window.anime;
+  if (typeof Motion !== 'undefined') window.AuroraMotionOne = window.Motion;
+  else if (typeof motion !== 'undefined') window.AuroraMotionOne = window.motion;
+</script>
 <script src="assets/js/dist/aurora-text-editor.js"></script>
+<script src="assets/js/children-animations.js"></script>
+<script src="assets/js/cursor-follow.js"></script>
+<script src="assets/js/image-effects.js"></script>
+<script src="assets/js/morph-card.js"></script>
+<script src="assets/js/gradient-module.js"></script>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════
@@ -3624,6 +4220,146 @@ document.getElementById('btn-copy-final').addEventListener('click', function() {
       });
     }
   }
+})();
+</script>
+
+
+<script>
+/* Interactive Showcase Initializers (100% English) */
+(function() {
+  'use strict';
+  
+  // 1. Morph Card State Switcher
+  var morphCard = document.getElementById('demo-morph-card');
+  var morphBtns = document.querySelectorAll('.morph-btn');
+  var morphTitle = document.getElementById('morph-title');
+  var morphSubtitle = document.getElementById('morph-subtitle');
+  var morphDesc = document.getElementById('morph-desc');
+  var morphImg = document.getElementById('morph-img');
+
+  var morphStates = {
+    instagram: {
+      title: '@aurora.design',
+      sub: 'Motion System Active',
+      desc: 'Seamless transition of border-radius, opacity, padding, and 3D rotation without DOM reflows.',
+      img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
+      radius: '24px',
+      rot: '0deg'
+    },
+    profile: {
+      title: 'Aurora Studio',
+      sub: 'Design & Motion Agency',
+      desc: 'Compact layout highlighting avatar and engagement metrics.',
+      img: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop',
+      radius: '36px',
+      rot: '0deg'
+    },
+    polaroid: {
+      title: 'Polaroid Memory',
+      sub: 'Vintage Collection #04',
+      desc: 'Classic photo frame layout with subtle rotation and elevation shadow.',
+      img: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop',
+      radius: '8px',
+      rot: '-2deg'
+    },
+    custom: {
+      title: 'Neon Cyberpunk',
+      sub: 'WebGL Glow State',
+      desc: 'Vibrant gradient and glowing borders animated via Motion One.',
+      img: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800&auto=format&fit=crop',
+      radius: '16px',
+      rot: '2deg'
+    }
+  };
+
+  if (morphBtns.length) {
+    morphBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var stateKey = this.dataset.state;
+        var st = morphStates[stateKey];
+        if (!st || !morphCard) return;
+
+        morphBtns.forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+
+        if (window.AuroraMotionOne && window.AuroraMotionOne.animate) {
+          window.AuroraMotionOne.animate(morphCard, {
+            borderRadius: st.radius,
+            rotate: st.rot,
+            scale: [0.96, 1]
+          }, { duration: 0.5, easing: 'spring(1, 80, 10, 0)' });
+        } else {
+          morphCard.style.borderRadius = st.radius;
+          morphCard.style.transform = 'rotate(' + st.rot + ')';
+        }
+
+        if (morphTitle) morphTitle.textContent = st.title;
+        if (morphSubtitle) morphSubtitle.textContent = st.sub;
+        if (morphDesc) morphDesc.textContent = st.desc;
+        if (morphImg) morphImg.src = st.img;
+      });
+    });
+  }
+
+  // 2. Spotlight Follow Mouse Interactive Box
+  var spotBox = document.getElementById('spotlight-interactive-box');
+  if (spotBox) {
+    spotBox.addEventListener('mousemove', function(e) {
+      var rect = spotBox.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      spotBox.style.background = 'radial-gradient(circle 240px at ' + x.toFixed(1) + '% ' + y.toFixed(1) + '%, rgba(5,177,114,0.5) 0%, rgba(0,153,204,0.25) 45%, rgba(3,4,12,0.95) 80%)';
+    });
+  }
+
+  // 3. Glassmorphism Sliders
+  var glassBlur = document.getElementById('slider-glass-blur');
+  var glassBg = document.getElementById('slider-glass-bg');
+  var glassBorder = document.getElementById('slider-glass-border');
+  var glassRadius = document.getElementById('slider-glass-radius');
+  var glassCard = document.getElementById('glass-target-card');
+  var glassCode = document.getElementById('code-glass-output');
+
+  function updateGlass() {
+    if (!glassCard) return;
+    var blurVal = glassBlur ? glassBlur.value : 20;
+    var bgVal = glassBg ? glassBg.value / 100 : 0.15;
+    var borderVal = glassBorder ? glassBorder.value / 100 : 0.2;
+    var radVal = glassRadius ? glassRadius.value : 24;
+
+    var valBlurEl = document.getElementById('val-glass-blur');
+    var valBgEl = document.getElementById('val-glass-bg');
+    var valBorderEl = document.getElementById('val-glass-border');
+    var valRadEl = document.getElementById('val-glass-radius');
+
+    if (valBlurEl) valBlurEl.textContent = blurVal + 'px';
+    if (valBgEl) valBgEl.textContent = (glassBg ? glassBg.value : 15) + '%';
+    if (valBorderEl) valBorderEl.textContent = (glassBorder ? glassBorder.value : 20) + '%';
+    if (valRadEl) valRadEl.textContent = radVal + 'px';
+
+    var styleStr = 'background:rgba(255,255,255,' + bgVal.toFixed(2) + ');backdrop-filter:blur(' + blurVal + 'px);border:1px solid rgba(255,255,255,' + borderVal.toFixed(2) + ');border-radius:' + radVal + 'px';
+    glassCard.setAttribute('style', styleStr);
+    if (glassCode) glassCode.textContent = 'style="' + styleStr + '"';
+  }
+
+  [glassBlur, glassBg, glassBorder, glassRadius].forEach(function(sl) {
+    if (sl) sl.addEventListener('input', updateGlass);
+  });
+
+  // 4. Elementor Mockup Accordions
+  var accHeaders = document.querySelectorAll('.el-accordion-header');
+  accHeaders.forEach(function(hdr) {
+    hdr.addEventListener('click', function() {
+      var targetId = this.dataset.target;
+      var targetBody = document.getElementById(targetId);
+      
+      accHeaders.forEach(function(h) { h.classList.remove('active'); });
+      document.querySelectorAll('.el-accordion-body').forEach(function(b) { b.classList.remove('active'); });
+
+      this.classList.add('active');
+      if (targetBody) targetBody.classList.add('active');
+    });
+  });
 })();
 </script>
 
