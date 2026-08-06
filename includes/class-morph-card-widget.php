@@ -766,11 +766,11 @@ class Morph_Card_Widget extends Widget_Base {
 			// .morph-card) so it composes cleanly with the card's own
 			// state-specific rotation (e.g. polaroid's -2deg) and doesn't
 			// clash with the CSS float animation's transform.
-			$stage_style = sprintf( ' style="transform: rotate(%ddeg);"', $rotation_deg );
+			$stage_style = sprintf( 'transform: rotate(%ddeg);', $rotation_deg );
 		}
 
 		?>
-		<div class="<?php echo esc_attr( $stage_classes ); ?>" data-aurora-morph-config="<?php echo esc_attr( $json ); ?>"<?php echo $stage_style; ?>>
+		<div class="<?php echo esc_attr( $stage_classes ); ?>" data-aurora-morph-config="<?php echo esc_attr( $json ); ?>"<?php echo $stage_style ? ' style="' . esc_attr( $stage_style ) . '"' : ''; ?>>
 			<div class="morph-card-glow"></div>
 			<div class="morph-card">
 				<div class="morph-header"></div>
@@ -793,13 +793,13 @@ class Morph_Card_Widget extends Widget_Base {
 			'durationMs'           => max( 0, (int) ( $raw['duration_ms'] ?? 3200 ) ),
 			'transitionDurationMs' => max( 100, (int) ( $raw['transition_duration_ms'] ?? 1600 ) ),
 			'photo'                => esc_url_raw( $raw['photo']['url'] ?? '' ),
-			'caption'              => (string) ( $raw['caption'] ?? '' ),
+			'caption'              => sanitize_text_field( (string) ( $raw['caption'] ?? '' ) ),
 		];
 
 		switch ( $template ) {
 			case 'instagram':
-				$state['username'] = (string) ( $raw['ig_username'] ?? '' );
-				$state['subtext']  = (string) ( $raw['ig_subtext'] ?? '' );
+				$state['username'] = sanitize_text_field( (string) ( $raw['ig_username'] ?? '' ) );
+				$state['subtext']  = sanitize_text_field( (string) ( $raw['ig_subtext'] ?? '' ) );
 				$state['avatar']   = esc_url_raw( $raw['ig_avatar']['url'] ?? '' );
 				$state['likes']    = max( 0, (int) ( $raw['ig_likes'] ?? 0 ) );
 				break;
@@ -812,9 +812,9 @@ class Morph_Card_Widget extends Widget_Base {
 				break;
 
 			case 'profile':
-				$state['name']       = (string) ( $raw['profile_name'] ?? '' );
-				$state['username']   = (string) ( $raw['profile_username'] ?? '' );
-				$state['bio']        = (string) ( $raw['profile_bio'] ?? '' );
+				$state['name']       = sanitize_text_field( (string) ( $raw['profile_name'] ?? '' ) );
+				$state['username']   = sanitize_text_field( (string) ( $raw['profile_username'] ?? '' ) );
+				$state['bio']        = sanitize_text_field( (string) ( $raw['profile_bio'] ?? '' ) );
 				$state['avatar']     = esc_url_raw( $raw['profile_avatar']['url'] ?? '' );
 				$state['posts']      = max( 0, (int) ( $raw['profile_posts'] ?? 0 ) );
 				$state['followers']  = max( 0, (int) ( $raw['profile_followers'] ?? 0 ) );
