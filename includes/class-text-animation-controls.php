@@ -146,10 +146,7 @@ class Text_Animation_Controls extends Animation_Module {
 						'gs-24' => esc_html__( 'Liquid Fill Reveal', 'aurora-for-elementor' ),
 						'gs-25' => esc_html__( 'Perspective Fly', 'aurora-for-elementor' ),
 						'gs-26' => esc_html__( 'Cinema Title',    'aurora-for-elementor' ),
-						// gs-27+ : new additions inspired by Originkit's text
-						// animation library (independent reimplementations,
-						// no code copied — see each effect file's header
-						// comment for what it was inspired by).
+						// gs-27+ : extended text animation suite
 						'gs-27' => esc_html__( 'Text Emerge',     'aurora-for-elementor' ),
 						'gs-28' => esc_html__( 'Stagger Flip 3D', 'aurora-for-elementor' ),
 						'gs-29' => esc_html__( 'Scroll Highlight', 'aurora-for-elementor' ),
