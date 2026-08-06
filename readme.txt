@@ -1,6 +1,5 @@
 === Aurora for Elementor ===
 Contributors: zmdy
-Donate link: https://github.com/zmdy/aurora
 Tags: elementor, animation, gradient, hover effects, animejs
 Requires at least: 5.9
 Tested up to: 7.0
@@ -48,6 +47,10 @@ Available on the native Image widget. Two independent controls: an Entrance Anim
 = Bundled libraries =
 
 Anime.js and Motion One are bundled locally under 100% GPL-compatible MIT licenses (no CDN dependency) to power the animation modules.
+
+= Source code & build tools =
+
+Unminified JavaScript source files (`assets/js/src/`) and developer build tooling are maintained at https://github.com/zmdy/aurora.
 
 == Installation ==
 
