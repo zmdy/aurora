@@ -43,6 +43,7 @@ const EXCLUDES = [
     'index.html',
     'showcase',
     'assets/js/src',
+    'readme-light.txt',
 
     // Development & marketing branding assets (not needed by production plugin)
     'assets/branding/brandguide.html',
@@ -169,6 +170,25 @@ function main() {
                 fs.unlinkSync(path.join(effectsDir, file));
             }
         }
+    }
+
+    console.log('-> Patching metadata for Light Version...');
+    // Rewrite aurora-for-elementor.php description
+    const phpPath = path.join(TEMP_PLUGIN_PATH, 'aurora-for-elementor.php');
+    if (fs.existsSync(phpPath)) {
+        let phpContent = fs.readFileSync(phpPath, 'utf8');
+        phpContent = phpContent.replace(
+            'Advanced text & children animations (GSAP + Anime.js)',
+            'Advanced text & children animations (Anime.js)'
+        );
+        fs.writeFileSync(phpPath, phpContent);
+    }
+
+    // Overwrite readme.txt with readme-light.txt
+    const readmeLightRootPath = path.join(ROOT, 'readme-light.txt');
+    const readmeTempPath = path.join(TEMP_PLUGIN_PATH, 'readme.txt');
+    if (fs.existsSync(readmeLightRootPath)) {
+        fs.copyFileSync(readmeLightRootPath, readmeTempPath);
     }
 
     // 5. Package Light Version
