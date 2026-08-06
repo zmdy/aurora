@@ -156,10 +156,19 @@ function main() {
     console.log('✅ Full version package built successfully.');
 
     // 4. Exclude GSAP for Light Version
-    console.log('-> Removing GSAP vendor files for the Light Version...');
+    console.log('-> Removing GSAP vendor files and GSAP effect chunks for the Light Version...');
     const gsapPath = path.join(TEMP_PLUGIN_PATH, 'assets/js/vendor/gsap.min.js');
     if (fs.existsSync(gsapPath)) {
         fs.unlinkSync(gsapPath);
+    }
+    const effectsDir = path.join(TEMP_PLUGIN_PATH, 'assets/js/dist/effects');
+    if (fs.existsSync(effectsDir)) {
+        const effectFiles = fs.readdirSync(effectsDir);
+        for (const file of effectFiles) {
+            if (file.startsWith('gs-') && file.endsWith('.js')) {
+                fs.unlinkSync(path.join(effectsDir, file));
+            }
+        }
     }
 
     // 5. Package Light Version
