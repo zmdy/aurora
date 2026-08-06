@@ -524,9 +524,27 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url('assets/branding/aurora-hero.webp');
-  background-size: cover;
-  background-position: center;
+}
+
+/* Dynamic moving mesh gradient background overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(5,177,114,.35) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(0,153,204,.30) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(124,92,255,.35) 0%, transparent 50%);
+  filter: blur(70px);
+  opacity: .85;
+  animation: hero-gradient-move 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes hero-gradient-move {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 50px) scale(1.12); }
+  100% { transform: translate(50px, -30px) scale(1.05); }
 }
 
 /* Aurora canvas background */
@@ -561,36 +579,33 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   padding-bottom: 80px;
 }
 
-.hero__badge {
+.hero__label {
   display: inline-flex;
   align-items: center;
-  gap: var(--s-3);
-  padding: 8px 18px;
+  gap: var(--s-2);
+  padding: 6px 14px;
   border-radius: var(--r-full);
-  background: rgba(7, 9, 26, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  border: 1px solid rgba(5,177,114,.35);
+  background: rgba(5,177,114,.08);
   font-family: var(--f-heading);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: #34d399;
-  box-shadow: 0 0 25px rgba(52, 211, 153, 0.15);
+  color: var(--c-green);
   margin-bottom: var(--s-6);
-  letter-spacing: .02em;
+  letter-spacing: .05em;
 }
 
-.hero__badge-dot {
-  width: 8px; height: 8px;
+.hero__label::before {
+  content: '';
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 10px #34d399;
+  background: var(--c-green);
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
 @keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(0.7); opacity: 0.5; }
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .4; transform: scale(.8); }
 }
 
 .hero__title {
@@ -2265,18 +2280,14 @@ body.cursor-click .gcursor-ring {
      HERO
      ═══════════════════════════════════════════════════════════════════ -->
 <section id="top" class="hero">
-  <!-- Flowing Simplex 3D Noise Aurora Canvas Overlay -->
   <div class="hero__canvas-bg" aria-hidden="true">
-    <canvas id="aurora-ribbons-canvas"></canvas>
+    <canvas id="aurora-canvas"></canvas>
   </div>
   <div class="hero__grid" aria-hidden="true"></div>
 
   <div class="hero__content">
     <div class="container">
-      <div class="hero__badge">
-        <span class="hero__badge-dot"></span>
-        Open Source · GPL v3 · Free Forever
-      </div>
+      <div class="hero__label fade-in-up">Open Source · GPL v3 · Free Forever</div>
 
       <h1 class="hero__title">
         <span class="word-stack fade-in-up fade-in-up--1">Color &amp;</span>
@@ -2313,8 +2324,8 @@ body.cursor-click .gcursor-ring {
           <span class="hero__stat-label">Libraries</span>
         </div>
         <div class="hero__stat-item">
-          <span class="hero__stat-number">100%</span>
-          <span class="hero__stat-label">Open Source</span>
+          <span class="hero__stat-number">$0</span>
+          <span class="hero__stat-label">Forever</span>
         </div>
       </div>
     </div>
@@ -3174,151 +3185,74 @@ body.cursor-click .gcursor-ring {
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════
-   FLOWING SIMPLEX 3D NOISE AURORA CANVAS OVERLAY
+   AURORA CANVAS BACKGROUND
    ═══════════════════════════════════════════════════════════════════ */
-  (function() {
-    var canvas = document.getElementById('aurora-ribbons-canvas');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
+(function() {
+  'use strict';
+  var canvas = document.getElementById('aurora-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var w = 0, h = 0;
+  var mouse = { x: .5, y: .4 };
+  var target = { x: .5, y: .4 };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Simplex Noise 3D Implementation from Stefan Gustavson / McCullough / Koo
-    var SimplexNoise = function(r) {
-      if (r == undefined) r = Math;
-      this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
-      this.p = [];
-      for (var i=0; i<256; i++) { this.p[i] = Math.floor(r.random()*256); }
-      this.perm = [];
-      for (var i=0; i<512; i++) { this.perm[i]=this.p[i & 255]; }
-    };
+  var blobs = [
+    { c: 'rgba(5,177,114,.55)',  sx:.28, sy:.30, r:.58, sp:.52, ph: 0.0, pull: .16 },
+    { c: 'rgba(0,153,204,.40)',  sx:.72, sy:.25, r:.62, sp:.40, ph: 2.1, pull:-.14 },
+    { c: 'rgba(124,92,255,.38)', sx:.55, sy:.72, r:.50, sp:.36, ph: 4.2, pull: .20 },
+    { c: 'rgba(0,153,204,.22)',  sx:.18, sy:.78, r:.44, sp:.60, ph: 1.4, pull:-.10 },
+  ];
 
-    SimplexNoise.prototype.dot = function(g, x, y, z) {
-      return g[0]*x + g[1]*y + (z !== undefined ? g[2]*z : 0);
-    };
+  function resize() {
+    w = canvas.parentElement.offsetWidth;
+    h = canvas.parentElement.offsetHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
 
-    SimplexNoise.prototype.noise3d = function(xin, yin, zin) {
-      var n0, n1, n2, n3;
-      var F3 = 1.0/3.0;
-      var s = (xin+yin+zin)*F3;
-      var i = Math.floor(xin+s), j = Math.floor(yin+s), k = Math.floor(zin+s);
-      var G3 = 1.0/6.0;
-      var t = (i+j+k)*G3;
-      var X0 = i-t, Y0 = j-t, Z0 = k-t;
-      var x0 = xin-X0, y0 = yin-Y0, z0 = zin-Z0;
-      var i1, j1, k1, i2, j2, k2;
-      if(x0>=y0) {
-        if(y0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=1; k2=0; }
-        else if(x0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=0; k2=1; }
-        else { i1=0; j1=0; k1=1; i2=1; j2=0; k2=1; }
-      } else {
-        if(y0<z0) { i1=0; j1=0; k1=1; i2=0; j2=1; k2=1; }
-        else if(x0<z0) { i1=0; j1=1; k1=0; i2=0; j2=1; k2=1; }
-        else { i1=0; j1=1; k1=0; i2=1; j2=1; k2=0; }
-      }
-      var x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3;
-      var x2 = x0 - i2 + 2.0*G3, y2 = y0 - j2 + 2.0*G3, z2 = z0 - k2 + 2.0*G3;
-      var x3 = x0 - 1.0 + 3.0*G3, y3 = y0 - 1.0 + 3.0*G3, z3 = z0 - 1.0 + 3.0*G3;
-      var ii = i & 255, jj = j & 255, kk = k & 255;
-      var gi0 = this.perm[ii+this.perm[jj+this.perm[kk]]] % 12;
-      var gi1 = this.perm[ii+i1+this.perm[jj+j1+this.perm[kk+k1]]] % 12;
-      var gi2 = this.perm[ii+i2+this.perm[jj+j2+this.perm[kk+k2]]] % 12;
-      var gi3 = this.perm[ii+1+this.perm[jj+1+this.perm[kk+1]]] % 12;
-      var t0 = 0.6 - x0*x0 - y0*y0 - z0*z0;
-      n0 = t0<0 ? 0.0 : Math.pow(t0, 4) * this.dot(this.grad3[gi0], x0, y0, z0);
-      var t1 = 0.6 - x1*x1 - y1*y1 - z1*z1;
-      n1 = t1<0 ? 0.0 : Math.pow(t1, 4) * this.dot(this.grad3[gi1], x1, y1, z1);
-      var t2 = 0.6 - x2*x2 - y2*y2 - z2*z2;
-      n2 = t2<0 ? 0.0 : Math.pow(t2, 4) * this.dot(this.grad3[gi2], x2, y2, z2);
-      var t3 = 0.6 - x3*x3 - y3*y3 - z3*z3;
-      n3 = t3<0 ? 0.0 : Math.pow(t3, 4) * this.dot(this.grad3[gi3], x3, y3, z3);
-      return 32.0*(n0 + n1 + n2 + n3);
-    };
+  canvas.parentElement.addEventListener('mousemove', function(e) {
+    var r = canvas.parentElement.getBoundingClientRect();
+    target.x = (e.clientX - r.left) / r.width;
+    target.y = (e.clientY - r.top) / r.height;
+  });
 
-    var simplex = new SimplexNoise();
+  window.addEventListener('resize', resize);
+  resize();
 
-    var bufferWidth = 480;
-    var bufferHeight = 300;
-    var offCanvas = document.createElement('canvas');
-    offCanvas.width = bufferWidth;
-    offCanvas.height = bufferHeight;
-    var offCtx = offCanvas.getContext('2d');
+  if (reduceMotion) {
+    ctx.fillStyle = '#03040c';
+    ctx.fillRect(0, 0, w, h);
+    return;
+  }
 
-    function resize() {
-      canvas.width = canvas.parentElement.offsetWidth;
-      canvas.height = canvas.parentElement.offsetHeight;
-    }
+  var t = 0;
+  function draw() {
+    t += .012;
+    mouse.x += (target.x - mouse.x) * .03;
+    mouse.y += (target.y - mouse.y) * .03;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#03040c';
+    ctx.fillRect(0, 0, w, h);
 
-    window.addEventListener('resize', resize);
-    resize();
-
-    function renderAurora() {
-      var time = Date.now() / 4000;
-      offCtx.clearRect(0, 0, bufferWidth, bufferHeight);
-
-      // Create CodePen dynamic multi-color gradient
-      var gradient = offCtx.createLinearGradient(0, 0, bufferHeight / 0.4, bufferHeight * 0.9);
-      gradient.addColorStop(0, 'rgba(86,59,148,1)');
-      gradient.addColorStop((Math.sin(time) + 1) * 0.5 * 0.2, 'rgba(178,64,95,0.3)');
-      gradient.addColorStop((Math.cos(time) + 1) * 0.5 * 0.2 + 0.444, 'rgba(0,220,90,0.7)');
-      gradient.addColorStop(0.7, 'rgba(55,60,140,0.3)');
-      gradient.addColorStop(1, 'rgba(0,220,90,0.6)');
-
-      offCtx.fillStyle = gradient;
-      offCtx.fillRect(0, 0, bufferWidth, bufferHeight);
-
-      // Darkening vertical gradient overlay
-      offCtx.save();
-      offCtx.globalCompositeOperation = 'source-over';
-      var darkGrad = offCtx.createLinearGradient(0, 0, 0, bufferHeight * 0.5);
-      darkGrad.addColorStop(0, 'rgba(0,0,0,0.01)');
-      darkGrad.addColorStop(1, 'rgba(0,0,0,0.85)');
-      offCtx.fillStyle = darkGrad;
-      offCtx.fillRect(0, 0, bufferWidth, bufferHeight);
-      offCtx.restore();
-
-      // Read image data and apply Simplex Noise 3D modulation
-      var image = offCtx.createImageData(bufferWidth, bufferHeight);
-      var image2 = offCtx.getImageData(0, 0, bufferWidth, bufferHeight);
-      var data = image.data;
-      var data2 = image2.data;
-
-      var octaves = 0.3;
-      var scaleX = 4 / octaves;
-      var scaleY = 0.25 / octaves;
-      var len = data.length;
-
-      for (var i = 0, j = 0; i < len; i += 4, j++) {
-        var h = (j / bufferWidth) | 0;
-        var w = j % bufferWidth;
-
-        var n = 0;
-        var frequency = 0.3;
-        var persistence = 1.5;
-        var amplitude;
-
-        for (var oi = 0; oi < octaves; oi++) {
-          frequency *= 2;
-          amplitude = Math.pow(persistence, oi);
-          n += simplex.noise3d((w / bufferWidth) * frequency * scaleX, (h / bufferHeight) * frequency * scaleY, time) * amplitude;
-        }
-
-        var factor = n * 0.5 + 0.5;
-        data[i]     = (factor * data2[i]) | 0;
-        data[i + 1] = (factor * data2[i + 1]) | 0;
-        data[i + 2] = (factor * data2[i + 2]) | 0;
-        data[i + 3] = data2[i + 3];
-      }
-
-      offCtx.putImageData(image, 0, 0);
-
-      // Draw smoothed offscreen buffer to full resolution main canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(offCanvas, 0, 0, canvas.width, canvas.height);
-
-      requestAnimationFrame(renderAurora);
-    }
-
-    requestAnimationFrame(renderAurora);
-  })();
+    blobs.forEach(function(b, i) {
+      var dx = Math.sin(t * b.sp + b.ph) * .22;
+      var dy = Math.cos(t * b.sp * .85 + b.ph) * .18;
+      var cx = (b.sx + dx + (mouse.x - .5) * b.pull) * w;
+      var cy = (b.sy + dy + (mouse.y - .5) * b.pull) * h;
+      var r = b.r * Math.max(w, h) * (1 + Math.sin(t * 0.5 + i) * 0.15);
+      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      g.addColorStop(0, b.c);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
 
 /* ═══════════════════════════════════════════════════════════════════
    NAV SCROLL STATE
@@ -4209,7 +4143,7 @@ document.getElementById('btn-copy-final').addEventListener('click', function() {
 
     var tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
 
-    tl.fromTo('.hero__badge',
+    tl.fromTo('.hero__label',
       { y: -30, opacity: 0, scale: 0.9 },
       { y: 0, opacity: 1, scale: 1, duration: 0.8, delay: 0.1 }
     );
