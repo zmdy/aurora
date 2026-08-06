@@ -192,7 +192,7 @@ class Morph_Card_Widget extends Widget_Base {
 		$repeater->add_control(
 			'polaroid_size',
 			[
-				'label'     => esc_html__( 'Polaroid Size', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Frame Size', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'normal',
 				'options'   => [
@@ -209,7 +209,7 @@ class Morph_Card_Widget extends Widget_Base {
 		$repeater->add_control(
 			'polaroid_frame',
 			[
-				'label'     => esc_html__( 'Polaroid Frame Color', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Frame Color', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => '',
 				'options'   => [
@@ -540,7 +540,7 @@ class Morph_Card_Widget extends Widget_Base {
 		$this->add_control(
 			'aurora_mc_caption_effect',
 			[
-				'label'   => esc_html__( 'Caption reveal effect (polaroid)', 'aurora-for-elementor' ),
+				'label'   => esc_html__( 'Caption reveal effect (frame style)', 'aurora-for-elementor' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'typewriter',
 				'options' => [
@@ -643,7 +643,7 @@ class Morph_Card_Widget extends Widget_Base {
 		$this->start_controls_section(
 			'aurora_mc_section_ig_style',
 			[
-				'label' => esc_html__( 'Instagram text', 'aurora-for-elementor' ),
+				'label' => esc_html__( 'Social post text', 'aurora-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
@@ -658,7 +658,7 @@ class Morph_Card_Widget extends Widget_Base {
 		$this->start_controls_section(
 			'aurora_mc_section_polaroid_style',
 			[
-				'label' => esc_html__( 'Polaroid text', 'aurora-for-elementor' ),
+				'label' => esc_html__( 'Photo frame text', 'aurora-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
