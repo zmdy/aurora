@@ -1,7 +1,7 @@
 === Aurora for Elementor ===
 Contributors: zmdy
 Donate link: https://github.com/zmdy/aurora
-Tags: elementor, animation, gradient, hover effects, gsap
+Tags: elementor, animation, gradient, hover effects, animejs
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -17,7 +17,7 @@ Aurora adds a set of advanced design modules to the **Advanced** tab of every El
 
 = Module 1 — Text Animation =
 
-Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 70 animations (26 powered by GSAP, 44 by Anime.js) — a curated, deduplicated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Every GSAP effect has a matching Anime.js version with the same visual result, so the Library switch is a real choice, not a smaller fallback set. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. Only the specific effect a widget uses is ever loaded on the real frontend, on top of a small shared runtime — so adding more effects over time never adds weight to pages that don't use them.
+Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 53 native animations powered by Anime.js — a curated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. Only the specific effect a widget uses is ever loaded on the real frontend, on top of a small shared runtime — so adding more effects over time never adds weight to pages that don't use them.
 
 = Module 2 — Animate Children Elements =
 
@@ -37,7 +37,7 @@ Available on any Elementor element. Replaces the native cursor with a two-part c
 
 = Module 6 — Image Effects =
 
-Available on the native Image widget. Two independent controls: an Entrance Animation — choice of GSAP (13 scroll/load-triggered effects, including wipe, curtain, and iris reveals) or Anime.js (8 spring/elastic-leaning effects, including Elastic Pop and Bounce Drop) — and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
+Available on the native Image widget. Two independent controls: an Entrance Animation — 8 spring/elastic entrance effects powered by Anime.js — and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
 
 = Requirements =
 
@@ -47,7 +47,7 @@ Available on the native Image widget. Two independent controls: an Entrance Anim
 
 = Bundled libraries =
 
-GSAP and Anime.js are bundled locally (no CDN dependency) to power the animation modules.
+Anime.js and Motion One are bundled locally under 100% GPL-compatible MIT licenses (no CDN dependency) to power the animation modules.
 
 == Installation ==
 
