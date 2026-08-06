@@ -6,6 +6,7 @@
  * Version:           0.1.9
  * Requires at least: 5.9
  * Requires PHP:      7.4
+ * Requires Plugins:  elementor
  * Author:            Aurora
  * Author URI:        https://github.com/zmdy/aurora
  * License:           GPL v3
