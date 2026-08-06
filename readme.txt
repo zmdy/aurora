@@ -1,6 +1,6 @@
 === Aurora for Elementor ===
 Contributors: zmdy
-Tags: elementor, animation, gradient, hover effects, animejs
+Tags: elementor, animation, gradient, hover effects, gsap
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -16,7 +16,7 @@ Aurora adds a set of advanced design modules to the **Advanced** tab of every El
 
 = Module 1 — Text Animation =
 
-Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 53 native animations powered by Anime.js — a curated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. Only the specific effect a widget uses is ever loaded on the real frontend, on top of a small shared runtime — so adding more effects over time never adds weight to pages that don't use them.
+Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 88 animations (35 powered by GSAP, 53 by Anime.js) — a curated, deduplicated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Every GSAP effect has a matching Anime.js version with the same visual result, so the Library switch is a real choice, not a smaller fallback set. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. Only the specific effect a widget uses is ever loaded on the real frontend, on top of a small shared runtime — so adding more effects over time never adds weight to pages that don't use them.
 
 = Module 2 — Animate Children Elements =
 
@@ -36,7 +36,7 @@ Available on any Elementor element. Replaces the native cursor with a two-part c
 
 = Module 6 — Image Effects =
 
-Available on the native Image widget. Two independent controls: an Entrance Animation — 8 spring/elastic entrance effects powered by Anime.js — and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
+Available on the native Image widget. Two independent controls: an Entrance Animation — choice of GSAP (13 scroll/load-triggered effects, including wipe, curtain, and iris reveals) or Anime.js (8 spring/elastic-leaning effects, including Elastic Pop and Bounce Drop) — and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
 
 = Requirements =
 
@@ -46,7 +46,7 @@ Available on the native Image widget. Two independent controls: an Entrance Anim
 
 = Bundled libraries =
 
-Anime.js and Motion One are bundled locally under 100% GPL-compatible MIT licenses (no CDN dependency) to power the animation modules.
+GSAP, Anime.js, and Motion One are bundled locally (no CDN dependency) to power the animation modules.
 
 = Source code & build tools =
 
@@ -85,8 +85,8 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 * Initial release: Text Animation, Animate Children Elements, Gradient (incl. Follow Mouse spotlight), Glassmorphism, Cursor Follow, and Image Effects modules.
 * Text Animation: added a Continuous Wave entrance effect and a Hover Scatter interaction (both Anime.js).
 * Text Animation: restructured into one file per effect, built via Vite into a full editor bundle and small, individually-loadable frontend chunks — only the effect a widget actually uses is sent to real visitors.
-* Text Animation: added 24 new animation effects — Rotate In, Slot Machine, Spin In, Neon Flicker, CRT Boot, Domino Fall, Pendulum Swing, Unfold 3D, Stretch Warp, Heartbeat, Vertical Blinds, Rubber Stamp, VHS Tracking, Liquid Fill Reveal, Perspective Fly, Cinema Title, Elastic Slide, Scatter Converge, Matrix Rain, Spiral In, Flip Board, RGB Split, Typewriter Delete, and Rotating Character Dial. Near-duplicate variants were intentionally skipped in favor of one representative effect each.
-* Text Animation: added native Anime.js equivalents for all effects, delivering the complete animation catalog under a 100% GPL-compatible open-source engine (MIT license).
+* Text Animation: added 24 new effects (16 GSAP, 8 Anime.js) curated from GSAPify's animation catalogs and translated from Framer Motion/Motion.dev examples — Rotate In, Slot Machine, Spin In, Neon Flicker, CRT Boot, Domino Fall, Pendulum Swing, Unfold 3D, Stretch Warp, Heartbeat, Vertical Blinds, Rubber Stamp, VHS Tracking, Liquid Fill Reveal, Perspective Fly, Cinema Title, Elastic Slide, Scatter Converge, Matrix Rain, Spiral In, Flip Board, RGB Split, Typewriter Delete, and Rotating Character Dial. Near-duplicate variants were intentionally skipped in favor of one representative effect each.
+* Text Animation: added Anime.js equivalents (ml-24..ml-44) for every remaining GSAP-only effect, so the full 26-effect catalog is now available under either library. GSAP stays as a library option for now — this is groundwork for an eventual WordPress.org submission, since GSAP's core license (GreenSock's Standard No-Charge License) isn't GPL-compatible while Anime.js (MIT) is.
 
 == Upgrade Notice ==
 
