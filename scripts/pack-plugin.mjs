@@ -40,8 +40,6 @@ const EXCLUDES = [
     '.DS_Store',
     '_dist_temp',
     'README.md',
-    'readme.txt',
-    'LICENSE',
     'index.html',
     'showcase',
     'assets/js/src',
