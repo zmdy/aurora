@@ -153,7 +153,7 @@
 	opacity: 0.35;
 }
 
-/* ── Hover/Appear: Slide Color Overlay (Framer) ────────────────────────── */
+/* ── Hover/Appear: Slide Color Overlay ─────────────────────────────────── */
 .aurora-img-hover-active[data-aurora-img-hover="slide-overlay"] .elementor-widget-container::before {
 	content: "";
 	position: absolute;
@@ -196,7 +196,7 @@
 	transform: translateX(0);
 }
 
-/* ── Hover/Appear: Chromatic RGB Split (Framer) ────────────────────────── */
+/* ── Hover/Appear: Chromatic RGB Split ─────────────────────────────────── */
 /* Handled partly in JS by creating multiple image layer wrappers.
    The CSS configures their mixture and absolute overlay offsets. */
 .aurora-rgb-container {
@@ -243,7 +243,7 @@
 	transform: translate3d(calc(-1 * var(--aurora-img-rgb-amount, 8px)), 0, 0);
 }
 
-/* ── Hover/Appear: Pixelate (Framer) ────────────────────────────────────── */
+/* ── Hover/Appear: Pixelate ────────────────────────────────────────────── */
 .aurora-img-hover-active[data-aurora-img-hover="pixelate"] img {
 	image-rendering: pixelated;
 	filter: contrast(1.1);
