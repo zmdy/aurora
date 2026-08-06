@@ -90,9 +90,9 @@ class Morph_Card_Widget extends Widget_Base {
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'instagram',
 				'options' => [
-					'instagram' => esc_html__( 'Instagram Post', 'aurora-for-elementor' ),
-					'profile'   => esc_html__( 'Instagram Profile', 'aurora-for-elementor' ),
-					'polaroid'  => esc_html__( 'Polaroid', 'aurora-for-elementor' ),
+					'instagram' => esc_html__( 'Social Media Post', 'aurora-for-elementor' ),
+					'profile'   => esc_html__( 'Social Profile Card', 'aurora-for-elementor' ),
+					'polaroid'  => esc_html__( 'Classic Photo Frame', 'aurora-for-elementor' ),
 					'custom'    => esc_html__( 'Custom', 'aurora-for-elementor' ),
 				],
 			]
