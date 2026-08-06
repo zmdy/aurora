@@ -53,7 +53,7 @@ class Morph_Card_Widget extends Widget_Base {
 	}
 
 	public function get_keywords(): array {
-		return [ 'aurora', 'morph', 'card', 'instagram', 'polaroid', 'transform' ];
+		return [ 'aurora', 'morph', 'card', 'social', 'frame', 'photo', 'profile', 'transform' ];
 	}
 
 	/**
