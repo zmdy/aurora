@@ -612,7 +612,7 @@
    ═══════════════════════════════════════════════════════════════════ */
     .hero {
       position: relative;
-      min-height: 100svh;
+      max-height: 105svh;
       display: flex;
       align-items: center;
       overflow: hidden;
@@ -647,10 +647,11 @@
 
     .hero__content {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       width: 100%;
-      padding-top: 140px;
-      padding-bottom: 80px;
+      padding-top: 150px;
+      padding-bottom: 120px;
+      text-align: center;
     }
 
     .hero__badge {
@@ -664,12 +665,13 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(52, 211, 153, 0.4);
       font-family: var(--f-heading);
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       color: #34d399;
-      box-shadow: 0 0 25px rgba(52, 211, 153, 0.15);
+      letter-spacing: .08em;
+      text-transform: uppercase;
       margin-bottom: var(--s-6);
-      letter-spacing: .02em;
+      box-shadow: 0 0 25px rgba(5, 177, 114, 0.25);
     }
 
     .hero__badge-dot {
@@ -697,16 +699,19 @@
 
     .hero__title {
       font-family: var(--f-display);
-      font-size: clamp(3.8rem, 9.5vw, 8.2rem);
+      font-size: clamp(3.5rem, 8vw, 7.2rem);
       font-weight: 700;
-      line-height: .92;
+      line-height: .95;
       letter-spacing: -.03em;
       margin-bottom: var(--s-6);
+      color: #ffffff;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
     .hero__title .word-stack {
       display: block;
     }
+
 
     .hero__title .line-outlined {
       color: transparent;
@@ -721,18 +726,23 @@
     }
 
     .hero__sub {
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      color: rgba(255, 255, 255, .55);
-      max-width: 520px;
+      font-family: var(--f-sans);
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--c-text-muted);
+      max-width: 720px;
+      margin: 0 auto var(--s-10) auto;
       line-height: 1.7;
-      margin-bottom: var(--s-10);
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
     }
+
 
     .hero__actions {
       display: flex;
-      flex-wrap: wrap;
-      gap: var(--s-4);
       align-items: center;
+      justify-content: center;
+      gap: var(--s-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--s-12);
     }
 
     /* Primary button */
@@ -3639,24 +3649,40 @@
       var ctx = canvas.getContext('2d');
 
       // ======= FLARE SETTINGS =======
-      // Flare rotation angle, in degrees.
-      //   0  = vertical flares (original behavior, top to bottom)
-      //   45 = diagonal flares
-      //   90 = horizontal flares
       var FLARE_ANGLE_DEG = -30;
-
-      // Maximum flare height, as a fraction of the canvas height (0 to 1).
-      //   1.0 = flares fill the whole height (original behavior)
-      //   0.6 = flares fade out at 60% of the height, never reaching the bottom
-      var FLARE_MAX_HEIGHT = 0.75;
-
-      // How smooth the fade-out is as it approaches the height limit, as a
-      // fraction of the canvas height. The larger the value, the more gradual
-      // the fade-out.
+      var FLARE_MAX_HEIGHT = 0.85;
       var FLARE_FADE_SOFTNESS = 0.25;
+
+      var FLARE_COLORS = [
+        { type: 'solid', color: 'rgba(0,220,90,1)' },
+        {
+          type: 'gradient', stops: [
+            { offset: 0, color: 'rgba(86,59,148,1)' },
+            { offset: 1, color: 'rgba(178,64,95,1)' }
+          ]
+        },
+        { type: 'solid', color: 'rgba(56,140,255,1)' }
+      ];
+
+      var FLARE_COLOR_CYCLE_COUNT = 2.5;
+      var FLARE_COLOR_DRIFT_SPEED = 0.15;
       // ================================
 
-      // Optimized 3D Simplex Noise using TypedArrays (Uint8Array)
+      // ======= DARK GRADIENT SETTINGS =======
+      // Controls a background gradient (e.g., from transparent to black)
+      // to help darken the sky/image behind the aurora.
+      var ENABLE_DARK_GRADIENT = true;
+
+      // 0.0 is the top of the canvas, 1.0 is the bottom
+      var DARK_GRAD_START_Y = 0.0;
+      var DARK_GRAD_END_Y = 0.5;
+
+      // Colors for the gradient fade
+      var DARK_GRAD_COLOR_START = 'rgba(0, 0, 0, 0.01)'; // Almost transparent
+      var DARK_GRAD_COLOR_END = 'rgba(0, 0, 0, 0.25)';   // Dark/Black
+      // ======================================
+
+      // Optimized 3D Simplex Noise
       var SimplexNoise = function (r) {
         if (r == undefined) r = Math;
         this.grad3 = [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]];
@@ -3717,7 +3743,6 @@
       offCanvas.height = bufferHeight;
       var offCtx = offCanvas.getContext('2d');
 
-      // Reused fixed output ImageData to avoid Garbage Collection on every frame
       var outImageData = offCtx.createImageData(bufferWidth, bufferHeight);
       var outData = outImageData.data;
 
@@ -3729,7 +3754,6 @@
       window.addEventListener('resize', resize);
       resize();
 
-      // Precompute sine/cosine of the flare rotation angle (doesn't change per frame)
       var flareAngleRad = FLARE_ANGLE_DEG * Math.PI / 180;
       var cosA = Math.cos(flareAngleRad);
       var sinA = Math.sin(flareAngleRad);
@@ -3737,59 +3761,79 @@
       var cy = bufferHeight / 2;
       var fadeStart = Math.max(0, FLARE_MAX_HEIGHT - FLARE_FADE_SOFTNESS);
 
+      function parseRGBA(str) {
+        var m = /rgba?\(([^)]+)\)/.exec(str);
+        var parts = m[1].split(',').map(function (s) { return parseFloat(s); });
+        return [parts[0], parts[1], parts[2], parts.length > 3 ? parts[3] : 1];
+      }
+
+      var FLARE_COLORS_PARSED = FLARE_COLORS.map(function (entry) {
+        if (entry.type === 'gradient') {
+          var stops = entry.stops
+            .map(function (s) {
+              var c = parseRGBA(s.color);
+              return [s.offset, c[0], c[1], c[2], c[3]];
+            })
+            .sort(function (a, b) { return a[0] - b[0]; });
+          return { type: 'gradient', stops: stops };
+        }
+        return { type: 'solid', rgba: parseRGBA(entry.color) };
+      });
+      var flareColorCount = FLARE_COLORS_PARSED.length;
+
+      function sampleFlareColorAt(entry, t) {
+        if (entry.type === 'solid') return entry.rgba;
+        var stops = entry.stops;
+        if (t <= stops[0][0]) return stops[0].slice(1);
+        var last = stops[stops.length - 1];
+        if (t >= last[0]) return last.slice(1);
+        for (var i = 0; i < stops.length - 1; i++) {
+          var a = stops[i], b = stops[i + 1];
+          if (t >= a[0] && t <= b[0]) {
+            var span = (b[0] - a[0]) || 1;
+            var lt = (t - a[0]) / span;
+            return [
+              a[1] + (b[1] - a[1]) * lt,
+              a[2] + (b[2] - a[2]) * lt,
+              a[3] + (b[3] - a[3]) * lt,
+              a[4] + (b[4] - a[4]) * lt
+            ];
+          }
+        }
+        return last.slice(1);
+      }
+
+      var rowColors = new Array(flareColorCount);
+
       function renderAurora() {
         var time = Date.now() / 4000;
+        var colorTimeOffset = time * FLARE_COLOR_DRIFT_SPEED;
 
-        // 1. Render the two original gradients on the offscreen canvas
-        offCtx.clearRect(0, 0, bufferWidth, bufferHeight);
-
-        var gradient = offCtx.createLinearGradient(0, 0, bufferHeight / 0.4, bufferHeight * 0.9);
-        gradient.addColorStop(0, 'rgba(86,59,148,1)');
-        gradient.addColorStop((Math.sin(time) + 1) * 0.5 * 0.2, 'rgba(178,64,95,0.3)');
-        gradient.addColorStop((Math.cos(time) + 1) * 0.5 * 0.2 + 0.444, 'rgba(0,220,90,0.7)');
-        gradient.addColorStop(0.7, 'rgba(55,60,140,0.3)');
-        gradient.addColorStop(1, 'rgba(0,220,90,0.6)');
-
-        offCtx.fillStyle = gradient;
-        offCtx.fillRect(0, 0, bufferWidth, bufferHeight);
-
-        offCtx.save();
-        offCtx.globalCompositeOperation = 'source-over';
-        var darkGrad = offCtx.createLinearGradient(0, 0, 0, bufferHeight * 0.5);
-        darkGrad.addColorStop(0, 'rgba(0,0,0,0.01)');
-        darkGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
-        offCtx.fillStyle = darkGrad;
-        offCtx.fillRect(0, 0, bufferWidth, bufferHeight);
-        offCtx.restore();
-
-        // 2. Extract the resulting gradient pixels
-        var image2 = offCtx.getImageData(0, 0, bufferWidth, bufferHeight);
-        var data2 = image2.data;
-
-        // 3. Noise modulation, with rotated axes and a max-height mask
         var idx = 0;
         for (var h = 0; h < bufferHeight; h++) {
           var dy = h - cy;
-
-          // Height mask: flares smoothly fade out until they disappear
-          // past FLARE_MAX_HEIGHT (independent of the chosen rotation)
           var heightRatio = h / bufferHeight;
+
           var heightMask;
           if (heightRatio <= fadeStart) {
             heightMask = 1;
           } else if (heightRatio >= FLARE_MAX_HEIGHT) {
             heightMask = 0;
           } else {
-            var t = (heightRatio - fadeStart) / (FLARE_MAX_HEIGHT - fadeStart);
-            heightMask = 1 - (t * t * (3 - 2 * t)); // smoothstep
+            var tt = (heightRatio - fadeStart) / (FLARE_MAX_HEIGHT - fadeStart);
+            heightMask = 1 - (tt * tt * (3 - 2 * tt)); // smoothstep
+          }
+
+          var vignette = 1 - 0.15 * Math.min(heightRatio / 0.5, 1);
+          var rowT = FLARE_MAX_HEIGHT > 0 ? Math.min(heightRatio / FLARE_MAX_HEIGHT, 1) : 1;
+
+          for (var ci = 0; ci < flareColorCount; ci++) {
+            rowColors[ci] = sampleFlareColorAt(FLARE_COLORS_PARSED[ci], rowT);
           }
 
           for (var w = 0; w < bufferWidth; w++) {
             var dx = w - cx;
 
-            // Rotate the noise sampling axes around the center of the
-            // buffer. At FLARE_ANGLE_DEG = 0 this reproduces the original
-            // behavior (fastCoord = dx, slowCoord = dy).
             var fastCoord = dx * cosA - dy * sinA;
             var slowCoord = dx * sinA + dy * cosA;
 
@@ -3797,21 +3841,49 @@
             var ny = (slowCoord / bufferHeight) * 0.5;
 
             var n = simplex.noise3d(nx, ny, time);
-            var factor = (n * 0.5 + 0.5) * heightMask;
 
-            outData[idx] = (factor * data2[idx]) | 0;
-            outData[idx + 1] = (factor * data2[idx + 1]) | 0;
-            outData[idx + 2] = (factor * data2[idx + 2]) | 0;
-            outData[idx + 3] = data2[idx + 3]; // Preserve 100% of the original Alpha transparency
+            // Factor acts as an opacity mask
+            var factor = (n * 0.5 + 0.5) * heightMask * vignette;
+
+            var colorPhase = (fastCoord / bufferWidth) * FLARE_COLOR_CYCLE_COUNT + colorTimeOffset;
+            var wrapped = ((colorPhase % flareColorCount) + flareColorCount) % flareColorCount;
+            var ci0 = wrapped | 0;
+            var ci1 = (ci0 + 1) % flareColorCount;
+            var cb = wrapped - ci0;
+
+            var c0 = rowColors[ci0];
+            var c1 = rowColors[ci1];
+
+            // 1. Keep the pure RGB color (maximum aurora luminosity)
+            outData[idx] = (c0[0] + (c1[0] - c0[0]) * cb) | 0;
+            outData[idx + 1] = (c0[1] + (c1[1] - c0[1]) * cb) | 0;
+            outData[idx + 2] = (c0[2] + (c1[2] - c0[2]) * cb) | 0;
+
+            // 2. Transfer the intensity and fade 'factor' to the Transparency (Alpha) channel
+            var baseAlpha = c0[3] + (c1[3] - c0[3]) * cb;
+            outData[idx + 3] = (baseAlpha * 255 * factor) | 0;
 
             idx += 4;
           }
         }
 
-        // 4. Write back to the buffer and render on the main canvas
         offCtx.putImageData(outImageData, 0, 0);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Apply the dark background gradient if enabled
+        if (ENABLE_DARK_GRADIENT) {
+          var darkGrad = ctx.createLinearGradient(
+            0, canvas.height * DARK_GRAD_START_Y,
+            0, canvas.height * DARK_GRAD_END_Y
+          );
+          darkGrad.addColorStop(0, DARK_GRAD_COLOR_START);
+          darkGrad.addColorStop(1, DARK_GRAD_COLOR_END);
+          ctx.fillStyle = darkGrad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Draw the aurora on top of the gradient
         ctx.drawImage(offCanvas, 0, 0, canvas.width, canvas.height);
 
         requestAnimationFrame(renderAurora);
@@ -3819,6 +3891,7 @@
 
       requestAnimationFrame(renderAurora);
     })();
+
     /* ═══════════════════════════════════════════════════════════════════
        NAV SCROLL STATE
        ═══════════════════════════════════════════════════════════════════ */
