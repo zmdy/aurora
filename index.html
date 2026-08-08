@@ -2635,31 +2635,8 @@
             Live Text Playground
           </a>
         </div>
-
-        <div class="hero__stats">
-          <div class="hero__stat-item">
-            <span class="hero__stat-number">88+</span>
-            <span class="hero__stat-label">Text Animations</span>
-          </div>
-          <div class="hero__stat-item">
-            <span class="hero__stat-number">6</span>
-            <span class="hero__stat-label">Modules</span>
-          </div>
-          <div class="hero__stat-item">
-            <span class="hero__stat-number">2</span>
-            <span class="hero__stat-label">Libraries</span>
-          </div>
-          <div class="hero__stat-item">
-            <span class="hero__stat-number">100%</span>
-            <span class="hero__stat-label">Open Source</span>
-          </div>
-        </div>
       </div>
-    </div>
 
-    <div class="hero__scroll" aria-hidden="true">
-      <div class="hero__scroll-line"></div>
-      <span>scroll</span>
     </div>
   </section>
 
@@ -3653,19 +3630,37 @@
       var FLARE_MAX_HEIGHT = 0.85;
       var FLARE_FADE_SOFTNESS = 0.25;
 
+      // Controls the frequency/amount of flares horizontally.
+      // Higher = more flares (narrower and denser), lower = fewer flares (broader and sparser).
+      var FLARE_FREQUENCY = 5.0;
+
+      // Expanded color array featuring rich blue, green, and purple tones and gradients
       var FLARE_COLORS = [
-        { type: 'solid', color: 'rgba(0,220,90,1)' },
+        { type: 'solid', color: 'rgba(0,255,140,1)' },
         {
           type: 'gradient', stops: [
-            { offset: 0, color: 'rgba(86,59,148,1)' },
-            { offset: 1, color: 'rgba(178,64,95,1)' }
+            { offset: 0, color: 'rgba(0,210,180,1)' },
+            { offset: 1, color: 'rgba(0,130,255,1)' }
           ]
         },
-        { type: 'solid', color: 'rgba(56,140,255,1)' }
+        { type: 'solid', color: 'rgba(30,144,255,1)' },
+        {
+          type: 'gradient', stops: [
+            { offset: 0, color: 'rgba(40,80,255,1)' },
+            { offset: 1, color: 'rgba(138,43,226,1)' }
+          ]
+        },
+        { type: 'solid', color: 'rgba(150,50,250,1)' },
+        {
+          type: 'gradient', stops: [
+            { offset: 0, color: 'rgba(0,255,120,1)' },
+            { offset: 1, color: 'rgba(186,85,211,1)' }
+          ]
+        }
       ];
 
-      var FLARE_COLOR_CYCLE_COUNT = 2.5;
-      var FLARE_COLOR_DRIFT_SPEED = 0.15;
+      var FLARE_COLOR_CYCLE_COUNT = 3.5;
+      var FLARE_COLOR_DRIFT_SPEED = 0.2;
       // ================================
 
       // ======= DARK GRADIENT SETTINGS =======
@@ -3679,7 +3674,7 @@
 
       // Colors for the gradient fade
       var DARK_GRAD_COLOR_START = 'rgba(0, 0, 0, 0.01)'; // Almost transparent
-      var DARK_GRAD_COLOR_END = 'rgba(0, 0, 0, 0.25)';   // Dark/Black
+      var DARK_GRAD_COLOR_END = 'rgba(0, 0, 0, 0.5)';   // Dark/Black
       // ======================================
 
       // Optimized 3D Simplex Noise
@@ -3837,7 +3832,8 @@
             var fastCoord = dx * cosA - dy * sinA;
             var slowCoord = dx * sinA + dy * cosA;
 
-            var nx = (fastCoord / bufferWidth) * 8.0;
+            // Apply FLARE_FREQUENCY to control flare amount/density
+            var nx = (fastCoord / bufferWidth) * FLARE_FREQUENCY;
             var ny = (slowCoord / bufferHeight) * 0.5;
 
             var n = simplex.noise3d(nx, ny, time);
@@ -3845,7 +3841,8 @@
             // Factor acts as an opacity mask
             var factor = (n * 0.5 + 0.5) * heightMask * vignette;
 
-            var colorPhase = (fastCoord / bufferWidth) * FLARE_COLOR_CYCLE_COUNT + colorTimeOffset;
+            // Mix spatial noise into the color phase so each individual flare dynamically samples random colors from the array
+            var colorPhase = (fastCoord / bufferWidth) * FLARE_COLOR_CYCLE_COUNT + colorTimeOffset + (n * 2.0);
             var wrapped = ((colorPhase % flareColorCount) + flareColorCount) % flareColorCount;
             var ci0 = wrapped | 0;
             var ci1 = (ci0 + 1) % flareColorCount;
