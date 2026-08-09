@@ -17,59 +17,56 @@ import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..');
-const TEMP_DIR = path.join(ROOT, '_dist_temp');
+// This file lives at plugin/scripts/. PLUGIN_ROOT (plugin/) holds the PHP,
+// includes/, languages/, and readme files; REPO_ROOT (one level up) holds
+// assets/, which stays shared with the showcase site and is NOT nested
+// under plugin/. The two are merged into the same staging folder below.
+const PLUGIN_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = path.resolve(__dirname, '../..');
+const TEMP_DIR = path.join(PLUGIN_ROOT, '_dist_temp');
 const PLUGIN_SLUG = 'aurora-for-elementor';
 const TEMP_PLUGIN_PATH = path.join(TEMP_DIR, PLUGIN_SLUG);
 
-// Files and folders to exclude from final production packages (relative to ROOT)
-const EXCLUDES = [
-    '.git',
-    '.github',
-    '.claude',
-    'node_modules',
-    '_tests',
+// Files and folders to exclude when copying from PLUGIN_ROOT (relative to PLUGIN_ROOT)
+const PLUGIN_EXCLUDES = [
     'scripts',
-    '.agents',
-    '.gemini',
-    'docs',
-    'site_memoriarte',
-    'package.json',
-    'package-lock.json',
-    '.gitignore',
     '.DS_Store',
     '_dist_temp',
-    'README.md',
-    'index.html',
-    'showcase',
-    'assets/js/src',
-    'readme-light.txt',
+    'readme-light.txt'
+];
+
+// Files and folders to exclude when copying from REPO_ROOT/assets (relative to that assets/ folder)
+const ASSETS_EXCLUDES = [
+    '.DS_Store',
+    'js/src',
 
     // Development & marketing branding assets (not needed by production plugin)
-    'assets/branding/brandguide.html',
-    'assets/branding/fonts',
-    'assets/branding/aurora_animated_logo.svg',
-    'assets/branding/aurora_blob_base_shape.svg',
-    'assets/branding/aurora_favicon.svg',
-    'assets/branding/aurora_favicon_green.svg',
-    'assets/branding/logo_aurora.svg',
-    'assets/branding/logo_aurora_tagline.svg',
-    'assets/branding/icons/tdesign',
-    'assets/branding/icons/aurora_icon_blue_contributing.svg',
-    'assets/branding/icons/aurora_icon_blue_features.svg',
-    'assets/branding/icons/aurora_icon_blue_install.svg',
-    'assets/branding/icons/aurora_icon_blue_specs.svg'
+    'branding/brandguide.html',
+    'branding/fonts',
+    'branding/aurora_animated_logo.svg',
+    'branding/aurora_blob_base_shape.svg',
+    'branding/aurora_favicon.svg',
+    'branding/aurora_favicon_green.svg',
+    'branding/logo_aurora.svg',
+    'branding/logo_aurora_tagline.svg',
+    'branding/icons/tdesign',
+    'branding/icons/aurora_icon_blue_contributing.svg',
+    'branding/icons/aurora_icon_blue_features.svg',
+    'branding/icons/aurora_icon_blue_install.svg',
+    'branding/icons/aurora_icon_blue_specs.svg'
 ];
 
 /**
  * Recursively copies a directory while excluding specified files/folders.
+ * `excludeRoot` is the folder `excludes` paths are computed relative to
+ * (may differ from `src` itself only on the very first/outer call).
  */
-function copyRecursive(src, dest) {
-    const relativePath = path.relative(ROOT, src).replace(/\\/g, '/');
+function copyRecursive(src, dest, excludeRoot, excludes) {
+    const relativePath = path.relative(excludeRoot, src).replace(/\\/g, '/');
 
     if (relativePath) {
         if (src.endsWith('.zip') || path.basename(src) === '.DS_Store') return;
-        if (EXCLUDES.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
+        if (excludes.some(ex => relativePath === ex || relativePath.startsWith(ex + '/'))) {
             return;
         }
     }
@@ -81,7 +78,7 @@ function copyRecursive(src, dest) {
         }
         const entries = fs.readdirSync(src);
         for (const entry of entries) {
-            copyRecursive(path.join(src, entry), path.join(dest, entry));
+            copyRecursive(path.join(src, entry), path.join(dest, entry), excludeRoot, excludes);
         }
     } else {
         fs.copyFileSync(src, dest);
@@ -146,13 +143,21 @@ function main() {
         fs.rmSync(TEMP_DIR, { recursive: true, force: true });
     }
 
-    // 2. Copy files to temp directory
+    // 2. Copy files to temp directory — merged from two source roots:
+    //    plugin/ (PHP, includes/, languages/, readme) and the repo-root
+    //    assets/ folder (shared with the showcase site, lives outside plugin/).
     console.log('-> Isolating production files...');
-    copyRecursive(ROOT, TEMP_PLUGIN_PATH);
+    copyRecursive(PLUGIN_ROOT, TEMP_PLUGIN_PATH, PLUGIN_ROOT, PLUGIN_EXCLUDES);
+    copyRecursive(
+        path.join(REPO_ROOT, 'assets'),
+        path.join(TEMP_PLUGIN_PATH, 'assets'),
+        path.join(REPO_ROOT, 'assets'),
+        ASSETS_EXCLUDES
+    );
 
     // 3. Package Full Version
     console.log('-> Building Full Version ZIP (aurora-for-elementor-full.zip)...');
-    const fullZipPath = path.join(ROOT, 'aurora-for-elementor-full.zip');
+    const fullZipPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor-full.zip');
     zipFolder(fullZipPath);
     console.log('✅ Full version package built successfully.');
 
@@ -185,7 +190,7 @@ function main() {
     }
 
     // Overwrite readme.txt with readme-light.txt
-    const readmeLightRootPath = path.join(ROOT, 'readme-light.txt');
+    const readmeLightRootPath = path.join(PLUGIN_ROOT, 'readme-light.txt');
     const readmeTempPath = path.join(TEMP_PLUGIN_PATH, 'readme.txt');
     if (fs.existsSync(readmeLightRootPath)) {
         fs.copyFileSync(readmeLightRootPath, readmeTempPath);
@@ -193,7 +198,7 @@ function main() {
 
     // 5. Package Light Version
     console.log('-> Building Light Version ZIP (aurora-for-elementor-light.zip)...');
-    const lightZipPath = path.join(ROOT, 'aurora-for-elementor-light.zip');
+    const lightZipPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor-light.zip');
     zipFolder(lightZipPath);
     console.log('✅ Light version package built successfully.');
 
@@ -202,7 +207,7 @@ function main() {
     fs.rmSync(TEMP_DIR, { recursive: true, force: true });
 
     console.log('=== Packaging completed! ===');
-    console.log(`Generated in root:\n - ${path.relative(ROOT, fullZipPath)}\n - ${path.relative(ROOT, lightZipPath)}`);
+    console.log(`Generated in plugin/:\n - ${path.relative(PLUGIN_ROOT, fullZipPath)}\n - ${path.relative(PLUGIN_ROOT, lightZipPath)}`);
 }
 
 main();

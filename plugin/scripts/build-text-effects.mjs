@@ -30,9 +30,12 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..');
-const SRC = path.join(ROOT, 'assets/js/src');
-const DIST = path.join(ROOT, 'assets/js/dist');
+// This file lives at plugin/scripts/, but assets/ stays at the true repo
+// root (it's shared by both the plugin and the showcase site), so we need
+// to go up two levels — not one — to reach it.
+const REPO_ROOT = path.resolve(__dirname, '../..');
+const SRC = path.join(REPO_ROOT, 'assets/js/src');
+const DIST = path.join(REPO_ROOT, 'assets/js/dist');
 
 /**
  * Discovers every effect file under src/effects/{gsap,anime}/ and derives
