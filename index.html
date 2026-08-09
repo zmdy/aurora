@@ -578,22 +578,205 @@
       color: #fff;
     }
 
-    .nav__cta {
+    .nav__actions {
       display: flex;
       align-items: center;
       gap: var(--s-3);
-      padding: 9px 20px;
-      border-radius: var(--r-full);
-      background: var(--g-aurora);
-      font-family: var(--f-heading);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--c-night) !important;
-      transition: opacity var(--t-fast), transform var(--t-fast);
     }
 
-    .nav__cta:hover {
-      opacity: .9;
+    .nav__docs-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .18);
+      font-family: var(--f-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .85);
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast), transform var(--t-fast);
+    }
+
+    .nav__docs-btn:hover {
+      border-color: rgba(5, 177, 114, .5);
+      color: #fff;
+      background: rgba(5, 177, 114, .08);
+      transform: translateY(-1px);
+    }
+
+    /* ─── Modules dropdown ──────────────────────────────────────────── */
+
+    .nav__dropdown {
+      position: relative;
+    }
+
+    .nav__dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: var(--f-heading);
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .65);
+      cursor: pointer;
+      transition: color var(--t-fast);
+    }
+
+    .nav__dropdown-trigger:hover,
+    .nav__dropdown.open .nav__dropdown-trigger {
+      color: #fff;
+    }
+
+    .nav__dropdown-chevron {
+      transition: transform var(--t-fast);
+    }
+
+    .nav__dropdown:hover .nav__dropdown-chevron,
+    .nav__dropdown.open .nav__dropdown-chevron {
+      transform: rotate(180deg);
+    }
+
+    .nav__dropdown-menu {
+      position: absolute;
+      top: calc(100% + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--s-2);
+      border-radius: var(--r-lg);
+      background: rgba(7, 9, 26, .92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: var(--shadow-card);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity var(--t-fast), transform var(--t-fast), visibility var(--t-fast);
+      z-index: 1001;
+    }
+
+    .nav__dropdown:hover .nav__dropdown-menu,
+    .nav__dropdown.open .nav__dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav__dropdown-menu a {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      color: rgba(255, 255, 255, .9);
+      font-size: 13px;
+    }
+
+    .nav__dropdown-menu a:hover {
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .nav__dropdown-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .nav__dropdown-icon--green {
+      background: rgba(5, 177, 114, .15);
+    }
+
+    .nav__dropdown-icon--teal {
+      background: rgba(0, 153, 204, .15);
+    }
+
+    .nav__dropdown-icon--violet {
+      background: rgba(124, 92, 255, .15);
+    }
+
+    .nav__dropdown-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--f-heading);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .nav__dropdown-desc {
+      display: block;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 1px;
+    }
+
+    .nav__dropdown-divider {
+      height: 1px;
+      margin: 4px 6px;
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .nav__dropdown-badge {
+      font-family: var(--f-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(124, 92, 255, .9);
+      background: rgba(124, 92, 255, .15);
+      padding: 2px 6px;
+      border-radius: var(--r-full);
+    }
+
+    /* ─── Docs "Soon" badge ─────────────────────────────────────────── */
+
+    .nav__soon-badge {
+      font-family: var(--f-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(5, 177, 114, .9);
+      background: rgba(5, 177, 114, .15);
+      padding: 2px 6px;
+      border-radius: var(--r-full);
+      margin-left: 2px;
+      vertical-align: 1px;
+    }
+
+    /* ─── GitHub icon-only link ─────────────────────────────────────── */
+
+    .nav__icon-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .75);
+      transition: color var(--t-fast), background var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+    }
+
+    .nav__icon-link:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, .4);
+      background: rgba(255, 255, 255, .08);
       transform: translateY(-1px);
     }
 
@@ -699,7 +882,7 @@
 
     .hero__title {
       font-family: var(--f-display);
-      font-size: clamp(3.5rem, 8vw, 7.2rem);
+      font-size: clamp(3.5rem, 6vw, 6rem);
       font-weight: 700;
       line-height: .95;
       letter-spacing: -.03em;
@@ -727,7 +910,7 @@
 
     .hero__sub {
       font-family: var(--f-sans);
-      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-size: clamp(.85rem, 1.15vw, 1.2rem)!important;
       color: var(--c-text-muted);
       max-width: 720px;
       margin: 0 auto var(--s-10) auto;
@@ -887,8 +1070,13 @@
    ═══════════════════════════════════════════════════════════════════ */
     .marquee-section {
       padding: var(--s-6) 0;
-      background: var(--c-surface);
-      border-top: 1px solid rgba(255, 255, 255, .04);
+      background-color: black;
+      
+      /*background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px);*/
+      background-size: 32px 32px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%);
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%); 
+
       border-bottom: 1px solid rgba(255, 255, 255, .04);
       overflow: hidden;
     }
@@ -2569,23 +2757,53 @@
         </a>
 
         <ul class="nav__links" role="list">
-          <li><a href="#playground">Playground</a></li>
+          <li><a href="#playground">Text Effects Playground</a></li>
+          <li class="nav__dropdown" id="nav-modules-dropdown">
+            <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
+              Modules
+              <svg class="nav__dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="nav__dropdown-menu" role="menu" aria-label="Plugin modules">
+              <a href="#playground" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">✨</span>
+                <span><span class="nav__dropdown-title">Text Animation</span><span class="nav__dropdown-desc">88+ GSAP/Anime.js effects</span></span>
+              </a>
+              <a href="#gradient-spotlight" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🌈</span>
+                <span><span class="nav__dropdown-title">Gradient &amp; Spotlight</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
+              </a>
+              <a href="#glassmorphism" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🧊</span>
+                <span><span class="nav__dropdown-title">Glassmorphism</span><span class="nav__dropdown-desc">Frosted glass, zero JS</span></span>
+              </a>
+              <a href="#modules" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
+                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Custom dot + ring zones</span></span>
+              </a>
+              <a href="#image-effects" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🖼️</span>
+                <span><span class="nav__dropdown-title">Image Effects</span><span class="nav__dropdown-desc">13 entrance + 7 hover effects</span></span>
+              </a>
+              <a href="#modules" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🎬</span>
+                <span><span class="nav__dropdown-title">Children Stagger</span><span class="nav__dropdown-desc">Cascade entrance for any container</span></span>
+              </a>
+            </div>
+          </li>
           <li><a href="#morph-card">Morph Card</a></li>
-          <li><a href="#image-effects">Image Effects</a></li>
-          <li><a href="#gradient-spotlight">Spotlight</a></li>
-          <li><a href="#glassmorphism">Glassmorphism</a></li>
-          <li><a href="#elementor-panel">Elementor Panel</a></li>
-          <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
         </ul>
 
-        <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__cta"
-          aria-label="Download Aurora for free">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path
-              d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
-          </svg>
-          Download Free
-        </a>
+        <div class="nav__actions">
+          <a href="/docs" class="nav__docs-btn">
+            Docs <span class="nav__soon-badge">Soon</span>
+          </a>
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
@@ -3463,7 +3681,7 @@
   <!-- ═══════════════════════════════════════════════════════════════════
      HOW IT WORKS
      ═══════════════════════════════════════════════════════════════════ -->
-  <section class="arch-section section-gap">
+  <section id="how-it-works" class="arch-section section-gap">
     <div class="container">
       <div class="section-header">
         <div class="eyebrow">Architecture</div>
@@ -3628,7 +3846,7 @@
       // ======= FLARE SETTINGS =======
       var FLARE_ANGLE_DEG = -30;
       var FLARE_MAX_HEIGHT = 0.85;
-      var FLARE_FADE_SOFTNESS = 0.25;
+      var FLARE_FADE_SOFTNESS = 0.7;
 
       // Controls the frequency/amount of flares horizontally.
       // Higher = more flares (narrower and denser), lower = fewer flares (broader and sparser).
@@ -3647,14 +3865,13 @@
         {
           type: 'gradient', stops: [
             { offset: 0, color: 'rgba(40,80,255,1)' },
-            { offset: 1, color: 'rgba(138,43,226,1)' }
+            { offset: 1, color: 'rgb(0, 119, 65)'  }
           ]
         },
-        { type: 'solid', color: 'rgba(150,50,250,1)' },
         {
           type: 'gradient', stops: [
             { offset: 0, color: 'rgba(0,255,120,1)' },
-            { offset: 1, color: 'rgba(186,85,211,1)' }
+            { offset: 1, color: 'rgba(30,144,255,1)' }
           ]
         }
       ];
@@ -3896,6 +4113,42 @@
     window.addEventListener('scroll', function () {
       nav.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
+
+    /* ═══════════════════════════════════════════════════════════════════
+       MODULES DROPDOWN — desktop hover is pure CSS (:hover on
+       .nav__dropdown); this just adds click/keyboard support so touch and
+       keyboard users can open it too, and closes it on outside click,
+       Escape, or picking a link.
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      var dropdown = document.getElementById('nav-modules-dropdown');
+      var trigger = document.getElementById('nav-modules-trigger');
+      if (!dropdown || !trigger) return;
+
+      function close() {
+        dropdown.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      function toggle() {
+        var willOpen = !dropdown.classList.contains('open');
+        dropdown.classList.toggle('open', willOpen);
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      }
+
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggle();
+      });
+      document.addEventListener('click', function (e) {
+        if (!dropdown.contains(e.target)) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+      });
+      dropdown.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', close);
+      });
+    })();
 
     /* ═══════════════════════════════════════════════════════════════════
        TEXT SPLITTING UTILITIES (matches plugin core/dom.js logic)
