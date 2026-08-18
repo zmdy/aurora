@@ -93,12 +93,11 @@ abstract class Animation_Module {
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			// Classic Elementor (non-optimised markup, Elementor < 4 or experiment disabled).
+			// Standard Advanced Tab background section (present on all widgets in Elementor Free and Pro).
+			[ 'hook' => 'elementor/element/common/_section_background/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/common-optimized/_section_background/after_section_end', 'priority' => 10 ],
+			// Effects section (present on containers or when Motion Effects / Pro is active).
 			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 10 ],
-			// Elementor 4.x with "Optimised Markup" experiment active (default on new installs).
-			// Widgets use the `common-optimized` stack in this mode, so the hook above is never
-			// fired for them. Registering the equivalent `common-optimized` hook ensures our
-			// controls appear in the Advanced tab regardless of experiment state.
 			[ 'hook' => 'elementor/element/common-optimized/section_effects/after_section_end', 'priority' => 10 ],
 		];
 	}
@@ -137,6 +136,11 @@ abstract class Animation_Module {
 	final public function add_controls( Element_Base $element, array $args ): void {
 
 		if ( ! $this->applies_to_element( $element ) ) {
+			return;
+		}
+
+		// Prevent duplicate section registration if multiple hooks fire.
+		if ( $element->get_controls( $this->get_section_id() ) ) {
 			return;
 		}
 

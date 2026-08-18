@@ -50,6 +50,25 @@ class Text_Animation_Controls extends Animation_Module {
 	}
 
 	/**
+	 * Registers on supported text-bearing widget sections.
+	 */
+	protected function get_controls_hooks(): array {
+		return [
+			[ 'hook' => 'elementor/element/heading/section_title_style/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/heading/section_title/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/text-editor/section_style/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/button/section_style/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/icon-box/section_style_box/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/icon-box/section_style_text/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/image-box/section_style_box/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/image-box/section_style_text/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/testimonial/section_style/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/alert/section_type/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/text-path/section_style_text_path/after_section_end', 'priority' => 10 ],
+		];
+	}
+
+	/**
 	 * Only appears on actual text-bearing widgets.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
