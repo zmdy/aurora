@@ -29,8 +29,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Children_Animation_Controls extends Animation_Module {
 
-	/** Elements where this module appears: structural containers only. */
-	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container' ];
+	/** Elements where this module appears: structural containers and list/grid widgets. */
+	const SUPPORTED_ELEMENTS = [
+		'section',
+		'column',
+		'container',
+		'icon-list',
+		'image-gallery',
+		'icon-box',
+		'image-box',
+	];
 
 	protected function get_section_id(): string {
 		return 'aurora_children_section';
@@ -41,22 +49,23 @@ class Children_Animation_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Only registers on the three structural element types.
-	 * The 'common' hook is omitted: applies_to_element() would block every
-	 * call there (common's element name is never section/column/container),
-	 * so registering on it would only fire a no-op callback for every widget
-	 * on every page load.
+	 * Registers on structural elements and supported list/grid widgets.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
 			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/icon-list/section_icon_list/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/icon-list/section_text_style/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/image-gallery/section_gallery/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/icon-box/section_style_box/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/image-box/section_style_box/after_section_end', 'priority' => 10 ],
 		];
 	}
 
 	/**
-	 * Only appears on section, column, and container elements.
+	 * Appears on structural elements and list/grid widgets.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
 		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
