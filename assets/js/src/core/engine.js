@@ -395,11 +395,11 @@ export function teardownTextAnimation(wrapper) {
 export function waitForLibs(callback) {
     var waited = 0;
     var maxWait = 6000;
-    var step = 80;
+    var step = 50;
     var timer = setInterval(function () {
         waited += step;
-        var gsapOk = typeof gsap !== 'undefined';
-        var animeOk = typeof anime !== 'undefined';
+        var gsapOk = typeof window !== 'undefined' && !!(window.AuroraGSAP || window.gsap);
+        var animeOk = typeof window !== 'undefined' && !!(window.AuroraAnimeJS || window.anime);
         if (gsapOk || animeOk || waited >= maxWait) {
             clearInterval(timer);
             callback();
