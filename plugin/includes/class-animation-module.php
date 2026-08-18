@@ -93,7 +93,13 @@ abstract class Animation_Module {
 	 */
 	protected function get_controls_hooks(): array {
 		return [
+			// Classic Elementor (non-optimised markup, Elementor < 4 or experiment disabled).
 			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 10 ],
+			// Elementor 4.x with "Optimised Markup" experiment active (default on new installs).
+			// Widgets use the `common-optimized` stack in this mode, so the hook above is never
+			// fired for them. Registering the equivalent `common-optimized` hook ensures our
+			// controls appear in the Advanced tab regardless of experiment state.
+			[ 'hook' => 'elementor/element/common-optimized/section_effects/after_section_end', 'priority' => 10 ],
 		];
 	}
 
