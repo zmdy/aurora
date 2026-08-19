@@ -78,14 +78,16 @@
     function parseOptsFromDataset(wrapper) {
         var ds = wrapper.dataset;
         return {
-            animation : ds.auroraChildrenAnimation || 'fade-up',
-            selector  : ds.auroraChildrenSelector  || '.elementor-widget',
-            duration  : parseInt(ds.auroraChildrenDuration,  10) || 600,
-            delay     : parseInt(ds.auroraChildrenDelay,     10) || 0,
-            stagger   : parseInt(ds.auroraChildrenStagger,   10) || 150,
-            trigger   : ds.auroraChildrenTrigger   || 'scroll',
-            threshold : parseFloat(ds.auroraChildrenThreshold) || 0.15,
-            replay    : ds.auroraChildrenReplay    === '1',
+            animation  : ds.auroraChildrenAnimation  || 'fade-up',
+            targetType : ds.auroraChildrenTargetType || 'child_containers',
+            depth      : ds.auroraChildrenDepth      || '1',
+            selector   : ds.auroraChildrenSelector   || '.elementor-widget',
+            duration   : parseInt(ds.auroraChildrenDuration,  10) || 600,
+            delay      : parseInt(ds.auroraChildrenDelay,     10) || 0,
+            stagger    : parseInt(ds.auroraChildrenStagger,   10) || 150,
+            trigger    : ds.auroraChildrenTrigger    || 'scroll',
+            threshold  : parseFloat(ds.auroraChildrenThreshold) || 0.15,
+            replay     : ds.auroraChildrenReplay     === '1',
         };
     }
 
@@ -93,44 +95,105 @@
     // CHILDREN SELECTION
     // ─────────────────────────────────────────────────────────────────────────
 
+    function getContentRoot(wrapper) {
+        if (!wrapper) return wrapper;
+        var inner = wrapper.querySelector(':scope > .e-con-inner') || 
+                    wrapper.querySelector(':scope > .elementor-container') || 
+                    wrapper.querySelector(':scope > .elementor-widget-wrap');
+        return inner || wrapper;
+    }
+
+    function getElementsByDepth(root, targetCss, maxDepth) {
+        var isUnlimited = maxDepth === 'all' || isNaN(parseInt(maxDepth, 10));
+        var maxDepthNum = isUnlimited ? 999 : parseInt(maxDepth, 10);
+        var results = [];
+
+        function collect(element, currentDepth) {
+            if (currentDepth > maxDepthNum) return;
+            var children = Array.from(element.children);
+
+            children.forEach(function (child) {
+                var isMatch = false;
+                try {
+                    if (targetCss === ':scope > *' || targetCss === '*') {
+                        isMatch = true;
+                    } else if (child.matches && child.matches(targetCss)) {
+                        isMatch = true;
+                    }
+                } catch (e) {
+                    isMatch = false;
+                }
+
+                if (isMatch) {
+                    results.push(child);
+                }
+
+                if (currentDepth < maxDepthNum) {
+                    if (!isMatch || targetCss === '.elementor-widget') {
+                        var childRoot = getContentRoot(child);
+                        collect(childRoot, currentDepth + 1);
+                    }
+                }
+            });
+        }
+
+        collect(root, 1);
+        return results;
+    }
+
     /**
-     * Returns the child elements to animate, according to the configured
-     * selector. Tries multiple fallback selectors if the main selector
-     * returns nothing.
+     * Returns the child elements to animate according to targetType, depth, and selector.
      *
      * @param {HTMLElement} wrapper
-     * @param {string}      selector
+     * @param {Object|string} opts Options object or legacy selector string.
      * @returns {HTMLElement[]}
      */
-    function getChildren(wrapper, selector) {
-        var children = Array.from(wrapper.querySelectorAll(selector));
+    function getChildren(wrapper, opts) {
+        if (typeof opts === 'string') {
+            opts = { selector: opts, targetType: 'custom', depth: 'all' };
+        }
+        opts = opts || {};
+        var targetType = opts.targetType || 'child_containers';
+        var depth = opts.depth || '1';
+        var selector = opts.selector || '.elementor-widget';
 
-        // Progressive fallbacks.
+        var contentRoot = getContentRoot(wrapper);
+        var children = [];
+        var containerCss = '.e-con, .elementor-column, .elementor-grid-item, .elementor-icon-list-item';
+
+        if (targetType === 'child_containers') {
+            children = getElementsByDepth(contentRoot, containerCss, depth);
+        } else if (targetType === 'direct_children') {
+            children = getElementsByDepth(contentRoot, ':scope > *', depth);
+        } else if (targetType === 'all_widgets') {
+            children = Array.from(contentRoot.querySelectorAll('.elementor-widget'));
+        } else if (targetType === 'custom') {
+            children = getElementsByDepth(contentRoot, selector, depth);
+        }
+
+        // Progressive fallbacks if nothing matched
         if (children.length === 0) {
             var fallbacks = [
-                '.elementor-widget',
+                '.e-con',
                 '.elementor-column',
-                '.elementor-container > *',
-                '.e-con > .e-con-inner > *',
-                '.e-con > *',
-                '.elementor-icon-list-item',
-                '.elementor-grid-item',
+                '.elementor-widget',
                 ':scope > *',
             ];
             for (var i = 0; i < fallbacks.length; i++) {
                 try {
-                    children = Array.from(wrapper.querySelectorAll(fallbacks[i]));
+                    children = Array.from(contentRoot.querySelectorAll(fallbacks[i]));
                     if (children.length > 0) break;
-                } catch (e) { /* invalid selector, keep going */ }
+                } catch (e) { /* invalid selector */ }
             }
         }
 
-        // Last resort fallback: direct children.
         if (children.length === 0) {
-            children = Array.from(wrapper.children);
+            children = Array.from(contentRoot.children);
         }
 
-        return children;
+        return children.filter(function (child) {
+            return child !== wrapper && child !== contentRoot;
+        });
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -312,7 +375,7 @@
             return;
         }
 
-        var children = getChildren(wrapper, opts.selector);
+        var children = getChildren(wrapper, opts);
 
         // Cancel any observer from a previous initialization.
         if (wrapper._auroraChildrenObserver) {
@@ -436,14 +499,16 @@
 
         AuroraChildrenAnimationHandler.prototype.getOpts = function () {
             return {
-                animation : this.getElementSettings('aurora_children_animation') || 'fade-up',
-                selector  : sanitizeSelector(this.getElementSettings('aurora_children_selector')),
-                duration  : sizeOf(this.getElementSettings('aurora_children_duration'), 600),
-                delay     : sizeOf(this.getElementSettings('aurora_children_delay'), 0),
-                stagger   : sizeOf(this.getElementSettings('aurora_children_stagger'), 150),
-                trigger   : this.getElementSettings('aurora_children_trigger') || 'scroll',
-                threshold : sizeOf(this.getElementSettings('aurora_children_threshold'), 15) / 100,
-                replay    : this.getElementSettings('aurora_children_replay') === 'yes',
+                animation  : this.getElementSettings('aurora_children_animation') || 'fade-up',
+                targetType : this.getElementSettings('aurora_children_target_type') || 'child_containers',
+                depth      : this.getElementSettings('aurora_children_depth') || '1',
+                selector   : sanitizeSelector(this.getElementSettings('aurora_children_selector')),
+                duration   : sizeOf(this.getElementSettings('aurora_children_duration'), 600),
+                delay      : sizeOf(this.getElementSettings('aurora_children_delay'), 0),
+                stagger    : sizeOf(this.getElementSettings('aurora_children_stagger'), 150),
+                trigger    : this.getElementSettings('aurora_children_trigger') || 'scroll',
+                threshold  : sizeOf(this.getElementSettings('aurora_children_threshold'), 15) / 100,
+                replay     : this.getElementSettings('aurora_children_replay') === 'yes',
             };
         };
 

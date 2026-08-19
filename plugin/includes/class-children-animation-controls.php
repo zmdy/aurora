@@ -116,16 +116,58 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Children selector ─────────────────────────────────────────────────
+		// ── Target Children Type ─────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_target_type',
+			[
+				'label'              => esc_html__( 'Target Children (What to animate)', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 'child_containers',
+				'options'            => [
+					'child_containers' => esc_html__( 'Direct Child Containers / Columns (Cards & Blocks)', 'aurora-for-elementor' ),
+					'direct_children'  => esc_html__( 'All Direct Children (1st Level)', 'aurora-for-elementor' ),
+					'all_widgets'      => esc_html__( 'All Nested Widgets (Any Depth)', 'aurora-for-elementor' ),
+					'custom'           => esc_html__( 'Custom CSS Selector', 'aurora-for-elementor' ),
+				],
+				'condition'          => [ 'aurora_children_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Depth Level ───────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_depth',
+			[
+				'label'              => esc_html__( 'Max Depth Level', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => '1',
+				'options'            => [
+					'1'   => esc_html__( 'Level 1 (Direct Children Only)', 'aurora-for-elementor' ),
+					'2'   => esc_html__( 'Level 2 (Up to 2nd Level)', 'aurora-for-elementor' ),
+					'3'   => esc_html__( 'Level 3 (Up to 3rd Level)', 'aurora-for-elementor' ),
+					'all' => esc_html__( 'Unlimited (All Levels)', 'aurora-for-elementor' ),
+				],
+				'condition'          => [
+					'aurora_children_enable'       => 'yes',
+					'aurora_children_target_type!' => 'all_widgets',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Children selector (only for Custom) ───────────────────────────────
 		$element->add_control(
 			'aurora_children_selector',
 			[
-				'label'       => esc_html__( 'Children CSS Selector', 'aurora-for-elementor' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '.elementor-widget',
-				'placeholder' => '.elementor-widget, .elementor-icon-list-item',
-				'description' => esc_html__( 'CSS selector used to identify the child elements to animate. Default: .elementor-widget', 'aurora-for-elementor' ),
-				'condition'   => [ 'aurora_children_enable' => 'yes' ],
+				'label'              => esc_html__( 'Custom CSS Selector', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::TEXT,
+				'default'            => '.elementor-widget',
+				'placeholder'        => '.elementor-widget, .my-card',
+				'description'        => esc_html__( 'CSS selector used to identify the child elements to animate when Target is Custom.', 'aurora-for-elementor' ),
+				'condition'          => [
+					'aurora_children_enable'      => 'yes',
+					'aurora_children_target_type' => 'custom',
+				],
 				'frontend_available' => true,
 			]
 		);
@@ -267,15 +309,17 @@ class Children_Animation_Controls extends Animation_Module {
 		$selector = $selector_cache[ $raw_selector ];
 
 		return [
-			'data-aurora-children-enable'    => '1',
-			'data-aurora-children-animation' => esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' ),
-			'data-aurora-children-selector'  => esc_attr( $selector ),
-			'data-aurora-children-duration'  => esc_attr( $settings['aurora_children_duration']['size'] ?? 600 ),
-			'data-aurora-children-delay'     => esc_attr( $settings['aurora_children_delay']['size'] ?? 0 ),
-			'data-aurora-children-stagger'   => esc_attr( $settings['aurora_children_stagger']['size'] ?? 150 ),
-			'data-aurora-children-trigger'   => esc_attr( $settings['aurora_children_trigger'] ?? 'scroll' ),
-			'data-aurora-children-threshold' => esc_attr( ( $settings['aurora_children_threshold']['size'] ?? 15 ) / 100 ),
-			'data-aurora-children-replay'    => ( 'yes' === ( $settings['aurora_children_replay'] ?? '' ) ) ? '1' : '0',
+			'data-aurora-children-enable'      => '1',
+			'data-aurora-children-animation'   => esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' ),
+			'data-aurora-children-target-type' => esc_attr( $settings['aurora_children_target_type'] ?? 'child_containers' ),
+			'data-aurora-children-depth'       => esc_attr( $settings['aurora_children_depth'] ?? '1' ),
+			'data-aurora-children-selector'    => esc_attr( $selector ),
+			'data-aurora-children-duration'    => esc_attr( $settings['aurora_children_duration']['size'] ?? 600 ),
+			'data-aurora-children-delay'       => esc_attr( $settings['aurora_children_delay']['size'] ?? 0 ),
+			'data-aurora-children-stagger'     => esc_attr( $settings['aurora_children_stagger']['size'] ?? 150 ),
+			'data-aurora-children-trigger'     => esc_attr( $settings['aurora_children_trigger'] ?? 'scroll' ),
+			'data-aurora-children-threshold'   => esc_attr( ( $settings['aurora_children_threshold']['size'] ?? 15 ) / 100 ),
+			'data-aurora-children-replay'      => ( 'yes' === ( $settings['aurora_children_replay'] ?? '' ) ) ? '1' : '0',
 		];
 	}
 }
