@@ -84,10 +84,51 @@
 
     function getContentRoot(wrapper) {
         if (!wrapper) return wrapper;
+
+        if (wrapper.classList && wrapper.classList.contains('elementor-widget-icon-list')) {
+            var list = wrapper.querySelector('ul.elementor-icon-list-items, ol.elementor-icon-list-items');
+            if (list) return list;
+        }
+
         var inner = wrapper.querySelector(':scope > .e-con-inner') || 
                     wrapper.querySelector(':scope > .elementor-container') || 
-                    wrapper.querySelector(':scope > .elementor-widget-wrap');
+                    wrapper.querySelector(':scope > .elementor-widget-wrap') ||
+                    wrapper.querySelector(':scope > .elementor-widget-container');
         return inner || wrapper;
+    }
+
+    function getSpecialWidgetChildren(wrapper) {
+        if (!wrapper || !wrapper.classList) return null;
+
+        // Icon List Widget — target individual .elementor-icon-list-item elements
+        if (wrapper.classList.contains('elementor-widget-icon-list')) {
+            var items = Array.from(wrapper.querySelectorAll('.elementor-icon-list-item'));
+            if (items.length > 0) return items;
+        }
+
+        // Image Gallery / WP Gallery Widget
+        if (wrapper.classList.contains('elementor-widget-image-gallery') || wrapper.classList.contains('elementor-widget-wp-gallery')) {
+            var galleryItems = Array.from(wrapper.querySelectorAll('.gallery-item, .elementor-gallery-item, .e-gallery-item'));
+            if (galleryItems.length > 0) return galleryItems;
+        }
+
+        // Icon Box Widget
+        if (wrapper.classList.contains('elementor-widget-icon-box')) {
+            var iconBoxInner = wrapper.querySelector('.elementor-icon-box-wrapper');
+            if (iconBoxInner && iconBoxInner.children.length > 0) {
+                return Array.from(iconBoxInner.children);
+            }
+        }
+
+        // Image Box Widget
+        if (wrapper.classList.contains('elementor-widget-image-box')) {
+            var imageBoxInner = wrapper.querySelector('.elementor-image-box-wrapper');
+            if (imageBoxInner && imageBoxInner.children.length > 0) {
+                return Array.from(imageBoxInner.children);
+            }
+        }
+
+        return null;
     }
 
     function getElementsByDepth(root, targetCss, maxDepth) {
@@ -133,9 +174,18 @@
             opts = { selector: opts, targetType: 'custom', depth: 'all' };
         }
         opts = opts || {};
+
         var targetType = opts.targetType || 'child_containers';
         var depth = opts.depth || '1';
         var selector = opts.selector || '.elementor-widget';
+
+        // Check for specialized widget types (Icon List, Gallery, Icon/Image Box) if targetType isn't custom
+        if (targetType !== 'custom') {
+            var specialChildren = getSpecialWidgetChildren(wrapper);
+            if (specialChildren && specialChildren.length > 0) {
+                return specialChildren;
+            }
+        }
 
         var contentRoot = getContentRoot(wrapper);
         var children = [];
@@ -155,7 +205,7 @@
         }
 
         if (children.length === 0) {
-            var fallbacks = ['.e-con', '.elementor-column', '.elementor-widget', ':scope > *'];
+            var fallbacks = ['.e-con', '.elementor-column', '.elementor-icon-list-item', '.elementor-widget', ':scope > *'];
             for (var i = 0; i < fallbacks.length; i++) {
                 try {
                     children = Array.from(contentRoot.querySelectorAll(fallbacks[i]));
