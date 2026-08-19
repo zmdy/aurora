@@ -172,7 +172,10 @@ function main() {
         const effectFiles = fs.readdirSync(effectsDir);
         for (const file of effectFiles) {
             if (file.startsWith('gs-') && file.endsWith('.js')) {
-                fs.unlinkSync(path.join(effectsDir, file));
+                const filePath = path.join(effectsDir, file);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
             }
         }
     }
