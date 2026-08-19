@@ -862,23 +862,28 @@
         iconWrap.classList.remove('aurora-gradient-icon');
         iconWrap.removeAttribute('data-aurora-gradient-instance');
 
-        var glyph = getIconGlyph(iconWrap);
-        if (!glyph) return;
+        var propsToClear = [
+            'backgroundImage', 'backgroundClip', 'webkitBackgroundClip',
+            'backgroundSize', 'backgroundPosition', 'backgroundRepeat',
+            'color', 'webkitTextFillColor', 'paddingTop', 'paddingBottom', 'lineHeight', 'display'
+        ];
+        var iEls = iconWrap.querySelectorAll('i');
+        for (var i = 0; i < iEls.length; i++) {
+            var iEl = iEls[i];
+            propsToClear.forEach(function (p) { iEl.style[p] = ''; });
+        }
 
-        if (glyph.type === 'font') {
-            var propsToClear = [
-                'backgroundImage', 'backgroundClip', 'webkitBackgroundClip',
-                'backgroundSize', 'backgroundPosition', 'backgroundRepeat',
-                'color', 'webkitTextFillColor'
-            ];
-            propsToClear.forEach(function (p) { glyph.glyphEl.style[p] = ''; });
-        } else {
-            glyph.glyphEl.style.fill = '';
-            glyph.glyphEl.style.filter = '';
-            var defs = glyph.glyphEl.querySelector('defs');
+        var svgs = iconWrap.querySelectorAll('svg');
+        for (var j = 0; j < svgs.length; j++) {
+            var svg = svgs[j];
+            svg.style.fill = '';
+            svg.style.filter = '';
+            var defs = svg.querySelector('defs');
             if (defs) defs.innerHTML = '';
-            var shapes = glyph.glyphEl.querySelectorAll('path, circle, rect, polygon, ellipse, line, polyline');
-            shapes.forEach(function (shape) { shape.style.fill = ''; });
+            var shapes = svg.querySelectorAll('path, circle, rect, polygon, ellipse, line, polyline');
+            for (var k = 0; k < shapes.length; k++) {
+                shapes[k].style.fill = '';
+            }
         }
     }
 
@@ -895,6 +900,17 @@
         if (!glyph) return;
 
         if (glyph.type === 'font') {
+            // Ensure padding, display, and line-height on font icon to prevent top/bottom glyph clipping
+            if (!glyph.glyphEl.style.display || glyph.glyphEl.style.display === 'inline') {
+                glyph.glyphEl.style.display = 'inline-block';
+            }
+            if (!glyph.glyphEl.style.paddingTop) glyph.glyphEl.style.paddingTop = '0.12em';
+            if (!glyph.glyphEl.style.paddingBottom) glyph.glyphEl.style.paddingBottom = '0.12em';
+            var cs = getComputedStyle(glyph.glyphEl);
+            if (parseFloat(cs.lineHeight) / parseFloat(cs.fontSize) < 1.2) {
+                glyph.glyphEl.style.lineHeight = '1.25';
+            }
+
             // Identical mechanism to text — the glyph IS a font character.
             if (data.followMouse) {
                 paintTextTarget(glyph.glyphEl, 'none');
@@ -970,30 +986,29 @@
         if (!data.stops || data.stops.length < 2) return;
 
         var id = ++instanceCounter;
-
-        // Target resolution — prefer an explicit `data.target` (set by the
-        // Elementor Handler from the widget's own type), fall back to the
-        // PHP-written attribute (needed in the pure-frontend fallback path,
-        // where the JS handler never runs), and finally to background.
-        //
-        // The Handler override matters in the editor: when the user toggles
-        // Enable Gradient on a Heading, the handler's run() fires BEFORE the
-        // widget is re-rendered by PHP, so `data-aurora-gradient-target`
-        // still holds a stale/missing value — trusting the attribute alone
-        // silently applied the gradient as a background rectangle behind
-        // the text instead of as a text-fill.
         var target = data.target || wrapper.getAttribute('data-aurora-gradient-target') || 'background';
+        var isIconList = wrapper.matches ? wrapper.matches('.elementor-widget-icon-list') : wrapper.classList.contains('elementor-widget-icon-list');
 
         if (target === 'text') {
-            var textEl = wrapper.querySelector('.elementor-heading-title, .elementor-text-editor') || wrapper;
-            applyText(textEl, wrapper, data, id);
+            if (isIconList) {
+                var textEls = wrapper.querySelectorAll('.elementor-icon-list-text');
+                for (var ti = 0; ti < textEls.length; ti++) {
+                    applyText(textEls[ti], wrapper, data, id);
+                }
+            } else {
+                var textEl = wrapper.querySelector('.elementor-heading-title, .elementor-text-editor') || wrapper;
+                applyText(textEl, wrapper, data, id);
+            }
         } else if (target === 'icon') {
-            // Icon Box nests its icon one level deeper (.elementor-icon-box-icon
-            // .elementor-icon) than the plain Icon widget (.elementor-icon
-            // directly) — this selector matches both without needing to know
-            // which widget it's running on.
-            var iconWrap = wrapper.querySelector('.elementor-icon-box-icon .elementor-icon, .elementor-icon');
-            if (iconWrap) applyIconFill(iconWrap, wrapper, data, id);
+            if (isIconList) {
+                var iconWraps = wrapper.querySelectorAll('.elementor-icon-list-icon');
+                for (var ii = 0; ii < iconWraps.length; ii++) {
+                    applyIconFill(iconWraps[ii], wrapper, data, id);
+                }
+            } else {
+                var iconWrap = wrapper.querySelector('.elementor-icon-box-icon .elementor-icon, .elementor-icon');
+                if (iconWrap) applyIconFill(iconWrap, wrapper, data, id);
+            }
         } else {
             applyBackground(wrapper, data, id);
         }
@@ -1104,6 +1119,12 @@
                 return 'icon' === this.getElementSettings('aurora_gradient_apply_to') ? 'icon' : 'background';
             }
 
+            var isIconList = el.matches('.elementor-widget-icon-list');
+            if (isIconList) {
+                var applyTo = this.getElementSettings('aurora_gradient_apply_to') || 'icon';
+                return applyTo === 'text' ? 'text' : (applyTo === 'box' ? 'background' : 'icon');
+            }
+
             return 'background';
         };
 
@@ -1111,12 +1132,20 @@
             var el = this.$element[0];
             var target = this.resolveTarget(el);
 
+            if (el.matches('.elementor-widget-icon-list')) {
+                var textEls = el.querySelectorAll('.elementor-icon-list-text');
+                for (var tIdx = 0; tIdx < textEls.length; tIdx++) {
+                    clearTextGradient(textEls[tIdx], el);
+                }
+                var iconWraps = el.querySelectorAll('.elementor-icon-list-icon');
+                for (var iIdx = 0; iIdx < iconWraps.length; iIdx++) {
+                    clearIconFill(iconWraps[iIdx], el);
+                }
+                clearBackgroundGradient(el);
+            }
+
             // Disabled path — actively strip anything the previous run
-            // painted. Without this, toggling Enable Gradient off (or
-            // switching the target away from text/icon) left the old inline
-            // styles frozen on the DOM and the widget appeared to still
-            // have a gradient. Same story for editor color changes:
-            // clearing before applying is what makes the change stick.
+            // painted.
             if (!this.isEnabled()) {
                 if (target === 'text') {
                     var textEl = el.querySelector('.elementor-heading-title, .elementor-text-editor') || el;
@@ -1134,9 +1163,6 @@
             opts.target = target;
 
             // Icon Box's target is a runtime-togglable setting ("Apply To")
-            // — clear whichever target ISN'T currently selected first, so
-            // flipping it in the editor doesn't leave stale paint from the
-            // previous choice (a background AND an icon-fill at once).
             if (el.matches('.elementor-widget-icon-box')) {
                 if (target === 'icon') {
                     clearBackgroundGradient(el);
@@ -1153,14 +1179,20 @@
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
             this.run();
 
-            // Re-run whenever Text Animation splits the wrapper's text
-            // into per-char/word/line spans — its innerHTML rewrite blows
-            // away any inline paint we may have set, and the new leaf
-            // spans need the gradient CSS applied to them individually.
             var self = this;
             this.$element[0].addEventListener('aurora:text-split', function () {
                 self.run();
             });
+
+            // Watch for async DOM changes inside icon containers (e.g. FontAwesome i-to-svg conversion in editor)
+            var iconContainer = this.$element[0].querySelector('.elementor-icon-box-icon, .elementor-icon, .elementor-icon-list-icon');
+            if (iconContainer && typeof MutationObserver !== 'undefined') {
+                var observer = new MutationObserver(function () {
+                    self.run();
+                });
+                observer.observe(iconContainer, { childList: true, subtree: true });
+                this._iconObserver = observer;
+            }
         };
 
         AuroraGradientHandler.prototype.onElementChange = function (propertyName) {

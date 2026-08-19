@@ -31,7 +31,8 @@ export function getTextTarget(wrapper) {
 
     for (var i = 0; i < selectors.length; i++) {
         var el = wrapper.querySelector(selectors[i]);
-        if (el && el.innerText && el.innerText.trim()) return el;
+        var text = (el ? (el.innerText || el.textContent) : '') || '';
+        if (el && text.trim()) return el;
     }
     return wrapper;
 }

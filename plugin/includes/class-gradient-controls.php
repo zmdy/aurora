@@ -28,16 +28,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Gradient_Controls extends Animation_Module {
 
 	/** Elements where this module appears. */
-	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container', 'heading', 'text-editor', 'icon', 'icon-box' ];
+	const SUPPORTED_ELEMENTS = [ 'section', 'column', 'container', 'heading', 'text-editor', 'icon', 'icon-box', 'icon-list' ];
 
 	/** Widgets where the gradient is applied as a text-fill instead of a background. */
 	const TEXT_ELEMENTS = [ 'heading', 'text-editor' ];
 
-	/** Widgets where the gradient is ALWAYS applied as an icon-fill (no choice — Icon Box has one instead, see aurora_gradient_apply_to). */
+	/** Widgets where the gradient is ALWAYS applied as an icon-fill (no choice — Icon Box and Icon List have configurable targets). */
 	const ICON_ELEMENTS = [ 'icon' ];
 
-	/** Icon Box is the only element with a runtime-selectable target (Box background vs. Icon fill). */
-	const CONFIGURABLE_TARGET_ELEMENTS = [ 'icon-box' ];
+	/** Elements with a runtime-selectable target (Box background, Icon fill, or Text fill). */
+	const CONFIGURABLE_TARGET_ELEMENTS = [ 'icon-box', 'icon-list' ];
 
 	protected function get_section_id(): string {
 		return 'aurora_gradient_section';
@@ -49,33 +49,15 @@ class Gradient_Controls extends Animation_Module {
 
 	/**
 	 * Appears on structural containers (background), Heading/Text Editor
-	 * (text-fill), Icon (icon-fill), and Icon Box (box background or
-	 * icon-fill, user's choice) — see SUPPORTED_ELEMENTS.
+	 * (text-fill), Icon (icon-fill), Icon Box, and Icon List — see SUPPORTED_ELEMENTS.
 	 */
 	protected function applies_to_element( Element_Base $element ): bool {
 		return in_array( $element->get_name(), self::SUPPORTED_ELEMENTS, true );
 	}
 
 	/**
-	 * Structural elements use the generic section_effects hook. Heading and
-	 * Text Editor need dedicated widget-scoped hooks: the generic 'common'
-	 * hook fires with a pseudo-element whose get_name() is literally
-	 * "common"/"common-optimized" (never the widget's real name), so an
-	 * applies_to_element() check for 'heading'/'text-editor' can never pass
-	 * there — see the same workaround in Image_Effects_Controls.
-	 * Hooking after a section that genuinely belongs to each widget is
-	 * enough; the 'tab' argument of start_controls_section() is independent
-	 * of which hook triggered it, so the new section still lands in the
-	 * Advanced tab.
-	 *
-	 * Deliberately NOT hooking 'common/section_effects' at all: since
-	 * applies_to_element() never matches there (see above), it would fire
-	 * add_controls() on literally every widget on the page for nothing —
-	 * a third-party plugin's Navigator Indicator was measurably degrading
-	 * (multi-second main-thread blocks) partly because of the sheer number
-	 * of registered control-section callbacks Elementor accumulates per
-	 * widget across active plugins; every no-op hook we can drop reduces
-	 * that surface for free.
+	 * Structural elements use the generic section_effects hook. Heading,
+	 * Text Editor, Icon, Icon Box, and Icon List need dedicated widget-scoped hooks.
 	 */
 	protected function get_controls_hooks(): array {
 		return [
@@ -88,9 +70,11 @@ class Gradient_Controls extends Animation_Module {
 			// (confirmed against Elementor core's Widget_Icon::register_controls()).
 			[ 'hook' => 'elementor/element/icon/section_style_icon/after_section_end', 'priority' => 20 ],
 			// Icon Box's FIRST widget-scoped Style-tab section is 'section_style_box'
-			// (confirmed against Elementor core's Widget_Icon_Box::register_controls())
-			// — genuinely belongs to the icon-box widget, unlike the shared 'common' hook.
+			// (confirmed against Elementor core's Widget_Icon_Box::register_controls()).
 			[ 'hook' => 'elementor/element/icon-box/section_style_box/after_section_end', 'priority' => 20 ],
+			// Icon List's widget-scoped Style-tab sections:
+			[ 'hook' => 'elementor/element/icon-list/section_icon_list/after_section_end', 'priority' => 20 ],
+			[ 'hook' => 'elementor/element/icon-list/section_text_style/after_section_end', 'priority' => 20 ],
 		];
 	}
 
@@ -132,23 +116,25 @@ class Gradient_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Apply to (Icon Box only) ──────────────────────────────────────────
-		// The only element with a runtime-selectable target: the user picks
-		// whether the gradient paints the whole box (background, like a card)
-		// or just the icon inside it (fill, same technique as the Icon
-		// widget). Every other supported element has a fixed, element-type-
-		// determined target — see get_render_attributes().
-		if ( $is_icon_box ) {
+		// ── Apply to (Icon Box & Icon List) ──────────────────────────────────
+		$is_configurable = in_array( $name, self::CONFIGURABLE_TARGET_ELEMENTS, true );
+		if ( $is_configurable ) {
+			$options = [
+				'box'  => esc_html__( 'Whole Element (background)', 'aurora-for-elementor' ),
+				'icon' => esc_html__( 'Icons Only (fill)', 'aurora-for-elementor' ),
+			];
+			if ( 'icon-list' === $name ) {
+				$options['text'] = esc_html__( 'Text Only (fill)', 'aurora-for-elementor' );
+			}
+			$default = ( 'icon-list' === $name ) ? 'icon' : 'box';
+
 			$element->add_control(
 				'aurora_gradient_apply_to',
 				[
 					'label'              => esc_html__( 'Apply To', 'aurora-for-elementor' ),
 					'type'               => Controls_Manager::SELECT,
-					'default'            => 'box',
-					'options'            => [
-						'box'  => esc_html__( 'Whole Box (background)', 'aurora-for-elementor' ),
-						'icon' => esc_html__( 'Icon Only (fill)', 'aurora-for-elementor' ),
-					],
+					'default'            => $default,
+					'options'            => $options,
 					'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
 					'frontend_available' => true,
 				]
@@ -617,7 +603,15 @@ class Gradient_Controls extends Animation_Module {
 		} elseif ( in_array( $name, self::ICON_ELEMENTS, true ) ) {
 			$target = 'icon';
 		} elseif ( in_array( $name, self::CONFIGURABLE_TARGET_ELEMENTS, true ) ) {
-			$target = ( 'icon' === ( $settings['aurora_gradient_apply_to'] ?? 'box' ) ) ? 'icon' : 'background';
+			$default_target = ( 'icon-list' === $name ) ? 'icon' : 'box';
+			$apply_to       = $settings['aurora_gradient_apply_to'] ?? $default_target;
+			if ( 'icon' === $apply_to ) {
+				$target = 'icon';
+			} elseif ( 'text' === $apply_to ) {
+				$target = 'text';
+			} else {
+				$target = 'background';
+			}
 		} else {
 			$target = 'background';
 		}
