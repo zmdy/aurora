@@ -15,8 +15,14 @@
     if (typeof $ === 'undefined') return;
 
     var ALL_ANIMATION_CLASSES = [
-        'fadeInUp', 'fadeInDown', 'fadeIn', 'slideInLeft', 'slideInRight',
-        'zoomIn', 'flipInX', 'rotateIn', 'bounceIn'
+        'fadeIn', 'fadeInDown', 'fadeInLeft', 'fadeInRight', 'fadeInUp',
+        'slideInDown', 'slideInLeft', 'slideInRight', 'slideInUp',
+        'zoomIn', 'zoomInDown', 'zoomInLeft', 'zoomInRight', 'zoomInUp',
+        'bounceIn', 'bounceInDown', 'bounceInLeft', 'bounceInRight', 'bounceInUp',
+        'rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'rotateInUpLeft', 'rotateInUpRight',
+        'lightSpeedIn', 'rollIn',
+        'bounce', 'flash', 'pulse', 'rubberBand', 'shake', 'headShake', 'swing', 'tada', 'wobble', 'jello',
+        'flipInX', 'flipInY'
     ];
 
     var ANIMATION_CLASS_MAP = {
@@ -31,6 +37,12 @@
         'rotate-in':   'rotateIn',
         'bounce-in':   'bounceIn',
     };
+
+    function getAnimClass(anim) {
+        if (!anim) return 'fadeInUp';
+        if (ANIMATION_CLASS_MAP[anim]) return ANIMATION_CLASS_MAP[anim];
+        return anim;
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // OPTION PARSING
@@ -232,7 +244,7 @@
     // CORE LOGIC
     // ─────────────────────────────────────────────────────────────────────────
 
-    function initChildrenAnimation(wrapper, opts) {
+    function initChildrenAnimation(wrapper, opts, isControlChange) {
         var children = getChildren(wrapper, opts);
 
         if (wrapper._auroraChildrenObserver) {
@@ -242,13 +254,19 @@
 
         if (children.length === 0) return;
 
+        if (wrapper._auroraChildrenPlayed && !opts.replay && !isControlChange) {
+            return;
+        }
+
         var played = false;
 
         function trigger() {
-            if (played && !opts.replay) return;
+            if (played && !opts.replay && !isControlChange) return;
             played = true;
+            wrapper._auroraChildrenPlayed = true;
 
-            var animClass = ANIMATION_CLASS_MAP[opts.animation] || 'fadeInUp';
+            var rawAnim = opts.animation || 'fade-up';
+            var animClass = getAnimClass(rawAnim);
 
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
@@ -261,7 +279,9 @@
 
         function reset() {
             played = false;
-            var animClass = ANIMATION_CLASS_MAP[opts.animation] || 'fadeInUp';
+            wrapper._auroraChildrenPlayed = false;
+            var rawAnim = opts.animation || 'fade-up';
+            var animClass = getAnimClass(rawAnim);
 
             for (var i = 0; i < children.length; i++) {
                 resetChild(children[i], animClass);
@@ -295,6 +315,7 @@
             wrapper._auroraChildrenObserver.disconnect();
             wrapper._auroraChildrenObserver = null;
         }
+        wrapper._auroraChildrenPlayed = false;
         var children = getChildren(wrapper, { targetType: 'all_widgets', depth: 'all' });
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
@@ -481,45 +502,81 @@
         AuroraChildrenAnimationHandler.prototype.constructor = AuroraChildrenAnimationHandler;
 
         AuroraChildrenAnimationHandler.prototype.isEnabled = function () {
-            return this.getElementSettings('aurora_children_enable') === 'yes';
+            var setting = this.getElementSettings('aurora_children_enable');
+            if (setting === 'yes') return true;
+            if (setting === 'no') return false;
+            var wrapper = this.$element && this.$element[0];
+            return wrapper && wrapper.getAttribute && wrapper.getAttribute('data-aurora-children-enable') === '1';
         };
 
         AuroraChildrenAnimationHandler.prototype.isHoverEnabled = function () {
-            return this.getElementSettings('aurora_children_hover_enable') === 'yes';
+            var setting = this.getElementSettings('aurora_children_hover_enable');
+            if (setting === 'yes') return true;
+            if (setting === 'no') return false;
+            var wrapper = this.$element && this.$element[0];
+            return wrapper && wrapper.getAttribute && wrapper.getAttribute('data-aurora-children-hover-enable') === '1';
         };
 
         AuroraChildrenAnimationHandler.prototype.getOpts = function () {
+            var wrapper = this.$element && this.$element[0];
+            var ds = wrapper ? parseOptsFromDataset(wrapper) : {};
+
+            var anim = this.getElementSettings('aurora_children_animation');
+            var target = this.getElementSettings('aurora_children_target_type');
+            var depth = this.getElementSettings('aurora_children_depth');
+            var selector = this.getElementSettings('aurora_children_selector');
+            var duration = this.getElementSettings('aurora_children_duration');
+            var delay = this.getElementSettings('aurora_children_delay');
+            var stagger = this.getElementSettings('aurora_children_stagger');
+            var trigger = this.getElementSettings('aurora_children_trigger');
+            var threshold = this.getElementSettings('aurora_children_threshold');
+            var replay = this.getElementSettings('aurora_children_replay');
+
             return {
-                animation  : this.getElementSettings('aurora_children_animation') || 'fade-up',
-                targetType : this.getElementSettings('aurora_children_target_type') || 'child_containers',
-                depth      : this.getElementSettings('aurora_children_depth') || '1',
-                selector   : sanitizeSelector(this.getElementSettings('aurora_children_selector')),
-                duration   : sizeOf(this.getElementSettings('aurora_children_duration'), 600),
-                delay      : sizeOf(this.getElementSettings('aurora_children_delay'), 0),
-                stagger    : sizeOf(this.getElementSettings('aurora_children_stagger'), 150),
-                trigger    : this.getElementSettings('aurora_children_trigger') || 'scroll',
-                threshold  : sizeOf(this.getElementSettings('aurora_children_threshold'), 15) / 100,
-                replay     : this.getElementSettings('aurora_children_replay') === 'yes',
+                animation  : (anim && anim !== '') ? anim : ds.animation,
+                targetType : (target && target !== '') ? target : ds.targetType,
+                depth      : (depth && depth !== '') ? depth : ds.depth,
+                selector   : (selector && selector !== '') ? sanitizeSelector(selector) : ds.selector,
+                duration   : sizeOf(duration, ds.duration),
+                delay      : sizeOf(delay, ds.delay),
+                stagger    : sizeOf(stagger, ds.stagger),
+                trigger    : (trigger && trigger !== '') ? trigger : ds.trigger,
+                threshold  : (threshold !== undefined && threshold !== null && threshold !== '') ? (sizeOf(threshold, 15) / 100) : ds.threshold,
+                replay     : (replay !== undefined && replay !== null && replay !== '') ? (replay === 'yes') : ds.replay,
             };
         };
 
         AuroraChildrenAnimationHandler.prototype.getHoverOpts = function () {
+            var wrapper = this.$element && this.$element[0];
+            var ds = wrapper ? parseHoverOptsFromDataset(wrapper) : {};
+
+            var preset = this.getElementSettings('aurora_children_hover_preset');
+            var trX = this.getElementSettings('aurora_children_hover_translate_x');
+            var trY = this.getElementSettings('aurora_children_hover_translate_y');
+            var scale = this.getElementSettings('aurora_children_hover_scale');
+            var rotate = this.getElementSettings('aurora_children_hover_rotate');
+            var skew = this.getElementSettings('aurora_children_hover_skew');
+            var flip = this.getElementSettings('aurora_children_hover_flip');
+            var proximity = this.getElementSettings('aurora_children_hover_proximity');
+            var intensity = this.getElementSettings('aurora_children_hover_proximity_intensity');
+            var duration = this.getElementSettings('aurora_children_hover_duration');
+
             return {
                 enable             : this.isHoverEnabled(),
-                preset             : this.getElementSettings('aurora_children_hover_preset') || 'lift',
-                translateX         : sizeOf(this.getElementSettings('aurora_children_hover_translate_x'), 0),
-                translateY         : sizeOf(this.getElementSettings('aurora_children_hover_translate_y'), -10),
-                scale              : sizeOf(this.getElementSettings('aurora_children_hover_scale'), 1.05),
-                rotate             : sizeOf(this.getElementSettings('aurora_children_hover_rotate'), 0),
-                skew               : sizeOf(this.getElementSettings('aurora_children_hover_skew'), 0),
-                flip               : this.getElementSettings('aurora_children_hover_flip') || 'none',
-                proximity          : this.getElementSettings('aurora_children_hover_proximity') === 'yes',
-                proximityIntensity : sizeOf(this.getElementSettings('aurora_children_hover_proximity_intensity'), 50) / 100,
-                duration           : sizeOf(this.getElementSettings('aurora_children_hover_duration'), 300),
+                preset             : (preset && preset !== '') ? preset : ds.preset,
+                translateX         : sizeOf(trX, ds.translateX),
+                translateY         : sizeOf(trY, ds.translateY),
+                scale              : sizeOf(scale, ds.scale),
+                rotate             : sizeOf(rotate, ds.rotate),
+                skew               : sizeOf(skew, ds.skew),
+                flip               : (flip && flip !== '') ? flip : ds.flip,
+                proximity          : (proximity !== undefined && proximity !== null && proximity !== '') ? (proximity === 'yes') : ds.proximity,
+                proximityIntensity : (intensity !== undefined && intensity !== null && intensity !== '') ? (sizeOf(intensity, 50) / 100) : ds.proximityIntensity,
+                duration           : sizeOf(duration, ds.duration),
             };
         };
 
-        AuroraChildrenAnimationHandler.prototype.runAnimation = function () {
+        AuroraChildrenAnimationHandler.prototype.runAnimation = function (isControlChange) {
             var wrapper = this.$element[0];
             var animEnabled = this.isEnabled();
             var hoverEnabled = this.isHoverEnabled();
@@ -531,13 +588,15 @@
                 teardownChildrenHover(wrapper);
             }
 
+            if (!animEnabled && !hoverEnabled) return;
+
             var opts = this.getOpts();
             var hoverOpts = this.getHoverOpts();
 
             requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
                     if (animEnabled) {
-                        initChildrenAnimation(wrapper, opts);
+                        initChildrenAnimation(wrapper, opts, isControlChange);
                     }
                     if (hoverEnabled) {
                         initChildrenHover(wrapper, hoverOpts);
@@ -548,12 +607,12 @@
 
         AuroraChildrenAnimationHandler.prototype.onInit = function () {
             elementorModules.frontend.handlers.Base.prototype.onInit.apply(this, arguments);
-            this.runAnimation();
+            this.runAnimation(false);
         };
 
         AuroraChildrenAnimationHandler.prototype.onElementChange = function (propertyName) {
             if (propertyName.indexOf('aurora_children_') === 0) {
-                this.runAnimation();
+                this.runAnimation(true);
             }
         };
 
@@ -583,27 +642,24 @@
         });
     }
 
-    function bootstrap() {
-        if (typeof elementorFrontend === 'undefined') {
-            document.querySelectorAll('[data-aurora-children-enable="1"], [data-aurora-children-hover-enable="1"]').forEach(function (el) {
-                requestAnimationFrame(function () {
-                    requestAnimationFrame(function () {
-                        if (el.dataset.auroraChildrenEnable === '1') {
-                            initChildrenAnimation(el, parseOptsFromDataset(el));
-                        }
-                        if (el.dataset.auroraChildrenHoverEnable === '1') {
-                            initChildrenHover(el, parseHoverOptsFromDataset(el));
-                        }
-                    });
-                });
-            });
-        }
+    function scanAndInit() {
+        document.querySelectorAll('[data-aurora-children-enable="1"], [data-aurora-children-hover-enable="1"]').forEach(function (el) {
+            if (el.getAttribute('data-aurora-children-enable') === '1' && !el._auroraChildrenInit) {
+                el._auroraChildrenInit = true;
+                initChildrenAnimation(el, parseOptsFromDataset(el));
+            }
+            if (el.getAttribute('data-aurora-children-hover-enable') === '1' && !el._auroraChildrenHoverInit) {
+                el._auroraChildrenHoverInit = true;
+                initChildrenHover(el, parseHoverOptsFromDataset(el));
+            }
+        });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', bootstrap);
+        document.addEventListener('DOMContentLoaded', scanAndInit);
     } else {
-        bootstrap();
+        scanAndInit();
     }
+    window.addEventListener('load', scanAndInit);
 
 })(typeof jQuery !== 'undefined' ? jQuery : function (fn) { document.addEventListener('DOMContentLoaded', fn); });
