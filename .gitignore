@@ -21,6 +21,7 @@ desktop.ini
 # for end users; only assets/js/src/ + node_modules/ require Node/npm.
 dist/
 build/
+_dist_temp/
 *.min.js.map
 *.min.css.map
 !assets/js/dist/
