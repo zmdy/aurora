@@ -119,24 +119,95 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Animation type ────────────────────────────────────────────────────
+		// ── Animation type (Full Elementor Motion Effects List) ────────────────
 		$element->add_control(
 			'aurora_children_animation',
 			[
 				'label'     => esc_html__( 'Animation Type', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'fade-up',
-				'options'   => [
-					'fade-up'    => esc_html__( 'Fade Up',      'aurora-for-elementor' ),
-					'fade-down'  => esc_html__( 'Fade Down',    'aurora-for-elementor' ),
-					'fade-in'    => esc_html__( 'Fade In',      'aurora-for-elementor' ),
-					'slide-left' => esc_html__( 'Slide Left',   'aurora-for-elementor' ),
-					'slide-right'=> esc_html__( 'Slide Right',  'aurora-for-elementor' ),
-					'zoom-in'    => esc_html__( 'Zoom In',      'aurora-for-elementor' ),
-					'zoom-out'   => esc_html__( 'Zoom Out',     'aurora-for-elementor' ),
-					'flip-up'    => esc_html__( 'Flip Up',      'aurora-for-elementor' ),
-					'rotate-in'  => esc_html__( 'Rotate In',    'aurora-for-elementor' ),
-					'bounce-in'  => esc_html__( 'Bounce In',    'aurora-for-elementor' ),
+				'groups'    => [
+					[
+						'label'   => esc_html__( 'Fading', 'aurora-for-elementor' ),
+						'options' => [
+							'fadeIn'     => esc_html__( 'Fade In', 'aurora-for-elementor' ),
+							'fadeInDown' => esc_html__( 'Fade In Down', 'aurora-for-elementor' ),
+							'fadeInLeft' => esc_html__( 'Fade In Left', 'aurora-for-elementor' ),
+							'fadeInRight'=> esc_html__( 'Fade In Right', 'aurora-for-elementor' ),
+							'fadeInUp'   => esc_html__( 'Fade In Up', 'aurora-for-elementor' ),
+							'fade-up'    => esc_html__( 'Fade Up (Aurora)', 'aurora-for-elementor' ),
+							'fade-down'  => esc_html__( 'Fade Down (Aurora)', 'aurora-for-elementor' ),
+							'fade-in'    => esc_html__( 'Fade In (Aurora)', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Sliding', 'aurora-for-elementor' ),
+						'options' => [
+							'slideInDown' => esc_html__( 'Slide In Down', 'aurora-for-elementor' ),
+							'slideInLeft' => esc_html__( 'Slide In Left', 'aurora-for-elementor' ),
+							'slideInRight'=> esc_html__( 'Slide In Right', 'aurora-for-elementor' ),
+							'slideInUp'   => esc_html__( 'Slide In Up', 'aurora-for-elementor' ),
+							'slide-left'  => esc_html__( 'Slide Left (Aurora)', 'aurora-for-elementor' ),
+							'slide-right' => esc_html__( 'Slide Right (Aurora)', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Zooming', 'aurora-for-elementor' ),
+						'options' => [
+							'zoomIn'     => esc_html__( 'Zoom In', 'aurora-for-elementor' ),
+							'zoomInDown' => esc_html__( 'Zoom In Down', 'aurora-for-elementor' ),
+							'zoomInLeft' => esc_html__( 'Zoom In Left', 'aurora-for-elementor' ),
+							'zoomInRight'=> esc_html__( 'Zoom In Right', 'aurora-for-elementor' ),
+							'zoomInUp'   => esc_html__( 'Zoom In Up', 'aurora-for-elementor' ),
+							'zoom-in'    => esc_html__( 'Zoom In (Aurora)', 'aurora-for-elementor' ),
+							'zoom-out'   => esc_html__( 'Zoom Out (Aurora)', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Bouncing', 'aurora-for-elementor' ),
+						'options' => [
+							'bounceIn'     => esc_html__( 'Bounce In', 'aurora-for-elementor' ),
+							'bounceInDown' => esc_html__( 'Bounce In Down', 'aurora-for-elementor' ),
+							'bounceInLeft' => esc_html__( 'Bounce In Left', 'aurora-for-elementor' ),
+							'bounceInRight'=> esc_html__( 'Bounce In Right', 'aurora-for-elementor' ),
+							'bounceInUp'   => esc_html__( 'Bounce In Up', 'aurora-for-elementor' ),
+							'bounce-in'    => esc_html__( 'Bounce In (Aurora)', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Rotating', 'aurora-for-elementor' ),
+						'options' => [
+							'rotateIn'          => esc_html__( 'Rotate In', 'aurora-for-elementor' ),
+							'rotateInDownLeft'  => esc_html__( 'Rotate In Down Left', 'aurora-for-elementor' ),
+							'rotateInDownRight' => esc_html__( 'Rotate In Down Right', 'aurora-for-elementor' ),
+							'rotateInUpLeft'    => esc_html__( 'Rotate In Up Left', 'aurora-for-elementor' ),
+							'rotateInUpRight'   => esc_html__( 'Rotate In Up Right', 'aurora-for-elementor' ),
+							'rotate-in'         => esc_html__( 'Rotate In (Aurora)', 'aurora-for-elementor' ),
+							'flip-up'           => esc_html__( 'Flip Up (Aurora)', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Attention Seekers', 'aurora-for-elementor' ),
+						'options' => [
+							'bounce'    => esc_html__( 'Bounce', 'aurora-for-elementor' ),
+							'flash'     => esc_html__( 'Flash', 'aurora-for-elementor' ),
+							'pulse'     => esc_html__( 'Pulse', 'aurora-for-elementor' ),
+							'rubberBand'=> esc_html__( 'Rubber Band', 'aurora-for-elementor' ),
+							'shake'     => esc_html__( 'Shake', 'aurora-for-elementor' ),
+							'headShake' => esc_html__( 'Head Shake', 'aurora-for-elementor' ),
+							'swing'     => esc_html__( 'Swing', 'aurora-for-elementor' ),
+							'tada'      => esc_html__( 'Tada', 'aurora-for-elementor' ),
+							'wobble'    => esc_html__( 'Wobble', 'aurora-for-elementor' ),
+							'jello'     => esc_html__( 'Jello', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Specials', 'aurora-for-elementor' ),
+						'options' => [
+							'lightSpeedIn' => esc_html__( 'LightSpeed In', 'aurora-for-elementor' ),
+							'rollIn'       => esc_html__( 'Roll In', 'aurora-for-elementor' ),
+						],
+					],
 				],
 				'condition' => [ 'aurora_children_enable' => 'yes' ],
 				'frontend_available' => true,
@@ -218,11 +289,11 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Initial delay ─────────────────────────────────────────────────────
+		// ── Delay ─────────────────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_delay',
 			[
-				'label'     => esc_html__( 'Initial delay (ms)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Initial Delay (ms)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -237,21 +308,22 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
-		// ── Stagger delay between children ────────────────────────────────────
+		// ── Stagger interval ──────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_stagger',
 			[
-				'label'     => esc_html__( 'Delay between children (ms)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
+				'label'       => esc_html__( 'Stagger Interval (ms)', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::SLIDER,
+				'range'       => [
 					'px' => [
 						'min'  => 0,
 						'max'  => 1000,
-						'step' => 10,
+						'step' => 25,
 					],
 				],
-				'default'   => [ 'size' => 150 ],
-				'condition' => [ 'aurora_children_enable' => 'yes' ],
+				'default'     => [ 'size' => 150 ],
+				'description' => esc_html__( 'Time delay between each consecutive child animation.', 'aurora-for-elementor' ),
+				'condition'   => [ 'aurora_children_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
@@ -260,23 +332,23 @@ class Children_Animation_Controls extends Animation_Module {
 		$element->add_control(
 			'aurora_children_trigger',
 			[
-				'label'     => esc_html__( 'Trigger on', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Trigger Mode', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'scroll',
 				'options'   => [
-					'scroll' => esc_html__( 'Enter viewport (scroll)', 'aurora-for-elementor' ),
-					'load'   => esc_html__( 'Page load', 'aurora-for-elementor' ),
+					'scroll' => esc_html__( 'On Scroll (Viewport)', 'aurora-for-elementor' ),
+					'load'   => esc_html__( 'On Page Load',          'aurora-for-elementor' ),
 				],
 				'condition' => [ 'aurora_children_enable' => 'yes' ],
 				'frontend_available' => true,
 			]
 		);
 
-		// ── Threshold ─────────────────────────────────────────────────────────
+		// ── Viewport threshold ────────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_threshold',
 			[
-				'label'     => esc_html__( 'Visibility threshold (%)', 'aurora-for-elementor' ),
+				'label'     => esc_html__( 'Viewport Threshold (%)', 'aurora-for-elementor' ),
 				'type'      => Controls_Manager::SLIDER,
 				'range'     => [
 					'px' => [
@@ -311,6 +383,239 @@ class Children_Animation_Controls extends Animation_Module {
 				'frontend_available' => true,
 			]
 		);
+
+		// ── HEADING: Children Hover Effects ───────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_heading',
+			[
+				'label'     => esc_html__( 'Children Hover Effects', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		// ── Enable Hover ──────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_enable',
+			[
+				'label'              => esc_html__( 'Enable Children Hover Effects', 'aurora-for-elementor' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Hover Preset ──────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_preset',
+			[
+				'label'     => esc_html__( 'Hover Preset', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'lift',
+				'options'   => [
+					'lift'        => esc_html__( 'Lift Vertical (Move Y -10px)', 'aurora-for-elementor' ),
+					'slide_x'     => esc_html__( 'Slide Horizontal (Move X +10px)', 'aurora-for-elementor' ),
+					'scale_up'    => esc_html__( 'Scale Up (Zoom +5%)', 'aurora-for-elementor' ),
+					'rotate_tilt' => esc_html__( 'Rotate Tilt (-4deg)', 'aurora-for-elementor' ),
+					'flip_h'      => esc_html__( 'Flip Horizontal', 'aurora-for-elementor' ),
+					'flip_v'      => esc_html__( 'Flip Vertical', 'aurora-for-elementor' ),
+					'custom'      => esc_html__( 'Custom Controls', 'aurora-for-elementor' ),
+				],
+				'condition' => [ 'aurora_children_hover_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Custom Move X ─────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_translate_x',
+			[
+				'label'     => esc_html__( 'Move X (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => 0 ],
+				'condition' => [
+					'aurora_children_hover_enable' => 'yes',
+					'aurora_children_hover_preset' => 'custom',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Custom Move Y ─────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_translate_y',
+			[
+				'label'     => esc_html__( 'Move Y (px)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => -10 ],
+				'condition' => [
+					'aurora_children_hover_enable' => 'yes',
+					'aurora_children_hover_preset' => 'custom',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Custom Scale ──────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_scale',
+			[
+				'label'     => esc_html__( 'Scale Ratio', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 0.5,
+						'max'  => 1.5,
+						'step' => 0.01,
+					],
+				],
+				'default'   => [ 'size' => 1.05 ],
+				'condition' => [
+					'aurora_children_hover_enable' => 'yes',
+					'aurora_children_hover_preset' => 'custom',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Custom Rotate ─────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_rotate',
+			[
+				'label'     => esc_html__( 'Rotate (deg)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => -180,
+						'max'  => 180,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => 0 ],
+				'condition' => [
+					'aurora_children_hover_enable' => 'yes',
+					'aurora_children_hover_preset' => 'custom',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Custom Skew ───────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_skew',
+			[
+				'label'     => esc_html__( 'Skew (deg)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => -45,
+						'max'  => 45,
+						'step' => 1,
+					],
+				],
+				'default'   => [ 'size' => 0 ],
+				'condition' => [
+					'aurora_children_hover_enable' => 'yes',
+					'aurora_children_hover_preset' => 'custom',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Custom Flip ───────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_flip',
+			[
+				'label'     => esc_html__( 'Flip Axis', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'none',
+				'options'   => [
+					'none'       => esc_html__( 'None', 'aurora-for-elementor' ),
+					'horizontal' => esc_html__( 'Flip Horizontal', 'aurora-for-elementor' ),
+					'vertical'   => esc_html__( 'Flip Vertical', 'aurora-for-elementor' ),
+					'both'       => esc_html__( 'Flip Both', 'aurora-for-elementor' ),
+				],
+				'condition' => [
+					'aurora_children_hover_enable' => 'yes',
+					'aurora_children_hover_preset' => 'custom',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Proximity Sibling Wave ────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_proximity',
+			[
+				'label'        => esc_html__( 'Proximity Sibling Wave Effect', 'aurora-for-elementor' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'aurora-for-elementor' ),
+				'label_off'    => esc_html__( 'No', 'aurora-for-elementor' ),
+				'return_value' => 'yes',
+				'default'      => '',
+				'description'  => esc_html__( 'Applies proportional transform effects to nearby adjacent sibling elements in 1D rows and 2D grids.', 'aurora-for-elementor' ),
+				'condition'    => [ 'aurora_children_hover_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Proximity Intensity / Falloff ─────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_proximity_intensity',
+			[
+				'label'     => esc_html__( 'Sibling Wave Falloff Intensity (%)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 10,
+						'max'  => 100,
+						'step' => 5,
+					],
+				],
+				'default'   => [ 'size' => 50 ],
+				'condition' => [
+					'aurora_children_hover_enable'    => 'yes',
+					'aurora_children_hover_proximity' => 'yes',
+				],
+				'frontend_available' => true,
+			]
+		);
+
+		// ── Hover Duration ────────────────────────────────────────────────────
+		$element->add_control(
+			'aurora_children_hover_duration',
+			[
+				'label'     => esc_html__( 'Hover Transition Duration (ms)', 'aurora-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'min'  => 100,
+						'max'  => 1000,
+						'step' => 50,
+					],
+				],
+				'default'   => [ 'size' => 300 ],
+				'condition' => [ 'aurora_children_hover_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
 	}
 
 	/**
@@ -322,7 +627,10 @@ class Children_Animation_Controls extends Animation_Module {
 	 */
 	protected function get_render_attributes( array $settings, ?Element_Base $element = null ): array {
 
-		if ( empty( $settings['aurora_children_enable'] ) || 'yes' !== $settings['aurora_children_enable'] ) {
+		$has_children_enable = ! empty( $settings['aurora_children_enable'] ) && 'yes' === $settings['aurora_children_enable'];
+		$has_hover_enable    = ! empty( $settings['aurora_children_hover_enable'] ) && 'yes' === $settings['aurora_children_hover_enable'];
+
+		if ( ! $has_children_enable && ! $has_hover_enable ) {
 			return [];
 		}
 
@@ -335,18 +643,36 @@ class Children_Animation_Controls extends Animation_Module {
 		}
 		$selector = $selector_cache[ $raw_selector ];
 
-		return [
-			'data-aurora-children-enable'      => '1',
-			'data-aurora-children-animation'   => esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' ),
-			'data-aurora-children-target-type' => esc_attr( $settings['aurora_children_target_type'] ?? 'child_containers' ),
-			'data-aurora-children-depth'       => esc_attr( $settings['aurora_children_depth'] ?? '1' ),
-			'data-aurora-children-selector'    => esc_attr( $selector ),
-			'data-aurora-children-duration'    => esc_attr( $settings['aurora_children_duration']['size'] ?? 600 ),
-			'data-aurora-children-delay'       => esc_attr( $settings['aurora_children_delay']['size'] ?? 0 ),
-			'data-aurora-children-stagger'     => esc_attr( $settings['aurora_children_stagger']['size'] ?? 150 ),
-			'data-aurora-children-trigger'     => esc_attr( $settings['aurora_children_trigger'] ?? 'scroll' ),
-			'data-aurora-children-threshold'   => esc_attr( ( $settings['aurora_children_threshold']['size'] ?? 15 ) / 100 ),
-			'data-aurora-children-replay'      => ( 'yes' === ( $settings['aurora_children_replay'] ?? '' ) ) ? '1' : '0',
-		];
+		$attributes = [];
+
+		if ( $has_children_enable ) {
+			$attributes['data-aurora-children-enable']      = '1';
+			$attributes['data-aurora-children-animation']   = esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' );
+			$attributes['data-aurora-children-target-type'] = esc_attr( $settings['aurora_children_target_type'] ?? 'child_containers' );
+			$attributes['data-aurora-children-depth']       = esc_attr( $settings['aurora_children_depth'] ?? '1' );
+			$attributes['data-aurora-children-selector']    = esc_attr( $selector );
+			$attributes['data-aurora-children-duration']    = esc_attr( $settings['aurora_children_duration']['size'] ?? 600 );
+			$attributes['data-aurora-children-delay']       = esc_attr( $settings['aurora_children_delay']['size'] ?? 0 );
+			$attributes['data-aurora-children-stagger']     = esc_attr( $settings['aurora_children_stagger']['size'] ?? 150 );
+			$attributes['data-aurora-children-trigger']     = esc_attr( $settings['aurora_children_trigger'] ?? 'scroll' );
+			$attributes['data-aurora-children-threshold']   = esc_attr( ( $settings['aurora_children_threshold']['size'] ?? 15 ) / 100 );
+			$attributes['data-aurora-children-replay']      = ( 'yes' === ( $settings['aurora_children_replay'] ?? '' ) ) ? '1' : '0';
+		}
+
+		if ( $has_hover_enable ) {
+			$attributes['data-aurora-children-hover-enable']              = '1';
+			$attributes['data-aurora-children-hover-preset']              = esc_attr( $settings['aurora_children_hover_preset'] ?? 'lift' );
+			$attributes['data-aurora-children-hover-translate-x']        = esc_attr( $settings['aurora_children_hover_translate_x']['size'] ?? 0 );
+			$attributes['data-aurora-children-hover-translate-y']        = esc_attr( $settings['aurora_children_hover_translate_y']['size'] ?? -10 );
+			$attributes['data-aurora-children-hover-scale']              = esc_attr( $settings['aurora_children_hover_scale']['size'] ?? 1.05 );
+			$attributes['data-aurora-children-hover-rotate']             = esc_attr( $settings['aurora_children_hover_rotate']['size'] ?? 0 );
+			$attributes['data-aurora-children-hover-skew']               = esc_attr( $settings['aurora_children_hover_skew']['size'] ?? 0 );
+			$attributes['data-aurora-children-hover-flip']               = esc_attr( $settings['aurora_children_hover_flip'] ?? 'none' );
+			$attributes['data-aurora-children-hover-proximity']          = ( 'yes' === ( $settings['aurora_children_hover_proximity'] ?? '' ) ) ? '1' : '0';
+			$attributes['data-aurora-children-hover-proximity-intensity'] = esc_attr( ( $settings['aurora_children_hover_proximity_intensity']['size'] ?? 50 ) / 100 );
+			$attributes['data-aurora-children-hover-duration']           = esc_attr( $settings['aurora_children_hover_duration']['size'] ?? 300 );
+		}
+
+		return $attributes;
 	}
 }

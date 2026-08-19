@@ -310,6 +310,157 @@
         }
     }
 
+    function parseHoverOptsFromDataset(wrapper) {
+        var ds = wrapper.dataset;
+        return {
+            enable             : ds.auroraChildrenHoverEnable === '1',
+            preset             : ds.auroraChildrenHoverPreset || 'lift',
+            translateX         : parseFloat(ds.auroraChildrenHoverTranslateX) || 0,
+            translateY         : parseFloat(ds.auroraChildrenHoverTranslateY) || -10,
+            scale              : parseFloat(ds.auroraChildrenHoverScale) || 1.05,
+            rotate             : parseFloat(ds.auroraChildrenHoverRotate) || 0,
+            skew               : parseFloat(ds.auroraChildrenHoverSkew) || 0,
+            flip               : ds.auroraChildrenHoverFlip || 'none',
+            proximity          : ds.auroraChildrenHoverProximity === '1',
+            proximityIntensity : parseFloat(ds.auroraChildrenHoverProximityIntensity) || 0.5,
+            duration           : parseInt(ds.auroraChildrenHoverDuration, 10) || 300,
+        };
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CHILDREN HOVER & PROXIMITY WAVE ENGINE
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function getTransformParams(opts) {
+        var preset = opts.preset || 'lift';
+        var p = { trX: 0, trY: 0, scale: 1, rotate: 0, skew: 0, flipX: 1, flipY: 1 };
+
+        if (preset === 'lift') {
+            p.trY = -10;
+        } else if (preset === 'slide_x') {
+            p.trX = 10;
+        } else if (preset === 'scale_up') {
+            p.scale = 1.05;
+        } else if (preset === 'rotate_tilt') {
+            p.rotate = -4;
+        } else if (preset === 'flip_h') {
+            p.flipX = -1;
+        } else if (preset === 'flip_v') {
+            p.flipY = -1;
+        } else if (preset === 'custom') {
+            p.trX = opts.translateX || 0;
+            p.trY = opts.translateY || 0;
+            p.scale = opts.scale !== undefined ? opts.scale : 1;
+            p.rotate = opts.rotate || 0;
+            p.skew = opts.skew || 0;
+            var flip = opts.flip || 'none';
+            if (flip === 'horizontal' || flip === 'both') p.flipX = -1;
+            if (flip === 'vertical' || flip === 'both') p.flipY = -1;
+        }
+        return p;
+    }
+
+    function initChildrenHover(wrapper, opts) {
+        if (!opts || !opts.enable) return;
+
+        var children = getChildren(wrapper, opts);
+        if (!children || children.length === 0) return;
+
+        var params = getTransformParams(opts);
+        var duration = opts.duration || 300;
+        var useProximity = !!opts.proximity;
+        var intensity = opts.proximityIntensity !== undefined ? opts.proximityIntensity : 0.5;
+
+        // Apply transition and hardware acceleration to children
+        children.forEach(function (child) {
+            child.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.25, 1, 0.5, 1)';
+            child.style.willChange = 'transform';
+        });
+
+        function applyHoverTransforms(hoveredIndex) {
+            if (hoveredIndex === -1) {
+                children.forEach(function (child) {
+                    child.style.transform = '';
+                });
+                return;
+            }
+
+            var hoveredChild = children[hoveredIndex];
+            var hRect = hoveredChild.getBoundingClientRect();
+            var hCx = hRect.left + hRect.width / 2;
+            var hCy = hRect.top + hRect.height / 2;
+
+            // Calculate min neighbor step R across children in 1D / 2D layout
+            var minDist = Infinity;
+            children.forEach(function (child, idx) {
+                if (idx !== hoveredIndex) {
+                    var r = child.getBoundingClientRect();
+                    var cx = r.left + r.width / 2;
+                    var cy = r.top + r.height / 2;
+                    var d = Math.sqrt(Math.pow(cx - hCx, 2) + Math.pow(cy - hCy, 2));
+                    if (d > 0 && d < minDist) minDist = d;
+                }
+            });
+            if (minDist === Infinity || minDist === 0) minDist = 150;
+
+            var radiusMax = minDist * 2.2;
+
+            children.forEach(function (child, idx) {
+                var factor = 0;
+                if (idx === hoveredIndex) {
+                    factor = 1.0;
+                } else if (useProximity) {
+                    var r = child.getBoundingClientRect();
+                    var cx = r.left + r.width / 2;
+                    var cy = r.top + r.height / 2;
+                    var dist = Math.sqrt(Math.pow(cx - hCx, 2) + Math.pow(cy - hCy, 2));
+                    if (dist < radiusMax) {
+                        var linearFalloff = 1 - (dist / radiusMax);
+                        factor = Math.max(0, linearFalloff) * intensity;
+                    }
+                }
+
+                if (factor > 0.001) {
+                    var curTrX = params.trX * factor;
+                    var curTrY = params.trY * factor;
+                    var curScale = 1 + (params.scale - 1) * factor;
+                    var curRotate = params.rotate * factor;
+                    var curSkew = params.skew * factor;
+                    var curFlipX = params.flipX < 0 ? (factor > 0.5 ? -1 : 1) : 1;
+                    var curFlipY = params.flipY < 0 ? (factor > 0.5 ? -1 : 1) : 1;
+
+                    var transformStr = 'translate3d(' + curTrX + 'px, ' + curTrY + 'px, 0px)' +
+                        ' scale(' + (curScale * curFlipX) + ', ' + (curScale * curFlipY) + ')' +
+                        ' rotate(' + curRotate + 'deg)' +
+                        ' skewX(' + curSkew + 'deg)';
+
+                    child.style.transform = transformStr;
+                } else {
+                    child.style.transform = '';
+                }
+            });
+        }
+
+        children.forEach(function (child, idx) {
+            child.addEventListener('mouseenter', function () {
+                applyHoverTransforms(idx);
+            });
+        });
+
+        wrapper.addEventListener('mouseleave', function () {
+            applyHoverTransforms(-1);
+        });
+    }
+
+    function teardownChildrenHover(wrapper) {
+        var children = getChildren(wrapper, { targetType: 'all_widgets', depth: 'all' });
+        children.forEach(function (child) {
+            child.style.transition = '';
+            child.style.willChange = '';
+            child.style.transform = '';
+        });
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // ELEMENTOR INTEGRATION — FRONTEND HANDLER
     // ─────────────────────────────────────────────────────────────────────────
@@ -333,6 +484,10 @@
             return this.getElementSettings('aurora_children_enable') === 'yes';
         };
 
+        AuroraChildrenAnimationHandler.prototype.isHoverEnabled = function () {
+            return this.getElementSettings('aurora_children_hover_enable') === 'yes';
+        };
+
         AuroraChildrenAnimationHandler.prototype.getOpts = function () {
             return {
                 animation  : this.getElementSettings('aurora_children_animation') || 'fade-up',
@@ -348,17 +503,45 @@
             };
         };
 
+        AuroraChildrenAnimationHandler.prototype.getHoverOpts = function () {
+            return {
+                enable             : this.isHoverEnabled(),
+                preset             : this.getElementSettings('aurora_children_hover_preset') || 'lift',
+                translateX         : sizeOf(this.getElementSettings('aurora_children_hover_translate_x'), 0),
+                translateY         : sizeOf(this.getElementSettings('aurora_children_hover_translate_y'), -10),
+                scale              : sizeOf(this.getElementSettings('aurora_children_hover_scale'), 1.05),
+                rotate             : sizeOf(this.getElementSettings('aurora_children_hover_rotate'), 0),
+                skew               : sizeOf(this.getElementSettings('aurora_children_hover_skew'), 0),
+                flip               : this.getElementSettings('aurora_children_hover_flip') || 'none',
+                proximity          : this.getElementSettings('aurora_children_hover_proximity') === 'yes',
+                proximityIntensity : sizeOf(this.getElementSettings('aurora_children_hover_proximity_intensity'), 50) / 100,
+                duration           : sizeOf(this.getElementSettings('aurora_children_hover_duration'), 300),
+            };
+        };
+
         AuroraChildrenAnimationHandler.prototype.runAnimation = function () {
             var wrapper = this.$element[0];
-            var enabled = this.isEnabled();
-            if (!enabled) {
+            var animEnabled = this.isEnabled();
+            var hoverEnabled = this.isHoverEnabled();
+
+            if (!animEnabled) {
                 teardownChildrenAnimation(wrapper);
-                return;
             }
+            if (!hoverEnabled) {
+                teardownChildrenHover(wrapper);
+            }
+
             var opts = this.getOpts();
+            var hoverOpts = this.getHoverOpts();
+
             requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
-                    initChildrenAnimation(wrapper, opts);
+                    if (animEnabled) {
+                        initChildrenAnimation(wrapper, opts);
+                    }
+                    if (hoverEnabled) {
+                        initChildrenHover(wrapper, hoverOpts);
+                    }
                 });
             });
         };
@@ -402,10 +585,15 @@
 
     function bootstrap() {
         if (typeof elementorFrontend === 'undefined') {
-            document.querySelectorAll('[data-aurora-children-enable="1"]').forEach(function (el) {
+            document.querySelectorAll('[data-aurora-children-enable="1"], [data-aurora-children-hover-enable="1"]').forEach(function (el) {
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
-                        initChildrenAnimation(el, parseOptsFromDataset(el));
+                        if (el.dataset.auroraChildrenEnable === '1') {
+                            initChildrenAnimation(el, parseOptsFromDataset(el));
+                        }
+                        if (el.dataset.auroraChildrenHoverEnable === '1') {
+                            initChildrenHover(el, parseHoverOptsFromDataset(el));
+                        }
                     });
                 });
             });
