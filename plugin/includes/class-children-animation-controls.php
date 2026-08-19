@@ -72,6 +72,19 @@ class Children_Animation_Controls extends Animation_Module {
 	}
 
 	/**
+	 * Render hooks for injecting attributes on frontend before render.
+	 */
+	protected function get_render_hooks(): array {
+		return [
+			'elementor/frontend/element/before_render',
+			'elementor/frontend/section/before_render',
+			'elementor/frontend/container/before_render',
+			'elementor/frontend/column/before_render',
+			'elementor/frontend/widget/before_render',
+		];
+	}
+
+	/**
 	 * Registers fields for Animate Children Elements.
 	 *
 	 * @param Element_Base $element Element instance.

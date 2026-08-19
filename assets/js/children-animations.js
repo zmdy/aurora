@@ -197,163 +197,97 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // CHILDREN ANIMATIONS  (GSAP)
+    // CHILDREN ANIMATIONS (GSAP)
     // ─────────────────────────────────────────────────────────────────────────
+
+    function prepareElements(children) {
+        for (var i = 0; i < children.length; i++) {
+            children[i].style.transition = 'none';
+        }
+    }
+
+    function createCommonProps(opts) {
+        return {
+            duration   : opts.duration / 1000,
+            delay      : opts.delay / 1000,
+            stagger    : opts.stagger / 1000,
+            force3D    : true,
+            overwrite  : 'auto',
+            clearProps : 'transition',
+        };
+    }
 
     var childrenAnimations = {
 
         // Fade Up
         'fade-up': function (children, opts) {
-            gsap.fromTo(children,
-                { y: 50, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    y        : 0,
-                    opacity  : 1,
-                    ease     : 'power3.out',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { y: 0, opacity: 1, ease: 'power3.out' });
+            gsap.fromTo(children, { y: 50, opacity: 0, force3D: true }, props);
         },
 
         // Fade Down
         'fade-down': function (children, opts) {
-            gsap.fromTo(children,
-                { y: -50, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    y        : 0,
-                    opacity  : 1,
-                    ease     : 'power3.out',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { y: 0, opacity: 1, ease: 'power3.out' });
+            gsap.fromTo(children, { y: -50, opacity: 0, force3D: true }, props);
         },
 
         // Fade In (opacity only)
         'fade-in': function (children, opts) {
-            gsap.fromTo(children,
-                { opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    opacity  : 1,
-                    ease     : 'power2.out',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { opacity: 1, ease: 'power2.out' });
+            gsap.fromTo(children, { opacity: 0, force3D: true }, props);
         },
 
         // Slide from the left
         'slide-left': function (children, opts) {
-            gsap.fromTo(children,
-                { x: -80, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    x        : 0,
-                    opacity  : 1,
-                    ease     : 'power3.out',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { x: 0, opacity: 1, ease: 'power3.out' });
+            gsap.fromTo(children, { x: -80, opacity: 0, force3D: true }, props);
         },
 
         // Slide from the right
         'slide-right': function (children, opts) {
-            gsap.fromTo(children,
-                { x: 80, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    x        : 0,
-                    opacity  : 1,
-                    ease     : 'power3.out',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { x: 0, opacity: 1, ease: 'power3.out' });
+            gsap.fromTo(children, { x: 80, opacity: 0, force3D: true }, props);
         },
 
         // Zoom In
         'zoom-in': function (children, opts) {
-            gsap.fromTo(children,
-                { scale: 0.65, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    scale    : 1,
-                    opacity  : 1,
-                    ease     : 'back.out(1.7)',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { scale: 1, opacity: 1, ease: 'back.out(1.7)' });
+            gsap.fromTo(children, { scale: 0.65, opacity: 0, force3D: true }, props);
         },
 
         // Zoom Out (starts big and shrinks)
         'zoom-out': function (children, opts) {
-            gsap.fromTo(children,
-                { scale: 1.35, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    scale    : 1,
-                    opacity  : 1,
-                    ease     : 'power3.out',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { scale: 1, opacity: 1, ease: 'power3.out' });
+            gsap.fromTo(children, { scale: 1.35, opacity: 0, force3D: true }, props);
         },
 
         // Flip Up (3D rotation on the X axis)
         'flip-up': function (children, opts) {
-            gsap.set(children, {
-                transformPerspective : 800,
-                transformOrigin      : 'center bottom',
-            });
-            gsap.fromTo(children,
-                { rotationX: 80, opacity: 0 },
-                {
-                    duration  : opts.duration / 1000,
-                    delay     : opts.delay / 1000,
-                    rotationX : 0,
-                    opacity   : 1,
-                    ease      : 'power3.out',
-                    stagger   : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            gsap.set(children, { transformPerspective: 800, transformOrigin: 'center bottom', force3D: true });
+            var props = Object.assign(createCommonProps(opts), { rotationX: 0, opacity: 1, ease: 'power3.out' });
+            gsap.fromTo(children, { rotationX: 80, opacity: 0, force3D: true }, props);
         },
 
         // Rotate In (Z rotation + fade)
         'rotate-in': function (children, opts) {
-            gsap.fromTo(children,
-                { rotation: -20, scale: 0.8, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    rotation : 0,
-                    scale    : 1,
-                    opacity  : 1,
-                    ease     : 'back.out(1.4)',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { rotation: 0, scale: 1, opacity: 1, ease: 'back.out(1.4)' });
+            gsap.fromTo(children, { rotation: -20, scale: 0.8, opacity: 0, force3D: true }, props);
         },
 
         // Bounce In (rises with bounce)
         'bounce-in': function (children, opts) {
-            gsap.fromTo(children,
-                { y: 70, opacity: 0 },
-                {
-                    duration : opts.duration / 1000,
-                    delay    : opts.delay / 1000,
-                    y        : 0,
-                    opacity  : 1,
-                    ease     : 'elastic.out(1, 0.5)',
-                    stagger  : opts.stagger / 1000,
-                }
-            );
+            prepareElements(children);
+            var props = Object.assign(createCommonProps(opts), { y: 0, opacity: 1, ease: 'elastic.out(1, 0.5)' });
+            gsap.fromTo(children, { y: 70, opacity: 0, force3D: true }, props);
         },
     };
 
@@ -385,16 +319,13 @@
 
         if (children.length === 0) return;
 
-        // Initial state: children invisible.
-        gsap.set(children, { clearProps: 'all', opacity: 0 });
-
         var played = false;
 
         function trigger() {
             if (played && !opts.replay) return;
             played = true;
-            // Reset to the initial state before re-animating.
-            gsap.set(children, { clearProps: 'all', opacity: 0 });
+            prepareElements(children);
+            gsap.set(children, { opacity: 0, force3D: true });
 
             var fn = childrenAnimations[opts.animation];
             if (fn) fn(children, opts);
@@ -402,10 +333,12 @@
 
         function reset() {
             played = false;
+            prepareElements(children);
             gsap.set(children, { clearProps: 'all', opacity: 0 });
         }
 
         if (opts.trigger === 'scroll') {
+            var effectiveThreshold = Math.min(opts.threshold || 0.15, 0.05);
             var observer = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
@@ -415,7 +348,7 @@
                         reset();
                     }
                 });
-            }, { threshold: opts.threshold });
+            }, { threshold: effectiveThreshold, rootMargin: '0px 0px -30px 0px' });
 
             observer.observe(wrapper);
             wrapper._auroraChildrenObserver = observer;
