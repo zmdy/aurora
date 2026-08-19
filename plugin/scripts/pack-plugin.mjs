@@ -81,7 +81,9 @@ function copyRecursive(src, dest, excludeRoot, excludes) {
             copyRecursive(path.join(src, entry), path.join(dest, entry), excludeRoot, excludes);
         }
     } else {
-        fs.copyFileSync(src, dest);
+        if (fs.existsSync(src)) {
+            fs.copyFileSync(src, dest);
+        }
     }
 }
 
