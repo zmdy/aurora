@@ -290,6 +290,46 @@
             gsap.fromTo(children, { y: 70, opacity: 0, force3D: true }, props);
         },
     };
+    /**
+     * Safely resets and re-triggers any Elementor Counter widgets nested inside animated children.
+     * Prevents counter numbers from staying blank, stuck at 0, or missing count-up on scroll replay.
+     *
+     * @param {HTMLElement[]} children
+     */
+    function refreshCounters(children) {
+        if (!children || !children.length) return;
+
+        children.forEach(function (child) {
+            var counterNumbers = [];
+            if (child.classList && child.classList.contains('elementor-counter-number')) {
+                counterNumbers = [child];
+            } else if (child.querySelectorAll) {
+                counterNumbers = Array.from(child.querySelectorAll('.elementor-counter-number'));
+            }
+
+            counterNumbers.forEach(function (counterEl) {
+                var $counter = (typeof jQuery !== 'undefined') ? jQuery(counterEl) : null;
+                var data = $counter ? $counter.data() : null;
+
+                if ($counter && data && data.toValue !== undefined && typeof $counter.numerator === 'function') {
+                    var decimalDigits = data.toValue.toString().match(/\.(.*)/);
+                    if (decimalDigits) {
+                        data.rounding = decimalDigits[1].length;
+                    }
+                    try {
+                        $counter.numerator('stop');
+                    } catch (e) {}
+                    counterEl.textContent = data.fromValue || 0;
+                    $counter.numerator(data);
+                } else if (counterEl) {
+                    var toVal = counterEl.getAttribute('data-to-value') || counterEl.getAttribute('data-to') || '0';
+                    if (!counterEl.textContent || counterEl.textContent.trim() === '') {
+                        counterEl.textContent = toVal;
+                    }
+                }
+            });
+        });
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // CORE LOGIC
@@ -329,6 +369,8 @@
 
             var fn = childrenAnimations[opts.animation];
             if (fn) fn(children, opts);
+
+            refreshCounters(children);
         }
 
         function reset() {
