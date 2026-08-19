@@ -29,6 +29,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Children_Animation_Controls extends Animation_Module {
 
+	public function __construct() {
+		parent::__construct();
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ] );
+	}
+
+	/**
+	 * Enqueues Elementor's native animate.css style handle.
+	 */
+	public function enqueue_styles(): void {
+		if ( wp_style_is( 'elementor-animations', 'registered' ) ) {
+			wp_enqueue_style( 'elementor-animations' );
+		}
+	}
+
 	/** Elements where this module appears: structural containers and list/grid widgets. */
 	const SUPPORTED_ELEMENTS = [
 		'section',
