@@ -35,11 +35,25 @@ class Children_Animation_Controls extends Animation_Module {
 	}
 
 	/**
-	 * Enqueues Elementor's native animate.css style handle.
+	 * Enqueues Elementor's native animate.css style, ensuring it loads on
+	 * the frontend even when Elementor doesn't auto-enqueue it.
 	 */
 	public function enqueue_styles(): void {
+		// Try the pre-registered handle first (some Elementor versions register it).
 		if ( wp_style_is( 'elementor-animations', 'registered' ) ) {
 			wp_enqueue_style( 'elementor-animations' );
+			return;
+		}
+
+		// Fall back: directly register & enqueue Elementor's bundled animations file.
+		$elementor_path = WP_PLUGIN_DIR . '/elementor/assets/lib/animations/animations.min.css';
+		$elementor_url  = plugins_url( 'elementor/assets/lib/animations/animations.min.css' );
+
+		if ( file_exists( $elementor_path ) ) {
+			if ( ! wp_style_is( 'aurora-elementor-animations', 'registered' ) ) {
+				wp_register_style( 'aurora-elementor-animations', $elementor_url, [], AURORA_VERSION );
+			}
+			wp_enqueue_style( 'aurora-elementor-animations' );
 		}
 	}
 
@@ -90,10 +104,10 @@ class Children_Animation_Controls extends Animation_Module {
 	 */
 	protected function get_render_hooks(): array {
 		return [
-			'elementor/frontend/element/before_render',
+			'elementor/frontend/before_render',
 			'elementor/frontend/section/before_render',
-			'elementor/frontend/container/before_render',
 			'elementor/frontend/column/before_render',
+			'elementor/frontend/container/before_render',
 			'elementor/frontend/widget/before_render',
 		];
 	}

@@ -375,6 +375,9 @@
         }
 
         if (opts.trigger === 'scroll') {
+            // Hide children immediately so they animate in when scrolled into view.
+            reset();
+
             var effectiveThreshold = Math.min(opts.threshold || 0.15, 0.05);
             var observer = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
@@ -722,13 +725,13 @@
         return auroraChildrenHandlerRegistered;
     }
 
-    if (!tryRegisterHandlerNow() && typeof elementorFrontend !== 'undefined') {
-        $(window).on('elementor/frontend/init', function () {
-            tryRegisterHandlerNow();
-        });
-    }
-
+    // scanAndInit is the fallback for pages where elementorFrontend is not
+    // available (e.g. plain PHP themes). When the Elementor handler is
+    // already registered via element_ready/global, let it manage everything.
     function scanAndInit() {
+        // If Elementor handler is managing the elements, don't duplicate init.
+        if (auroraChildrenHandlerRegistered) return;
+
         document.querySelectorAll('[data-aurora-children-enable="1"], [data-aurora-children-hover-enable="1"]').forEach(function (el) {
             if (el.getAttribute('data-aurora-children-enable') === '1' && !el._auroraChildrenInit) {
                 el._auroraChildrenInit = true;
@@ -741,11 +744,21 @@
         });
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', scanAndInit);
-    } else {
-        scanAndInit();
+    // Try to register immediately (if elementorFrontend is already loaded).
+    // If not, listen for the Elementor init event or fall back to scanAndInit.
+    if (!tryRegisterHandlerNow()) {
+        if (typeof window !== 'undefined') {
+            $(window).on('elementor/frontend/init', function () {
+                tryRegisterHandlerNow();
+            });
+        }
+        // scanAndInit fallback for non-Elementor contexts.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', scanAndInit);
+        } else {
+            scanAndInit();
+        }
+        window.addEventListener('load', scanAndInit);
     }
-    window.addEventListener('load', scanAndInit);
 
 })(typeof jQuery !== 'undefined' ? jQuery : function (fn) { document.addEventListener('DOMContentLoaded', fn); });
