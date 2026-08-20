@@ -44,6 +44,37 @@
         return anim;
     }
 
+    function getAlternateClass(baseAnim, altMode, index) {
+        if (!altMode || altMode === 'none') {
+            return getAnimClass(baseAnim);
+        }
+        var isEven = index % 2 === 0;
+
+        if (altMode === 'horizontal') {
+            if (baseAnim && baseAnim.indexOf('slide') === 0) {
+                return isEven ? 'slideInLeft' : 'slideInRight';
+            }
+            return isEven ? 'fadeInLeft' : 'fadeInRight';
+        }
+
+        if (altMode === 'vertical') {
+            if (baseAnim && baseAnim.indexOf('slide') === 0) {
+                return isEven ? 'slideInUp' : 'slideInDown';
+            }
+            return isEven ? 'fadeInUp' : 'fadeInDown';
+        }
+
+        if (altMode === 'zoom') {
+            return isEven ? 'zoomIn' : 'zoomInDown';
+        }
+
+        if (altMode === 'rotate') {
+            return isEven ? 'rotateInDownLeft' : 'rotateInDownRight';
+        }
+
+        return getAnimClass(baseAnim);
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // OPTION PARSING
     // ─────────────────────────────────────────────────────────────────────────
@@ -66,6 +97,7 @@
         var ds = wrapper.dataset;
         return {
             animation  : ds.auroraChildrenAnimation  || 'fade-up',
+            alternate  : ds.auroraChildrenAlternate  || 'none',
             targetType : ds.auroraChildrenTargetType || 'child_containers',
             depth      : ds.auroraChildrenDepth      || '1',
             selector   : ds.auroraChildrenSelector   || '.elementor-widget',
@@ -316,10 +348,11 @@
             wrapper._auroraChildrenPlayed = true;
 
             var rawAnim = opts.animation || 'fade-up';
-            var animClass = getAnimClass(rawAnim);
+            var altMode = opts.alternate || 'none';
 
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
+                var animClass = getAlternateClass(rawAnim, altMode, i);
                 var delay = opts.delay + (i * opts.stagger);
                 animateChild(child, animClass, opts.duration, delay);
             }
@@ -331,9 +364,10 @@
             played = false;
             wrapper._auroraChildrenPlayed = false;
             var rawAnim = opts.animation || 'fade-up';
-            var animClass = getAnimClass(rawAnim);
+            var altMode = opts.alternate || 'none';
 
             for (var i = 0; i < children.length; i++) {
+                var animClass = getAlternateClass(rawAnim, altMode, i);
                 resetChild(children[i], animClass);
             }
 
@@ -572,6 +606,7 @@
             var ds = wrapper ? parseOptsFromDataset(wrapper) : {};
 
             var anim = this.getElementSettings('aurora_children_animation');
+            var alt = this.getElementSettings('aurora_children_alternate');
             var target = this.getElementSettings('aurora_children_target_type');
             var depth = this.getElementSettings('aurora_children_depth');
             var selector = this.getElementSettings('aurora_children_selector');
@@ -584,6 +619,7 @@
 
             return {
                 animation  : (anim && anim !== '') ? anim : ds.animation,
+                alternate  : (alt && alt !== '') ? alt : ds.alternate,
                 targetType : (target && target !== '') ? target : ds.targetType,
                 depth      : (depth && depth !== '') ? depth : ds.depth,
                 selector   : (selector && selector !== '') ? sanitizeSelector(selector) : ds.selector,

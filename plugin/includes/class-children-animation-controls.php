@@ -214,6 +214,26 @@ class Children_Animation_Controls extends Animation_Module {
 			]
 		);
 
+		// ── Alternate Directions / Pattern ─────────────────────────────────────
+		$element->add_control(
+			'aurora_children_alternate',
+			[
+				'label'       => esc_html__( 'Alternate Direction / Pattern', 'aurora-for-elementor' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'none',
+				'options'     => [
+					'none'       => esc_html__( 'None (Same for All Children)', 'aurora-for-elementor' ),
+					'horizontal' => esc_html__( 'Alternate Left ⇄ Right (Odd/Even)', 'aurora-for-elementor' ),
+					'vertical'   => esc_html__( 'Alternate Up ⇄ Down (Odd/Even)', 'aurora-for-elementor' ),
+					'zoom'       => esc_html__( 'Alternate Zoom In ⇄ Zoom Out', 'aurora-for-elementor' ),
+					'rotate'     => esc_html__( 'Alternate Rotate Left ⇄ Rotate Right', 'aurora-for-elementor' ),
+				],
+				'description' => esc_html__( 'Alternates animation directions or effects between odd and even child elements for a dynamic staggered layout.', 'aurora-for-elementor' ),
+				'condition'   => [ 'aurora_children_enable' => 'yes' ],
+				'frontend_available' => true,
+			]
+		);
+
 		// ── Target Children Type ─────────────────────────────────────────────
 		$element->add_control(
 			'aurora_children_target_type',
@@ -648,6 +668,7 @@ class Children_Animation_Controls extends Animation_Module {
 		if ( $has_children_enable ) {
 			$attributes['data-aurora-children-enable']      = '1';
 			$attributes['data-aurora-children-animation']   = esc_attr( $settings['aurora_children_animation'] ?? 'fade-up' );
+			$attributes['data-aurora-children-alternate']   = esc_attr( $settings['aurora_children_alternate'] ?? 'none' );
 			$attributes['data-aurora-children-target-type'] = esc_attr( $settings['aurora_children_target_type'] ?? 'child_containers' );
 			$attributes['data-aurora-children-depth']       = esc_attr( $settings['aurora_children_depth'] ?? '1' );
 			$attributes['data-aurora-children-selector']    = esc_attr( $selector );
