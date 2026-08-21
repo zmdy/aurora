@@ -18,6 +18,7 @@
     /* Prevents text collapse when manipulating transform */
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    text-transform: none;
 }
 
 /* Line wrapper: overflow hidden for clip/mask effects */

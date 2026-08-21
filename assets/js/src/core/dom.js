@@ -44,12 +44,29 @@ export function getTextTarget(wrapper) {
  * @returns {HTMLElement[]}
  */
 export function splitIntoChars(el) {
-    // Use textContent (not innerText) so CSS text-transform on the parent
-    // (uppercase, capitalize, etc.) is NOT baked into the split text.
-    // The CSS property is still inherited by the child spans, so the visual
-    // result is identical — but the underlying text stays as authored.
-    var text = el.textContent;
-    el.setAttribute('aria-label', text);
+    var rawText = el.textContent;
+    el.setAttribute('aria-label', rawText);
+
+    // Detect CSS text-transform from the parent element.
+    // When text-transform: capitalize is applied in CSS, the browser treats
+    // EACH single-character span as a word boundary and capitalizes EVERY letter
+    // into UPPERCASE. To fix this, we detect the transform, apply it to the
+    // whole words in JS, and set text-transform: none on the character spans.
+    var computedTransform = 'none';
+    try {
+        if (typeof window !== 'undefined' && window.getComputedStyle) {
+            computedTransform = window.getComputedStyle(el).textTransform || 'none';
+        }
+    } catch (e) {}
+
+    var text = rawText;
+    if (computedTransform === 'capitalize') {
+        text = text.replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    } else if (computedTransform === 'uppercase') {
+        text = text.toUpperCase();
+    } else if (computedTransform === 'lowercase') {
+        text = text.toLowerCase();
+    }
 
     var words = text.split(' ');
     var chars = [];
@@ -57,13 +74,13 @@ export function splitIntoChars(el) {
 
     words.forEach(function (word, wi) {
         var wordWrap = document.createElement('span');
-        wordWrap.style.cssText = 'display:inline-block;white-space:nowrap;';
+        wordWrap.style.cssText = 'display:inline-block;white-space:nowrap;text-transform:none;';
         wordWrap.setAttribute('aria-hidden', 'true');
 
         Array.from(word).forEach(function (char) {
             var span = document.createElement('span');
             span.className = 'aurora-char';
-            span.style.cssText = 'display:inline-block;will-change:transform,opacity;';
+            span.style.cssText = 'display:inline-block;will-change:transform,opacity;text-transform:none;';
             span.textContent = char;
             wordWrap.appendChild(span);
             chars.push(span);
@@ -74,7 +91,7 @@ export function splitIntoChars(el) {
         if (wi < words.length - 1) {
             // non-breaking space between words to preserve spacing
             var space = document.createElement('span');
-            space.style.display = 'inline-block';
+            space.style.cssText = 'display:inline-block;text-transform:none;';
             space.innerHTML = '&nbsp;';
             el.appendChild(space);
         }
