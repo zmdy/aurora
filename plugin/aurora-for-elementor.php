@@ -8,7 +8,7 @@
  * Requires PHP:      7.4
  * Requires Plugins:  elementor
  * Author:            Aurora
- * Author URI:        https://github.com/zmdy/aurora
+ * Author URI:        https://github.com/zmdy
  * License:           GPL v3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       aurora-for-elementor
@@ -37,19 +37,13 @@ define( 'AURORA_HAS_GSAP',      file_exists( AURORA_PATH . 'assets/js/vendor/gsa
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 
-/**
- * Loads the plugin translations. English is the default (source) language
- * used throughout the codebase; translation files (e.g. pt_BR) live in
- * /languages and are loaded here via the standard WordPress i18n API.
- */
-function aurora_load_textdomain() {
-	load_plugin_textdomain(
-		'aurora-for-elementor',
-		false,
-		dirname( plugin_basename( AURORA_FILE ) ) . '/languages'
-	);
-}
-add_action( 'init', 'Aurora\aurora_load_textdomain' );
+// Translations: English is the default (source) language used throughout
+// the codebase; translation files (e.g. pt_BR) live in /languages. No
+// load_plugin_textdomain() call is needed here — WordPress.org auto-loads
+// a hosted plugin's translations from its own translation packs, keyed by
+// the plugin slug, since WP 4.6. Calling load_plugin_textdomain()
+// ourselves on top of that is redundant for a WP.org-hosted plugin (and
+// is exactly what WP.org's own Plugin Check tool flags as discouraged).
 
 /**
  * Load the plugin after all plugins have loaded.

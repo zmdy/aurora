@@ -3,11 +3,11 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: Aurora for Elementor\n"
+"Project-Id-Version: Aurora for Elementor 0.5.0\n"
 "Report-Msgid-Bugs-To: https://github.com/zmdy/aurora/issues\n"
-"POT-Creation-Date: 2026-07-08 17:00+0000\n"
-"PO-Revision-Date: 2026-07-08 17:00+0000\n"
-"Last-Translator: Aurora <aurora@example.com>\n"
+"POT-Creation-Date: 2026-08-21 19:48+0000\n"
+"PO-Revision-Date: 2026-08-21 19:48+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -16,68 +16,49 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Domain: aurora-for-elementor\n"
 
+#. translators: %s: text zone label (e.g. "Avatar", "Username", "Caption").
+msgid "%s color"
+msgstr ""
+
+#. translators: %s: text zone label (e.g. "Avatar", "Username", "Caption").
+msgid "%s typography"
+msgstr ""
+
 msgid "3D Flip"
 msgstr "3D Flip"
 
+msgid "Activation Trigger"
+msgstr ""
+
+msgid "Add Paper Film Grain"
+msgstr ""
+
+msgid "All Direct Children (1st Level)"
+msgstr ""
+
+msgid "All Nested Widgets (Any Depth)"
+msgstr ""
+
+msgid "Alternate Direction / Pattern"
+msgstr ""
+
+msgid "Alternate Left ⇄ Right (Odd/Even)"
+msgstr ""
+
+msgid "Alternate Rotate Left ⇄ Rotate Right"
+msgstr ""
+
+msgid "Alternate Up ⇄ Down (Odd/Even)"
+msgstr ""
+
+msgid "Alternate Zoom In ⇄ Zoom Out"
+msgstr ""
+
+msgid "Alternates animation directions or effects between odd and even child elements for a dynamic staggered layout."
+msgstr ""
+
 msgid "Angle (degrees)"
 msgstr "Ângulo (graus)"
-
-msgid "CSS selector for elements that should grow/highlight the ring on hover (images, galleries, etc.)."
-msgstr "Seletor CSS para elementos que devem crescer/destacar o anel ao passar o mouse (imagens, galerias, etc.)."
-
-msgid "CSS selector for elements that should shrink/highlight the ring on hover (links, buttons, etc.)."
-msgstr "Seletor CSS para elementos que devem encolher/destacar o anel ao passar o mouse (links, botões, etc.)."
-
-msgid "Cursor Follow"
-msgstr "Cursor Interativo"
-
-msgid "Dot Color"
-msgstr "Cor do Ponto"
-
-msgid "Dot Size (px)"
-msgstr "Tamanho do Ponto (px)"
-
-msgid "Enable Cursor Follow"
-msgstr "Habilitar Cursor Interativo"
-
-msgid "Follow Mouse (Spotlight)"
-msgstr "Seguir o Mouse (Spotlight)"
-
-msgid "How long the outer ring takes to catch up with the dot. The dot itself always tracks the mouse instantly."
-msgstr "Quanto tempo o anel externo leva para alcançar o ponto. O ponto em si sempre acompanha o mouse instantaneamente."
-
-msgid "Image Elements Selector"
-msgstr "Seletor de Elementos de Imagem"
-
-msgid "Image Hover Scale"
-msgstr "Escala ao Passar sobre Imagem"
-
-msgid "Interactive Elements Selector"
-msgstr "Seletor de Elementos Interativos"
-
-msgid "Interactive Hover Scale"
-msgstr "Escala ao Passar sobre Interativo"
-
-msgid "Recenters the gradient on the cursor position as it moves over the element, instead of a fixed center."
-msgstr "Recentraliza o gradiente na posição do cursor conforme ele se move sobre o elemento, em vez de um centro fixo."
-
-msgid "Replaces the native cursor with a two-part custom cursor (dot + trailing ring) while the pointer is inside this element."
-msgstr "Substitui o cursor nativo por um cursor personalizado de duas partes (ponto + anel que segue) enquanto o ponteiro estiver dentro deste elemento."
-
-msgid "Resting size of the trailing ring, before any hover scaling is applied."
-msgstr "Tamanho de repouso do anel, antes de qualquer escala de hover ser aplicada."
-
-msgid "Ring Color"
-msgstr "Cor do Anel"
-
-msgid "Ring Size (px)"
-msgstr "Tamanho do Anel (px)"
-
-msgid "Spotlight Radius (px)"
-msgstr "Raio do Spotlight (px)"
-
-msgid "Trail Delay (ms)"
-msgstr "Atraso do Rastro (ms)"
 
 msgid "Animate Children Elements"
 msgstr "Animar Elementos Filhos"
@@ -94,8 +75,50 @@ msgstr "Tipo de Animação"
 msgid "Anime.js"
 msgstr "Anime.js"
 
+msgid "Appear Text"
+msgstr ""
+
+msgid "Appearance"
+msgstr ""
+
+msgid "Applies an analog paper film grain / dither texture overlay across the gradient mesh."
+msgstr ""
+
+msgid "Applies proportional transform effects to nearby adjacent sibling elements in 1D rows and 2D grids."
+msgstr ""
+
+msgid "Apply To"
+msgstr ""
+
+msgid "Aspect ratio (W:H)"
+msgstr ""
+
+msgid "Attention Seekers"
+msgstr ""
+
+msgid "Aurora Morph Card"
+msgstr ""
+
+msgid "Auto (fits content)"
+msgstr ""
+
+msgid "Avatar"
+msgstr ""
+
+msgid "Avatar (falls back to photo)"
+msgstr ""
+
 msgid "Background Opacity (%)"
 msgstr "Opacidade do Fundo (%)"
+
+msgid "Background color"
+msgstr ""
+
+msgid "Base text color (fallback)"
+msgstr ""
+
+msgid "Bio"
+msgstr ""
 
 msgid "Blur Intensity (px)"
 msgstr "Intensidade do Blur (px)"
@@ -103,11 +126,32 @@ msgstr "Intensidade do Blur (px)"
 msgid "Blur Reveal"
 msgstr "Blur Reveal"
 
+msgid "Blur → Sharp Focus"
+msgstr "Desfoque → Foco Nítido"
+
 msgid "Border Opacity (%)"
 msgstr "Opacidade da Borda (%)"
 
 msgid "Border Radius (px)"
 msgstr "Raio da Borda (px)"
+
+msgid "Border radius (px)"
+msgstr ""
+
+msgid "Both (On Appear & On Hover)"
+msgstr ""
+
+msgid "Bottom center"
+msgstr ""
+
+msgid "Bottom left"
+msgstr ""
+
+msgid "Bottom right"
+msgstr ""
+
+msgid "Bounce"
+msgstr ""
 
 msgid "Bounce Drop"
 msgstr "Bounce Drop"
@@ -115,14 +159,89 @@ msgstr "Bounce Drop"
 msgid "Bounce In"
 msgstr "Bounce In"
 
-msgid "CSS selector used to identify the child elements to animate. Default: .elementor-widget"
-msgstr "Seletor CSS para identificar os elementos filhos a animar. Padrão: .elementor-widget"
+msgid "Bounce In (Aurora)"
+msgstr ""
+
+msgid "Bounce In Down"
+msgstr ""
+
+msgid "Bounce In Left"
+msgstr ""
+
+msgid "Bounce In Right"
+msgstr ""
+
+msgid "Bounce In Up"
+msgstr ""
+
+msgid "Bouncing"
+msgstr ""
+
+msgid "Box shadow"
+msgstr ""
+
+msgid "CRT Boot"
+msgstr ""
+
+msgid "CSS selector for elements that should grow/highlight the ring on hover (images, galleries, etc.)."
+msgstr "Seletor CSS para elementos que devem crescer/destacar o anel ao passar o mouse (imagens, galerias, etc.)."
+
+msgid "CSS selector for elements that should shrink/highlight the ring on hover (links, buttons, etc.)."
+msgstr "Seletor CSS para elementos que devem encolher/destacar o anel ao passar o mouse (links, botões, etc.)."
+
+msgid "CSS selector used to identify the child elements to animate when Target is Custom."
+msgstr ""
+
+msgid "Caption"
+msgstr ""
+
+msgid "Caption color"
+msgstr ""
+
+msgid "Caption reveal effect (frame style)"
+msgstr ""
+
+msgid "Caption typography"
+msgstr ""
+
+msgid "Card"
+msgstr ""
+
+msgid "Card proportion. Image fills the remaining space (after header/footer/padding)."
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Center left"
+msgstr ""
+
+msgid "Center right"
+msgstr ""
 
 msgid "Characters"
 msgstr "Letras"
 
-msgid "Children CSS Selector"
-msgstr "Seletor CSS dos Filhos"
+msgid "Children Hover Effects"
+msgstr ""
+
+msgid "Chromatic RGB Split"
+msgstr ""
+
+msgid "Cinema Title"
+msgstr ""
+
+msgid "Circle Overlay Color"
+msgstr ""
+
+msgid "Circle Ripple (NxWorld)"
+msgstr ""
+
+msgid "Classic (cream)"
+msgstr ""
+
+msgid "Classic Photo Frame"
+msgstr ""
 
 msgid "Clip Reveal"
 msgstr "Clip Reveal"
@@ -133,20 +252,92 @@ msgstr "Clip Wrap (Palavras)"
 msgid "Color"
 msgstr "Cor"
 
+msgid "Color / Overlay Tint"
+msgstr ""
+
 msgid "Color Loop (hue rotation)"
 msgstr "Loop de Cor (rotação de matiz)"
+
+msgid "Color Tint Overlay"
+msgstr "Sobreposição de Tonalidade de Cor"
+
+msgid "Color → Grayscale"
+msgstr ""
 
 msgid "Conic"
 msgstr "Cônico"
 
+msgid "Contain (fit inside)"
+msgstr ""
+
+msgid "Continuous Wave (never stops)"
+msgstr ""
+
+msgid "Cover (crop to fill)"
+msgstr ""
+
+msgid "Creates a dynamic fluid wave displacement as the mouse moves over the gradient mesh."
+msgstr ""
+
+msgid "Cursor Follow"
+msgstr "Cursor Interativo"
+
+msgid "Cursor Wave Radius (px)"
+msgstr ""
+
+msgid "Curtain Reveal (Split Center)"
+msgstr "Revelação em Cortina (Divisão ao Centro)"
+
+msgid "Custom"
+msgstr ""
+
+msgid "Custom CSS Selector"
+msgstr ""
+
+msgid "Custom Controls"
+msgstr ""
+
+msgid "Custom ratio: Height"
+msgstr ""
+
+msgid "Custom ratio: Width"
+msgstr ""
+
+msgid "Custom…"
+msgstr ""
+
 msgid "Cycle Duration (s)"
 msgstr "Duração do Ciclo (s)"
 
-msgid "Delay between children (ms)"
-msgstr "Delay entre filhos (ms)"
+msgid "Dark"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Delay (ms)"
+msgstr "Atraso (ms)"
 
 msgid "Delay between units (ms)"
 msgstr "Delay entre unidades (ms)"
+
+msgid "Direct Child Containers / Columns (Cards & Blocks)"
+msgstr ""
+
+msgid "Display Name"
+msgstr ""
+
+msgid "Distortion (%)"
+msgstr ""
+
+msgid "Domino Fall"
+msgstr ""
+
+msgid "Dot Color"
+msgstr "Cor do Ponto"
+
+msgid "Dot Size (px)"
+msgstr "Tamanho do Ponto (px)"
 
 msgid "Drop Down"
 msgstr "Drop Down"
@@ -154,14 +345,38 @@ msgstr "Drop Down"
 msgid "Duration (ms)"
 msgstr "Duração (ms)"
 
+msgid "Duration on this state (ms)"
+msgstr ""
+
 msgid "Duration per child (ms)"
 msgstr "Duração por filho (ms)"
 
 msgid "Echo Clone (Letters)"
 msgstr "Clone Eco (Letras)"
 
+msgid "Editor preview: state index"
+msgstr ""
+
 msgid "Elastic Bounce"
 msgstr "Elastic Bounce"
+
+msgid "Elastic Pop"
+msgstr ""
+
+msgid "Elastic Slide"
+msgstr ""
+
+msgid "Elastic Text (Cursor Spring)"
+msgstr ""
+
+msgid "Enable Children Hover Effects"
+msgstr ""
+
+msgid "Enable Cursor Follow"
+msgstr "Habilitar Cursor Interativo"
+
+msgid "Enable Entrance Animation"
+msgstr "Habilitar Animação de Entrada"
 
 msgid "Enable Glassmorphism"
 msgstr "Habilitar Glassmorphism"
@@ -169,32 +384,110 @@ msgstr "Habilitar Glassmorphism"
 msgid "Enable Gradient"
 msgstr "Habilitar Gradiente"
 
+msgid "Enable Hover Effect"
+msgstr "Habilitar Efeito ao Passar o Mouse"
+
 msgid "Enable Text Animation"
 msgstr "Habilitar Animação de Texto"
 
 msgid "Enter viewport (scroll)"
 msgstr "Entrar na viewport (scroll)"
 
+msgid "Entrance Effect"
+msgstr "Efeito de Entrada"
+
 msgid "Explosion"
 msgstr "Explosion"
 
-msgid "Fade Down"
-msgstr "Fade Down"
+msgid "Extra wait before the sequence starts (on top of each state's own duration)."
+msgstr ""
+
+msgid "Fade Down (Aurora)"
+msgstr ""
 
 msgid "Fade In"
 msgstr "Fade In"
 
+msgid "Fade In (Aurora)"
+msgstr ""
+
+msgid "Fade In Down"
+msgstr ""
+
+msgid "Fade In Left"
+msgstr ""
+
+msgid "Fade In Right"
+msgstr ""
+
+msgid "Fade In Up"
+msgstr ""
+
 msgid "Fade Up"
 msgstr "Fade Up"
 
-msgid "Flip Up"
-msgstr "Flip Up"
+msgid "Fade Up (Aurora)"
+msgstr ""
+
+msgid "Fading"
+msgstr ""
+
+msgid "Fill (stretch)"
+msgstr ""
+
+msgid "Flash"
+msgstr ""
+
+msgid "Flip 3D"
+msgstr "Flip 3D"
+
+msgid "Flip Axis"
+msgstr ""
+
+msgid "Flip Board"
+msgstr ""
+
+msgid "Flip Both"
+msgstr ""
+
+msgid "Flip Horizontal"
+msgstr ""
+
+msgid "Flip Up (Aurora)"
+msgstr ""
+
+msgid "Flip Vertical"
+msgstr ""
 
 msgid "Flip X"
 msgstr "Flip X"
 
 msgid "Float Up"
 msgstr "Float Up"
+
+msgid "Floating animation"
+msgstr ""
+
+msgid "Floral"
+msgstr ""
+
+msgid "Follow Mouse (Spotlight)"
+msgstr "Seguir o Mouse (Spotlight)"
+
+msgid "Followers count"
+msgstr ""
+
+msgid "Following count"
+msgstr ""
+
+msgid "Footer HTML"
+msgstr ""
+
+msgid "Frame Color"
+msgstr ""
+
+msgid "Frame Size"
+msgstr ""
 
 msgid "GSAP"
 msgstr "GSAP"
@@ -214,14 +507,143 @@ msgstr "Gradiente"
 msgid "Gradient Colors (min. 3)"
 msgstr "Cores do Gradiente (mín. 3)"
 
+msgid "Grain Intensity (%)"
+msgstr ""
+
+msgid "Grayscale → Color"
+msgstr "Escala de Cinza → Cor"
+
+msgid "Grid photos (one URL per line)"
+msgstr ""
+
+msgid "Head Shake"
+msgstr ""
+
+msgid "Header HTML"
+msgstr ""
+
+msgid "Heartbeat"
+msgstr ""
+
+msgid "Horizontal (4:3)"
+msgstr ""
+
+msgid "Hover Duration (ms)"
+msgstr "Duração do Hover (ms)"
+
+msgid "Hover Preset"
+msgstr ""
+
+msgid "Hover Scatter"
+msgstr ""
+
+msgid "Hover Transition Duration (ms)"
+msgstr ""
+
+msgid "How long the card stays on this state before morphing to the next one."
+msgstr ""
+
+msgid "How long the morph animation into this state takes."
+msgstr ""
+
+msgid "How long the outer ring takes to catch up with the dot. The dot itself always tracks the mouse instantly."
+msgstr "Quanto tempo o anel externo leva para alcançar o ponto. O ponto em si sempre acompanha o mouse instantaneamente."
+
+msgid "How much of the image must be visible before the animation plays."
+msgstr "Quanto da imagem precisa estar visível antes que a animação seja reproduzida."
+
+msgid "Icons Only (fill)"
+msgstr ""
+
+msgid "Image Effect Preset"
+msgstr ""
+
+msgid "Image Effects"
+msgstr "Efeitos de Imagem"
+
+msgid "Image Elements Selector"
+msgstr "Seletor de Elementos de Imagem"
+
+msgid "Image Hover Scale"
+msgstr "Escala ao Passar sobre Imagem"
+
+msgid "Image fit"
+msgstr ""
+
+msgid "Image position"
+msgstr ""
+
 msgid "Increases the saturation of what appears behind the glass — the classic glassmorphism effect."
 msgstr "Aumenta a saturação do que aparece atrás do vidro — efeito clássico de glassmorphism."
+
+msgid "Independent from the Entrance Animation above — can be used alone or combined with it."
+msgstr "Independente da Animação de Entrada acima — pode ser usado sozinho ou combinado com ela."
+
+msgid "Independent of the entrance effect above — on hover, each split unit jumps to a random position and settles back on mouse out. Always uses Anime.js. Works best with \\\"Split by: Characters\\\"."
+msgstr ""
+
+msgid "Initial Delay (ms)"
+msgstr ""
 
 msgid "Initial delay (ms)"
 msgstr "Delay inicial (ms)"
 
+msgid "Initial delay before first morph (ms)"
+msgstr ""
+
+msgid "Instax (3:4)"
+msgstr ""
+
+msgid "Instax Square (1:1)"
+msgstr ""
+
+msgid "Interactive 3D Tilt"
+msgstr ""
+
+msgid "Interactive Elements Selector"
+msgstr "Seletor de Elementos Interativos"
+
+msgid "Interactive Hover Scale"
+msgstr "Escala ao Passar sobre Interativo"
+
+msgid "Iris Reveal (Circle Expand)"
+msgstr "Revelação em Íris (Expansão Circular)"
+
+msgid "Jello"
+msgstr ""
+
+msgid "Jelly Squash"
+msgstr ""
+
+msgid "Letter Roll"
+msgstr ""
+
+msgid "Letter Swap"
+msgstr ""
+
+msgid "Letters cascade"
+msgstr ""
+
+msgid "Level 1 (Direct Children Only)"
+msgstr ""
+
+msgid "Level 2 (Up to 2nd Level)"
+msgstr ""
+
+msgid "Level 3 (Up to 3rd Level)"
+msgstr ""
+
 msgid "Library"
 msgstr "Biblioteca"
+
+msgid "Lift Vertical (Move Y -10px)"
+msgstr ""
+
+msgid "LightSpeed In"
+msgstr ""
+
+msgid "Likes"
+msgstr ""
 
 msgid "Linear"
 msgstr "Linear"
@@ -229,8 +651,50 @@ msgstr "Linear"
 msgid "Lines"
 msgstr "Linhas"
 
+msgid "Liquid Cursor Distortion"
+msgstr ""
+
+msgid "Liquid Fill Reveal"
+msgstr ""
+
+msgid "Liquid Mesh (Fluid Domain Warping)"
+msgstr ""
+
+msgid "Liquid Warp Distortion"
+msgstr ""
+
+msgid "Loop sequence"
+msgstr ""
+
+msgid "Matrix Rain"
+msgstr ""
+
+msgid "Max Depth Level"
+msgstr ""
+
+msgid "Max width"
+msgstr ""
+
 msgid "Mesh (moving blobs)"
 msgstr "Mesh (blobs em movimento)"
+
+msgid "Mesh Shader Engine"
+msgstr ""
+
+msgid "Mesh Shader Style"
+msgstr ""
+
+msgid "Mesh Text Hover"
+msgstr ""
+
+msgid "Mini (3:4)"
+msgstr ""
+
+msgid "Move X (px)"
+msgstr ""
+
+msgid "Move Y (px)"
+msgstr ""
 
 msgid "Native Scramble"
 msgstr "Scramble Nativo"
@@ -238,11 +702,56 @@ msgstr "Scramble Nativo"
 msgid "Native Split (Letters)"
 msgstr "Split Nativo (Letras)"
 
+msgid "Neon Flicker"
+msgstr ""
+
 msgid "No"
 msgstr "Não"
 
-msgid "On containers, applies to the background. On Heading/Text Editor, applies to the text color."
-msgstr "Em containers, aplica no fundo. Em Heading/Text Editor, aplica na cor do texto."
+msgid "None"
+msgstr ""
+
+msgid "None (Same for All Children)"
+msgstr ""
+
+msgid "None (original size)"
+msgstr ""
+
+msgid "Normal (1:1)"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "On Appear (Scroll Reveal)"
+msgstr ""
+
+msgid "On Hover Only"
+msgstr ""
+
+msgid "On Page Load"
+msgstr "Ao Carregar a Página"
+
+msgid "On Scroll (Viewport)"
+msgstr ""
+
+msgid "On Scroll (when visible)"
+msgstr "Ao Rolar (quando visível)"
+
+msgid "On containers, applies to the background. On Heading/Text Editor, applies to the text color. On the Icon widget, applies to the icon fill. On Icon Box, see \\\"Apply To\\\" below."
+msgstr ""
+
+msgid "Only applies when the gradient is used as a text fill on Heading/Text Editor."
+msgstr ""
+
+msgid "Overlay Color"
+msgstr "Cor da Sobreposição"
+
+msgid "Padding"
+msgstr ""
 
 msgid "Page load"
 msgstr "Carregar a página"
@@ -250,50 +759,371 @@ msgstr "Carregar a página"
 msgid "Pan (sliding gradient)"
 msgstr "Pan (gradiente deslizante)"
 
+msgid "Paper Shader (Dithered Grain Noise)"
+msgstr ""
+
+msgid "Paste one image URL per line. They fill the 3-column grid."
+msgstr ""
+
+msgid "Pendulum Swing"
+msgstr ""
+
+msgid "Per letter (each glyph shows the full gradient)"
+msgstr ""
+
+msgid "Perspective Fly"
+msgstr ""
+
+msgid "Perspective Tilt"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid "Photo frame text"
+msgstr ""
+
+msgid "Pink"
+msgstr ""
+
+msgid "Plays a reveal/impact animation the first time the image enters the screen (or on page load)."
+msgstr "Reproduz uma animação de revelação/impacto na primeira vez que a imagem entra na tela (ou ao carregar a página)."
+
 msgid "Position (%)"
 msgstr "Posição (%)"
+
+msgid "Posts count"
+msgstr ""
+
+msgid "Profile text"
+msgstr ""
+
+msgid "Proximity Sibling Wave Effect"
+msgstr ""
+
+msgid "Pulse"
+msgstr ""
+
+msgid "RGB Split"
+msgstr ""
+
+msgid "RGB Split Amount (px)"
+msgstr ""
 
 msgid "Radial"
 msgstr "Radial"
 
+msgid "Raw HTML injected into .morph-footer. Empty = footer hidden."
+msgstr ""
+
+msgid "Raw HTML injected into .morph-header. Empty = header hidden."
+msgstr ""
+
+msgid "Recenters the gradient on the cursor position as it moves over the element, instead of a fixed center."
+msgstr "Recentraliza o gradiente na posição do cursor conforme ele se move sobre o elemento, em vez de um centro fixo."
+
+msgid "Replaces the native cursor with a two-part custom cursor (dot + trailing ring) while the pointer is inside this element."
+msgstr "Substitui o cursor nativo por um cursor personalizado de duas partes (ponto + anel que segue) enquanto o ponteiro estiver dentro deste elemento."
+
+msgid "Replay Every Time Visible"
+msgstr "Repetir Toda Vez que Visível"
+
 msgid "Replay on re-entering viewport"
 msgstr "Repetir ao re-entrar na viewport"
+
+msgid "Resting size of the trailing ring, before any hover scaling is applied."
+msgstr "Tamanho de repouso do anel, antes de qualquer escala de hover ser aplicada."
+
+msgid "Retro Pixelate Reveal"
+msgstr ""
+
+msgid "Ring Color"
+msgstr "Cor do Anel"
+
+msgid "Ring Size (px)"
+msgstr "Tamanho do Anel (px)"
+
+msgid "Roll In"
+msgstr ""
+
+msgid "Rotate (deg)"
+msgstr ""
+
+msgid "Rotate + Zoom"
+msgstr "Rotação + Zoom"
 
 msgid "Rotate In"
 msgstr "Rotate In"
 
+msgid "Rotate In (Aurora)"
+msgstr ""
+
+msgid "Rotate In Down Left"
+msgstr ""
+
+msgid "Rotate In Down Right"
+msgstr ""
+
+msgid "Rotate In Up Left"
+msgstr ""
+
+msgid "Rotate In Up Right"
+msgstr ""
+
+msgid "Rotate Tilt (-4deg)"
+msgstr ""
+
+msgid "Rotating"
+msgstr ""
+
+msgid "Rotating Character Dial"
+msgstr ""
+
+msgid "Rotation applied to the whole card, on top of each state's own rotation."
+msgstr ""
+
+msgid "Rubber Band"
+msgstr ""
+
+msgid "Rubber Stamp"
+msgstr ""
+
 msgid "Saturation (%)"
 msgstr "Saturação (%)"
+
+msgid "Scale"
+msgstr ""
 
 msgid "Scale In"
 msgstr "Scale In"
 
+msgid "Scale Ratio"
+msgstr ""
+
 msgid "Scale Up"
 msgstr "Scale Up"
+
+msgid "Scale Up (Zoom +5%)"
+msgstr ""
+
+msgid "Scale down"
+msgstr ""
+
+msgid "Scatter Converge"
+msgstr ""
+
+msgid "Scatter Intensity (px)"
+msgstr ""
+
+msgid "Scatter/Settle Duration (ms)"
+msgstr ""
 
 msgid "Scramble Text"
 msgstr "Scramble Text"
 
+msgid "Scroll Highlight"
+msgstr ""
+
+msgid "Sequence"
+msgstr ""
+
+msgid "Shake"
+msgstr ""
+
+msgid "Sharp → Blur Focus"
+msgstr ""
+
+msgid "Shine Color"
+msgstr "Cor do Brilho"
+
+msgid "Shine Sweep (NxWorld)"
+msgstr ""
+
+msgid "Shine Width (%)"
+msgstr "Largura do Brilho (%)"
+
+msgid "Sibling Wave Falloff Intensity (%)"
+msgstr ""
+
+msgid "Silk Shader (Specular Sheen)"
+msgstr ""
+
+msgid "Skew (deg)"
+msgstr ""
+
 msgid "Skew In"
 msgstr "Skew In"
+
+msgid "Skew Reveal"
+msgstr "Revelação com Inclinação"
+
+msgid "Slide Color Overlay"
+msgstr ""
+
+msgid "Slide Direction"
+msgstr ""
+
+msgid "Slide Down"
+msgstr ""
 
 msgid "Slide From Right"
 msgstr "Slide From Right"
 
+msgid "Slide Horizontal (Move X +10px)"
+msgstr ""
+
 msgid "Slide In"
 msgstr "Slide In"
+
+msgid "Slide In Down"
+msgstr ""
+
+msgid "Slide In Left"
+msgstr ""
+
+msgid "Slide In Right"
+msgstr ""
+
+msgid "Slide In Up"
+msgstr ""
 
 msgid "Slide Left"
 msgstr "Slide Esquerda"
 
+msgid "Slide Left (Aurora)"
+msgstr ""
+
 msgid "Slide Right"
 msgstr "Slide Direita"
+
+msgid "Slide Right (Aurora)"
+msgstr ""
+
+msgid "Slide Up"
+msgstr ""
+
+msgid "Slide from Left"
+msgstr "Deslizar da Esquerda"
+
+msgid "Slide from Right"
+msgstr "Deslizar da Direita"
+
+msgid "Sliding"
+msgstr ""
+
+msgid "Slot Machine"
+msgstr ""
+
+msgid "Social Media Post"
+msgstr ""
+
+msgid "Social Profile Card"
+msgstr ""
+
+msgid "Social post text"
+msgstr ""
+
+msgid "Soft Zoom"
+msgstr ""
+
+msgid "Specials"
+msgstr ""
+
+msgid "Spin In"
+msgstr ""
+
+msgid "Spiral In"
+msgstr ""
 
 msgid "Split by"
 msgstr "Dividir por"
 
+msgid "Spotlight Radius (px)"
+msgstr "Raio do Spotlight (px)"
+
+msgid "Spring Rotate"
+msgstr ""
+
+msgid "Stagger Flip 3D"
+msgstr ""
+
+msgid "Stagger Interval (ms)"
+msgstr ""
+
+msgid "States"
+msgstr ""
+
+msgid "States (sequence)"
+msgstr ""
+
+msgid "Stretch Warp"
+msgstr ""
+
+msgid "Stripe Mesh (Chromatic Stripes)"
+msgstr ""
+
+msgid "Subtext (below username)"
+msgstr ""
+
+msgid "Swing"
+msgstr ""
+
+msgid "Swing In"
+msgstr ""
+
+msgid "Swirl (%)"
+msgstr ""
+
+msgid "Tada"
+msgstr ""
+
+msgid "Target Children (What to animate)"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
 msgid "Text Animation"
 msgstr "Animação de Texto"
+
+msgid "Text Emerge"
+msgstr ""
+
+msgid "Text Only (fill)"
+msgstr ""
+
+msgid "Text Reveal Wall"
+msgstr ""
+
+msgid "Text render mode"
+msgstr ""
+
+msgid "The subtle up/down float applied via CSS on the card."
+msgstr ""
+
+msgid "Time delay between each consecutive child animation."
+msgstr ""
+
+msgid "Top center"
+msgstr ""
+
+msgid "Top left"
+msgstr ""
+
+msgid "Top right"
+msgstr ""
+
+msgid "Trail Delay (ms)"
+msgstr "Atraso do Rastro (ms)"
+
+msgid "Transition duration into this state (ms)"
+msgstr ""
+
+msgid "Trigger"
+msgstr "Gatilho"
+
+msgid "Trigger Mode"
+msgstr ""
 
 msgid "Trigger on"
 msgstr "Disparar ao"
@@ -304,11 +1134,65 @@ msgstr "Tipo"
 msgid "Typewriter"
 msgstr "Typewriter"
 
+msgid "Typewriter Delete"
+msgstr ""
+
+msgid "Unfold 3D"
+msgstr ""
+
+msgid "Unlimited (All Levels)"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "VHS Tracking"
+msgstr ""
+
+msgid "Vertical Blinds"
+msgstr ""
+
+msgid "Viewport Threshold (%)"
+msgstr ""
+
+msgid "Vintage (yellow)"
+msgstr ""
+
+msgid "Visibility Threshold (%)"
+msgstr "Limite de Visibilidade (%)"
+
 msgid "Visibility threshold (%)"
 msgstr "Visibilidade para disparar (%)"
 
 msgid "Wave"
 msgstr "Wave"
+
+msgid "Wave Mesh (Undulating Color Bands)"
+msgstr ""
+
+msgid "When on, the last state morphs back to the first and the sequence repeats forever."
+msgstr ""
+
+msgid "Which state (0-based) is rendered in the editor preview. On the real frontend the sequence always starts from state 0."
+msgstr ""
+
+msgid "Whole Element (background)"
+msgstr ""
+
+msgid "Whole phrase (one gradient across all text)"
+msgstr ""
+
+msgid "Widget rotation (deg)"
+msgstr ""
+
+msgid "Wipe Reveal (Bottom → Top)"
+msgstr "Revelação por Varredura (Baixo → Cima)"
+
+msgid "Wipe Reveal (Left → Right)"
+msgstr "Revelação por Varredura (Esquerda → Direita)"
+
+msgid "Wobble"
+msgstr ""
 
 msgid "Words"
 msgstr "Palavras"
@@ -319,113 +1203,37 @@ msgstr "Sim"
 msgid "Zoom In"
 msgstr "Zoom In"
 
+msgid "Zoom In (Aurora)"
+msgstr ""
+
+msgid "Zoom In Down"
+msgstr ""
+
+msgid "Zoom In Left"
+msgstr ""
+
+msgid "Zoom In Right"
+msgstr ""
+
+msgid "Zoom In Up"
+msgstr ""
+
 msgid "Zoom Out"
 msgstr "Zoom Out"
 
+msgid "Zoom Out (Aurora)"
+msgstr ""
+
+msgid "Zooming"
+msgstr ""
+
+#. translators: %s: minimum required Elementor version.
 msgid "requires Elementor %s or higher."
 msgstr "requer Elementor %s ou superior."
 
+#. translators: 1: minimum required PHP version, 2: currently installed PHP version.
 msgid "requires PHP %1$s or higher. Current version: %2$s."
 msgstr "requer PHP %1$s ou superior. Versão atual: %2$s."
 
 msgid "requires the Elementor plugin to be installed and activated."
 msgstr "requer o plugin Elementor instalado e ativado."
-
-msgid "Image Effects"
-msgstr "Efeitos de Imagem"
-
-msgid "Enable Entrance Animation"
-msgstr "Habilitar Animação de Entrada"
-
-msgid "Plays a reveal/impact animation the first time the image enters the screen (or on page load)."
-msgstr "Reproduz uma animação de revelação/impacto na primeira vez que a imagem entra na tela (ou ao carregar a página)."
-
-msgid "Entrance Effect"
-msgstr "Efeito de Entrada"
-
-msgid "Slide from Left"
-msgstr "Deslizar da Esquerda"
-
-msgid "Slide from Right"
-msgstr "Deslizar da Direita"
-
-msgid "Flip 3D"
-msgstr "Flip 3D"
-
-msgid "Skew Reveal"
-msgstr "Revelação com Inclinação"
-
-msgid "Wipe Reveal (Left → Right)"
-msgstr "Revelação por Varredura (Esquerda → Direita)"
-
-msgid "Wipe Reveal (Bottom → Top)"
-msgstr "Revelação por Varredura (Baixo → Cima)"
-
-msgid "Curtain Reveal (Split Center)"
-msgstr "Revelação em Cortina (Divisão ao Centro)"
-
-msgid "Iris Reveal (Circle Expand)"
-msgstr "Revelação em Íris (Expansão Circular)"
-
-msgid "Overlay Color"
-msgstr "Cor da Sobreposição"
-
-msgid "Delay (ms)"
-msgstr "Atraso (ms)"
-
-msgid "Trigger"
-msgstr "Gatilho"
-
-msgid "On Scroll (when visible)"
-msgstr "Ao Rolar (quando visível)"
-
-msgid "On Page Load"
-msgstr "Ao Carregar a Página"
-
-msgid "Visibility Threshold (%)"
-msgstr "Limite de Visibilidade (%)"
-
-msgid "How much of the image must be visible before the animation plays."
-msgstr "Quanto da imagem precisa estar visível antes que a animação seja reproduzida."
-
-msgid "Replay Every Time Visible"
-msgstr "Repetir Toda Vez que Visível"
-
-msgid "Enable Hover Effect"
-msgstr "Habilitar Efeito ao Passar o Mouse"
-
-msgid "Independent from the Entrance Animation above — can be used alone or combined with it."
-msgstr "Independente da Animação de Entrada acima — pode ser usado sozinho ou combinado com ela."
-
-msgid "Hover Effect"
-msgstr "Efeito ao Passar o Mouse"
-
-msgid "Shine Sweep"
-msgstr "Brilho Deslizante"
-
-msgid "Grayscale → Color"
-msgstr "Escala de Cinza → Cor"
-
-msgid "Blur → Sharp Focus"
-msgstr "Desfoque → Foco Nítido"
-
-msgid "Color Tint Overlay"
-msgstr "Sobreposição de Tonalidade de Cor"
-
-msgid "Brightness Pop"
-msgstr "Aumento de Brilho"
-
-msgid "Rotate + Zoom"
-msgstr "Rotação + Zoom"
-
-msgid "Hover Duration (ms)"
-msgstr "Duração do Hover (ms)"
-
-msgid "Shine Color"
-msgstr "Cor do Brilho"
-
-msgid "Shine Width (%)"
-msgstr "Largura do Brilho (%)"
-
-msgid "Tint Color"
-msgstr "Cor da Tonalidade"

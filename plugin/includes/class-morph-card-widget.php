@@ -711,6 +711,7 @@ class Morph_Card_Widget extends Widget_Base {
 			Group_Control_Typography::get_type(),
 			[
 				'name'     => 'aurora_mc_typo_' . $name_key,
+				/* translators: %s: text zone label (e.g. "Avatar", "Username", "Caption"). */
 				'label'    => sprintf( esc_html__( '%s typography', 'aurora-for-elementor' ), $label ),
 				'selector' => $selector,
 			]
@@ -718,6 +719,7 @@ class Morph_Card_Widget extends Widget_Base {
 		$this->add_control(
 			'aurora_mc_color_' . $name_key,
 			[
+				/* translators: %s: text zone label (e.g. "Avatar", "Username", "Caption"). */
 				'label'     => sprintf( esc_html__( '%s color', 'aurora-for-elementor' ), $label ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
