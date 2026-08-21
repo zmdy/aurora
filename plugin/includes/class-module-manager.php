@@ -31,11 +31,14 @@ final class Module_Manager {
 			Glassmorphism_Controls::class,
 			Cursor_Follow_Controls::class,
 			Image_Effects_Controls::class,
+			// Children_Animation_Controls was originally GSAP-only and gated
+			// behind AURORA_HAS_GSAP; it has since been rewritten on top of
+			// Elementor's own bundled animate.css (see enqueue_styles() and
+			// assets/js/children-animations.js — neither touches GSAP or
+			// Anime.js), so it no longer needs that gate and now ships
+			// unconditionally in both the full and light builds.
+			Children_Animation_Controls::class,
 		];
-
-		if ( AURORA_HAS_GSAP ) {
-			$modules[] = Children_Animation_Controls::class;
-		}
 
 		foreach ( $modules as $module_class ) {
 			new $module_class();

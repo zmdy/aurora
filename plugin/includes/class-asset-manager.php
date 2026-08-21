@@ -152,15 +152,18 @@ final class Asset_Manager {
 		);
 
 		// ── Children animations ───────────────────────────────────────────────
-		if ( $has_gsap ) {
-			wp_enqueue_script(
-				'aurora-children-animations',
-				AURORA_URL . 'assets/js/children-animations.js',
-				[ 'jquery', 'aurora-gsap', 'elementor-frontend' ],
-				AURORA_VERSION,
-				true
-			);
-		}
+		// Rewritten to run entirely on Elementor's own bundled animate.css
+		// (see Children_Animation_Controls::enqueue_styles() and
+		// assets/js/children-animations.js) — no GSAP or Anime.js dependency
+		// left, so this no longer needs to be gated behind $has_gsap or list
+		// 'aurora-gsap' as a script dependency.
+		wp_enqueue_script(
+			'aurora-children-animations',
+			AURORA_URL . 'assets/js/children-animations.js',
+			[ 'jquery', 'elementor-frontend' ],
+			AURORA_VERSION,
+			true
+		);
 
 		// ── Vendor: WebGL Shaders Engine + Gradient module ────────────────────
 		// Inside the editor/preview iframe both are always loaded — same
