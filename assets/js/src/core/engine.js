@@ -336,12 +336,26 @@ export function initTextAnimation(wrapper, opts) {
         // observer is set up (e.g. hero H1 above-the-fold), the browser
         // may not fire the callback synchronously. Check once after a
         // short delay and trigger manually if still not played.
+        //
+        // ALSO covers elements that are already scrolled PAST the
+        // viewport (rect.bottom <= 0) at this same check. Reloading a
+        // page (F5/Cmd+R) makes most browsers restore the previous
+        // scroll position before this script ever runs — a fresh
+        // IntersectionObserver created at that scroll position never
+        // sees those already-passed elements "enter" the viewport (they
+        // were already behind it the instant it started observing), so
+        // without this branch they'd stay at opacity:0 forever unless the
+        // user manually scrolls back up past them. This is what made
+        // reloading the page look like "every heading above where you'd
+        // scrolled to just disappears and never comes back" — not just
+        // the hero, but any already-passed element anywhere on the page.
         setTimeout(function () {
             if (wrapper._auroraObserver) { // still active
                 var rect = wrapper.getBoundingClientRect();
-                var inView = rect.bottom > 0 &&
-                             rect.top < (window.innerHeight || document.documentElement.clientHeight);
-                if (inView) {
+                var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+                var inView = rect.bottom > 0 && rect.top < viewportHeight;
+                var alreadyScrolledPast = rect.bottom <= 0;
+                if (inView || alreadyScrolledPast) {
                     trigger();
                     if (!opts.replay) {
                         observer.unobserve(wrapper);

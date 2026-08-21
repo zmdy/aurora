@@ -22,7 +22,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 abstract class Animation_Module {
 
-	/** @var array Prevents double-processing before_render for the same element. */
+	/**
+	 * Prevents double-processing before_render() for the same element
+	 * within one render pass. Keyed by spl_object_id(), with the
+	 * Element_Base itself as the value (not a boolean) so PHP keeps a
+	 * strong reference to it — see the long comment in before_render()
+	 * for why that reference is required for correctness, not just cleanliness.
+	 *
+	 * @var array<int, Element_Base>
+	 */
 	private $rendered_ids = [];
 
 	public function __construct() {
@@ -192,20 +200,38 @@ abstract class Animation_Module {
 		// used to mean only the FIRST occurrence of a looped/repeated
 		// widget ever got its data-attributes injected (and its module
 		// script enqueued) — every subsequent card/post in the loop with
-		// the same template _id silently got neither, which is why the
-		// gradient (and the text animation) appeared on some elements but
-		// not others sharing the same design. spl_object_id() is unique per
-		// render-pass object and still lets a fresh loop iteration's new
-		// object through.
+		// the same template _id silently got neither.
+		//
+		// spl_object_id() alone is NOT enough, though: it's only unique
+		// among objects that are SIMULTANEOUSLY ALIVE. If we just store
+		// `true` under that id, nothing keeps the $element object itself
+		// alive — the moment Elementor is done with it (very common right
+		// after each iteration of a Loop Grid/Posts widget, or anywhere
+		// else in the tree that frees elements as it goes) PHP is free to
+		// hand that exact same id to a completely different, unrelated
+		// element created moments later in the SAME request. That new
+		// element would then collide with the stale entry, get silently
+		// treated as "already processed", and never receive its
+		// data-attributes or script enqueue — which is exactly the
+		// "titles disappear across the whole page, not just repeated
+		// ones" regression: it can now hit ANY element, not only loop
+		// items, and reproduces consistently for a given page layout
+		// since the allocation pattern is deterministic per request.
+		//
+		// Storing $element itself as the array VALUE (not `true`) makes
+		// PHP hold a real reference to it for as long as it stays in this
+		// map, which keeps its spl_object_id() reserved (no reuse, no
+		// collision) until we evict it. The 200-entry cap below still
+		// bounds how many elements can be held alive at once, so this
+		// stays safe on very large pages / big loops.
 		$object_id = spl_object_id( $element );
 		if ( isset( $this->rendered_ids[ $object_id ] ) ) {
 			return;
 		}
-		// Cap at 200 entries to avoid unbounded growth on very large pages.
 		if ( count( $this->rendered_ids ) >= 200 ) {
 			$this->rendered_ids = [];
 		}
-		$this->rendered_ids[ $object_id ] = true;
+		$this->rendered_ids[ $object_id ] = $element;
 
 		$settings   = $element->get_settings_for_display();
 		$attributes = $this->get_render_attributes( $settings, $element );
