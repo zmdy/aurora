@@ -2,7 +2,7 @@
 Contributors: zmdy
 Tags: elementor, animation, gradient, hover effects, animejs
 Requires at least: 5.9
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 0.5.0
 License: GPLv3
@@ -81,6 +81,48 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 
 == Changelog ==
 
+= 0.5.0 =
+* Animate Children Elements: added alternate direction/pattern controls (Left/Right, Up/Down, Zoom, Rotate) for staggered animations.
+* Fixed a gradient disappearance bug on text elements that also had a Text Animation effect applied, including inside Loop Grid/Posts widgets and on animated Phrase-mode text.
+* Fixed titles/headings permanently losing their entrance animation after a page reload, when the page had already been scrolled past them.
+* Fixed inherited CSS `text-transform: capitalize` incorrectly forcing every animated character to uppercase.
+* Animate Children Elements: fixed animations occasionally not loading on the frontend, elements briefly flashing visible before their scroll trigger, and corrected render hook registration for reliability across themes.
+* Animate Children Elements: fixed the module being unavailable in this build — it no longer needs GSAP since the 0.3.0 engine migration, so it's now always active.
+* Packaging: the readme's Stable tag is now generated automatically from the plugin's Version header at build time, so the two can no longer drift out of sync.
+
+= 0.4.2 =
+* Animate Children Elements: Icon List and Image Gallery widgets now animate each item individually instead of moving as a single block.
+
+= 0.4.1 =
+* Animate Children Elements: fixed a frontend data fallback issue and a double-execution bug inside the Elementor editor.
+
+= 0.4.0 =
+* Animate Children Elements: added Elementor's native Motion Effects list and a new Hover Proximity Wave interaction.
+
+= 0.3.0 =
+* Animate Children Elements: migrated the animation engine to Elementor's own bundled animate.css library.
+
+= 0.2.5 =
+* Fixed Counter widgets nested inside an animated container not refreshing/re-triggering correctly.
+
+= 0.2.4 =
+* Animate Children Elements: isolated CSS transitions, forced GPU-accelerated rendering, and optimized the scroll-trigger threshold for smoother playback.
+
+= 0.2.3 =
+* Animate Children Elements: added "Target Children" (what to animate) and "Max Depth Level" controls.
+
+= 0.2.2 =
+* Gradient: fixed an icon-slicing bug and added Gradient support to the Icon List widget.
+
+= 0.2.0 =
+* Added the Gradient, Glassmorphism, Cursor Follow, and Image Effects modules.
+* Added the Morph Card widget.
+* Added English + Portuguese (Brazil) translations.
+* Grew the Text Animation catalog to dozens of Anime.js effects, each loaded on demand as its own small chunk.
+* Added the "Requires Plugins" header for native Elementor dependency checking.
+* Added the cross-platform Full/Light packaging workflow.
+* Numerous stability and performance fixes across every module.
+
 = 0.1 =
 * Initial release: Text Animation, Animate Children Elements, Gradient (incl. Follow Mouse spotlight), Glassmorphism, Cursor Follow, and Image Effects modules.
 * Text Animation: added a Continuous Wave entrance effect and a Hover Scatter interaction (both Anime.js).
@@ -89,6 +131,9 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 * Text Animation: added native Anime.js equivalents for all effects, delivering the complete animation catalog under a 100% GPL-compatible open-source engine (MIT license).
 
 == Upgrade Notice ==
+
+= 0.5.0 =
+Fixes gradient/text-animation combinations disappearing in some layouts and ensures Animate Children Elements is always available.
 
 = 0.1 =
 Initial release.

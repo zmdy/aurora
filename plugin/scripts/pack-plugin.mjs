@@ -15,6 +15,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
+import https from 'https';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // This file lives at plugin/scripts/. PLUGIN_ROOT (plugin/) holds the PHP,
@@ -123,6 +124,93 @@ function assertStableTagMatches(readmePath, version, label) {
 }
 
 /**
+ * Fails the pack if the newest `= x.y.z =` heading under a readme's
+ * `== Changelog ==` section doesn't match `version`. This is the
+ * changelog counterpart to the Stable tag guard above: the plugin
+ * shipped for years with the changelog frozen on "= 0.1 =" while the
+ * real Version climbed to 0.5.0, which reviewers read as unmaintained
+ * and which leaves users with no idea what changed between releases.
+ * There's no way to auto-write a meaningful changelog entry (that takes
+ * a human describing what actually changed), so instead this simply
+ * refuses to pack until one exists — the same "fail loudly instead of
+ * shipping stale" philosophy as the Stable tag sync.
+ */
+function assertChangelogIsCurrent(readmePath, version, label) {
+    if (!fs.existsSync(readmePath)) return;
+    const content = fs.readFileSync(readmePath, 'utf8');
+    const changelogMatch = content.match(/==\s*Changelog\s*==([\s\S]*?)(?:\n==\s|$)/i);
+    if (!changelogMatch) {
+        throw new Error(`pack-plugin: could not find a "== Changelog ==" section in ${readmePath}`);
+    }
+    const firstEntryMatch = changelogMatch[1].match(/^=\s*(\S+)\s*=/m);
+    if (!firstEntryMatch) {
+        throw new Error(`pack-plugin: "== Changelog ==" in ${readmePath} has no "= x.y.z =" entries`);
+    }
+    if (firstEntryMatch[1] !== version) {
+        throw new Error(
+            `pack-plugin: refusing to ship ${label} — the newest Changelog entry in ${readmePath} is ` +
+            `"= ${firstEntryMatch[1]} =" but aurora-for-elementor.php Version is "${version}". ` +
+            `Add a "= ${version} =" changelog entry describing what changed before packing.`
+        );
+    }
+}
+
+/**
+ * Best-effort fetch of the current stable WordPress release from
+ * WordPress.org's own version-check API — the same source WP.org's
+ * plugin review process compares "Tested up to" against. Network
+ * access isn't guaranteed at pack time (offline dev machines, CI
+ * sandboxes with no egress), so a failure here is a warning, not a
+ * hard stop: unlike Stable tag/Version (which are 100% ours to know
+ * and must never drift) or the changelog (which must exist before
+ * shipping), "Tested up to" merely gets left as whatever it already
+ * was, which just means an unchanged risk, not a regressed one.
+ */
+function fetchLatestWpVersion() {
+    return new Promise((resolve) => {
+        const req = https.get(
+            'https://api.wordpress.org/core/version-check/1.7/?channel=stable',
+            { headers: { 'User-Agent': 'aurora-for-elementor-pack-script' }, timeout: 5000 },
+            (res) => {
+                let body = '';
+                res.on('data', (chunk) => { body += chunk; });
+                res.on('end', () => {
+                    try {
+                        const data = JSON.parse(body);
+                        const version = data && data.offers && data.offers[0] && data.offers[0].version;
+                        // Keep only "major.minor" (WP.org readme convention — "Tested up to: 7.1", never "7.1.2").
+                        resolve(version ? version.split('.').slice(0, 2).join('.') : null);
+                    } catch {
+                        resolve(null);
+                    }
+                });
+            }
+        );
+        req.on('timeout', () => { req.destroy(); resolve(null); });
+        req.on('error', () => resolve(null));
+    });
+}
+
+/**
+ * Rewrites the `Tested up to:` line of a readme.txt-style file in place
+ * so it matches `wpVersion`. No-ops (rather than throwing) when
+ * `wpVersion` is null, i.e. fetchLatestWpVersion() couldn't reach the
+ * network — see the comment above it for why that's a warning, not a
+ * pack failure.
+ */
+function syncTestedUpTo(readmePath, wpVersion) {
+    if (!wpVersion || !fs.existsSync(readmePath)) return;
+    const content = fs.readFileSync(readmePath, 'utf8');
+    const testedUpToRegex = /^Tested up to:.*$/m;
+    if (!testedUpToRegex.test(content)) return;
+    const updated = content.replace(testedUpToRegex, `Tested up to: ${wpVersion}`);
+    if (updated !== content) {
+        fs.writeFileSync(readmePath, updated);
+        console.log(`   Synced Tested up to -> ${wpVersion} in ${path.relative(PLUGIN_ROOT, readmePath)}`);
+    }
+}
+
+/**
  * Recursively copies a directory while excluding specified files/folders.
  * `excludeRoot` is the folder `excludes` paths are computed relative to
  * (may differ from `src` itself only on the very first/outer call).
@@ -203,7 +291,7 @@ function zipFolder(destZipPath) {
     }
 }
 
-function main() {
+async function main() {
     console.log('=== Starting Cross-Platform Packaging Process ===');
 
     // 1. Clean up old build temp folders
@@ -217,6 +305,24 @@ function main() {
     console.log(`-> Plugin version (from aurora-for-elementor.php): ${version}`);
     syncStableTag(path.join(PLUGIN_ROOT, 'readme.txt'), version);
     syncStableTag(path.join(PLUGIN_ROOT, 'readme-light.txt'), version);
+
+    // 1c. Changelog must already have an entry for this exact version —
+    // fails the pack with a clear instruction if not (see
+    // assertChangelogIsCurrent() for why this can't be auto-written).
+    assertChangelogIsCurrent(path.join(PLUGIN_ROOT, 'readme.txt'), version, 'Full version');
+    assertChangelogIsCurrent(path.join(PLUGIN_ROOT, 'readme-light.txt'), version, 'Light version');
+
+    // 1d. Best-effort: keep "Tested up to" pointed at the current stable
+    // WordPress release. Silently a no-op if offline (see
+    // fetchLatestWpVersion()) — never blocks the pack.
+    console.log('-> Checking the current stable WordPress version...');
+    const latestWpVersion = await fetchLatestWpVersion();
+    if (latestWpVersion) {
+        syncTestedUpTo(path.join(PLUGIN_ROOT, 'readme.txt'), latestWpVersion);
+        syncTestedUpTo(path.join(PLUGIN_ROOT, 'readme-light.txt'), latestWpVersion);
+    } else {
+        console.log('   Could not reach api.wordpress.org (offline?) — leaving "Tested up to" unchanged.');
+    }
 
     // 2. Copy files to temp directory — merged from two source roots:
     //    plugin/ (PHP, includes/, languages/, readme) and the repo-root
@@ -290,4 +396,7 @@ function main() {
     console.log(`Generated in plugin/:\n - ${path.relative(PLUGIN_ROOT, fullZipPath)}\n - ${path.relative(PLUGIN_ROOT, lightZipPath)}`);
 }
 
-main();
+main().catch((err) => {
+    console.error(err instanceof Error ? err.message : err);
+    process.exitCode = 1;
+});
