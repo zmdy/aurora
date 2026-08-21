@@ -456,20 +456,35 @@ export function teardownTextAnimation(wrapper) {
 }
 
 /**
- * Polls until GSAP or Anime.js becomes available (or a max wait elapses),
- * then invokes the callback.
+ * Polls until the required animation library (GSAP or Anime.js) becomes
+ * available on window (or a max wait elapses), then invokes the callback.
  *
- * @param {function} callback
+ * @param {string|function} lib       'gsap' | 'animejs' | 'any' (or callback)
+ * @param {function}        [callback]
  */
-export function waitForLibs(callback) {
+export function waitForLibs(lib, callback) {
+    if (typeof lib === 'function') {
+        callback = lib;
+        lib = 'any';
+    }
+    if (typeof callback !== 'function') return;
+
     var waited = 0;
     var maxWait = 6000;
-    var step = 50;
+    var step = 30;
     var timer = setInterval(function () {
         waited += step;
         var gsapOk = typeof window !== 'undefined' && !!(window.AuroraGSAP || window.gsap);
         var animeOk = typeof window !== 'undefined' && !!(window.AuroraAnimeJS || window.anime);
-        if (gsapOk || animeOk || waited >= maxWait) {
+        var ready = false;
+        if (lib === 'gsap') {
+            ready = gsapOk;
+        } else if (lib === 'animejs') {
+            ready = animeOk;
+        } else {
+            ready = gsapOk || animeOk;
+        }
+        if (ready || waited >= maxWait) {
             clearInterval(timer);
             callback();
         }

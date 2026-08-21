@@ -515,7 +515,7 @@ class Text_Animation_Controls extends Animation_Module {
 	 * choice instantly without waiting on a script to load.
 	 *
 	 * On the real frontend this runs once per widget, during
-	 * elementor/frontend/element/before_render — before wp_footer, so a
+	 * elementor/frontend/before_render — before wp_footer, so a
 	 * wp_enqueue_script() call made here still gets printed. Calling it
 	 * more than once with the same $animation (e.g. two widgets using the
 	 * same effect) is harmless: WordPress dedupes by handle automatically.
