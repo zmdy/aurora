@@ -143,7 +143,7 @@ class Image_Effects_Controls extends Animation_Module {
 	 */
 	protected function get_render_hooks(): array {
 		return [
-			'elementor/frontend/element/before_render',
+			'elementor/frontend/before_render',
 			'elementor/frontend/widget/before_render',
 		];
 	}

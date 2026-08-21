@@ -221,12 +221,21 @@ export function initTextAnimation(wrapper, opts) {
     var units = [];
     if (!isSelfManaged(opts.animation)) {
         units = splitText(textEl, opts.splitBy);
-        // Initial state: invisible.
-        units.forEach(function (u) { u.style.opacity = '0'; });
+    }
+
+    // Only hide the text units if the effect is already registered — avoids
+    // leaving text permanently invisible when the effect chunk is still in
+    // flight on slow connections. If not ready yet, the trigger() will
+    // poll until it arrives or fall back to revealing the text.
+    var effectReady = !!getEffect(opts.animation);
+    if (!isSelfManaged(opts.animation)) {
+        if (effectReady) {
+            units.forEach(function (u) { u.style.opacity = '0'; });
+        }
     } else {
-        // Self-managed: keeps the text but hides the element; the effect
-        // itself reveals it when it runs.
-        textEl.style.opacity = '0';
+        if (effectReady) {
+            textEl.style.opacity = '0';
+        }
     }
 
     // Announce the DOM change so peer Aurora modules that painted the
@@ -250,10 +259,45 @@ export function initTextAnimation(wrapper, opts) {
 
     function trigger() {
         if (played && !opts.replay) return;
+
+        var effect = getEffect(opts.animation);
+
+        // Effect chunk not yet loaded — poll briefly (up to 5s) and retry.
+        // This handles the race condition where element_ready fires before
+        // the async effect JS chunk has finished registering itself.
+        if (!effect || typeof effect.run !== 'function') {
+            var retries = 0;
+            var maxRetries = 100; // 100 × 50ms = 5s
+            var poll = setInterval(function () {
+                retries++;
+                effect = getEffect(opts.animation);
+                if (effect && typeof effect.run === 'function') {
+                    clearInterval(poll);
+                    if (!isSelfManaged(opts.animation)) {
+                        units.forEach(function (u) { u.style.opacity = '0'; });
+                    } else {
+                        textEl.style.opacity = '0';
+                    }
+                    played = true;
+                    playAnimation(units, opts, textEl);
+                } else if (retries >= maxRetries) {
+                    clearInterval(poll);
+                    // Give up — reveal the text so it's not permanently hidden.
+                    if (!isSelfManaged(opts.animation)) {
+                        units.forEach(function (u) { u.style.opacity = ''; });
+                    } else {
+                        textEl.style.opacity = '';
+                    }
+                }
+            }, 50);
+            return;
+        }
+
         played = true;
         if (!isSelfManaged(opts.animation)) {
             units.forEach(function (u) { u.style.opacity = '0'; }); // Reset before re-animating.
         }
+
         playAnimation(units, opts, textEl);
     }
 

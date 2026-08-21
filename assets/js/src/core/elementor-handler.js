@@ -40,7 +40,16 @@ function registerHandler() {
     AuroraTextAnimationHandler.prototype.constructor = AuroraTextAnimationHandler;
 
     AuroraTextAnimationHandler.prototype.isEnabled = function () {
-        return this.getElementSettings('aurora_text_enable') === 'yes';
+        var setting = this.getElementSettings('aurora_text_enable');
+        if (setting === 'yes') return true;
+        if (setting === 'no') return false;
+        // Fallback: read from data-attributes (Elementor may not export the
+        // value via getElementSettings on the published frontend for some
+        // widget types or older Elementor versions).
+        var wrapper = this.$element && this.$element[0];
+        return wrapper &&
+               wrapper.getAttribute &&
+               wrapper.getAttribute('data-aurora-enable') === '1';
     };
 
     AuroraTextAnimationHandler.prototype.getOpts = function () {
@@ -64,6 +73,7 @@ function registerHandler() {
     };
 
     AuroraTextAnimationHandler.prototype.runAnimation = function () {
+        var self = this;
         var wrapper = this.$element[0];
         var enabled = this.isEnabled();
         if (!enabled) {
@@ -71,9 +81,14 @@ function registerHandler() {
             return;
         }
         var opts = this.getOpts();
-        requestAnimationFrame(function () {
+        // Wait for GSAP / Anime to be available before running the animation.
+        // This prevents the text from being split to opacity:0 but never
+        // revealed because the library chunk hasn't finished loading yet.
+        waitForLibs(function () {
             requestAnimationFrame(function () {
-                initTextAnimation(wrapper, opts);
+                requestAnimationFrame(function () {
+                    initTextAnimation(wrapper, opts);
+                });
             });
         });
     };

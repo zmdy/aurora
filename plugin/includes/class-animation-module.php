@@ -109,7 +109,7 @@ abstract class Animation_Module {
 	 * @return string[]
 	 */
 	protected function get_render_hooks(): array {
-		return [ 'elementor/frontend/element/before_render' ];
+		return [ 'elementor/frontend/before_render' ];
 	}
 
 	/**
