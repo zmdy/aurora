@@ -213,8 +213,9 @@ export function initTextAnimation(wrapper, opts) {
         wrapper._auroraObserver = null;
     }
 
-    // Store the original text (needed for scramble).
-    textEl._auroraOriginal = textEl.innerText || textEl.textContent;
+    // Store the original text (needed for scramble). Use textContent (not
+    // innerText) to avoid baking in CSS text-transform (uppercase, etc.).
+    textEl._auroraOriginal = textEl.textContent;
 
     // Text splitting (doesn't apply to self-managed effects, which do
     // their own split/scramble).
@@ -311,6 +312,12 @@ export function initTextAnimation(wrapper, opts) {
     }
 
     if (opts.trigger === 'scroll') {
+        // Clamp threshold to 0.05 to avoid the observer never firing for
+        // elements that are partially in the viewport at page-load time
+        // (e.g. hero headings). A threshold of 0 means "fire as soon as
+        // 1px is visible", which is the safest possible value for hero.
+        var safeThreshold = Math.min(opts.threshold || 0.2, 0.05);
+
         var observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
@@ -320,10 +327,28 @@ export function initTextAnimation(wrapper, opts) {
                     reset();
                 }
             });
-        }, { threshold: opts.threshold });
+        }, { threshold: safeThreshold });
 
         observer.observe(wrapper);
         wrapper._auroraObserver = observer;
+
+        // Safety net: if the element is already in the viewport when the
+        // observer is set up (e.g. hero H1 above-the-fold), the browser
+        // may not fire the callback synchronously. Check once after a
+        // short delay and trigger manually if still not played.
+        setTimeout(function () {
+            if (wrapper._auroraObserver) { // still active
+                var rect = wrapper.getBoundingClientRect();
+                var inView = rect.bottom > 0 &&
+                             rect.top < (window.innerHeight || document.documentElement.clientHeight);
+                if (inView) {
+                    trigger();
+                    if (!opts.replay) {
+                        observer.unobserve(wrapper);
+                    }
+                }
+            }
+        }, 200);
     } else {
         // Fires immediately on load.
         trigger();

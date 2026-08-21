@@ -44,7 +44,11 @@ export function getTextTarget(wrapper) {
  * @returns {HTMLElement[]}
  */
 export function splitIntoChars(el) {
-    var text = el.innerText || el.textContent;
+    // Use textContent (not innerText) so CSS text-transform on the parent
+    // (uppercase, capitalize, etc.) is NOT baked into the split text.
+    // The CSS property is still inherited by the child spans, so the visual
+    // result is identical — but the underlying text stays as authored.
+    var text = el.textContent;
     el.setAttribute('aria-label', text);
 
     var words = text.split(' ');
@@ -86,7 +90,9 @@ export function splitIntoChars(el) {
  * @returns {HTMLElement[]}
  */
 export function splitIntoWords(el) {
-    var text = el.innerText || el.textContent;
+    // Use textContent (not innerText) to preserve original case when
+    // the parent has CSS text-transform applied.
+    var text = el.textContent;
     el.setAttribute('aria-label', text);
     el.innerHTML = '';
 
@@ -115,7 +121,9 @@ export function splitIntoWords(el) {
  * @returns {HTMLElement[]}
  */
 export function splitIntoLines(el) {
-    var text = el.innerText || el.textContent;
+    // Use textContent (not innerText) to preserve original case when
+    // the parent has CSS text-transform applied.
+    var text = el.textContent;
     el.setAttribute('aria-label', text);
 
     // Step 1: create temporary word spans to measure line breaks.
