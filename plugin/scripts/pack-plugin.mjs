@@ -57,6 +57,72 @@ const ASSETS_EXCLUDES = [
 ];
 
 /**
+ * Reads the canonical plugin version straight from the `Version:` header
+ * of aurora-for-elementor.php — that header is the single source of
+ * truth for the plugin's version.
+ *
+ * WordPress.org's SVN uses each readme's `Stable tag:` — NOT the plugin
+ * header's `Version:` — to decide which tagged copy gets served to users
+ * as the "install/update" download. Whenever the two drift apart,
+ * reviewers flag it as a blocker and, worse, users on WP.org can end up
+ * downloading a stale build even after a real bump. Every readme's
+ * Stable tag is now kept in lockstep with this value at pack time (see
+ * syncStableTag() below) so that class of bug can't recur.
+ */
+function readPluginVersion() {
+    const phpPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor.php');
+    const phpContent = fs.readFileSync(phpPath, 'utf8');
+    const match = phpContent.match(/^\s*\*\s*Version:\s*(\S+)/m);
+    if (!match) {
+        throw new Error(
+            `pack-plugin: could not find a "Version:" header in ${phpPath} — refusing to pack with an unknown version.`
+        );
+    }
+    return match[1];
+}
+
+/**
+ * Rewrites the `Stable tag:` line of a readme.txt-style file in place so
+ * it matches `version`. Throws instead of silently no-op-ing when the
+ * file has no Stable tag line at all, so a malformed/renamed readme
+ * fails the pack loudly rather than shipping a stale tag unnoticed.
+ */
+function syncStableTag(readmePath, version) {
+    if (!fs.existsSync(readmePath)) return;
+    const content = fs.readFileSync(readmePath, 'utf8');
+    const stableTagRegex = /^Stable tag:.*$/m;
+    if (!stableTagRegex.test(content)) {
+        throw new Error(`pack-plugin: could not find a "Stable tag:" line in ${readmePath}`);
+    }
+    const updated = content.replace(stableTagRegex, `Stable tag: ${version}`);
+    if (updated !== content) {
+        fs.writeFileSync(readmePath, updated);
+        console.log(`   Synced Stable tag -> ${version} in ${path.relative(PLUGIN_ROOT, readmePath)}`);
+    }
+}
+
+/**
+ * Last-line-of-defense check run against the STAGED copy of a readme
+ * right before it gets zipped: fails the whole pack if, for any reason,
+ * the Stable tag in what's about to ship doesn't match the PHP header's
+ * Version. This is deliberately redundant with syncStableTag() above —
+ * it exists so that a future edit to this script (e.g. someone
+ * reordering steps, or a new code path that copies in a readme after
+ * the sync step ran) can never silently regress into shipping a
+ * mismatched Stable tag again.
+ */
+function assertStableTagMatches(readmePath, version, label) {
+    const content = fs.readFileSync(readmePath, 'utf8');
+    const match = content.match(/^Stable tag:\s*(\S+)/m);
+    if (!match || match[1] !== version) {
+        throw new Error(
+            `pack-plugin: refusing to ship ${label} — Stable tag in ${readmePath} is ` +
+            `"${match ? match[1] : '(missing)'}" but aurora-for-elementor.php Version is "${version}".`
+        );
+    }
+}
+
+/**
  * Recursively copies a directory while excluding specified files/folders.
  * `excludeRoot` is the folder `excludes` paths are computed relative to
  * (may differ from `src` itself only on the very first/outer call).
@@ -145,6 +211,13 @@ function main() {
         fs.rmSync(TEMP_DIR, { recursive: true, force: true });
     }
 
+    // 1b. Version is read once from the PHP header and used as the
+    // single source of truth for every readme's Stable tag from here on.
+    const version = readPluginVersion();
+    console.log(`-> Plugin version (from aurora-for-elementor.php): ${version}`);
+    syncStableTag(path.join(PLUGIN_ROOT, 'readme.txt'), version);
+    syncStableTag(path.join(PLUGIN_ROOT, 'readme-light.txt'), version);
+
     // 2. Copy files to temp directory — merged from two source roots:
     //    plugin/ (PHP, includes/, languages/, readme) and the repo-root
     //    assets/ folder (shared with the showcase site, lives outside plugin/).
@@ -159,6 +232,7 @@ function main() {
 
     // 3. Package Full Version
     console.log('-> Building Full Version ZIP (aurora-for-elementor-full.zip)...');
+    assertStableTagMatches(path.join(TEMP_PLUGIN_PATH, 'readme.txt'), version, 'Full version');
     const fullZipPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor-full.zip');
     zipFolder(fullZipPath);
     console.log('✅ Full version package built successfully.');
@@ -203,6 +277,7 @@ function main() {
 
     // 5. Package Light Version
     console.log('-> Building Light Version ZIP (aurora-for-elementor-light.zip)...');
+    assertStableTagMatches(path.join(TEMP_PLUGIN_PATH, 'readme.txt'), version, 'Light version');
     const lightZipPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor-light.zip');
     zipFolder(lightZipPath);
     console.log('✅ Light version package built successfully.');
