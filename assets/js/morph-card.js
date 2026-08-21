@@ -240,7 +240,7 @@
 			this.header.style.display = '';
 			this.header.innerHTML = `
 				<span class="ig-avatar-ring">
-					<img src="${ avatar }" alt="${ this._escAttr( username ) }" class="ig-avatar-img">
+					<img src="${ this._escAttr( avatar ) }" alt="${ this._escAttr( username ) }" class="ig-avatar-img">
 				</span>
 				<div class="ig-header-text">
 					<p class="ig-username">${ this._escHtml( username ) }</p>
@@ -252,7 +252,7 @@
 			this.image.className     = 'morph-image ig-photo-wrap';
 			this.image.style.display = '';
 			this.image.innerHTML = `
-				<img class="ig-photo-item" src="${ data.photo || '' }" alt="${ this._escAttr( data.caption || '' ) }" style="opacity:1;">
+				<img class="ig-photo-item" src="${ this._escAttr( data.photo || '' ) }" alt="${ this._escAttr( data.caption || '' ) }" style="opacity:1;">
 				<div class="ig-heart-burst"><i class="fa-solid fa-heart"></i></div>
 			`;
 
@@ -284,7 +284,7 @@
 			if ( data.photo ) {
 				const fit = data.imageFit || 'cover';
 				const pos = data.imagePosition || 'center center';
-				this.image.innerHTML = `<img class="morph-image-photo" src="${ data.photo }" alt="${ this._escAttr( data.caption || '' ) }" style="object-fit:${ fit };object-position:${ pos };">`;
+				this.image.innerHTML = `<img class="morph-image-photo" src="${ this._escAttr( data.photo ) }" alt="${ this._escAttr( data.caption || '' ) }" style="object-fit:${ fit };object-position:${ pos };">`;
 			} else {
 				this.image.innerHTML = '';
 				this.image.style.display = 'none';
@@ -308,7 +308,7 @@
 			this.header.innerHTML = `
 				<div class="morph-profile-top">
 					<span class="morph-profile-avatar-ring">
-						<img src="${ data.avatar || data.photo || '' }" alt="${ this._escAttr( data.username || data.name || '' ) }" class="morph-profile-avatar-img">
+						<img src="${ this._escAttr( data.avatar || data.photo || '' ) }" alt="${ this._escAttr( data.username || data.name || '' ) }" class="morph-profile-avatar-img">
 					</span>
 					<div class="morph-profile-stats">
 						<div class="morph-profile-stat"><strong>${ stats.posts }</strong><span>Posts</span></div>
@@ -337,7 +337,7 @@
 			// before the user has filled in URLs — otherwise the grid
 			// zone renders empty and the card looks broken.
 			const gridItems = photos.length
-				? photos.map( ( src ) => `<div class="morph-profile-grid-item"><img src="${ src }" alt=""></div>` )
+				? photos.map( ( src ) => `<div class="morph-profile-grid-item"><img src="${ this._escAttr( src ) }" alt=""></div>` )
 				: Array.from( { length: 9 }, () => '<div class="morph-profile-grid-item morph-profile-grid-item-empty"></div>' );
 
 			this.image.className     = 'morph-image';
@@ -361,7 +361,7 @@
 
 			this.image.className     = 'morph-image';
 			this.image.style.display = '';
-			this.image.innerHTML = `<img class="morph-image-photo" src="${ data.photo || '' }" alt="${ this._escAttr( data.caption || '' ) }">`;
+			this.image.innerHTML = `<img class="morph-image-photo" src="${ this._escAttr( data.photo || '' ) }" alt="${ this._escAttr( data.caption || '' ) }">`;
 
 			this.footer.className = 'morph-footer';
 			this.footer.style.display = '';

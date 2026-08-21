@@ -484,7 +484,13 @@ class Text_Animation_Controls extends Animation_Module {
 			? ( $settings['aurora_text_animation_gsap'] ?? 'gs-1' )
 			: ( $settings['aurora_text_animation_anime'] ?? 'ml-1' );
 
-		$this->enqueue_effect_script( $animation, $library );
+		// No per-effect script to enqueue here anymore: Asset_Manager already
+		// enqueues 'aurora-text-core' (assets/js/dist/aurora-text-core.js) on
+		// every real frontend request that reaches this point, and that
+		// bundle already contains every effect's registerEffect() call (see
+		// assets/js/src/entries/frontend-core.js) — the per-effect chunks
+		// under assets/js/dist/effects/ were only ever redundant weight on
+		// top of it, never the thing that actually made an effect available.
 
 		$hover_enable = 'yes' === ( $settings['aurora_text_hover_enable'] ?? '' );
 
@@ -503,48 +509,5 @@ class Text_Animation_Controls extends Animation_Module {
 			'data-aurora-hover-intensity' => esc_attr( max( 5, (int) ( $settings['aurora_text_hover_intensity']['size'] ?? 24 ) ) ),
 			'data-aurora-hover-duration'  => esc_attr( max( 100, (int) ( $settings['aurora_text_hover_duration']['size'] ?? 350 ) ) ),
 		];
-	}
-
-	/**
-	 * Enqueues the ONE effect chunk this widget actually needs
-	 * (assets/js/dist/effects/{id}.js — see scripts/build-text-effects.mjs).
-	 *
-	 * Skipped entirely inside the Elementor editor/preview context: there,
-	 * Asset_Manager already loads the full "aurora-text-editor.js" bundle
-	 * with every effect baked in, so the panel can preview any dropdown
-	 * choice instantly without waiting on a script to load.
-	 *
-	 * On the real frontend this runs once per widget, during
-	 * elementor/frontend/before_render — before wp_footer, so a
-	 * wp_enqueue_script() call made here still gets printed. Calling it
-	 * more than once with the same $animation (e.g. two widgets using the
-	 * same effect) is harmless: WordPress dedupes by handle automatically.
-	 *
-	 * @param string $animation  Effect id, e.g. 'gs-1' or 'ml-15'.
-	 * @param string $library    'gsap' | 'animejs' — decides which vendor
-	 *                           script the chunk depends on.
-	 */
-	private function enqueue_effect_script( string $animation, string $library ): void {
-
-		if ( \Elementor\Plugin::$instance->editor->is_edit_mode()
-			|| \Elementor\Plugin::$instance->preview->is_preview_mode() ) {
-			return;
-		}
-
-		// Guards against a corrupt/unexpected saved value being used to
-		// build a file path.
-		if ( ! preg_match( '/^(gs|ml)-\d+$/', $animation ) ) {
-			return;
-		}
-
-		$handle = 'aurora-text-effect-' . $animation;
-
-		wp_enqueue_script(
-			$handle,
-			AURORA_URL . 'assets/js/dist/effects/' . $animation . '.js',
-			[ 'aurora-text-core', 'gsap' === $library ? 'aurora-gsap' : 'aurora-animejs' ],
-			AURORA_VERSION,
-			true
-		);
 	}
 }

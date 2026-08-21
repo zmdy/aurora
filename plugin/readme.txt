@@ -16,7 +16,7 @@ Aurora adds a set of advanced design modules to the **Advanced** tab of every El
 
 = Module 1 — Text Animation =
 
-Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 88 animations (35 powered by GSAP, 53 by Anime.js) — a curated, deduplicated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Every GSAP effect has a matching Anime.js version with the same visual result, so the Library switch is a real choice, not a smaller fallback set. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. Only the specific effect a widget uses is ever loaded on the real frontend, on top of a small shared runtime — so adding more effects over time never adds weight to pages that don't use them.
+Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 88 animations (35 powered by GSAP, 53 by Anime.js) — a curated, deduplicated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Every GSAP effect has a matching Anime.js version with the same visual result, so the Library switch is a real choice, not a smaller fallback set. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. The full effect catalog ships as one shared frontend bundle, so every animation is available instantly with no extra per-effect network request.
 
 = Module 2 — Animate Children Elements =
 
