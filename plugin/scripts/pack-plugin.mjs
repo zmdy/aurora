@@ -336,6 +336,26 @@ async function main() {
         ASSETS_EXCLUDES
     );
 
+    // 2b. Bundle the full GPLv3 license text into the package root. It
+    // lives once at REPO_ROOT (shared with the showcase site) rather than
+    // duplicated under plugin/, so it needs its own explicit copy here —
+    // copyRecursive() above only ever walks PLUGIN_ROOT and REPO_ROOT/assets,
+    // neither of which reaches it. Both the header's `License: GPL v3` and
+    // readme.txt's `License: GPLv3` point at this exact license, and
+    // WordPress.org reviewers expect the actual license text shipped
+    // alongside a plugin that declares one — not just a reference to it.
+    // Copied before either zip is built, so it lands in both Full and Light.
+    const licenseSrcPath = path.join(REPO_ROOT, 'LICENSE');
+    const licenseDestPath = path.join(TEMP_PLUGIN_PATH, 'LICENSE.txt');
+    if (!fs.existsSync(licenseSrcPath)) {
+        throw new Error(
+            `pack-plugin: no LICENSE file found at ${licenseSrcPath} — refusing to pack a GPL-licensed ` +
+            `plugin with no license text in the package.`
+        );
+    }
+    fs.copyFileSync(licenseSrcPath, licenseDestPath);
+    console.log(`-> Bundled LICENSE.txt from ${path.relative(REPO_ROOT, licenseSrcPath)}`);
+
     // 3. Package Full Version
     console.log('-> Building Full Version ZIP (aurora-for-elementor-full.zip)...');
     assertStableTagMatches(path.join(TEMP_PLUGIN_PATH, 'readme.txt'), version, 'Full version');
