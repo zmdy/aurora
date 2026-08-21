@@ -689,10 +689,30 @@
         var leaves      = findTextLeaves(textEl);
         var mode        = data.textMode || 'phrase';
 
+        // Phrase-mode slicing (below) gives every leaf its OWN static
+        // background-size/-position (in px, based on the parent's
+        // bounding box) so that together they reconstruct a single
+        // phrase-wide gradient. That is fundamentally incompatible with
+        // Animate: a single shared @keyframes block (one CSS rule
+        // matching every leaf, see below) can only describe ONE
+        // background-position/-size timeline, so the moment the pan/loop
+        // animation starts playing it overrides each leaf's individually
+        // computed offset with the exact same value on every leaf —
+        // wrecking the slice alignment (this used to also get a second,
+        // conflicting inline backgroundSize='300% 300%' stomped onto it
+        // further down, making it worse). There is no way to keep the
+        // phrase-wide slice AND animate it with the current one-rule-for-
+        // all-leaves approach, so when Animate is on we fall back to the
+        // same full-gradient-per-leaf painting used for "per-letter" mode
+        // — this is what actually rendered anyway (just via conflicting
+        // leftover inline styles instead of on purpose), so this only
+        // removes the conflict, it doesn't change the animated look.
+        var usePhraseSlicing = (mode === 'phrase') && !data.animate;
+
         if (leaves.length === 0) {
             // No Text Animation split — paint the parent directly.
             paintTextTarget(textEl, gradientCss);
-        } else if (mode === 'per-letter') {
+        } else if (!usePhraseSlicing) {
             // Each glyph carries the FULL gradient (all letters look
             // identical). Parent must stay bare, otherwise its own paint
             // would ghost through the descendant text at the parent's
@@ -704,12 +724,12 @@
                 paintTextTarget(leaves[li], gradientCss);
             }
         } else {
-            // Phrase mode: the whole sentence shares a single gradient
-            // that stretches across the parent's bounding box. Each leaf
-            // receives a background sized to the parent's dimensions and
-            // POSITIONED so it displays only the slice sitting under its
-            // own glyph — visually reconstructing the phrase-wide
-            // gradient across all animated spans.
+            // Phrase mode (static only): the whole sentence shares a
+            // single gradient that stretches across the parent's bounding
+            // box. Each leaf receives a background sized to the parent's
+            // dimensions and POSITIONED so it displays only the slice
+            // sitting under its own glyph — visually reconstructing the
+            // phrase-wide gradient across all animated spans.
             var parentRect = textEl.getBoundingClientRect();
             var parentW = parentRect.width || textEl.offsetWidth || 0;
             var parentH = parentRect.height || textEl.offsetHeight || 0;

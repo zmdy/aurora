@@ -177,18 +177,35 @@ abstract class Animation_Module {
 			return;
 		}
 
-		// Prevents processing the same element twice (multiple hooks can fire).
-		$id = $element->get_id();
-		if ( $id && isset( $this->rendered_ids[ $id ] ) ) {
+		// Prevents processing the same element twice when multiple render
+		// hooks fire for the very same render pass (get_render_hooks() can
+		// return both 'elementor/frontend/before_render' — generic, fires
+		// for every element type — and 'elementor/frontend/widget/before_render'
+		// — widget-specific — and both fire for the same widget instance).
+		//
+		// IMPORTANT: this must be keyed by the PHP object identity
+		// (spl_object_id), NOT by $element->get_id(). Elementor re-uses the
+		// SAME element _id for every iteration of a Loop Grid / Posts
+		// widget / repeated Global widget — it re-instantiates a fresh
+		// Element_Base object per loop iteration, but the underlying
+		// template keeps the same _id string. Keying this guard by get_id()
+		// used to mean only the FIRST occurrence of a looped/repeated
+		// widget ever got its data-attributes injected (and its module
+		// script enqueued) — every subsequent card/post in the loop with
+		// the same template _id silently got neither, which is why the
+		// gradient (and the text animation) appeared on some elements but
+		// not others sharing the same design. spl_object_id() is unique per
+		// render-pass object and still lets a fresh loop iteration's new
+		// object through.
+		$object_id = spl_object_id( $element );
+		if ( isset( $this->rendered_ids[ $object_id ] ) ) {
 			return;
 		}
-		if ( $id ) {
-			// Cap at 200 entries to avoid unbounded growth inside Elementor Loop templates.
-			if ( count( $this->rendered_ids ) >= 200 ) {
-				$this->rendered_ids = [];
-			}
-			$this->rendered_ids[ $id ] = true;
+		// Cap at 200 entries to avoid unbounded growth on very large pages.
+		if ( count( $this->rendered_ids ) >= 200 ) {
+			$this->rendered_ids = [];
 		}
+		$this->rendered_ids[ $object_id ] = true;
 
 		$settings   = $element->get_settings_for_display();
 		$attributes = $this->get_render_attributes( $settings, $element );
