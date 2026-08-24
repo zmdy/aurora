@@ -37,6 +37,11 @@ final class Plugin_Core {
 
 		Module_Manager::init();
 
+		// wp-admin dashboard: the "Aurora" menu page (module on/off toggles,
+		// version/build info, links). Self-contained — registers its own
+		// admin_menu/admin_enqueue_scripts/wp_ajax_* hooks in its constructor.
+		new Admin_Page();
+
 		// Custom Elementor widgets (not "modules"): register through the
 		// dedicated Widgets_Manager hook. Modules add controls to existing
 		// widgets; the Morph Card is a widget of its own.

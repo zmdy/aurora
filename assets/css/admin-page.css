@@ -1,0 +1,561 @@
+/**
+ * Aurora for Elementor — wp-admin "Aurora" dashboard page.
+ * Colors, radii, and shadows match the plugin's own brand guide
+ * (assets/branding/brandguide.html) rather than any generic wp-admin or
+ * third-party plugin palette.
+ */
+
+@font-face {
+	font-family: 'Ysabeau Office';
+	src: url('../branding/fonts/ysabeau_office_regular.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+.aurora-admin-wrap {
+	--aurora-bg-0: #f4f6fa;
+	--aurora-bg-1: #ffffff;
+	--aurora-ink: #0f172a;
+	--aurora-ink-dim: #475569;
+	--aurora-border: rgba(15, 23, 42, 0.08);
+	--aurora-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+	--aurora-shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+	--aurora-accent: #0099cc;
+	--aurora-accent-ink: #ffffff;
+	--aurora-grad-borealis: linear-gradient(115deg, #05b172 0%, #0099cc 38%, #573ebd 72%, #05b172 100%);
+	--aurora-green: #05b172;
+
+	font-family: 'Ysabeau Office', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	color: var(--aurora-ink);
+	max-width: 1280px;
+	margin: 20px 20px 0 0;
+}
+
+.aurora-admin-wrap * {
+	box-sizing: border-box;
+}
+
+.aurora-admin-wrap h2,
+.aurora-admin-wrap h3,
+.aurora-admin-wrap h4 {
+	font-family: inherit;
+	color: var(--aurora-ink);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+
+.aurora-admin-header {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	background: var(--aurora-bg-1);
+	border: 1px solid var(--aurora-border);
+	border-radius: 16px;
+	padding: 14px 20px;
+	margin-bottom: 20px;
+	box-shadow: var(--aurora-shadow-sm);
+	flex-wrap: wrap;
+}
+
+.aurora-admin-logo {
+	height: 28px;
+	width: auto;
+	display: block;
+}
+
+.aurora-admin-tabs {
+	display: flex;
+	gap: 4px;
+	margin-left: 8px;
+	flex: 1;
+}
+
+.aurora-admin-tab {
+	background: transparent;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--aurora-ink-dim);
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease;
+	font-family: inherit;
+}
+
+.aurora-admin-tab:hover {
+	background: rgba(15, 23, 42, 0.04);
+	color: var(--aurora-ink);
+}
+
+.aurora-admin-tab.is-active {
+	background: rgba(0, 153, 204, 0.1);
+	color: var(--aurora-accent);
+}
+
+.aurora-admin-header__meta {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.aurora-badge {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: rgba(15, 23, 42, 0.05);
+	color: var(--aurora-ink-dim);
+}
+
+.aurora-badge--accent {
+	background: rgba(5, 177, 114, 0.1);
+	color: var(--aurora-green);
+}
+
+.aurora-icon-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: rgba(15, 23, 42, 0.05);
+	color: var(--aurora-ink-dim);
+	text-decoration: none;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.aurora-icon-btn:hover {
+	background: rgba(0, 153, 204, 0.12);
+	color: var(--aurora-accent);
+}
+
+.aurora-icon-btn .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────── */
+
+.aurora-admin-body {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.aurora-tab-panel {
+	display: none;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.aurora-tab-panel.is-active {
+	display: flex;
+}
+
+.aurora-grid-2col {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+	gap: 20px;
+}
+
+@media (max-width: 960px) {
+	.aurora-grid-2col {
+		grid-template-columns: 1fr;
+	}
+}
+
+.aurora-card {
+	background: var(--aurora-bg-1);
+	border: 1px solid var(--aurora-border);
+	border-radius: 16px;
+	padding: 28px;
+	box-shadow: var(--aurora-shadow-sm);
+}
+
+.aurora-card h3 {
+	margin: 0 0 6px;
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.aurora-card > p {
+	color: var(--aurora-ink-dim);
+	font-size: 13px;
+	line-height: 1.6;
+	margin: 0 0 4px;
+}
+
+.aurora-card__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 18px;
+	flex-wrap: wrap;
+}
+
+.aurora-card__head h3 {
+	margin: 0;
+}
+
+.aurora-card__head p {
+	flex-basis: 100%;
+	margin: 4px 0 0;
+}
+
+/* ── Welcome card ───────────────────────────────────────────────────── */
+
+.aurora-card--welcome {
+	display: flex;
+	align-items: center;
+	gap: 32px;
+}
+
+.aurora-card__text {
+	flex: 1;
+	min-width: 0;
+}
+
+.aurora-card__text h2 {
+	font-size: 22px;
+	margin: 0 0 10px;
+	font-weight: 700;
+}
+
+.aurora-card__text p {
+	color: var(--aurora-ink-dim);
+	font-size: 14px;
+	line-height: 1.6;
+	margin: 0 0 20px;
+	max-width: 560px;
+}
+
+.aurora-actions {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.aurora-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 18px;
+	border-radius: 10px;
+	font-size: 13px;
+	font-weight: 700;
+	text-decoration: none;
+	border: 1px solid transparent;
+	cursor: pointer;
+	transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+	font-family: inherit;
+}
+
+.aurora-btn--primary {
+	background: var(--aurora-accent);
+	color: var(--aurora-accent-ink);
+	box-shadow: 0 4px 14px rgba(0, 153, 204, 0.28);
+}
+
+.aurora-btn--primary:hover {
+	background: #0088b3;
+	color: var(--aurora-accent-ink);
+	transform: translateY(-1px);
+}
+
+.aurora-btn--secondary {
+	background: rgba(15, 23, 42, 0.04);
+	color: var(--aurora-ink);
+	border-color: var(--aurora-border);
+}
+
+.aurora-btn--secondary:hover {
+	background: rgba(15, 23, 42, 0.07);
+	color: var(--aurora-ink);
+}
+
+.aurora-card__preview {
+	width: 260px;
+	height: 170px;
+	flex-shrink: 0;
+	border-radius: 14px;
+	overflow: hidden;
+	background: #05070d;
+	position: relative;
+}
+
+.aurora-card__preview canvas {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+@media (max-width: 720px) {
+	.aurora-card--welcome {
+		flex-direction: column;
+	}
+	.aurora-card__preview {
+		width: 100%;
+	}
+}
+
+/* ── Stats sidebar card ─────────────────────────────────────────────── */
+
+.aurora-card--stats h3 {
+	margin-bottom: 4px;
+}
+
+.aurora-stat-number {
+	font-size: 34px;
+	font-weight: 800;
+	margin: 6px 0 2px;
+	background: var(--aurora-grad-borealis);
+	background-size: 200% 200%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.aurora-stat-caption {
+	font-size: 12px;
+	color: var(--aurora-ink-dim);
+	margin: 0 0 18px;
+}
+
+.aurora-quick-list {
+	list-style: none;
+	margin: 0;
+	padding: 16px 0 0;
+	border-top: 1px solid var(--aurora-border);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.aurora-quick-list a {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--aurora-ink);
+	text-decoration: none;
+}
+
+.aurora-quick-list a:hover {
+	color: var(--aurora-accent);
+}
+
+/* ── Modules grid ───────────────────────────────────────────────────── */
+
+.aurora-modules-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+	gap: 14px;
+}
+
+.aurora-module-card {
+	border: 1px solid var(--aurora-border);
+	border-radius: 14px;
+	padding: 16px;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.aurora-module-card:hover {
+	border-color: rgba(0, 153, 204, 0.35);
+	box-shadow: var(--aurora-shadow-sm);
+}
+
+.aurora-module-card__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+.aurora-module-card__icon {
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.aurora-module-card__icon img {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.aurora-module-card__icon .dashicons {
+	font-size: 22px;
+	width: 22px;
+	height: 22px;
+	color: var(--aurora-ink-dim);
+}
+
+.aurora-module-card__label {
+	font-size: 13px;
+	font-weight: 700;
+	margin: 0;
+}
+
+.aurora-module-card--detailed .aurora-module-card__label {
+	margin-bottom: 4px;
+}
+
+.aurora-module-card__desc {
+	font-size: 12px;
+	color: var(--aurora-ink-dim);
+	line-height: 1.5;
+	margin: 0;
+}
+
+/* ── Toggle switch ──────────────────────────────────────────────────── */
+
+.aurora-switch {
+	position: relative;
+	display: inline-block;
+	width: 36px;
+	height: 20px;
+	flex-shrink: 0;
+}
+
+.aurora-switch input {
+	position: absolute;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.aurora-switch__track {
+	position: absolute;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.15);
+	border-radius: 999px;
+	transition: background 0.15s ease;
+}
+
+.aurora-switch__thumb {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #ffffff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+	transition: transform 0.15s ease;
+}
+
+.aurora-switch input:checked ~ .aurora-switch__track {
+	background: var(--aurora-accent);
+}
+
+.aurora-switch input:checked ~ .aurora-switch__track .aurora-switch__thumb {
+	transform: translateX(16px);
+}
+
+.aurora-switch input:focus-visible ~ .aurora-switch__track {
+	box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.3);
+}
+
+.aurora-switch input:disabled {
+	cursor: not-allowed;
+}
+
+/* ── Link button (dashboard "manage all") ──────────────────────────── */
+
+.aurora-link-btn {
+	background: none;
+	border: none;
+	color: var(--aurora-accent);
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+	padding: 0;
+	font-family: inherit;
+}
+
+.aurora-link-btn:hover {
+	text-decoration: underline;
+}
+
+/* ── About tab ──────────────────────────────────────────────────────── */
+
+.aurora-meta-list {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px 20px;
+	margin: 20px 0 0;
+	padding: 20px 0 0;
+	border-top: 1px solid var(--aurora-border);
+}
+
+.aurora-meta-list dt {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--aurora-ink-dim);
+	font-weight: 700;
+	margin-bottom: 2px;
+}
+
+.aurora-meta-list dd {
+	margin: 0;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.aurora-changelog-title {
+	font-size: 13px;
+	font-weight: 700;
+	margin: 22px 0 8px;
+	padding-top: 18px;
+	border-top: 1px solid var(--aurora-border);
+}
+
+.aurora-changelog-list {
+	margin: 0;
+	padding-left: 18px;
+	font-size: 13px;
+	color: var(--aurora-ink-dim);
+	line-height: 1.7;
+}
+
+.aurora-link-list {
+	list-style: none;
+	margin: 20px 0 0;
+	padding: 20px 0 0;
+	border-top: 1px solid var(--aurora-border);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.aurora-link-list a {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--aurora-ink);
+	text-decoration: none;
+}
+
+.aurora-link-list a:hover {
+	color: var(--aurora-accent);
+}
+
+.aurora-link-list .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	color: var(--aurora-ink-dim);
+}

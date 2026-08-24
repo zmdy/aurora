@@ -14,6 +14,8 @@ The open-source Swiss Army knife for Elementor design: text & image animations, 
 
 Aurora adds a set of advanced design modules to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
 
+Activating Aurora adds an **Aurora** item to the wp-admin menu: a dashboard with a live preview of the Mesh Shader Engine, a per-module on/off switch (turning a module off removes its controls from the Advanced tab entirely and stops loading its assets), and version/build/support info.
+
 = Module 1 — Text Animation =
 
 Available on any Elementor widget (Heading, Text Editor, Button, etc.). Splits text into characters, words, or lines and applies one of 88 animations (35 powered by GSAP, 53 by Anime.js) — a curated, deduplicated collection spanning entrance, kinetic, glitch/digital, and creative styles — triggered on scroll or page load. Every GSAP effect has a matching Anime.js version with the same visual result, so the Library switch is a real choice, not a smaller fallback set. Includes a Hover Scatter interaction (each split unit jumps to a random position on mouseenter and settles back on mouseleave), independent of the entrance animation. The full effect catalog ships as one shared frontend bundle, so every animation is available instantly with no extra per-effect network request.
@@ -81,6 +83,9 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 
 == Changelog ==
 
+= 0.7.0 =
+* Added the "Aurora" wp-admin dashboard: a Dashboard tab with a live Mesh Shader Engine preview, a Modules tab to turn any of the 6 modules on/off, and an About tab with version, build, and support links.
+
 = 0.6.0 =
 * Gradient: added two new Mesh Shader Engine presets — Aurora Borealis (a drifting, top-anchored flare over a night-sky base) and Aurora Curtains (rippling vertical light bands) — using the same Distortion, Swirl, Scale, Angle, Grain, Liquid Cursor, and color-stop controls as every other mesh style.
 
@@ -134,6 +139,9 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 * Text Animation: added Anime.js equivalents (ml-24..ml-44) for every remaining GSAP-only effect, so the full 26-effect catalog is now available under either library. GSAP stays as a library option for now — this is groundwork for an eventual WordPress.org submission, since GSAP's core license (GreenSock's Standard No-Charge License) isn't GPL-compatible while Anime.js (MIT) is.
 
 == Upgrade Notice ==
+
+= 0.7.0 =
+Adds an "Aurora" wp-admin dashboard with per-module on/off switches.
 
 = 0.6.0 =
 Adds two new Aurora-themed Mesh Shader Engine presets to the Gradient module.
