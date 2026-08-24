@@ -26,7 +26,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-define( 'AURORA_VERSION',      '0.5.0' );
+// Read straight from this file's own "Version:" header instead of a second
+// hardcoded literal — a hardcoded AURORA_VERSION drifted out of sync with the
+// header in the past (the header was bumped for a release but this constant
+// wasn't), which silently broke JS/CSS cache-busting: wp_enqueue_script()/
+// wp_enqueue_style() use AURORA_VERSION as the `?ver=` query arg, so an
+// unbumped constant meant browsers kept serving stale cached assets after an
+// update. get_file_data() is defined in wp-includes/functions.php, loaded
+// well before plugins, so it's always available here.
+define( 'AURORA_VERSION',      get_file_data( __FILE__, [ 'Version' => 'Version' ] )['Version'] );
 define( 'AURORA_FILE',         __FILE__ );
 define( 'AURORA_PATH',         plugin_dir_path( __FILE__ ) );
 define( 'AURORA_URL',          plugin_dir_url( __FILE__ ) );

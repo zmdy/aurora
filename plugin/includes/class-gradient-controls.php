@@ -622,7 +622,7 @@ class Gradient_Controls extends Animation_Module {
 		$type = in_array( $type, [ 'linear', 'radial', 'conic', 'mesh' ], true ) ? $type : 'linear';
 
 		$mesh_style = $settings['aurora_gradient_mesh_style'] ?? 'paper';
-		$mesh_style = in_array( $mesh_style, [ 'paper', 'liquid', 'wave', 'silk', 'stripe' ], true ) ? $mesh_style : 'paper';
+		$mesh_style = in_array( $mesh_style, [ 'paper', 'liquid', 'wave', 'silk', 'stripe', 'aurora', 'aurora_curtains' ], true ) ? $mesh_style : 'paper';
 
 		$style = $settings['aurora_gradient_animation_style'] ?? 'mesh';
 		$style = in_array( $style, [ 'mesh', 'loop' ], true ) ? $style : 'mesh';
