@@ -167,11 +167,13 @@ class Gradient_Controls extends Animation_Module {
 				'type'               => Controls_Manager::SELECT,
 				'default'            => 'paper',
 				'options'            => [
-					'paper'  => esc_html__( 'Paper Shader (Dithered Grain Noise)', 'aurora-for-elementor' ),
-					'liquid' => esc_html__( 'Liquid Mesh (Fluid Domain Warping)', 'aurora-for-elementor' ),
-					'wave'   => esc_html__( 'Wave Mesh (Undulating Color Bands)', 'aurora-for-elementor' ),
-					'silk'   => esc_html__( 'Silk Shader (Specular Sheen)', 'aurora-for-elementor' ),
-					'stripe' => esc_html__( 'Stripe Mesh (Chromatic Stripes)', 'aurora-for-elementor' ),
+					'paper'           => esc_html__( 'Paper Shader (Dithered Grain Noise)', 'aurora-for-elementor' ),
+					'liquid'          => esc_html__( 'Liquid Mesh (Fluid Domain Warping)', 'aurora-for-elementor' ),
+					'wave'            => esc_html__( 'Wave Mesh (Undulating Color Bands)', 'aurora-for-elementor' ),
+					'silk'            => esc_html__( 'Silk Shader (Specular Sheen)', 'aurora-for-elementor' ),
+					'stripe'          => esc_html__( 'Stripe Mesh (Chromatic Stripes)', 'aurora-for-elementor' ),
+					'aurora'          => esc_html__( 'Aurora Borealis (Flowing Flares)', 'aurora-for-elementor' ),
+					'aurora_curtains' => esc_html__( 'Aurora Curtains (Vertical Bands)', 'aurora-for-elementor' ),
 				],
 				'condition'          => [
 					'aurora_gradient_enable' => 'yes',

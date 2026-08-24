@@ -24,7 +24,7 @@ Available on Sections, Columns, Containers, and Widgets. Applies a staggered ent
 
 = Module 3 — Gradient =
 
-Available on Sections, Columns, Containers (as a background), Heading/Text Editor widgets (as a text-fill), the Icon widget (as an icon-fill), and Icon Box (choice of box background or icon-fill). Multi-stop gradients (3+ colors) in linear, radial, or conic form, with an optional animated "mesh"/"color loop" motion, or a "Follow Mouse" spotlight mode that recenters a radial gradient on the live cursor position (Follow Mouse isn't available on SVG-based icon fills).
+Available on Sections, Columns, Containers (as a background), Heading/Text Editor widgets (as a text-fill), the Icon widget (as an icon-fill), and Icon Box (choice of box background or icon-fill). Multi-stop gradients (3+ colors) in linear, radial, or conic form, a "Follow Mouse" spotlight mode that recenters a radial gradient on the live cursor position (Follow Mouse isn't available on SVG-based icon fills), or the animated WebGL Mesh Shader Engine with seven presets — Paper, Liquid, Wave, Silk, Stripe, and two Aurora Borealis-inspired styles (a drifting flare and rippling vertical curtains) — all sharing the same Distortion, Swirl, Scale, Angle, Grain, and Liquid Cursor controls plus your chosen color stops.
 
 = Module 4 — Glassmorphism =
 
@@ -81,6 +81,9 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 
 == Changelog ==
 
+= 0.6.0 =
+* Gradient: added two new Mesh Shader Engine presets — Aurora Borealis (a drifting, top-anchored flare over a night-sky base) and Aurora Curtains (rippling vertical light bands) — using the same Distortion, Swirl, Scale, Angle, Grain, Liquid Cursor, and color-stop controls as every other mesh style.
+
 = 0.5.0 =
 * Animate Children Elements: added alternate direction/pattern controls (Left/Right, Up/Down, Zoom, Rotate) for staggered animations.
 * Fixed a gradient disappearance bug on text elements that also had a Text Animation effect applied, including inside Loop Grid/Posts widgets and on animated Phrase-mode text.
@@ -131,6 +134,9 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 * Text Animation: added Anime.js equivalents (ml-24..ml-44) for every remaining GSAP-only effect, so the full 26-effect catalog is now available under either library. GSAP stays as a library option for now — this is groundwork for an eventual WordPress.org submission, since GSAP's core license (GreenSock's Standard No-Charge License) isn't GPL-compatible while Anime.js (MIT) is.
 
 == Upgrade Notice ==
+
+= 0.6.0 =
+Adds two new Aurora-themed Mesh Shader Engine presets to the Gradient module.
 
 = 0.5.0 =
 Fixes gradient/text-animation combinations disappearing in some layouts and ensures Animate Children Elements is always available.

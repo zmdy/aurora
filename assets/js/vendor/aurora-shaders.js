@@ -7,10 +7,12 @@
  * 3. Wave Mesh (Undulating Height Maps)
  * 4. Silk Shader (Specular Sheen & Iridescence)
  * 5. Stripe Mesh (Chromatic Grid Rotation)
- * 6. Liquid Cursor Follower (Interactive Mouse Displacement Buffer)
+ * 6. Aurora Borealis (Flowing Flares over a night sky)
+ * 7. Aurora Curtains (Vertical, domain-warped light bands)
+ * 8. Liquid Cursor Follower (Interactive Mouse Displacement Buffer)
  *
  * @package Aurora
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 (function (root, factory) {
@@ -215,6 +217,90 @@
         '}'
     ].join('\n');
 
+    // 6. Aurora Borealis (Flowing Flares over a night sky)
+    // Reuses the shared uniform set the same way every other mesh style does:
+    // u_angle tilts the flare band (matches the reference canvas' FLARE_ANGLE_DEG),
+    // u_distortion controls flare density/frequency, u_swirl controls how fast the
+    // color drifts across the flare, and u_scale zooms the whole noise domain.
+    // Unlike the other 5 shaders, the aurora needs its own dark "night sky" base
+    // color to mix into (the reference effect relies on canvas transparency over a
+    // photo; here everything must be a fully opaque, self-contained background).
+    var FS_AURORA = [
+        GLSL_COMMON,
+        'void main() {',
+        '    vec2 st = (vUv - 0.5) * u_scale + 0.5;',
+        '    vec2 rst = rotate2D(radians(u_angle)) * (st - 0.5) + 0.5;',
+        '    rst = applyLiquidCursor(rst);',
+        '    float freq = 1.5 + u_distortion * 4.0;',
+        '    float drift = u_time * (0.04 + u_swirl * 0.12);',
+        '    float n = fbm(rst * freq + vec2(drift, -drift * 0.6));',
+        '    float n2 = fbm(rst * freq * 1.8 + vec2(-drift * 0.7, drift * 0.3) + 4.2);',
+        '    float flare = mix(n, n2, 0.5);',
+        '',
+        '    // Night sky base: a soft vertical gradient, dark navy near the ground',
+        '    // fading to near-black at the very top.',
+        '    vec3 sky = mix(vec3(0.008, 0.02, 0.04), vec3(0.0, 0.0, 0.015), pow(vUv.y, 0.6));',
+        '',
+        '    // Vertical mask: the flare is concentrated near the top of the surface',
+        '    // (vUv.y approaching 1.0) and fades toward the bottom, with the noise',
+        '    // perturbing the fade edge so it reads as a flowing curtain rather than',
+        '    // a hard line.',
+        '    float edge = vUv.y * 0.75 + flare * 0.35;',
+        '    float mask = smoothstep(0.15, 0.75, edge);',
+        '    mask *= 0.55 + 0.45 * smoothstep(0.0, 0.3, flare);',
+        '',
+        '    float t = fract(flare + drift * 0.5);',
+        '    vec3 glow = sampleGradient(t);',
+        '',
+        '    vec3 col = sky + glow * mask * 1.15;',
+        '    col = mix(sky, col, clamp(mask * 1.4, 0.0, 1.0));',
+        '',
+        '    if (u_grain_enable > 0.5) {',
+        '        float grain = (hash(gl_FragCoord.xy + fract(u_time)) - 0.5) * (u_grain_intensity * 0.15);',
+        '        col += vec3(grain);',
+        '    }',
+        '    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);',
+        '}'
+    ].join('\n');
+
+    // 7. Aurora Curtains (Vertical, domain-warped light bands)
+    // A visually distinct second aurora preset: instead of one drifting horizontal
+    // flare band, this renders several vertical "curtains" of light that ripple
+    // via fbm domain warping — a common technique for aurora/northern-lights
+    // shaders. Same uniform repurposing pattern as FS_AURORA.
+    var FS_AURORA_CURTAINS = [
+        GLSL_COMMON,
+        'void main() {',
+        '    vec2 st = (vUv - 0.5) * u_scale + 0.5;',
+        '    vec2 rst = rotate2D(radians(u_angle)) * (st - 0.5) + 0.5;',
+        '    rst = applyLiquidCursor(rst);',
+        '    float speed = 0.05 + u_swirl * 0.15;',
+        '    vec2 warp = vec2(',
+        '        fbm(rst * 2.2 + vec2(u_time * speed, 0.0)),',
+        '        fbm(rst * 2.2 + vec2(5.3, u_time * speed * 0.8))',
+        '    );',
+        '    float density = 6.0 + u_distortion * 14.0;',
+        '    float curtains = sin((rst.x + warp.x * 0.6) * density * 3.14159265);',
+        '    curtains = pow(abs(curtains), 1.6) * sign(curtains) * 0.5 + 0.5;',
+        '',
+        '    vec3 sky = mix(vec3(0.008, 0.02, 0.04), vec3(0.0, 0.0, 0.015), pow(vUv.y, 0.6));',
+        '',
+        '    float mask = smoothstep(0.1, 0.8, vUv.y * 0.7 + warp.y * 0.4);',
+        '    mask *= 0.4 + 0.6 * curtains;',
+        '',
+        '    float t = fract(curtains * 0.7 + warp.y * 0.3 + u_time * speed * 0.4);',
+        '    vec3 glow = sampleGradient(t);',
+        '',
+        '    vec3 col = mix(sky, sky + glow * 1.2, clamp(mask, 0.0, 1.0));',
+        '',
+        '    if (u_grain_enable > 0.5) {',
+        '        float grain = (hash(gl_FragCoord.xy + fract(u_time)) - 0.5) * (u_grain_intensity * 0.15);',
+        '        col += vec3(grain);',
+        '    }',
+        '    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);',
+        '}'
+    ].join('\n');
+
     return {
         VERTEX_SHADER: VERTEX_SHADER,
         FS_PAPER: FS_PAPER,
@@ -222,13 +308,17 @@
         FS_WAVE: FS_WAVE,
         FS_SILK: FS_SILK,
         FS_STRIPE: FS_STRIPE,
+        FS_AURORA: FS_AURORA,
+        FS_AURORA_CURTAINS: FS_AURORA_CURTAINS,
 
         getFragmentShader: function (style) {
             switch (style) {
-                case 'liquid': return FS_LIQUID;
-                case 'wave':   return FS_WAVE;
-                case 'silk':   return FS_SILK;
-                case 'stripe': return FS_STRIPE;
+                case 'liquid':          return FS_LIQUID;
+                case 'wave':            return FS_WAVE;
+                case 'silk':            return FS_SILK;
+                case 'stripe':          return FS_STRIPE;
+                case 'aurora':          return FS_AURORA;
+                case 'aurora_curtains': return FS_AURORA_CURTAINS;
                 case 'paper':
                 default:
                     return FS_PAPER;
