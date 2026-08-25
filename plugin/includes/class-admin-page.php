@@ -47,11 +47,11 @@ final class Admin_Page {
 
 	/**
 	 * Builds the wp-admin menu icon as a base64 data: URI from the plugin's
-	 * own favicon mark, so the menu entry carries the actual Aurora brand
-	 * icon instead of a generic dashicon.
+	 * own dashboard mark, so the menu entry carries the actual Aurora
+	 * brand icon instead of a generic dashicon.
 	 */
 	private function menu_icon(): string {
-		$path = AURORA_PATH . 'assets/branding/aurora_favicon.svg';
+		$path = AURORA_PATH . 'assets/branding/aurora-dashboard-logo.svg';
 		if ( ! file_exists( $path ) ) {
 			return 'dashicons-art';
 		}
