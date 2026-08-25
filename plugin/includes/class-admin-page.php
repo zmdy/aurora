@@ -131,7 +131,8 @@ final class Admin_Page {
 			);
 		}
 
-		$active = ! empty( $_POST['active'] ) && '0' !== (string) wp_unslash( $_POST['active'] );
+		$active_raw = isset( $_POST['active'] ) ? sanitize_text_field( wp_unslash( $_POST['active'] ) ) : '';
+		$active     = '' !== $active_raw && '0' !== $active_raw;
 
 		$saved = get_option( Module_Manager::OPTION_ACTIVE_MODULES, [] );
 		if ( ! is_array( $saved ) ) {
