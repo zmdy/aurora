@@ -71,19 +71,31 @@ var effect = {
 
         // Entrance: a modest staggered reveal of the slot structure,
         // independent of the hover swap below.
+        var entranceDuration = Math.max(0.3, opts.duration / 1000);
+        var entranceDelay = opts.delay / 1000;
+        var entranceStagger = opts.stagger / 1000;
         gsap.fromTo(pairs.map(function (p) { return p.slot; }),
             { opacity: 0, y: 12 },
             {
                 opacity: 1,
                 y: 0,
-                duration: Math.max(0.3, opts.duration / 1000),
-                delay: opts.delay / 1000,
+                duration: entranceDuration,
+                delay: entranceDelay,
                 ease: 'power2.out',
-                stagger: opts.stagger / 1000,
+                stagger: entranceStagger,
             }
         );
 
+        // Replace any handlers/timers left over from a previous init
+        // instead of stacking a second set on top of them.
+        if (textEl._auroraSwapHover) {
+            textEl.removeEventListener('mouseenter', textEl._auroraSwapHover.enter);
+            textEl.removeEventListener('mouseleave', textEl._auroraSwapHover.leave);
+            textEl._auroraSwapHover.pause();
+        }
+
         var activeTweens = [];
+        var autoDemoTimers = [];
 
         function swap(toDup) {
             activeTweens.forEach(function (t) { if (t) t.kill(); });
@@ -103,13 +115,19 @@ var effect = {
             ];
         }
 
-        // Replace any handlers left over from a previous init instead of
-        // stacking a second pair on top of them.
-        if (textEl._auroraSwapHover) {
-            textEl.removeEventListener('mouseenter', textEl._auroraSwapHover.enter);
-            textEl.removeEventListener('mouseleave', textEl._auroraSwapHover.leave);
-            textEl._auroraSwapHover.pause();
-        }
+        // Without this, the swap — the entire point of "Letter Swap" — was
+        // only ever visible on hover: the entrance above just fades the
+        // slot structure in and settles, so on the real frontend, in the
+        // Elementor/Playground preview, and in the effects grid it looked
+        // like a plain reveal until a pointer happened to cross it. Every
+        // other effect here demonstrates its own signature motion
+        // automatically; hover is always an extra, never the only way to
+        // see it. Auto-play one swap-in/hold/swap-out cycle right after
+        // the entrance settles, matching that same contract, without
+        // touching the hover/leave behavior below.
+        var entranceEndMs = (entranceDelay + (pairs.length - 1) * entranceStagger + entranceDuration) * 1000;
+        autoDemoTimers.push(setTimeout(function () { swap(true); }, entranceEndMs + 250));
+        autoDemoTimers.push(setTimeout(function () { swap(false); }, entranceEndMs + 250 + 900));
 
         var onEnter = function () { swap(true); };
         var onLeave = function () { swap(false); };
@@ -120,6 +138,8 @@ var effect = {
             leave: onLeave,
             pause: function () {
                 activeTweens.forEach(function (t) { if (t && typeof t.pause === 'function') t.pause(); });
+                autoDemoTimers.forEach(function (id) { clearTimeout(id); });
+                autoDemoTimers = [];
             },
         };
     },
