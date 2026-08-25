@@ -560,9 +560,10 @@
       /* Solid white while floating over the hero (brightness(0) crushes
          every color to black, invert(1) flips that to white) — flattens
          the logo's own color animation to a plain white mark so it reads
-         cleanly over a photo/gradient background. Removed once the nav
-         picks up its own solid backdrop on scroll, revealing the real
-         animated, full-color logo. */
+         cleanly over a photo/gradient background. Removed once .nav
+         picks up its .scrolled glass (still translucent — see
+         .nav.scrolled .nav__inner above, never solid), revealing the
+         real animated, full-color logo. */
       filter: brightness(0) invert(1);
       transition: filter var(--t-normal);
     }
