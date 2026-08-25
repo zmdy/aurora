@@ -997,40 +997,6 @@
       background: rgba(255, 255, 255, .05);
     }
 
-    /* Hero stats */
-    .hero__stats {
-      margin-top: var(--s-16);
-      display: flex;
-      gap: var(--s-10);
-      flex-wrap: wrap;
-    }
-
-    .hero__stat-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .hero__stat-number {
-      font-family: var(--f-display);
-      font-size: 2.3rem;
-      font-weight: 700;
-      letter-spacing: -.02em;
-      background: var(--g-aurora);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero__stat-label {
-      font-family: var(--f-heading);
-      font-size: 12px;
-      color: rgba(255, 255, 255, .45);
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-
     /* Scroll indicator */
     .hero__scroll {
       position: absolute;
@@ -5068,33 +5034,6 @@
           '-=0.6'
         );
 
-        tl.fromTo('.hero__stat-item',
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 },
-          '-=0.4'
-        );
-
-        var stat1 = { val: 0 };
-        gsap.to(stat1, {
-          val: 88,
-          duration: 2.2,
-          ease: 'power2.out',
-          onUpdate: function () {
-            var el = document.querySelector('.hero__stat-item:nth-child(1) .hero__stat-number');
-            if (el) el.textContent = Math.floor(stat1.val) + '+';
-          }
-        });
-
-        var stat2 = { val: 0 };
-        gsap.to(stat2, {
-          val: 6,
-          duration: 1.6,
-          ease: 'power2.out',
-          onUpdate: function () {
-            var el = document.querySelector('.hero__stat-item:nth-child(2) .hero__stat-number');
-            if (el) el.textContent = Math.floor(stat2.val);
-          }
-        });
       }
 
       if (document.readyState === 'loading') {

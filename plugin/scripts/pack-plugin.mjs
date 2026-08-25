@@ -40,6 +40,12 @@ const PLUGIN_EXCLUDES = [
 const ASSETS_EXCLUDES = [
     '.DS_Store',
     'js/src',
+    // Only the standalone showcase site (index.html) needs a locally-
+    // vendored jQuery — it has no WordPress of its own to supply one. The
+    // real plugin enqueues morph-card.js (the only file that needs jQuery)
+    // with WP core's own bundled 'jquery' handle (see class-asset-manager.php),
+    // so shipping this copy in the plugin zip would be dead weight.
+    'js/vendor/jquery.min.js',
 
     // Development & marketing branding assets (not needed by production plugin).
     // NOTE: aurora-dashboard-logo.svg, logo_aurora_animated_tagline.svg,

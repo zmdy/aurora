@@ -747,7 +747,15 @@
     // Try to register immediately (if elementorFrontend is already loaded).
     // If not, listen for the Elementor init event or fall back to scanAndInit.
     if (!tryRegisterHandlerNow()) {
-        if (typeof window !== 'undefined') {
+        // Only bind to Elementor's init event when Elementor is actually
+        // present. Without this guard, $(window).on(...) is reached on any
+        // non-Elementor page (e.g. the standalone showcase site) — and
+        // there, when jQuery itself isn't loaded either, `$` falls back to
+        // the plain callback-only stub at the bottom of this file, whose
+        // return value is undefined, so `.on(...)` throws
+        // "Cannot read properties of undefined (reading 'on')" and aborts
+        // the rest of this script (killing the scanAndInit fallback below).
+        if (typeof elementorFrontend !== 'undefined') {
             $(window).on('elementor/frontend/init', function () {
                 tryRegisterHandlerNow();
             });
