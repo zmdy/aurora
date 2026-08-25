@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/branding/aurora_animated_logo.svg" alt="Aurora Logo" width="150" />
+  <img src="assets/branding/logo_aurora_animated_tagline.svg" alt="Aurora for Elementor" width="280" />
 
   <p><strong>The open-source Swiss Army knife for Elementor design.</strong></p>
   <!-- Badges -->

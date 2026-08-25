@@ -557,6 +557,18 @@
     .nav__logo {
       height: 32px;
       width: auto;
+      /* Solid white while floating over the hero (brightness(0) crushes
+         every color to black, invert(1) flips that to white) — flattens
+         the logo's own color animation to a plain white mark so it reads
+         cleanly over a photo/gradient background. Removed once the nav
+         picks up its own solid backdrop on scroll, revealing the real
+         animated, full-color logo. */
+      filter: brightness(0) invert(1);
+      transition: filter var(--t-normal);
+    }
+
+    .nav.scrolled .nav__logo {
+      filter: none;
     }
 
     .nav__links {
@@ -2753,7 +2765,7 @@
     <div class="container">
       <div class="nav__inner">
         <a href="#top" aria-label="Aurora home">
-          <img src="assets/branding/aurora_animated_logo.svg" class="nav__logo" alt="Aurora for Elementor">
+          <img src="assets/branding/logo_aurora_animated.svg" class="nav__logo" alt="Aurora for Elementor">
         </a>
 
         <ul class="nav__links" role="list">
@@ -3772,7 +3784,7 @@
     <div class="container">
       <div class="footer__grid">
         <div>
-          <img src="assets/branding/aurora_animated_logo.svg" class="footer__logo" alt="Aurora for Elementor">
+          <img src="assets/branding/logo_aurora_animated.svg" class="footer__logo" alt="Aurora for Elementor">
           <p class="footer__tagline">The open-source Swiss Army knife for Elementor design. Color and motion, unleashed.
           </p>
         </div>

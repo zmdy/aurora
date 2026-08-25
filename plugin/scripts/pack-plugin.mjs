@@ -42,18 +42,25 @@ const ASSETS_EXCLUDES = [
     'js/src',
 
     // Development & marketing branding assets (not needed by production plugin).
-    // NOTE: aurora_favicon.svg, logo_aurora.svg, and branding/fonts (minus
-    // beasca.woff below) are deliberately NOT excluded — Admin_Page (the
-    // wp-admin "Aurora" dashboard) reads them at runtime for the wp-admin
-    // menu icon, the dashboard header logo, and the page's brand font. If a
-    // future admin-page.css/class-admin-page.php change stops needing one
-    // of them, move it back into this list.
+    // NOTE: aurora_favicon.svg, logo_aurora_animated_tagline.svg, and
+    // branding/fonts (minus beasca.woff below) are deliberately NOT
+    // excluded — Admin_Page (the wp-admin "Aurora" dashboard) reads them
+    // at runtime for the wp-admin menu icon, the dashboard header logo,
+    // and the page's brand font. If a future admin-page.css/class-admin-
+    // page.php change stops needing one of them, move it back into this
+    // list.
     'branding/brandguide.html',
     'branding/fonts/beasca.woff',
-    'branding/aurora_animated_logo.svg',
+    // logo_aurora.svg and logo_aurora_tagline.svg (the static, non-animated
+    // wordmarks) aren't used anywhere anymore — the plugin's Admin_Page
+    // uses logo_aurora_animated_tagline.svg, and the showcase site's
+    // index.html uses logo_aurora_animated.svg (also excluded below since
+    // that one's only ever read by the site, never by the plugin itself).
+    'branding/logo_aurora.svg',
+    'branding/logo_aurora_tagline.svg',
+    'branding/logo_aurora_animated.svg',
     'branding/aurora_blob_base_shape.svg',
     'branding/aurora_favicon_green.svg',
-    'branding/logo_aurora_tagline.svg',
     'branding/icons/tdesign',
     'branding/icons/aurora_icon_blue_contributing.svg',
     'branding/icons/aurora_icon_blue_features.svg',

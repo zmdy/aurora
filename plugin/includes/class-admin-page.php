@@ -190,7 +190,7 @@ final class Admin_Page {
 			<header class="aurora-admin-header">
 				<div class="aurora-admin-header__brand">
 					<img
-						src="<?php echo esc_url( AURORA_URL . 'assets/branding/logo_aurora.svg' ); ?>"
+						src="<?php echo esc_url( AURORA_URL . 'assets/branding/logo_aurora_animated_tagline.svg' ); ?>"
 						alt="<?php esc_attr_e( 'Aurora for Elementor', 'aurora-for-elementor' ); ?>"
 						class="aurora-admin-logo"
 					>
