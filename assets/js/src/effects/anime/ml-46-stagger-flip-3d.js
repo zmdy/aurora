@@ -73,12 +73,22 @@ var effect = {
             var base = withInitialDelay ? opts.delay : 0;
             var duration = Math.max(200, opts.duration);
             var stagger = Math.max(0, opts.stagger);
+            // One shared timeline for the whole play(), not one independent
+            // anime.animate() per phase. Anime.js v4 resolves competing
+            // animations on the SAME property (rotateX here) by composition
+            // at creation time — two separate animate() calls targeting the
+            // same property (the 0→90 roll, then a duration:0 snap back to
+            // 0) collide the instant both are created, since both are
+            // scheduled synchronously in this same forEach loop. The later
+            // call silently wins from t=0, so the cube never visibly
+            // rotates at all. A single timeline sequences them instead
+            // (add() then set()), exactly like gs-28's GSAP timeline does.
+            var tl = anime.createTimeline({ onComplete: function () { busy = false; } });
             cubes.forEach(function (cube, i) {
                 var at = base + i * stagger;
-                anime.animate(cube, { rotateX: [0, 90], duration: duration, delay: at, ease: 'inQuad' });
-                anime.animate(cube, { rotateX: 0, duration: 0, delay: at + duration });
+                tl.add(cube, { rotateX: 90, duration: duration, ease: 'inQuad' }, at);
+                tl.set(cube, { rotateX: 0 });
             });
-            setTimeout(function () { busy = false; }, base + cubes.length * stagger + duration + 40);
         }
 
         play(true);

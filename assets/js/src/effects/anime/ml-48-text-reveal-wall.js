@@ -221,31 +221,48 @@ var effect = {
                 var phaseOffset = duration * 0.5;
                 var lastLineDelay = (ROWS - 1) * stagger;
                 var totalPhaseTime = lastLineDelay + phaseOffset + duration;
-
-                linesData.forEach(function (_, index) {
-                    var lineDelay = index * stagger;
-                    anims.push(anime.animate(lineStates[index], {
-                        revealProgress: 1, duration: duration, delay: lineDelay, ease: ease,
-                        onUpdate: function () { updateLine(index); },
-                    }));
-                    anims.push(anime.animate(lineStates[index], {
-                        settleProgress: 1, duration: duration, delay: lineDelay + phaseOffset, ease: ease,
-                        onUpdate: function () { updateLine(index); },
-                    }));
-                });
-
                 var reverseStartDelay = totalPhaseTime + HOLD_DURATION;
+
+                // One shared timeline for the whole cycle, not one
+                // independent anime.animate() per phase. Anime.js v4
+                // resolves competing animations on the SAME property by
+                // composition at creation time — revealProgress (and
+                // settleProgress) each get animated to 1 and later back to
+                // 0 on the very same lineStates[index] object, and since
+                // every phase here was scheduled synchronously in this one
+                // function, the later-created call was winning the
+                // property from t=0, silently cancelling the earlier one.
+                // That's why lines never actually revealed. A single
+                // timeline with absolute-position add() calls sequences
+                // them correctly instead, the same way gs-30's GSAP
+                // timeline does.
+                var tl = anime.createTimeline();
+
                 linesData.forEach(function (_, index) {
                     var lineDelay = index * stagger;
-                    anims.push(anime.animate(lineStates[index], {
-                        settleProgress: 0, duration: duration, delay: reverseStartDelay + lineDelay, ease: ease,
+                    tl.add(lineStates[index], {
+                        revealProgress: 1, duration: duration, ease: ease,
                         onUpdate: function () { updateLine(index); },
-                    }));
-                    anims.push(anime.animate(lineStates[index], {
-                        revealProgress: 0, duration: duration, delay: reverseStartDelay + lineDelay + phaseOffset, ease: ease,
+                    }, lineDelay);
+                    tl.add(lineStates[index], {
+                        settleProgress: 1, duration: duration, ease: ease,
                         onUpdate: function () { updateLine(index); },
-                    }));
+                    }, lineDelay + phaseOffset);
                 });
+
+                linesData.forEach(function (_, index) {
+                    var lineDelay = index * stagger;
+                    tl.add(lineStates[index], {
+                        settleProgress: 0, duration: duration, ease: ease,
+                        onUpdate: function () { updateLine(index); },
+                    }, reverseStartDelay + lineDelay);
+                    tl.add(lineStates[index], {
+                        revealProgress: 0, duration: duration, ease: ease,
+                        onUpdate: function () { updateLine(index); },
+                    }, reverseStartDelay + lineDelay + phaseOffset);
+                });
+
+                anims.push(tl);
 
                 var totalCycleTime = (totalPhaseTime + HOLD_DURATION) * 2;
                 scheduleRestart(totalCycleTime);
