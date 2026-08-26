@@ -2456,20 +2456,19 @@
    CTA / FOOTER AREA
    ═══════════════════════════════════════════════════════════════════ */
     .cta-section {
-      background: var(--c-surface);
+      background-color: var(--c-surface);
+      background-image: url('../../assets/branding/aurora-cta.webp');
+      background-size: cover;
+      background-position: center;
       position: relative;
       overflow: hidden;
     }
 
-    .cta-section::before {
+    .cta-section::after {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(ellipse, rgba(5, 177, 114, .12) 0%, rgba(124, 92, 255, .08) 40%, transparent 70%);
+      inset: 0;
+      background: rgba(3, 4, 12, .6);
       pointer-events: none;
     }
 
@@ -2501,32 +2500,9 @@
 
     /* ── Footer ── */
     .footer {
-      position: relative;
-      overflow: hidden;
       border-top: 1px solid rgba(255, 255, 255, .05);
       padding: var(--s-12) 0 var(--s-8);
-      background-color: var(--c-night);
-      background-image: url('../../assets/branding/aurora-footer.webp');
-      background-size: cover;
-      /* Anchors the image to the bottom edge (the end of the page) so it
-         stays aligned there regardless of how tall the footer ends up
-         being — the same "cover" treatment the hero uses, just anchored
-         to the opposite edge since this section sits at the page's end. */
-      background-position: center bottom;
-    }
-
-    /* Aurora canvas background — same flowing-ribbons effect as the hero
-       (see the FLOWING SIMPLEX 3D NOISE AURORA CANVAS OVERLAY script),
-       just layered over aurora-footer.webp instead of aurora-hero.webp. */
-    .footer__canvas-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
-
-    .footer > .container {
-      position: relative;
-      z-index: 1;
+      background: var(--c-night);
     }
 
     .footer__grid {
@@ -3014,9 +2990,6 @@
      FOOTER
      ═══════════════════════════════════════════════════════════════════ -->
   <footer class="footer">
-    <div class="footer__canvas-bg" aria-hidden="true">
-      <canvas data-aurora-ribbons></canvas>
-    </div>
     <div class="container">
       <div class="footer__grid">
         <div>
