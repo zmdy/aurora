@@ -1,0 +1,4337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Aurora for Elementor — 88+ premium text animations, gradients, glassmorphism, cursor follow and image effects. The open-source Swiss Army knife for Elementor design.">
+  <title>Aurora for Elementor — Color & Motion, Unleashed</title>
+  <link rel="icon" href="../assets/branding/aurora_favicon.svg" type="image/svg+xml">
+
+  <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Plugin CSS -->
+  <!-- Plugin CSS Modules -->
+  <link href="../assets/css/text-animations.css" rel="stylesheet">
+  <link href="../assets/css/gradient-module.css" rel="stylesheet">
+  <link href="../assets/css/glass-module.css" rel="stylesheet">
+  <link href="../assets/css/cursor-follow.css" rel="stylesheet">
+  <link href="../assets/css/image-effects.css" rel="stylesheet">
+  <link href="../assets/css/morph-card.css" rel="stylesheet">
+  <link href="../assets/css/editor.css" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+   AURORA DESIGN SYSTEM — DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════════ */
+    :root {
+      /* Brand Palette */
+      --c-green: #05b172;
+      --c-teal: #0099cc;
+      --c-violet: #7c5cff;
+      --c-night: #03040c;
+      --c-surface: #07091a;
+      --c-elevated: #0d1030;
+
+      /* Gradient Presets */
+      --g-aurora: linear-gradient(115deg, #05b172 0%, #0099cc 45%, #7c5cff 100%);
+      --g-subtle: linear-gradient(135deg, rgba(5, 177, 114, .12) 0%, rgba(0, 153, 204, .08) 50%, rgba(124, 92, 255, .12) 100%);
+
+      /* Typography Tokens — Distinctive Avant-Garde Scale */
+      --f-display: 'Syne', sans-serif;
+      --f-heading: 'Space Grotesk', system-ui, sans-serif;
+      --f-sans: 'Inter', system-ui, sans-serif;
+      --f-mono: 'JetBrains Mono', monospace;
+
+      /* Spacing scale */
+      --s-1: .25rem;
+      --s-2: .5rem;
+      --s-3: .75rem;
+      --s-4: 1rem;
+      --s-5: 1.25rem;
+      --s-6: 1.5rem;
+      --s-8: 2rem;
+      --s-10: 2.5rem;
+      --s-12: 3rem;
+      --s-16: 4rem;
+      --s-20: 5rem;
+      --s-24: 6rem;
+      --s-32: 8rem;
+
+      /* Radii */
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 28px;
+      --r-full: 9999px;
+
+      /* Shadows */
+      --shadow-glow-green: 0 0 40px rgba(5, 177, 114, .25);
+      --shadow-glow-teal: 0 0 40px rgba(0, 153, 204, .25);
+      --shadow-glow-violet: 0 0 40px rgba(124, 92, 255, .25);
+      --shadow-card: 0 24px 60px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .06);
+
+      /* Timing */
+      --t-fast: 150ms cubic-bezier(.4, 0, .2, 1);
+      --t-normal: 300ms cubic-bezier(.4, 0, .2, 1);
+      --t-slow: 500ms cubic-bezier(.4, 0, .2, 1);
+      --t-spring: 600ms cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════
+   EXTENDED MULTI-MODULE SHOWCASE STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+    .morph-showcase-box {
+      background: rgba(7, 9, 26, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--r-xl);
+      padding: var(--s-8);
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(20px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-8);
+      align-items: center;
+    }
+
+    @media (max-width: 992px) {
+      .morph-showcase-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .morph-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 420px;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, rgba(124, 92, 255, 0.15), transparent 70%);
+      border-radius: var(--r-lg);
+      padding: var(--s-6);
+      overflow: hidden;
+    }
+
+    .morph-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .morph-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-radius: var(--r-md);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-family: var(--f-heading);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t-normal);
+    }
+
+    .morph-btn:hover,
+    .morph-btn.active {
+      background: rgba(5, 177, 114, 0.12);
+      border-color: var(--c-green);
+      color: var(--c-green);
+      transform: translateX(4px);
+    }
+
+    /* Image Effects Studio */
+    .img-effects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--s-6);
+      margin-top: var(--s-8);
+    }
+
+    .hover-effect-card {
+      background: rgba(13, 16, 48, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--r-lg);
+      padding: var(--s-4);
+      text-align: center;
+      transition: transform var(--t-normal), border-color var(--t-normal);
+    }
+
+    .hover-effect-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--c-teal);
+    }
+
+    .hover-effect-card__img-box {
+      width: 100%;
+      height: 180px;
+      border-radius: var(--r-md);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: var(--s-3);
+    }
+
+    .hover-effect-card__img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease;
+    }
+
+    /* Glassmorphism Builder */
+    .glass-builder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-8);
+      background: rgba(7, 9, 26, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--r-xl);
+      padding: var(--s-8);
+      backdrop-filter: blur(20px);
+    }
+
+    @media (max-width: 992px) {
+      .glass-builder-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .glass-preview-stage {
+      min-height: 380px;
+      border-radius: var(--r-lg);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(45deg, #7c5cff, #05b172, #0099cc);
+      background-size: 200% 200%;
+      animation: mesh-bg-move 8s ease infinite;
+      overflow: hidden;
+      padding: var(--s-6);
+    }
+
+    @keyframes mesh-bg-move {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .glass-sample-card {
+      width: 100%;
+      max-width: 320px;
+      padding: var(--s-6);
+      border-radius: 20px;
+      color: #fff;
+      transition: all 0.2s ease;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Elementor Panel Mockup */
+    .el-mockup-container {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: var(--s-6);
+      background: #17181c;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    @media (max-width: 992px) {
+      .el-mockup-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .el-sidebar {
+      background: #1e1f25;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .el-sidebar-header {
+      padding: 16px 20px;
+      background: #17181c;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--f-heading);
+      font-size: 13px;
+      font-weight: 700;
+      color: #a4a7b5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .el-tabs-nav {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .el-tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7b7e8d;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .el-tab-item.active {
+      color: #92003b;
+      border-bottom: 2px solid #92003b;
+      background: rgba(146, 0, 59, 0.08);
+    }
+
+    .el-accordion-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .el-accordion-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--f-sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: #d5d7e0;
+      cursor: pointer;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      border: none;
+      transition: background 0.2s ease;
+    }
+
+    .el-accordion-header:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .el-accordion-header.active {
+      color: var(--c-green);
+      background: rgba(5, 177, 114, 0.08);
+    }
+
+    .el-accordion-body {
+      padding: 16px 18px;
+      background: #17181c;
+      display: none;
+    }
+
+    .el-accordion-body.active {
+      display: block;
+    }
+
+    .el-field-group {
+      margin-bottom: 14px;
+    }
+
+    .el-field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8e92a2;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .el-field-input,
+    .el-field-select {
+      width: 100%;
+      background: #252730;
+      border: 1px solid #343744;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 12px;
+      font-family: var(--f-sans);
+    }
+
+    .el-canvas-preview {
+      padding: var(--s-8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #0b0c14;
+      position: relative;
+      min-height: 480px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--f-sans);
+      background: var(--c-night);
+      color: rgba(255, 255, 255, .9);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: rgba(5, 177, 114, .3);
+      color: #fff;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   LAYOUT UTILITIES
+   ═══════════════════════════════════════════════════════════════════ */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--s-6);
+    }
+
+    .section-gap {
+      padding: var(--s-32) 0;
+    }
+
+    .section-gap-lg {
+      padding: calc(var(--s-32) * 1.5) 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   TYPOGRAPHY SYSTEM
+   ═══════════════════════════════════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid var(--c-green) !important;
+      outline-offset: 3px !important;
+    }
+
+    .eyebrow {
+      font-family: var(--f-heading);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      background: var(--g-aurora);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+
+    .display-1 {
+      font-family: var(--f-display);
+      font-size: clamp(3.2rem, 8vw, 6.5rem);
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: -.03em;
+    }
+
+    .display-2 {
+      font-family: var(--f-display);
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+
+    .display-3 {
+      font-family: var(--f-heading);
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+    }
+
+    .text-gradient {
+      background: var(--g-aurora);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .text-muted {
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .text-dim {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════
+   NAV — FLOATING GLASSMORPHIC PILL BAR
+   ═══════════════════════════════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 1.25rem;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      pointer-events: none;
+      transition: transform var(--t-normal);
+    }
+
+    .nav .container {
+      max-width: 1080px;
+      padding: 0 var(--s-4);
+    }
+
+    .nav__inner {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-8);
+      padding: 10px 24px;
+      border-radius: var(--r-full);
+      background: rgba(7, 9, 26, 0.42);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all var(--t-normal);
+    }
+
+    .nav.scrolled .nav__inner {
+      background: rgba(3, 4, 12, 0.68);
+      backdrop-filter: blur(28px) saturate(220%);
+      -webkit-backdrop-filter: blur(28px) saturate(220%);
+      border-color: rgba(5, 177, 114, 0.4);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(5, 177, 114, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .nav__logo {
+      height: 32px;
+      width: auto;
+      /* Solid white while floating over the hero (brightness(0) crushes
+         every color to black, invert(1) flips that to white) — flattens
+         the logo's own color animation to a plain white mark so it reads
+         cleanly over a photo/gradient background. Removed once .nav
+         picks up its .scrolled glass (still translucent — see
+         .nav.scrolled .nav__inner above, never solid), revealing the
+         real animated, full-color logo. */
+      filter: brightness(0) invert(1);
+      transition: filter var(--t-normal);
+    }
+
+    .nav.scrolled .nav__logo {
+      filter: none;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: var(--s-8);
+      list-style: none;
+    }
+
+    .nav__links a {
+      font-family: var(--f-heading);
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .65);
+      transition: color var(--t-fast);
+    }
+
+    .nav__links a:hover {
+      color: #fff;
+    }
+
+    .nav__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .nav__docs-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .18);
+      font-family: var(--f-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .85);
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast), transform var(--t-fast);
+    }
+
+    .nav__docs-btn:hover {
+      border-color: rgba(5, 177, 114, .5);
+      color: #fff;
+      background: rgba(5, 177, 114, .08);
+      transform: translateY(-1px);
+    }
+
+    /* ─── Modules dropdown ──────────────────────────────────────────── */
+
+    .nav__dropdown {
+      position: relative;
+    }
+
+    .nav__dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: var(--f-heading);
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .65);
+      cursor: pointer;
+      transition: color var(--t-fast);
+    }
+
+    .nav__dropdown-trigger:hover,
+    .nav__dropdown.open .nav__dropdown-trigger {
+      color: #fff;
+    }
+
+    .nav__dropdown-chevron {
+      transition: transform var(--t-fast);
+    }
+
+    .nav__dropdown:hover .nav__dropdown-chevron,
+    .nav__dropdown.open .nav__dropdown-chevron {
+      transform: rotate(180deg);
+    }
+
+    .nav__dropdown-menu {
+      position: absolute;
+      top: calc(100% + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--s-2);
+      border-radius: var(--r-lg);
+      background: rgba(7, 9, 26, .92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: var(--shadow-card);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity var(--t-fast), transform var(--t-fast), visibility var(--t-fast);
+      z-index: 1001;
+    }
+
+    .nav__dropdown:hover .nav__dropdown-menu,
+    .nav__dropdown.open .nav__dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav__dropdown-menu a {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      color: rgba(255, 255, 255, .9);
+      font-size: 13px;
+    }
+
+    .nav__dropdown-menu a:hover {
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .nav__dropdown-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .nav__dropdown-icon--green {
+      background: rgba(5, 177, 114, .15);
+    }
+
+    .nav__dropdown-icon--teal {
+      background: rgba(0, 153, 204, .15);
+    }
+
+    .nav__dropdown-icon--violet {
+      background: rgba(124, 92, 255, .15);
+    }
+
+    .nav__dropdown-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--f-heading);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .nav__dropdown-desc {
+      display: block;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 1px;
+    }
+
+    .nav__dropdown-divider {
+      height: 1px;
+      margin: 4px 6px;
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .nav__dropdown-badge {
+      font-family: var(--f-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(124, 92, 255, .9);
+      background: rgba(124, 92, 255, .15);
+      padding: 2px 6px;
+      border-radius: var(--r-full);
+    }
+
+    /* ─── Docs "Soon" badge ─────────────────────────────────────────── */
+
+    .nav__soon-badge {
+      font-family: var(--f-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(5, 177, 114, .9);
+      background: rgba(5, 177, 114, .15);
+      padding: 2px 6px;
+      border-radius: var(--r-full);
+      margin-left: 2px;
+      vertical-align: 1px;
+    }
+
+    /* ─── GitHub icon-only link ─────────────────────────────────────── */
+
+    .nav__icon-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .18);
+      color: rgba(255, 255, 255, .75);
+      transition: color var(--t-fast), background var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+    }
+
+    .nav__icon-link:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, .4);
+      background: rgba(255, 255, 255, .08);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        top: .75rem;
+      }
+
+      .nav__links {
+        display: none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      max-height: 105svh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background-image: url('../assets/branding/aurora-hero.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Aurora canvas background */
+    .hero__canvas-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    #aurora-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Dot grid overlay */
+    .hero__grid {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px);
+      background-size: 32px 32px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%);
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%);
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      padding-top: 150px;
+      padding-bottom: 120px;
+      text-align: center;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: 8px 18px;
+      border-radius: var(--r-full);
+      background: rgba(7, 9, 26, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      font-family: var(--f-heading);
+      font-size: 12px;
+      font-weight: 700;
+      color: #34d399;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-6);
+      box-shadow: 0 0 25px rgba(5, 177, 114, 0.25);
+    }
+
+    .hero__badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(0.7);
+        opacity: 0.5;
+      }
+    }
+
+    .hero__title {
+      font-family: var(--f-display);
+      font-size: clamp(3.5rem, 6vw, 6rem);
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: -.03em;
+      margin-bottom: var(--s-6);
+      color: #ffffff;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero__title .word-stack {
+      display: block;
+    }
+
+
+    .hero__title .line-outlined {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, .3);
+    }
+
+    .hero__title .line-gradient {
+      background: var(--g-aurora);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__sub {
+      font-family: var(--f-sans);
+      font-size: clamp(.85rem, 1.15vw, 1.2rem)!important;
+      color: var(--c-text-muted);
+      max-width: 720px;
+      margin: 0 auto var(--s-10) auto;
+      line-height: 1.7;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    }
+
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--s-12);
+    }
+
+    /* Primary button */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 15px 30px;
+      border-radius: var(--r-full);
+      background: var(--g-aurora);
+      font-family: var(--f-heading);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--c-night);
+      transition: transform var(--t-fast), box-shadow var(--t-fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .15);
+      opacity: 0;
+      transition: opacity var(--t-fast);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(5, 177, 114, .35);
+    }
+
+    .btn-primary:hover::after {
+      opacity: 1;
+    }
+
+    /* Ghost button */
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 14px 28px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .15);
+      font-family: var(--f-heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .8);
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255, 255, 255, .4);
+      color: #fff;
+      background: rgba(255, 255, 255, .05);
+    }
+
+    /* Scroll indicator */
+    .hero__scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--s-2);
+      color: rgba(255, 255, 255, .3);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, .3), transparent);
+      animation: scroll-line 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-line {
+      0% {
+        transform: scaleY(0);
+        transform-origin: top;
+      }
+
+      50% {
+        transform: scaleY(1);
+        transform-origin: top;
+      }
+
+      51% {
+        transform: scaleY(1);
+        transform-origin: bottom;
+      }
+
+      100% {
+        transform: scaleY(0);
+        transform-origin: bottom;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   MARQUEE / TICKER
+   ═══════════════════════════════════════════════════════════════════ */
+    .marquee-section {
+      padding: var(--s-6) 0;
+      background-color: black;
+      
+      /*background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px);*/
+      background-size: 32px 32px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%);
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 70%); 
+
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      overflow: hidden;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: var(--s-4);
+      padding: 0 var(--s-8);
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgba(255, 255, 255, .35);
+      transition: color var(--t-fast);
+    }
+
+    .marquee-item:hover {
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .marquee-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--c-green);
+      opacity: .5;
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   PLAYGROUND (Main Feature Section)
+   ═══════════════════════════════════════════════════════════════════ */
+    .playground {
+      background: var(--c-surface);
+      position: relative;
+    }
+
+    .playground::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(124, 92, 255, .1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--s-16);
+    }
+
+    .section-header .eyebrow {
+      margin-bottom: var(--s-4);
+    }
+
+    .section-header .display-2 {
+      margin-bottom: var(--s-4);
+    }
+
+    .section-header p {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, .5);
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* Playground Layout */
+    .pg-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: var(--s-6);
+      position: relative;
+    }
+
+    @media (max-width: 1024px) {
+      .pg-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Preview Panel */
+    .pg-preview {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: var(--r-xl);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .pg-preview__chrome {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-4) var(--s-5);
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      background: rgba(255, 255, 255, .015);
+    }
+
+    .pg-preview__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .pg-preview__dot:nth-child(1) {
+      background: #ff5f57;
+    }
+
+    .pg-preview__dot:nth-child(2) {
+      background: #febc2e;
+    }
+
+    .pg-preview__dot:nth-child(3) {
+      background: #28c840;
+    }
+
+    .pg-preview__title {
+      margin-left: auto;
+      font-size: 11px;
+      font-family: var(--f-mono);
+      color: rgba(255, 255, 255, .25);
+    }
+
+    .pg-preview__stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--s-12) var(--s-8);
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle crosshair grid in preview */
+    .pg-preview__stage::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    #playground-text {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      text-align: center;
+      color: #fff;
+      line-height: 1.1;
+      word-break: break-word;
+      width: 100%;
+      cursor: default;
+    }
+
+    .pg-preview__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-4) var(--s-5);
+      border-top: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    .pg-badge-row {
+      display: flex;
+      gap: var(--s-2);
+    }
+
+    .pg-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: var(--r-full);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .pg-badge--gsap {
+      background: rgba(5, 177, 114, .15);
+      color: var(--c-green);
+      border: 1px solid rgba(5, 177, 114, .3);
+    }
+
+    .pg-badge--anime {
+      background: rgba(124, 92, 255, .15);
+      color: #a78bfa;
+      border: 1px solid rgba(124, 92, 255, .3);
+    }
+
+    .pg-badge--split {
+      background: rgba(0, 153, 204, .1);
+      color: var(--c-teal);
+      border: 1px solid rgba(0, 153, 204, .25);
+    }
+
+    .pg-replay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 8px 16px;
+      border-radius: var(--r-full);
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .7);
+      transition: all var(--t-fast);
+    }
+
+    .pg-replay-btn:hover {
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    .pg-replay-btn svg {
+      width: 12px;
+      height: 12px;
+      transition: transform var(--t-normal);
+    }
+
+    .pg-replay-btn:hover svg {
+      transform: rotate(180deg);
+    }
+
+    /* Controls Panel */
+    .pg-controls {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: var(--r-xl);
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .ctrl-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .35);
+    }
+
+    .ctrl-select,
+    .ctrl-input {
+      width: 100%;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--r-sm);
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      font-family: var(--f-sans);
+      font-weight: 500;
+      transition: border-color var(--t-fast), background var(--t-fast);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .ctrl-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,.35)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .ctrl-select option {
+      background: #0d1030;
+    }
+
+    .ctrl-select:focus,
+    .ctrl-input:focus {
+      outline: none;
+      border-color: rgba(5, 177, 114, .5);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    /* Library toggle tabs */
+    .lib-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-1);
+      background: rgba(255, 255, 255, .04);
+      border-radius: var(--r-sm);
+      padding: 3px;
+      border: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .lib-tab {
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      color: rgba(255, 255, 255, .4);
+      transition: all var(--t-fast);
+      letter-spacing: .04em;
+    }
+
+    .lib-tab.active-gsap {
+      background: rgba(5, 177, 114, .2);
+      color: var(--c-green);
+      border: 1px solid rgba(5, 177, 114, .35);
+    }
+
+    .lib-tab.active-anime {
+      background: rgba(124, 92, 255, .2);
+      color: #a78bfa;
+      border: 1px solid rgba(124, 92, 255, .35);
+    }
+
+    /* Range sliders */
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .ctrl-range {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 3px;
+      border-radius: var(--r-full);
+      background: rgba(255, 255, 255, .1);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .ctrl-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--c-green);
+      box-shadow: 0 0 8px rgba(5, 177, 114, .6);
+      cursor: pointer;
+      transition: transform var(--t-fast);
+    }
+
+    .ctrl-range::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+    }
+
+    .range-val {
+      font-size: 11px;
+      font-family: var(--f-mono);
+      font-weight: 700;
+      color: var(--c-green);
+      min-width: 42px;
+      text-align: right;
+    }
+
+    /* Split-by segments */
+    .split-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-1);
+      background: rgba(255, 255, 255, .04);
+      border-radius: var(--r-sm);
+      padding: 3px;
+    }
+
+    .split-tab {
+      padding: 7px 4px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      color: rgba(255, 255, 255, .35);
+      transition: all var(--t-fast);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .split-tab.active {
+      background: rgba(0, 153, 204, .2);
+      color: var(--c-teal);
+      border: 1px solid rgba(0, 153, 204, .3);
+    }
+
+    /* Hover toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-label-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .6);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--r-full);
+      background: rgba(255, 255, 255, .1);
+      cursor: pointer;
+      transition: background var(--t-fast);
+    }
+
+    .toggle-track::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      top: 3px;
+      left: 3px;
+      transition: transform var(--t-fast);
+    }
+
+    .toggle-switch input:checked+.toggle-track {
+      background: var(--c-green);
+    }
+
+    .toggle-switch input:checked+.toggle-track::before {
+      transform: translateX(18px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   COPY SNIPPET BUTTON & MODAL
+   ═══════════════════════════════════════════════════════════════════ */
+    .btn-snippet {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-2);
+      padding: 12px 20px;
+      border-radius: var(--r-sm);
+      background: rgba(124, 92, 255, .12);
+      border: 1px solid rgba(124, 92, 255, .3);
+      font-size: 13px;
+      font-weight: 700;
+      color: #a78bfa;
+      transition: all var(--t-fast);
+      letter-spacing: .03em;
+      margin-top: var(--s-2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-snippet::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(124, 92, 255, .15);
+      opacity: 0;
+      transition: opacity var(--t-fast);
+    }
+
+    .btn-snippet:hover {
+      background: rgba(124, 92, 255, .2);
+      border-color: rgba(124, 92, 255, .55);
+      color: #c4b5fd;
+      transform: translateY(-1px);
+    }
+
+    .btn-snippet:hover::after {
+      opacity: 1;
+    }
+
+    .btn-snippet.copied {
+      background: rgba(5, 177, 114, .15);
+      border-color: rgba(5, 177, 114, .4);
+      color: var(--c-green);
+    }
+
+    /* Snippet Modal */
+    .snippet-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(3, 4, 12, .85);
+      backdrop-filter: blur(12px) saturate(150%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--s-6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--t-normal);
+    }
+
+    .snippet-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .snippet-modal {
+      background: var(--c-elevated);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: var(--r-xl);
+      width: 100%;
+      max-width: 760px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .07);
+      transform: translateY(20px) scale(.98);
+      transition: transform var(--t-spring);
+    }
+
+    .snippet-overlay.open .snippet-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .snippet-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-5) var(--s-6);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      flex-shrink: 0;
+    }
+
+    .snippet-modal__title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .snippet-modal__title svg {
+      color: #a78bfa;
+    }
+
+    .snippet-modal__meta {
+      display: flex;
+      gap: var(--s-2);
+      align-items: center;
+    }
+
+    .snippet-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-sm);
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .5);
+      transition: all var(--t-fast);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .snippet-close:hover {
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+    }
+
+    .snippet-modal__tabs {
+      display: flex;
+      gap: 2px;
+      padding: var(--s-3) var(--s-6) 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      flex-shrink: 0;
+    }
+
+    .snippet-tab {
+      padding: 8px 16px;
+      border-radius: var(--r-sm) var(--r-sm) 0 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .4);
+      transition: all var(--t-fast);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .snippet-tab.active {
+      color: #a78bfa;
+      border-bottom-color: #7c5cff;
+      background: rgba(124, 92, 255, .08);
+    }
+
+    .snippet-modal__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--s-5) var(--s-6);
+    }
+
+    .snippet-code {
+      background: rgba(0, 0, 0, .5);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: var(--r-md);
+      padding: var(--s-5);
+      font-family: var(--f-mono);
+      font-size: 12px;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, .75);
+      white-space: pre;
+      overflow-x: auto;
+      tab-size: 2;
+    }
+
+    .snippet-code .sk {
+      color: #7c5cff;
+    }
+
+    .snippet-code .ss {
+      color: #05b172;
+    }
+
+    .snippet-code .sc {
+      color: rgba(255, 255, 255, .28);
+      font-style: italic;
+    }
+
+    .snippet-code .sn {
+      color: #0099cc;
+    }
+
+    .snippet-code .sa {
+      color: #a78bfa;
+    }
+
+    .snippet-modal__footer {
+      padding: var(--s-4) var(--s-6);
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      flex-shrink: 0;
+    }
+
+    .snippet-info {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .3);
+      line-height: 1.5;
+    }
+
+    .btn-copy-snippet {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 10px 22px;
+      border-radius: var(--r-full);
+      background: var(--g-aurora);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--c-night);
+      transition: opacity var(--t-fast), transform var(--t-fast);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-copy-snippet:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn-copy-snippet.copied {
+      background: rgba(5, 177, 114, .9);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   GLOBAL CURSOR FOLLOWER
+   ═══════════════════════════════════════════════════════════════════ */
+    .gcursor-dot,
+    .gcursor-ring {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      will-change: transform;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity .3s, width .2s, height .2s, background .2s;
+    }
+
+    .gcursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--c-green);
+      box-shadow: 0 0 12px rgba(5, 177, 114, .8), 0 0 24px rgba(5, 177, 114, .4);
+    }
+
+    .gcursor-ring {
+      width: 38px;
+      height: 38px;
+      border: 1.5px solid rgba(5, 177, 114, .55);
+      background: transparent;
+    }
+
+    body.cursor-ready .gcursor-dot,
+    body.cursor-ready .gcursor-ring {
+      opacity: 1;
+    }
+
+    body.cursor-hover .gcursor-dot {
+      width: 14px;
+      height: 14px;
+      background: var(--c-teal);
+      box-shadow: 0 0 16px rgba(0, 153, 204, .9);
+    }
+
+    body.cursor-hover .gcursor-ring {
+      width: 56px;
+      height: 56px;
+      border-color: rgba(0, 153, 204, .4);
+    }
+
+    body.cursor-click .gcursor-dot {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+    }
+
+    body.cursor-click .gcursor-ring {
+      width: 28px;
+      height: 28px;
+      border-color: rgba(255, 255, 255, .6);
+    }
+
+    @media (pointer: coarse) {
+
+      .gcursor-dot,
+      .gcursor-ring {
+        display: none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   EFFECT GRID CATALOG
+   ═══════════════════════════════════════════════════════════════════ */
+    .effects-catalog {
+      background: var(--c-night);
+    }
+
+    .effects-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      margin-bottom: var(--s-10);
+      flex-wrap: wrap;
+    }
+
+    .effects-tabs {
+      display: flex;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+
+    .catalog-text-box {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: var(--r-full);
+      padding: 8px 18px;
+      transition: all var(--t-fast);
+      min-width: 280px;
+      flex: 0 1 360px;
+    }
+
+    .catalog-text-box:focus-within {
+      border-color: rgba(5, 177, 114, .6);
+      background: rgba(255, 255, 255, .07);
+      box-shadow: 0 0 20px rgba(5, 177, 114, .18);
+    }
+
+    .catalog-text-box svg {
+      color: rgba(255, 255, 255, .45);
+      flex-shrink: 0;
+      transition: color var(--t-fast);
+    }
+
+    .catalog-text-box:focus-within svg {
+      color: var(--c-green);
+    }
+
+    .catalog-text-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: var(--f-sans);
+      font-size: 13px;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    .catalog-text-box input::placeholder {
+      color: rgba(255, 255, 255, .35);
+      font-weight: 400;
+    }
+
+    .effects-tab {
+      padding: 8px 18px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .1);
+      font-family: var(--f-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .45);
+      transition: all var(--t-fast);
+      letter-spacing: .04em;
+    }
+
+    .effects-tab.active {
+      background: var(--g-aurora);
+      color: var(--c-night);
+      border-color: transparent;
+    }
+
+    .effects-tab:hover:not(.active) {
+      border-color: rgba(255, 255, 255, .3);
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .effects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--s-4);
+    }
+
+    .effect-card {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: var(--r-lg);
+      padding: var(--s-8) var(--s-5) var(--s-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      transition: border-color var(--t-normal), transform var(--t-normal), box-shadow var(--t-normal);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .effect-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--g-aurora);
+      transform: scaleX(0);
+      transition: transform var(--t-normal);
+      transform-origin: left;
+    }
+
+    .effect-card:hover {
+      border-color: rgba(255, 255, 255, .15);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .effect-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .effect-card__stage {
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -.03em;
+      overflow: hidden;
+    }
+
+    .effect-card__info {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--s-2);
+    }
+
+    .effect-card__name {
+      font-family: var(--f-heading);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .85);
+      line-height: 1.2;
+    }
+
+    .effect-card__id {
+      font-size: 10px;
+      font-family: var(--f-mono);
+      color: rgba(255, 255, 255, .25);
+    }
+
+    .lib-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: var(--r-full);
+      font-family: var(--f-heading);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .lib-chip--gsap {
+      background: rgba(5, 177, 114, .15);
+      color: var(--c-green);
+    }
+
+    .lib-chip--anime {
+      background: rgba(124, 92, 255, .15);
+      color: #a78bfa;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   MODULES FEATURE SECTION
+   ═══════════════════════════════════════════════════════════════════ */
+    .modules-section {
+      background: var(--c-surface);
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-4);
+    }
+
+    @media (max-width: 900px) {
+      .modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .module-card {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: var(--r-lg);
+      padding: var(--s-8) var(--s-6);
+      transition: all var(--t-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--g-subtle);
+      opacity: 0;
+      transition: opacity var(--t-normal);
+    }
+
+    .module-card:hover {
+      border-color: rgba(255, 255, 255, .14);
+      transform: translateY(-2px);
+    }
+
+    .module-card:hover::after {
+      opacity: 1;
+    }
+
+    .module-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--s-5);
+      position: relative;
+      z-index: 1;
+      font-size: 22px;
+    }
+
+    .module-card__icon--green {
+      background: rgba(5, 177, 114, .15);
+    }
+
+    .module-card__icon--teal {
+      background: rgba(0, 153, 204, .15);
+    }
+
+    .module-card__icon--violet {
+      background: rgba(124, 92, 255, .15);
+    }
+
+    .module-card__num {
+      font-size: 10px;
+      font-family: var(--f-mono);
+      color: rgba(255, 255, 255, .2);
+      margin-bottom: var(--s-2);
+      position: relative;
+      z-index: 1;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .module-card__title {
+      font-family: var(--f-heading);
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: var(--s-2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .module-card__desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .45);
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   DEEP DIVE FEATURE SHOWCASE CSS
+   ═══════════════════════════════════════════════════════════════════ */
+    .deep-dive-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--s-8);
+      margin-top: var(--s-10);
+    }
+
+    @media (max-width: 900px) {
+      .deep-dive-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .feature-deep-card {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--r-xl);
+      padding: var(--s-8);
+      transition: all var(--t-normal);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    .feature-deep-card:hover {
+      border-color: rgba(124, 92, 255, 0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .5);
+    }
+
+    .feature-preview-box {
+      width: 100%;
+      height: 200px;
+      border-radius: var(--r-lg);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .preview-gradient-mesh {
+      background: linear-gradient(135deg, #05b172, #0099cc, #7c5cff);
+      background-size: 200% 200%;
+      animation: mesh-gradient-move 6s ease infinite alternate;
+    }
+
+    @keyframes mesh-gradient-move {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .preview-glass-box {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--r-lg);
+      padding: 24px 36px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .preview-tilt-card {
+      width: 80%;
+      height: 140px;
+      background: linear-gradient(135deg, rgba(124, 92, 255, .25), rgba(0, 153, 204, .25));
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .1s ease-out;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   DISTRIBUTION ROADMAP SECTION CSS
+   ═══════════════════════════════════════════════════════════════════ */
+    .editions-section {
+      background: var(--c-surface);
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .editions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-8);
+      margin-top: var(--s-10);
+    }
+
+    @media (max-width: 850px) {
+      .editions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .edition-card {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--r-xl);
+      padding: var(--s-8);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--t-normal);
+    }
+
+    .edition-card--wp {
+      border-color: rgba(0, 153, 204, 0.3);
+    }
+
+    .edition-card--wp:hover {
+      border-color: rgba(0, 153, 204, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 153, 204, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .edition-card--gh {
+      border-color: rgba(5, 177, 114, 0.3);
+    }
+
+    .edition-card--gh:hover {
+      border-color: rgba(5, 177, 114, 0.6);
+      box-shadow: 0 20px 40px rgba(5, 177, 114, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .edition-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 5px 12px;
+      border-radius: var(--r-full);
+      font-family: var(--f-heading);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-4);
+      width: fit-content;
+    }
+
+    .edition-badge--wp {
+      background: rgba(0, 153, 204, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(0, 153, 204, 0.3);
+    }
+
+    .edition-badge--gh {
+      background: rgba(5, 177, 114, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(5, 177, 114, 0.3);
+    }
+
+    .edition-title {
+      font-family: var(--f-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: var(--s-3);
+    }
+
+    .edition-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .6);
+      line-height: 1.7;
+      margin-bottom: var(--s-6);
+    }
+
+    .edition-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      margin-bottom: var(--s-8);
+    }
+
+    .edition-features li {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      font-size: 13px;
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .edition-features svg {
+      color: var(--c-green);
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   HOW IT WORKS / ARCHITECTURE
+   ═══════════════════════════════════════════════════════════════════ */
+    .arch-section {
+      background: var(--c-night);
+    }
+
+    .arch-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    @media (max-width: 900px) {
+      .arch-flow {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .arch-flow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .arch-flow::after {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 13%;
+      width: 74%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .1), transparent);
+    }
+
+    .arch-step {
+      padding: var(--s-8) var(--s-6);
+      position: relative;
+    }
+
+    .arch-step__num {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--f-heading);
+      font-size: 16px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .3);
+      margin-bottom: var(--s-5);
+      background: var(--c-surface);
+      position: relative;
+      z-index: 1;
+    }
+
+    .arch-step__title {
+      font-family: var(--f-heading);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: var(--s-2);
+      color: rgba(255, 255, 255, .85);
+    }
+
+    .arch-step__desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .4);
+      line-height: 1.6;
+    }
+
+    /* Code snippet */
+    .code-block {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: var(--r-lg);
+      padding: var(--s-6);
+      font-family: var(--f-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+      color: rgba(255, 255, 255, .7);
+    }
+
+    .code-block .kw {
+      color: #7c5cff;
+    }
+
+    .code-block .str {
+      color: #05b172;
+    }
+
+    .code-block .cmt {
+      color: rgba(255, 255, 255, .25);
+      font-style: italic;
+    }
+
+    .code-block .num {
+      color: #0099cc;
+    }
+
+    .code-block .attr {
+      color: #a78bfa;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   CTA / FOOTER AREA
+   ═══════════════════════════════════════════════════════════════════ */
+    .cta-section {
+      background: var(--c-surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse, rgba(5, 177, 114, .12) 0%, rgba(124, 92, 255, .08) 40%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-box {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .cta-box .display-2 {
+      margin-bottom: var(--s-5);
+    }
+
+    .cta-box p {
+      color: rgba(255, 255, 255, .5);
+      font-size: 1.05rem;
+      margin-bottom: var(--s-10);
+      line-height: 1.7;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: var(--s-4);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      padding: var(--s-12) 0 var(--s-8);
+      background-color: var(--c-night);
+      background-image: url('../assets/branding/aurora-footer.webp');
+      background-size: cover;
+      /* Anchors the image to the bottom edge (the end of the page) so it
+         stays aligned there regardless of how tall the footer ends up
+         being — the same "cover" treatment the hero uses, just anchored
+         to the opposite edge since this section sits at the page's end. */
+      background-position: center bottom;
+    }
+
+    /* Aurora canvas background — same flowing-ribbons effect as the hero
+       (see the FLOWING SIMPLEX 3D NOISE AURORA CANVAS OVERLAY script),
+       just layered over aurora-footer.webp instead of aurora-hero.webp. */
+    .footer__canvas-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .footer > .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: var(--s-12);
+      margin-bottom: var(--s-12);
+    }
+
+    @media (max-width: 768px) {
+      .footer__grid {
+        grid-template-columns: 1fr;
+        gap: var(--s-8);
+      }
+    }
+
+    .footer__logo {
+      height: 28px;
+      margin-bottom: var(--s-4);
+    }
+
+    .footer__tagline {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .35);
+      max-width: 300px;
+      line-height: 1.7;
+    }
+
+    .footer__col-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: var(--s-4);
+    }
+
+    .footer__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .footer__links a {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .45);
+      transition: color var(--t-fast);
+    }
+
+    .footer__links a:hover {
+      color: #fff;
+    }
+
+    .footer__bottom {
+      padding-top: var(--s-6);
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--s-4);
+    }
+
+    .footer__copyright {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .25);
+    }
+
+    .footer__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 5px 12px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255, 255, 255, .08);
+      font-size: 11px;
+      color: rgba(255, 255, 255, .35);
+      font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   CURSOR ZONE DEMO
+   ═══════════════════════════════════════════════════════════════════ */
+    .cursor-demo-zone {
+      position: relative;
+      height: 240px;
+      border-radius: var(--r-xl);
+      background: rgba(255, 255, 255, .015);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-style: dashed;
+      overflow: hidden;
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: var(--s-10);
+      transition: border-color var(--t-normal);
+    }
+
+    .cursor-demo-zone:hover {
+      border-color: rgba(5, 177, 114, .3);
+      border-style: dashed;
+    }
+
+    .cursor-demo-hint {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .25);
+      font-weight: 500;
+      letter-spacing: .05em;
+      pointer-events: none;
+      transition: opacity var(--t-normal);
+    }
+
+    .cursor-demo-zone:hover .cursor-demo-hint {
+      opacity: 0;
+    }
+
+    /* Custom cursor elements */
+    .c-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c-green);
+      pointer-events: none;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      transition: width .15s, height .15s, background .15s;
+      box-shadow: 0 0 12px rgba(5, 177, 114, .8);
+      top: 50%;
+      left: 50%;
+    }
+
+    .c-ring {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(5, 177, 114, .5);
+      pointer-events: none;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   ANIMATIONS & MICROINTERACTIONS
+   ═══════════════════════════════════════════════════════════════════ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp var(--t-slow) both;
+    }
+
+    .fade-in-up--1 {
+      animation-delay: .1s;
+    }
+
+    .fade-in-up--2 {
+      animation-delay: .25s;
+    }
+
+    .fade-in-up--3 {
+      animation-delay: .4s;
+    }
+
+    .fade-in-up--4 {
+      animation-delay: .55s;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE UTILITIES
+   ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .section-gap {
+        padding: var(--s-20) 0;
+      }
+
+      .section-gap-lg {
+        padding: var(--s-24) 0;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════════ */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--c-night);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(5, 177, 114, .35);
+      border-radius: 99px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     GLOBAL CURSOR FOLLOWER DOM
+     ═══════════════════════════════════════════════════════════════════ -->
+  <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
+  <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
+  <!-- ═══════════════════════════════════════════════════════════════════
+     NAVIGATION
+     ═══════════════════════════════════════════════════════════════════ -->
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="#top" aria-label="Aurora home">
+          <img src="../assets/branding/logo_aurora_animated.svg" class="nav__logo" alt="Aurora for Elementor">
+        </a>
+
+        <ul class="nav__links" role="list">
+          <li><a href="text-effects/">Text Effects Playground</a></li>
+          <li class="nav__dropdown" id="nav-modules-dropdown">
+            <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
+              Modules
+              <svg class="nav__dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="nav__dropdown-menu" role="menu" aria-label="Plugin modules">
+              <a href="text-effects/" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">✨</span>
+                <span><span class="nav__dropdown-title">Text Animation</span><span class="nav__dropdown-desc">88+ GSAP/Anime.js effects</span></span>
+              </a>
+              <a href="#gradient-spotlight" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🌈</span>
+                <span><span class="nav__dropdown-title">Gradient &amp; Spotlight</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
+              </a>
+              <a href="#glassmorphism" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🧊</span>
+                <span><span class="nav__dropdown-title">Glassmorphism</span><span class="nav__dropdown-desc">Frosted glass, zero JS</span></span>
+              </a>
+              <a href="#modules" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
+                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Custom dot + ring zones</span></span>
+              </a>
+              <a href="#image-effects" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🖼️</span>
+                <span><span class="nav__dropdown-title">Image Effects</span><span class="nav__dropdown-desc">13 entrance + 7 hover effects</span></span>
+              </a>
+              <a href="#modules" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🎬</span>
+                <span><span class="nav__dropdown-title">Children Stagger</span><span class="nav__dropdown-desc">Cascade entrance for any container</span></span>
+              </a>
+            </div>
+          </li>
+          <li><a href="#morph-card">Morph Card</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+        </ul>
+
+        <div class="nav__actions">
+          <a href="/docs" class="nav__docs-btn">
+            Docs <span class="nav__soon-badge">Soon</span>
+          </a>
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- ═══════════════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="top" class="hero">
+    <!-- Flowing Simplex 3D Noise Aurora Canvas Overlay -->
+    <div class="hero__canvas-bg" aria-hidden="true">
+      <canvas id="aurora-ribbons-canvas" data-aurora-ribbons></canvas>
+    </div>
+    <div class="hero__grid" aria-hidden="true"></div>
+
+    <div class="hero__content">
+      <div class="container">
+        <div class="hero__badge">
+          <span class="hero__badge-dot"></span>
+          Open Source · GPL v3 · Free Forever
+        </div>
+
+        <h1 class="hero__title">
+          <span class="word-stack fade-in-up fade-in-up--1">Color &amp;</span>
+          <span class="word-stack line-outlined fade-in-up fade-in-up--2">Motion,</span>
+          <span class="word-stack line-gradient fade-in-up fade-in-up--3">Unleashed.</span>
+        </h1>
+
+        <p class="hero__sub fade-in-up fade-in-up--4">
+          The open-source Swiss Army knife for Elementor design. 88+ premium text animations, multi-stop gradients,
+          glassmorphism, cursor follow — all from the Advanced tab.
+        </p>
+
+        <div class="hero__actions fade-in-up fade-in-up--4">
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary"
+            aria-label="Download Aurora for free on GitHub">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Aurora Free
+          </a>
+          <a href="text-effects/" class="btn-ghost" aria-label="Try the live animation playground">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5,3 19,12 5,21" />
+            </svg>
+            Live Text Playground
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════════════════════════════════
+     MARQUEE
+     ═══════════════════════════════════════════════════════════════════ -->
+  <div class="marquee-section" aria-hidden="true">
+    <div class="marquee-track">
+      <!-- Block 1 -->
+      <div class="marquee-item"><span class="marquee-dot"></span>Text Animation</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Gradient Mesh</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Glassmorphism</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Cursor Follow</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Image Effects</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Children Stagger</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>GSAP Powered</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Anime.js Powered</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Scroll Trigger</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>No Code Required</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>GPL v3 Licensed</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Elementor Ready</div>
+      <!-- Block 2 (duplicate for seamless loop) -->
+      <div class="marquee-item"><span class="marquee-dot"></span>Text Animation</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Gradient Mesh</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Glassmorphism</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Cursor Follow</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Image Effects</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Children Stagger</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>GSAP Powered</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Anime.js Powered</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Scroll Trigger</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>No Code Required</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>GPL v3 Licensed</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Elementor Ready</div>
+    </div>
+  </div>
+  <!-- ═══════════════════════════════════════════════════════════════════
+     MODULES OVERVIEW
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="modules" class="modules-section section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Plugin Modules</div>
+        <h2 class="display-2" style="margin-top:1rem">Six Modules, One Plugin</h2>
+        <p>Every module adds a section to Elementor's Advanced tab — no page builder lock-in.</p>
+      </div>
+
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--green">✨</div>
+          <div class="module-card__num">01 — Text Animation</div>
+          <h3 class="module-card__title">88+ Text Effects</h3>
+          <p class="module-card__desc">Split titles into chars, words, or lines and animate them with GSAP or Anime.js
+            on scroll or page load. Add Hover Scatter for interactive depth.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--teal">🌈</div>
+          <div class="module-card__num">02 — Gradient</div>
+          <h3 class="module-card__title">Gradient & Spotlight</h3>
+          <p class="module-card__desc">Multi-stop linear, radial, or conic gradients with animated mesh drift or a
+            Follow Mouse spotlight. Applies as background or text fill.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--violet">🧊</div>
+          <div class="module-card__num">03 — Glassmorphism</div>
+          <h3 class="module-card__title">Frosted Glass Panels</h3>
+          <p class="module-card__desc">Translucent blurred backgrounds resolved in PHP into a single inline style — with
+            CSS fallback. Zero JavaScript. Zero overhead.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--green">🖱️</div>
+          <div class="module-card__num">04 — Cursor Follow</div>
+          <h3 class="module-card__title">Custom Cursor Zones</h3>
+          <p class="module-card__desc">A two-part cursor (dot + ring) with configurable trail delay and distinct hover
+            states for links, buttons, and images inside each zone.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--teal">🖼️</div>
+          <div class="module-card__num">05 — Image Effects</div>
+          <h3 class="module-card__title">Entrance & Hover</h3>
+          <p class="module-card__desc">13 GSAP entrance effects (wipe, curtain, iris expand, blur reveal…) plus 7
+            pure-CSS hover effects including the Shine Sweep.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--violet">🎬</div>
+          <div class="module-card__num">06 — Children Stagger</div>
+          <h3 class="module-card__title">Cascade Animations</h3>
+          <p class="module-card__desc">Applies a staggered entrance to each child element of a Section, Column, or
+            Container — one after the other with configurable delay.</p>
+        </div>
+      </div>
+
+      <!-- Cursor Demo Zone -->
+      <div class="cursor-demo-zone" id="cursor-zone" role="img"
+        aria-label="Interactive cursor follow demonstration area">
+        <div class="c-dot" id="cursor-dot" aria-hidden="true"></div>
+        <div class="c-ring" id="cursor-ring" aria-hidden="true"></div>
+        <span class="cursor-demo-hint">Move your cursor here — Cursor Follow module live</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     DEEP DIVE FEATURE SHOWCASE
+     ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     01. MORPH CARD WIDGET SHOWCASE SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="morph-card" class="section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Exclusive Elementor Widget</div>
+        <h2 class="display-2" style="margin-top:1rem">Morph Card Widget</h2>
+        <p>Dynamic cards with fluid motion physics powered by Motion One &amp; Anime.js.</p>
+      </div>
+
+      <div class="morph-showcase-box">
+        <div class="morph-stage">
+          <!-- Native Morph Card Container -->
+          <div class="morph-card" id="demo-morph-card" data-template="instagram"
+            style="width:100%;max-width:340px;background:rgba(13,16,48,0.85);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.6);backdrop-filter:blur(20px)">
+            <div class="morph-card__header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div class="morph-card__avatar"
+                style="width:44px;height:44px;border-radius:50%;background:var(--g-aurora);padding:2px">
+                <img src="../assets/branding/aurora_favicon.svg" alt="Avatar"
+                  style="width:100%;height:100%;border-radius:50%;background:#03040c;object-fit:cover">
+              </div>
+              <div>
+                <h4 id="morph-title"
+                  style="font-family:var(--f-heading);font-size:15px;font-weight:700;color:#fff;margin:0">@aurora.design
+                </h4>
+                <span id="morph-subtitle" style="font-size:12px;color:rgba(255,255,255,0.55)">Motion System
+                  Active</span>
+              </div>
+            </div>
+
+            <div class="morph-card__image"
+              style="width:100%;height:200px;border-radius:16px;overflow:hidden;margin-bottom:16px;position:relative">
+              <img id="morph-img"
+                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
+                alt="Morph Preview" style="width:100%;height:100%;object-fit:cover">
+              <div class="morph-card__badge"
+                style="position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:99px;background:rgba(5,177,114,0.85);backdrop-filter:blur(8px);font-family:var(--f-mono);font-size:11px;font-weight:700;color:#03040c">
+                STATE 01</div>
+            </div>
+
+            <div class="morph-card__footer">
+              <p id="morph-desc" style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:12px">
+                Seamless transition of border-radius, opacity, padding, and 3D rotation without DOM reflows.</p>
+              <div
+                style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-family:var(--f-mono);font-size:11px;color:var(--c-green)">
+                <span>ENGINE: MOTION ONE</span>
+                <span>100% HARDWARE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="morph-btn-group">
+          <div class="eyebrow" style="margin-bottom:0.5rem">Select Card Template State</div>
+          <button class="morph-btn active" data-state="instagram">
+            <span>📸 Instagram Post</span>
+            <small style="opacity:0.6">Square / Modern</small>
+          </button>
+          <button class="morph-btn" data-state="profile">
+            <span>👤 Creative Profile</span>
+            <small style="opacity:0.6">Badge / Compact</small>
+          </button>
+          <button class="morph-btn" data-state="polaroid">
+            <span>🖼️ Vintage Polaroid</span>
+            <small style="opacity:0.6">Rotated / Frame</small>
+          </button>
+          <button class="morph-btn" data-state="custom">
+            <span>🎨 Custom Gradient</span>
+            <small style="opacity:0.6">Glow / Neon</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     02. IMAGE EFFECTS STUDIO SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="image-effects" class="section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Module 06 — Image Effects</div>
+        <h2 class="display-2" style="margin-top:1rem">Image Reveal &amp; Hover Studio</h2>
+        <p>13 Entrance reveal animations (Wipe, Curtain, Iris, GSAP 3D) plus 7 pure-CSS hover effects.</p>
+      </div>
+
+      <!-- Entrance Animation Interactive Tester -->
+      <div
+        style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);margin-bottom:var(--s-8);backdrop-filter:blur(20px)">
+        <div style="display:grid;grid-template-columns:1fr 300px;gap:var(--s-8);align-items:center">
+          <div
+            style="height:380px;border-radius:var(--r-lg);overflow:hidden;position:relative;background:#000;display:flex;align-items:center;justify-content:center">
+            <div id="img-reveal-wrapper" class="aurora-img-wrapper"
+              style="width:100%;height:100%;position:relative;overflow:hidden">
+              <img id="img-reveal-target"
+                src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=1000&auto=format&fit=crop"
+                alt="Studio Preview" style="width:100%;height:100%;object-fit:cover">
+              <div id="img-reveal-overlay" class="aurora-reveal-overlay"
+                style="position:absolute;inset:0;background:var(--c-green);z-index:2;transform:scaleX(0);transform-origin:left">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Entrance Effect (13 Options)</span>
+              <select class="ctrl-select" id="select-img-reveal">
+                <option value="wipe-lr">Wipe Reveal (Left → Right)</option>
+                <option value="wipe-bt">Wipe Reveal (Bottom → Top)</option>
+                <option value="curtain">Curtain Reveal (Split Center)</option>
+                <option value="iris">Iris Reveal (Circle Expand)</option>
+                <option value="gsap-3d">GSAP 3D Flip</option>
+                <option value="blur">Blur Reveal</option>
+                <option value="skew">Skew Reveal</option>
+                <option value="zoom-in">Zoom In</option>
+                <option value="zoom-out">Zoom Out</option>
+                <option value="fade-up" selected>Fade Up</option>
+                <option value="slide-left">Slide Left</option>
+                <option value="slide-right">Slide Right</option>
+                <option value="fade-in">Fade In</option>
+              </select>
+            </div>
+
+            <div class="ctrl-group">
+              <span class="ctrl-label">Overlay Panel Color</span>
+              <div style="display:flex;gap:8px">
+                <button class="color-dot active" data-color="#05b172"
+                  style="width:32px;height:32px;border-radius:50%;background:#05b172;border:2px solid #fff;cursor:pointer"></button>
+                <button class="color-dot" data-color="#7c5cff"
+                  style="width:32px;height:32px;border-radius:50%;background:#7c5cff;border:2px solid transparent;cursor:pointer"></button>
+                <button class="color-dot" data-color="#0099cc"
+                  style="width:32px;height:32px;border-radius:50%;background:#0099cc;border:2px solid transparent;cursor:pointer"></button>
+                <button class="color-dot" data-color="#ffffff"
+                  style="width:32px;height:32px;border-radius:50%;background:#ffffff;border:2px solid transparent;cursor:pointer"></button>
+              </div>
+            </div>
+
+            <button class="pg-replay-btn" id="btn-replay-img"
+              style="margin-top:12px;width:100%;justify-content:center;padding:14px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+                <path d="M1 4v6h6M23 20v-6h-6" />
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
+              </svg>
+              Replay Entrance Animation
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 CSS Hover Effects Showcase Grid -->
+      <div class="eyebrow" style="margin-bottom:1rem">7 Hover Effects (100% Pure CSS)</div>
+      <div class="img-effects-grid">
+        <div class="hover-effect-card">
+          <div class="hover-effect-card__img-box aurora-hover-shine">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop"
+              alt="Shine Sweep">
+          </div>
+          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">1. Shine Sweep</h4>
+          <p class="text-muted" style="font-size:12px">Angled light band sweeping across image</p>
+        </div>
+
+        <div class="hover-effect-card">
+          <div class="hover-effect-card__img-box aurora-hover-zoom">
+            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400&auto=format&fit=crop"
+              alt="Zoom In">
+          </div>
+          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">2. Zoom In</h4>
+          <p class="text-muted" style="font-size:12px">Smooth expansion contained inside mask</p>
+        </div>
+
+        <div class="hover-effect-card">
+          <div class="hover-effect-card__img-box aurora-hover-grayscale">
+            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop"
+              alt="Grayscale to Color">
+          </div>
+          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">3. Grayscale → Color</h4>
+          <p class="text-muted" style="font-size:12px">Black &amp; white at rest, full color on hover</p>
+        </div>
+
+        <div class="hover-effect-card">
+          <div class="hover-effect-card__img-box aurora-hover-blur">
+            <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=400&auto=format&fit=crop"
+              alt="Blur Focus">
+          </div>
+          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">4. Blur → Sharp</h4>
+          <p class="text-muted" style="font-size:12px">Blurred at rest, sharp focus on hover</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     03. GRADIENT & SPOTLIGHT STUDIO SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="gradient-spotlight" class="section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Module 03 — Gradient &amp; Spotlight</div>
+        <h2 class="display-2" style="margin-top:1rem">Multi-stop Gradient &amp; Spotlight</h2>
+        <p>Multi-stop gradients featuring a real-time Spotlight mode that tracks your cursor.</p>
+      </div>
+
+      <div
+        style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);backdrop-filter:blur(20px)">
+        <div id="spotlight-interactive-box"
+          style="width:100%;height:320px;border-radius:var(--r-lg);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 50%, rgba(5,177,114,0.4) 0%, rgba(0,153,204,0.2) 40%, rgba(3,4,12,0.95) 80%);border:1px solid rgba(255,255,255,0.1);cursor:crosshair">
+          <div style="text-align:center;pointer-events:none;z-index:2">
+            <h3 class="display-3" style="color:#fff;margin-bottom:8px">Spotlight Follow Mouse</h3>
+            <p class="text-muted">Move your cursor inside this container to watch the radial spotlight follow your
+              pointer live.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     04. GLASSMORPHISM BUILDER SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="glassmorphism" class="section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Module 04 — Glassmorphism</div>
+        <h2 class="display-2" style="margin-top:1rem">Frosted Glass Builder</h2>
+        <p>Adjust glass parameters in real-time and view the inline CSS generated by PHP.</p>
+      </div>
+
+      <div class="glass-builder-grid">
+        <div class="glass-preview-stage">
+          <div class="glass-sample-card" id="glass-target-card"
+            style="background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px">
+            <h4 style="font-family:var(--f-heading);font-size:18px;font-weight:700;margin-bottom:8px">Glassmorphic Panel
+            </h4>
+            <p style="font-size:13px;opacity:0.85;line-height:1.6">Translucent backdrop blur, opacity, and border radius
+              computed at render time.</p>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
+          <div class="ctrl-group">
+            <span class="ctrl-label">Backdrop Blur (<span id="val-glass-blur">20px</span>)</span>
+            <input type="range" class="ctrl-range" id="slider-glass-blur" min="0" max="40" value="20">
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Background Opacity (<span id="val-glass-bg">15%</span>)</span>
+            <input type="range" class="ctrl-range" id="slider-glass-bg" min="0" max="100" value="15">
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Border Opacity (<span id="val-glass-border">20%</span>)</span>
+            <input type="range" class="ctrl-range" id="slider-glass-border" min="0" max="100" value="20">
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Border Radius (<span id="val-glass-radius">24px</span>)</span>
+            <input type="range" class="ctrl-range" id="slider-glass-radius" min="0" max="50" value="24">
+          </div>
+
+          <div
+            style="margin-top:12px;background:#03040c;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-family:var(--f-mono);font-size:11px;color:var(--c-green)">
+            <span style="color:rgba(255,255,255,0.4)">// PHP Inline Style Output:</span><br>
+            <code
+              id="code-glass-output">style="background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px"</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     05. ELEMENTOR PANEL MOCKUP SECTION
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="elementor-panel" class="section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Native Editor Experience</div>
+        <h2 class="display-2" style="margin-top:1rem">Seamless Elementor Integration</h2>
+        <p>Controls injected directly into the Advanced tab of the Elementor editor panel.</p>
+      </div>
+
+      <div class="el-mockup-container">
+        <!-- Sidebar Panel -->
+        <div class="el-sidebar">
+          <div class="el-sidebar-header">
+            <span>EDIT HEADING</span>
+            <small style="color:#92003b">ELEMENTOR PRO</small>
+          </div>
+          <div class="el-tabs-nav">
+            <button class="el-tab-item">Content</button>
+            <button class="el-tab-item">Style</button>
+            <button class="el-tab-item active">Advanced</button>
+          </div>
+
+          <div style="overflow-y:auto;flex:1">
+            <!-- Accordion 1: Text Animation -->
+            <div class="el-accordion-section">
+              <button class="el-accordion-header active" data-target="panel-text">
+                <span>✨ Text Animation (Aurora)</span>
+                <span>▼</span>
+              </button>
+              <div class="el-accordion-body active" id="panel-text">
+                <div class="el-field-group">
+                  <label class="el-field-label">Enable Animation</label>
+                  <select class="el-field-select">
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                </div>
+                <div class="el-field-group">
+                  <label class="el-field-label">Library</label>
+                  <select class="el-field-select">
+                    <option>GSAP 3.12</option>
+                    <option>Anime.js 4.4</option>
+                  </select>
+                </div>
+                <div class="el-field-group">
+                  <label class="el-field-label">Effect Type</label>
+                  <select class="el-field-select">
+                    <option>Fade Up (gs-1)</option>
+                    <option>Clip Reveal (gs-2)</option>
+                    <option>Scramble Text (gs-3)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accordion 2: Gradient -->
+            <div class="el-accordion-section">
+              <button class="el-accordion-header" data-target="panel-gradient">
+                <span>🌈 Gradient (Aurora)</span>
+                <span>▶</span>
+              </button>
+              <div class="el-accordion-body" id="panel-gradient">
+                <div class="el-field-group">
+                  <label class="el-field-label">Motion Mode</label>
+                  <select class="el-field-select">
+                    <option>Follow Mouse (Spotlight)</option>
+                    <option>WebGL Mesh</option>
+                    <option>Color Loop</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accordion 3: Glassmorphism -->
+            <div class="el-accordion-section">
+              <button class="el-accordion-header" data-target="panel-glass">
+                <span>🧊 Glassmorphism (Aurora)</span>
+                <span>▶</span>
+              </button>
+              <div class="el-accordion-body" id="panel-glass">
+                <div class="el-field-group">
+                  <label class="el-field-label">Backdrop Blur</label>
+                  <input type="range" class="ctrl-range" value="20">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Canvas Preview -->
+        <div class="el-canvas-preview">
+          <div
+            style="position:absolute;top:16px;left:20px;font-family:var(--f-mono);font-size:11px;color:rgba(255,255,255,0.4)">
+            ELEMENTOR LIVE PREVIEW CANVAS</div>
+          <div id="el-canvas-heading"
+            style="font-family:var(--f-display);font-size:3rem;font-weight:700;color:#fff;text-align:center">
+            ELEMENTOR PRO
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="deep-dive" class="deep-dive-section section-gap-lg" style="background:var(--c-night)">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Deep Feature Showcase</div>
+        <h2 class="display-2" style="margin-top:1rem">Engineered Beyond Text Motion</h2>
+        <p>Explore the four pillar modules powering custom gradients, glassmorphism, cursor physics &amp; 3D
+          perspective.</p>
+      </div>
+
+      <div class="deep-dive-grid">
+        <!-- Card 1: Multi-Stop Gradient Engine -->
+        <div class="feature-deep-card">
+          <div class="feature-preview-box preview-gradient-mesh">
+            <span
+              style="font-family:var(--f-display);font-size:1.8rem;font-weight:700;color:#fff;text-shadow:0 10px 20px rgba(0,0,0,0.4)">Gradient
+              Mesh &amp; Spotlight</span>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:0.5rem">Module 02</div>
+            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">
+              Multi-Stop Gradient &amp; Spotlight</h3>
+            <p class="text-muted" style="font-size:14px;line-height:1.7">Linear, radial, or conic gradients with
+              animated mesh drift or follow-mouse spotlight. Applies seamlessly to element backgrounds or text fills
+              with hardware acceleration.</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Glassmorphic Panel Engine -->
+        <div class="feature-deep-card">
+          <div class="feature-preview-box"
+            style="background:radial-gradient(circle at center, rgba(124,92,255,0.3), transparent 70%)">
+            <div class="preview-glass-box">
+              <div style="font-family:var(--f-heading);font-size:1.2rem;font-weight:700;color:#fff">Frosted Glass</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px">PHP Zero-JS Backdrop Filter</div>
+            </div>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:0.5rem">Module 03</div>
+            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">
+              PHP-Powered Glassmorphism</h3>
+            <p class="text-muted" style="font-size:14px;line-height:1.7">Translucent blurred backgrounds resolved
+              directly in PHP into clean inline styles. Zero JavaScript execution overhead at runtime, with automatic
+              legacy CSS fallbacks.</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Cursor Follower Zones -->
+        <div class="feature-deep-card">
+          <div class="feature-preview-box"
+            style="background:rgba(255,255,255,0.02);display:flex;gap:1rem;flex-wrap:wrap">
+            <button type="button" class="btn-primary" style="padding:10px 20px;font-size:13px">Hover Target 1</button>
+            <button class="btn-ghost" style="padding:10px 20px;font-size:13px">Hover Target 2</button>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:0.5rem">Module 04</div>
+            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">
+              Custom Cursor Follower Zones</h3>
+            <p class="text-muted" style="font-size:14px;line-height:1.7">A two-part cursor (dot + ring) with
+              customizable spring trail physics and distinct hover states for buttons, links, cards, and custom data
+              attributes.</p>
+          </div>
+        </div>
+
+        <!-- Card 4: 3D Perspective Tilt & Image Parallax -->
+        <div class="feature-deep-card">
+          <div class="feature-preview-box" style="perspective:600px">
+            <div class="preview-tilt-card" id="tilt-card-demo">
+              <span style="font-family:var(--f-heading);font-size:1rem;font-weight:700;color:#fff">Interactive 3D
+                Perspective Tilt</span>
+            </div>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:0.5rem">Module 05</div>
+            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">3D
+              Image Perspective &amp; Glare</h3>
+            <p class="text-muted" style="font-size:14px;line-height:1.7">Gyroscope/mouse 3D perspective tilt with
+              specular light glare reflection and scroll parallax curve controls for images and cards.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     DISTRIBUTION ROADMAP (WORDPRESS.ORG & GITHUB EDITIONS)
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="editions" class="editions-section section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Distribution Roadmap</div>
+        <h2 class="display-2" style="margin-top:1rem">Choose Your Aurora Edition</h2>
+        <p>From 1-click WordPress.org installation to the full dual-engine GSAP 3 Enterprise build on GitHub.</p>
+      </div>
+
+      <div class="editions-grid">
+        <!-- WordPress.org Version -->
+        <div class="edition-card edition-card--wp">
+          <div>
+            <div class="edition-badge edition-badge--wp">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10C22 6.477 17.523 2 12 2z">
+                </path>
+                <path d="M12 6v12M6 12h12"></path>
+              </svg>
+              Coming Soon to WordPress.org
+            </div>
+            <h3 class="edition-title">WordPress.org Edition</h3>
+            <p class="edition-desc">Lightweight official edition built for the WordPress Plugin Directory with 1-click
+              automatic updates inside WP Admin.</p>
+
+            <ul class="edition-features">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> Built-in text motion powered natively by Anime.js</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> 44 text effects + Native character/word/line splitter</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> Native integration inside Elementor's Advanced tab</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> 100% Free &amp; Open Source (GPL v3 License)</li>
+            </ul>
+          </div>
+
+          <div
+            style="padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+            <span style="font-size:12px;color:rgba(255,255,255,.4)">Status: Review in progress by WP.org team</span>
+            <span class="btn-ghost" style="padding:8px 16px;font-size:12px;opacity:.7;cursor:default">Release Coming
+              Soon</span>
+          </div>
+        </div>
+
+        <!-- GitHub Enterprise Edition -->
+        <div class="edition-card edition-card--gh">
+          <div>
+            <div class="edition-badge edition-badge--gh">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Available Now on GitHub
+            </div>
+            <h3 class="edition-title">GitHub Power Edition (GSAP 3)</h3>
+            <p class="edition-desc">Full-featured enterprise edition powered by dual motion engines (GSAP 3 + Anime.js
+              3), all 88+ effects, static code export &amp; advanced physics.</p>
+
+            <ul class="edition-features">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> All 88+ registered text effects (GSAP 3 + Anime.js 3)</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> Clean HTML/JS snippet generator for static websites</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> Complete source code, unminified chunks &amp; build scripts</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg> Direct .zip plugin download ready for Elementor</li>
+            </ul>
+          </div>
+
+          <div
+            style="padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+            <span style="font-size:12px;color:rgba(255,255,255,.4)">Version 1.0.0 Stable</span>
+            <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary"
+              style="padding:8px 18px;font-size:13px">
+              Download GSAP Edition (GitHub)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     HOW IT WORKS
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="how-it-works" class="arch-section section-gap">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Architecture</div>
+        <h2 class="display-2" style="margin-top:1rem">How Aurora Works</h2>
+      </div>
+
+      <div class="arch-flow">
+        <div class="arch-step">
+          <div class="arch-step__num">01</div>
+          <h3 class="arch-step__title">PHP Registers Controls</h3>
+          <p class="arch-step__desc">Each module hooks into Elementor's Advanced tab via
+            <code>elementor/element/*/section_effects/after_section_end</code>.
+          </p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-step__num">02</div>
+          <h3 class="arch-step__title">PHP Injects data-* Attrs</h3>
+          <p class="arch-step__desc">Settings are serialised as <code>data-aurora-*</code> attributes on the element
+            wrapper before rendering — zero runtime PHP.</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-step__num">03</div>
+          <h3 class="arch-step__title">JS Detects & Plays</h3>
+          <p class="arch-step__desc">The core runtime reads those attributes, splits text, and runs the selected effect
+            — triggered by IntersectionObserver or on load.</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-step__num">04</div>
+          <h3 class="arch-step__title">Per-Widget Chunking</h3>
+          <p class="arch-step__desc">On the real frontend only the ONE effect a widget uses is enqueued. The 50KB full
+            bundle stays out of every page that doesn't need it.</p>
+        </div>
+      </div>
+
+      <!-- Code example -->
+      <div style="margin-top: var(--s-10)">
+        <div class="code-block">
+          <span class="cmt">&lt;!-- PHP renders this on the element wrapper --&gt;</span>
+          &lt;<span class="kw">div</span>
+          <span class="attr">data-aurora-enable</span>=<span class="str">"1"</span>
+          <span class="attr">data-aurora-library</span>=<span class="str">"gsap"</span>
+          <span class="attr">data-aurora-animation</span>=<span class="str">"gs-1"</span>
+          <span class="attr">data-aurora-split-by</span>=<span class="str">"chars"</span>
+          <span class="attr">data-aurora-duration</span>=<span class="str">"800"</span>
+          <span class="attr">data-aurora-stagger</span>=<span class="str">"35"</span>
+          <span class="attr">data-aurora-trigger</span>=<span class="str">"scroll"</span>
+          <span class="attr">data-aurora-threshold</span>=<span class="str">"0.3"</span>
+          <span class="attr">data-aurora-replay</span>=<span class="str">"1"</span>
+          &gt;
+          Your Heading Text Here
+          &lt;/<span class="kw">div</span>&gt;
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     CTA
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section class="cta-section section-gap-lg">
+    <div class="container">
+      <div class="cta-box">
+        <div class="eyebrow" style="margin-bottom:1.5rem">Get Started</div>
+        <h2 class="display-2">Ready to <span class="text-gradient">animate?</span></h2>
+        <p>Download Aurora, drop it into your WordPress plugins folder, activate, and open any Elementor widget's
+          Advanced tab. That's it — no API keys, no upsells.</p>
+        <div class="cta-actions">
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Aurora Free
+          </a>
+          <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="btn-ghost">
+            Read the Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer__canvas-bg" aria-hidden="true">
+      <canvas data-aurora-ribbons></canvas>
+    </div>
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <img src="../assets/branding/logo_aurora_animated.svg" class="footer__logo" alt="Aurora for Elementor">
+          <p class="footer__tagline">The open-source Swiss Army knife for Elementor design. Color and motion, unleashed.
+          </p>
+        </div>
+        <div>
+          <p class="footer__col-title">Plugin</p>
+          <ul class="footer__links">
+            <li><a href="text-effects/">Live Playground</a></li>
+            <li><a href="text-effects/#effects">Animation Catalog</a></li>
+            <li><a href="#modules">Modules</a></li>
+            <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">Resources</p>
+          <ul class="footer__links">
+            <li><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">Documentation</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (GPL
+                v3)</a></li>
+            <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/README.md#contributing" target="_blank"
+                rel="noopener">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Aurora for Elementor. Open source, forever.</p>
+        <span class="footer__badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+          </svg>
+          GPL v3 · Made in Brazil
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════════════════ -->
+  <script src="../assets/js/vendor/jquery.min.js"></script>
+  <script src="../assets/js/vendor/gsap.min.js"></script>
+  <script src="../assets/js/vendor/anime.min.js"></script>
+  <script src="../assets/js/vendor/motion.min.js"></script>
+  <script src="../assets/js/vendor/aurora-shaders.js"></script>
+  <script>
+    if (typeof gsap !== 'undefined') window.AuroraGSAP = window.gsap;
+    if (typeof anime !== 'undefined') window.AuroraAnimeJS = window.anime;
+    if (typeof Motion !== 'undefined') window.AuroraMotionOne = window.Motion;
+    else if (typeof motion !== 'undefined') window.AuroraMotionOne = window.motion;
+  </script>
+  <script src="../assets/js/dist/aurora-text-editor.js"></script>
+  <script src="../assets/js/children-animations.js"></script>
+  <script src="../assets/js/cursor-follow.js"></script>
+  <script src="../assets/js/image-effects.js"></script>
+  <script src="../assets/js/morph-card.js"></script>
+  <script src="../assets/js/gradient-module.js"></script>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════════
+       FLOWING SIMPLEX 3D NOISE AURORA CANVAS OVERLAY
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      function initAuroraRibbons(canvas) {
+      var ctx = canvas.getContext('2d');
+
+      // ======= FLARE SETTINGS =======
+      var FLARE_ANGLE_DEG = -30;
+      var FLARE_MAX_HEIGHT = 0.85;
+      var FLARE_FADE_SOFTNESS = 0.7;
+
+      // Controls the frequency/amount of flares horizontally.
+      // Higher = more flares (narrower and denser), lower = fewer flares (broader and sparser).
+      var FLARE_FREQUENCY = 5.0;
+
+      // Expanded color array featuring rich blue, green, and purple tones and gradients
+      var FLARE_COLORS = [
+        { type: 'solid', color: 'rgba(0,255,140,1)' },
+        {
+          type: 'gradient', stops: [
+            { offset: 0, color: 'rgba(0,210,180,1)' },
+            { offset: 1, color: 'rgba(0,130,255,1)' }
+          ]
+        },
+        { type: 'solid', color: 'rgba(30,144,255,1)' },
+        {
+          type: 'gradient', stops: [
+            { offset: 0, color: 'rgba(40,80,255,1)' },
+            { offset: 1, color: 'rgb(0, 119, 65)'  }
+          ]
+        },
+        {
+          type: 'gradient', stops: [
+            { offset: 0, color: 'rgba(0,255,120,1)' },
+            { offset: 1, color: 'rgba(30,144,255,1)' }
+          ]
+        }
+      ];
+
+      var FLARE_COLOR_CYCLE_COUNT = 3.5;
+      var FLARE_COLOR_DRIFT_SPEED = 0.2;
+      // ================================
+
+      // ======= DARK GRADIENT SETTINGS =======
+      // Controls a background gradient (e.g., from transparent to black)
+      // to help darken the sky/image behind the aurora.
+      var ENABLE_DARK_GRADIENT = true;
+
+      // 0.0 is the top of the canvas, 1.0 is the bottom
+      var DARK_GRAD_START_Y = 0.0;
+      var DARK_GRAD_END_Y = 0.5;
+
+      // Colors for the gradient fade
+      var DARK_GRAD_COLOR_START = 'rgba(0, 0, 0, 0.01)'; // Almost transparent
+      var DARK_GRAD_COLOR_END = 'rgba(0, 0, 0, 0.5)';   // Dark/Black
+      // ======================================
+
+      // Optimized 3D Simplex Noise
+      var SimplexNoise = function (r) {
+        if (r == undefined) r = Math;
+        this.grad3 = [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]];
+        this.p = new Uint8Array(256);
+        for (var i = 0; i < 256; i++) { this.p[i] = Math.floor(r.random() * 256); }
+        this.perm = new Uint8Array(512);
+        for (var i = 0; i < 512; i++) { this.perm[i] = this.p[i & 255]; }
+      };
+
+      SimplexNoise.prototype.dot = function (g, x, y, z) {
+        return g[0] * x + g[1] * y + (z !== undefined ? g[2] * z : 0);
+      };
+
+      SimplexNoise.prototype.noise3d = function (xin, yin, zin) {
+        var n0, n1, n2, n3;
+        var F3 = 1.0 / 3.0;
+        var s = (xin + yin + zin) * F3;
+        var i = Math.floor(xin + s), j = Math.floor(yin + s), k = Math.floor(zin + s);
+        var G3 = 1.0 / 6.0;
+        var t = (i + j + k) * G3;
+        var X0 = i - t, Y0 = j - t, Z0 = k - t;
+        var x0 = xin - X0, y0 = yin - Y0, z0 = zin - Z0;
+        var i1, j1, k1, i2, j2, k2;
+        if (x0 >= y0) {
+          if (y0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+          else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
+          else { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
+        } else {
+          if (y0 < z0) { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
+          else if (x0 < z0) { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
+          else { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+        }
+        var x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3;
+        var x2 = x0 - i2 + 2.0 * G3, y2 = y0 - j2 + 2.0 * G3, z2 = z0 - k2 + 2.0 * G3;
+        var x3 = x0 - 1.0 + 3.0 * G3, y3 = y0 - 1.0 + 3.0 * G3, z3 = z0 - 1.0 + 3.0 * G3;
+        var ii = i & 255, jj = j & 255, kk = k & 255;
+        var gi0 = this.perm[ii + this.perm[jj + this.perm[kk]]] % 12;
+        var gi1 = this.perm[ii + i1 + this.perm[jj + j1 + this.perm[kk + k1]]] % 12;
+        var gi2 = this.perm[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2]]] % 12;
+        var gi3 = this.perm[ii + 1 + this.perm[jj + 1 + this.perm[kk + 1]]] % 12;
+        var t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
+        n0 = t0 < 0 ? 0.0 : Math.pow(t0, 4) * this.dot(this.grad3[gi0], x0, y0, z0);
+        var t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1;
+        n1 = t1 < 0 ? 0.0 : Math.pow(t1, 4) * this.dot(this.grad3[gi1], x1, y1, z1);
+        var t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
+        n2 = t2 < 0 ? 0.0 : Math.pow(t2, 4) * this.dot(this.grad3[gi2], x2, y2, z2);
+        var t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
+        n3 = t3 < 0 ? 0.0 : Math.pow(t3, 4) * this.dot(this.grad3[gi3], x3, y3, z3);
+        return 32.0 * (n0 + n1 + n2 + n3);
+      };
+
+      var simplex = new SimplexNoise();
+
+      var bufferWidth = 480;
+      var bufferHeight = 300;
+      var offCanvas = document.createElement('canvas');
+      offCanvas.width = bufferWidth;
+      offCanvas.height = bufferHeight;
+      var offCtx = offCanvas.getContext('2d');
+
+      var outImageData = offCtx.createImageData(bufferWidth, bufferHeight);
+      var outData = outImageData.data;
+
+      function resize() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      var flareAngleRad = FLARE_ANGLE_DEG * Math.PI / 180;
+      var cosA = Math.cos(flareAngleRad);
+      var sinA = Math.sin(flareAngleRad);
+      var cx = bufferWidth / 2;
+      var cy = bufferHeight / 2;
+      var fadeStart = Math.max(0, FLARE_MAX_HEIGHT - FLARE_FADE_SOFTNESS);
+
+      function parseRGBA(str) {
+        var m = /rgba?\(([^)]+)\)/.exec(str);
+        var parts = m[1].split(',').map(function (s) { return parseFloat(s); });
+        return [parts[0], parts[1], parts[2], parts.length > 3 ? parts[3] : 1];
+      }
+
+      var FLARE_COLORS_PARSED = FLARE_COLORS.map(function (entry) {
+        if (entry.type === 'gradient') {
+          var stops = entry.stops
+            .map(function (s) {
+              var c = parseRGBA(s.color);
+              return [s.offset, c[0], c[1], c[2], c[3]];
+            })
+            .sort(function (a, b) { return a[0] - b[0]; });
+          return { type: 'gradient', stops: stops };
+        }
+        return { type: 'solid', rgba: parseRGBA(entry.color) };
+      });
+      var flareColorCount = FLARE_COLORS_PARSED.length;
+
+      function sampleFlareColorAt(entry, t) {
+        if (entry.type === 'solid') return entry.rgba;
+        var stops = entry.stops;
+        if (t <= stops[0][0]) return stops[0].slice(1);
+        var last = stops[stops.length - 1];
+        if (t >= last[0]) return last.slice(1);
+        for (var i = 0; i < stops.length - 1; i++) {
+          var a = stops[i], b = stops[i + 1];
+          if (t >= a[0] && t <= b[0]) {
+            var span = (b[0] - a[0]) || 1;
+            var lt = (t - a[0]) / span;
+            return [
+              a[1] + (b[1] - a[1]) * lt,
+              a[2] + (b[2] - a[2]) * lt,
+              a[3] + (b[3] - a[3]) * lt,
+              a[4] + (b[4] - a[4]) * lt
+            ];
+          }
+        }
+        return last.slice(1);
+      }
+
+      var rowColors = new Array(flareColorCount);
+
+      function renderAurora() {
+        var time = Date.now() / 4000;
+        var colorTimeOffset = time * FLARE_COLOR_DRIFT_SPEED;
+
+        var idx = 0;
+        for (var h = 0; h < bufferHeight; h++) {
+          var dy = h - cy;
+          var heightRatio = h / bufferHeight;
+
+          var heightMask;
+          if (heightRatio <= fadeStart) {
+            heightMask = 1;
+          } else if (heightRatio >= FLARE_MAX_HEIGHT) {
+            heightMask = 0;
+          } else {
+            var tt = (heightRatio - fadeStart) / (FLARE_MAX_HEIGHT - fadeStart);
+            heightMask = 1 - (tt * tt * (3 - 2 * tt)); // smoothstep
+          }
+
+          var vignette = 1 - 0.15 * Math.min(heightRatio / 0.5, 1);
+          var rowT = FLARE_MAX_HEIGHT > 0 ? Math.min(heightRatio / FLARE_MAX_HEIGHT, 1) : 1;
+
+          for (var ci = 0; ci < flareColorCount; ci++) {
+            rowColors[ci] = sampleFlareColorAt(FLARE_COLORS_PARSED[ci], rowT);
+          }
+
+          for (var w = 0; w < bufferWidth; w++) {
+            var dx = w - cx;
+
+            var fastCoord = dx * cosA - dy * sinA;
+            var slowCoord = dx * sinA + dy * cosA;
+
+            // Apply FLARE_FREQUENCY to control flare amount/density
+            var nx = (fastCoord / bufferWidth) * FLARE_FREQUENCY;
+            var ny = (slowCoord / bufferHeight) * 0.5;
+
+            var n = simplex.noise3d(nx, ny, time);
+
+            // Factor acts as an opacity mask
+            var factor = (n * 0.5 + 0.5) * heightMask * vignette;
+
+            // Mix spatial noise into the color phase so each individual flare dynamically samples random colors from the array
+            var colorPhase = (fastCoord / bufferWidth) * FLARE_COLOR_CYCLE_COUNT + colorTimeOffset + (n * 2.0);
+            var wrapped = ((colorPhase % flareColorCount) + flareColorCount) % flareColorCount;
+            var ci0 = wrapped | 0;
+            var ci1 = (ci0 + 1) % flareColorCount;
+            var cb = wrapped - ci0;
+
+            var c0 = rowColors[ci0];
+            var c1 = rowColors[ci1];
+
+            // 1. Keep the pure RGB color (maximum aurora luminosity)
+            outData[idx] = (c0[0] + (c1[0] - c0[0]) * cb) | 0;
+            outData[idx + 1] = (c0[1] + (c1[1] - c0[1]) * cb) | 0;
+            outData[idx + 2] = (c0[2] + (c1[2] - c0[2]) * cb) | 0;
+
+            // 2. Transfer the intensity and fade 'factor' to the Transparency (Alpha) channel
+            var baseAlpha = c0[3] + (c1[3] - c0[3]) * cb;
+            outData[idx + 3] = (baseAlpha * 255 * factor) | 0;
+
+            idx += 4;
+          }
+        }
+
+        offCtx.putImageData(outImageData, 0, 0);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Apply the dark background gradient if enabled
+        if (ENABLE_DARK_GRADIENT) {
+          var darkGrad = ctx.createLinearGradient(
+            0, canvas.height * DARK_GRAD_START_Y,
+            0, canvas.height * DARK_GRAD_END_Y
+          );
+          darkGrad.addColorStop(0, DARK_GRAD_COLOR_START);
+          darkGrad.addColorStop(1, DARK_GRAD_COLOR_END);
+          ctx.fillStyle = darkGrad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Draw the aurora on top of the gradient
+        ctx.drawImage(offCanvas, 0, 0, canvas.width, canvas.height);
+
+        requestAnimationFrame(renderAurora);
+      }
+
+      requestAnimationFrame(renderAurora);
+      }
+
+      document.querySelectorAll('[data-aurora-ribbons]').forEach(function (canvas) {
+        initAuroraRibbons(canvas);
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════════
+       NAV SCROLL STATE
+       ═══════════════════════════════════════════════════════════════════ */
+    var nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', function () {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ═══════════════════════════════════════════════════════════════════
+       MODULES DROPDOWN — desktop hover is pure CSS (:hover on
+       .nav__dropdown); this just adds click/keyboard support so touch and
+       keyboard users can open it too, and closes it on outside click,
+       Escape, or picking a link.
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      var dropdown = document.getElementById('nav-modules-dropdown');
+      var trigger = document.getElementById('nav-modules-trigger');
+      if (!dropdown || !trigger) return;
+
+      function close() {
+        dropdown.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      function toggle() {
+        var willOpen = !dropdown.classList.contains('open');
+        dropdown.classList.toggle('open', willOpen);
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      }
+
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggle();
+      });
+      document.addEventListener('click', function (e) {
+        if (!dropdown.contains(e.target)) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+      });
+      dropdown.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', close);
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════════
+       CURSOR FOLLOW ZONE DEMO
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      var zone = document.getElementById('cursor-zone');
+      var dot = document.getElementById('cursor-dot');
+      var ring = document.getElementById('cursor-ring');
+      if (!zone || !dot || !ring) return;
+
+      var dotPos = { x: 0, y: 0 };
+      var ringPos = { x: 0, y: 0 };
+      var mouseP = { x: 0, y: 0 };
+      var inside = false;
+      var rAF;
+
+      zone.addEventListener('mousemove', function (e) {
+        var r = zone.getBoundingClientRect();
+        mouseP.x = e.clientX - r.left;
+        mouseP.y = e.clientY - r.top;
+        if (!inside) { inside = true; dot.style.opacity = '1'; ring.style.opacity = '1'; }
+      });
+
+      zone.addEventListener('mouseleave', function () {
+        inside = false;
+        dot.style.opacity = '0';
+        ring.style.opacity = '0';
+      });
+
+      dot.style.opacity = '0';
+      ring.style.opacity = '0';
+      dot.style.transition = 'opacity .2s';
+      ring.style.transition = 'opacity .2s';
+
+      function loop() {
+        if (inside) {
+          dotPos.x += (mouseP.x - dotPos.x) * .5;
+          dotPos.y += (mouseP.y - dotPos.y) * .5;
+          ringPos.x += (mouseP.x - ringPos.x) * .12;
+          ringPos.y += (mouseP.y - ringPos.y) * .12;
+
+          dot.style.transform = 'translate3d(' + (dotPos.x - 4) + 'px,' + (dotPos.y - 4) + 'px,0)';
+          ring.style.transform = 'translate3d(' + (ringPos.x - 18) + 'px,' + (ringPos.y - 18) + 'px,0)';
+          dot.style.left = dot.style.top = ring.style.left = ring.style.top = '0px';
+        }
+        rAF = requestAnimationFrame(loop);
+      }
+
+      dot.style.position = ring.style.position = 'absolute';
+      dot.style.left = dot.style.top = ring.style.left = ring.style.top = '0px';
+      dot.style.transform = dot.style.transform = 'none';
+      loop();
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════════
+       INTERSECTION OBSERVER — SECTION REVEALS
+       ═══════════════════════════════════════════════════════════════════ */
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .1 });
+
+    document.querySelectorAll('.module-card, .arch-step, .cta-box').forEach(function (el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1)';
+      revealObs.observe(el);
+    });
+
+    // Stagger module cards
+    document.querySelectorAll('.module-card').forEach(function (el, i) {
+      el.style.transitionDelay = (i * .06) + 's';
+    });
+
+    /* ═══════════════════════════════════════════════════════════════════
+       GLOBAL CURSOR FOLLOWER
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      /* Skip on touch devices */
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+
+      var dot = document.getElementById('gcursor-dot');
+      var ring = document.getElementById('gcursor-ring');
+      if (!dot || !ring) return;
+
+      var dx = 0, dy = 0;   /* dot real pos */
+      var rx = 0, ry = 0;   /* ring real pos */
+      var mx = -200, my = -200; /* mouse pos, starts off-screen */
+      var ready = false;
+
+      document.addEventListener('mousemove', function (e) {
+        mx = e.clientX;
+        my = e.clientY;
+        if (!ready) {
+          ready = true;
+          dx = mx; dy = my;
+          rx = mx; ry = my;
+          document.body.classList.add('cursor-ready');
+        }
+      }, { passive: true });
+
+      document.addEventListener('mousedown', function () {
+        document.body.classList.add('cursor-click');
+      });
+      document.addEventListener('mouseup', function () {
+        document.body.classList.remove('cursor-click');
+      });
+
+      /* Hover detection for interactive elements */
+      var hoverSel = 'a, button, [role="button"], input, select, textarea, label, .effect-card, .module-card';
+      document.addEventListener('mouseover', function (e) {
+        if (e.target.closest(hoverSel)) document.body.classList.add('cursor-hover');
+      });
+      document.addEventListener('mouseout', function (e) {
+        if (e.target.closest(hoverSel)) document.body.classList.remove('cursor-hover');
+      });
+
+      /* Hide native cursor globally */
+      var style = document.createElement('style');
+      style.textContent = '* { cursor: none !important; }';
+      document.head.appendChild(style);
+
+      function loop() {
+        /* Dot tracks instantly */
+        dx += (mx - dx) * .55;
+        dy += (my - dy) * .55;
+        /* Ring lags behind */
+        rx += (mx - rx) * .11;
+        ry += (my - ry) * .11;
+
+        dot.style.transform = 'translate3d(' + dx + 'px,' + dy + 'px,0) translate(-50%,-50%)';
+        ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) translate(-50%,-50%)';
+
+        requestAnimationFrame(loop);
+      }
+
+      loop();
+    })();
+  </script>
+
+  <script>
+    /* Hero Entrance Animations */
+    (function () {
+      function initHeroAnimations() {
+        if (typeof gsap === 'undefined') return;
+
+        var tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
+
+        tl.fromTo('.hero__badge',
+          { y: -30, opacity: 0, scale: 0.9 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, delay: 0.1 }
+        );
+
+        tl.fromTo('.hero__title .word-stack',
+          { y: 65, opacity: 0, skewY: 3 },
+          { y: 0, opacity: 1, skewY: 0, duration: 1.1, stagger: 0.14, ease: 'power4.out' },
+          '-=0.5'
+        );
+
+        tl.fromTo('.hero__sub',
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9 },
+          '-=0.7'
+        );
+
+        tl.fromTo('.hero__actions .btn-primary, .hero__actions .btn-ghost',
+          { y: 20, opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.12, ease: 'back.out(1.7)' },
+          '-=0.6'
+        );
+
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initHeroAnimations);
+      } else {
+        initHeroAnimations();
+      }
+
+      /* Interactive 3D Perspective Tilt for Showcase Card */
+      var tiltCard = document.getElementById('tilt-card-demo') || document.getElementById('tilt-card-demo-light');
+      if (tiltCard) {
+        var parentBox = tiltCard.closest('.feature-preview-box');
+        if (parentBox) {
+          parentBox.addEventListener('mousemove', function (e) {
+            var rect = parentBox.getBoundingClientRect();
+            var x = e.clientX - rect.left - rect.width / 2;
+            var y = e.clientY - rect.top - rect.height / 2;
+            var rotX = (-y / (rect.height / 2)) * 18;
+            var rotY = (x / (rect.width / 2)) * 18;
+            tiltCard.style.transform = 'rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg) scale(1.05)';
+          });
+
+          parentBox.addEventListener('mouseleave', function () {
+            tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+          });
+        }
+      }
+    })();
+  </script>
+
+  <script>
+    /* Interactive Showcase Initializers (100% English) */
+    (function () {
+      'use strict';
+
+      // 1. Morph Card State Switcher
+      var morphCard = document.getElementById('demo-morph-card');
+      var morphBtns = document.querySelectorAll('.morph-btn');
+      var morphTitle = document.getElementById('morph-title');
+      var morphSubtitle = document.getElementById('morph-subtitle');
+      var morphDesc = document.getElementById('morph-desc');
+      var morphImg = document.getElementById('morph-img');
+
+      var morphStates = {
+        instagram: {
+          title: '@aurora.design',
+          sub: 'Motion System Active',
+          desc: 'Seamless transition of border-radius, opacity, padding, and 3D rotation without DOM reflows.',
+          img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
+          radius: '24px',
+          rot: '0deg'
+        },
+        profile: {
+          title: 'Aurora Studio',
+          sub: 'Design & Motion Agency',
+          desc: 'Compact layout highlighting avatar and engagement metrics.',
+          img: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop',
+          radius: '36px',
+          rot: '0deg'
+        },
+        polaroid: {
+          title: 'Polaroid Memory',
+          sub: 'Vintage Collection #04',
+          desc: 'Classic photo frame layout with subtle rotation and elevation shadow.',
+          img: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop',
+          radius: '8px',
+          rot: '-2deg'
+        },
+        custom: {
+          title: 'Neon Cyberpunk',
+          sub: 'WebGL Glow State',
+          desc: 'Vibrant gradient and glowing borders animated via Motion One.',
+          img: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800&auto=format&fit=crop',
+          radius: '16px',
+          rot: '2deg'
+        }
+      };
+
+      if (morphBtns.length) {
+        morphBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var stateKey = this.dataset.state;
+            var st = morphStates[stateKey];
+            if (!st || !morphCard) return;
+
+            morphBtns.forEach(function (b) { b.classList.remove('active'); });
+            this.classList.add('active');
+
+            if (window.AuroraMotionOne && window.AuroraMotionOne.animate) {
+              window.AuroraMotionOne.animate(morphCard, {
+                borderRadius: st.radius,
+                rotate: st.rot,
+                scale: [0.96, 1]
+              }, { duration: 0.5, easing: 'spring(1, 80, 10, 0)' });
+            } else {
+              morphCard.style.borderRadius = st.radius;
+              morphCard.style.transform = 'rotate(' + st.rot + ')';
+            }
+
+            if (morphTitle) morphTitle.textContent = st.title;
+            if (morphSubtitle) morphSubtitle.textContent = st.sub;
+            if (morphDesc) morphDesc.textContent = st.desc;
+            if (morphImg) morphImg.src = st.img;
+          });
+        });
+      }
+
+      // 2. Spotlight Follow Mouse Interactive Box
+      var spotBox = document.getElementById('spotlight-interactive-box');
+      if (spotBox) {
+        spotBox.addEventListener('mousemove', function (e) {
+          var rect = spotBox.getBoundingClientRect();
+          var x = ((e.clientX - rect.left) / rect.width) * 100;
+          var y = ((e.clientY - rect.top) / rect.height) * 100;
+          spotBox.style.background = 'radial-gradient(circle 240px at ' + x.toFixed(1) + '% ' + y.toFixed(1) + '%, rgba(5,177,114,0.5) 0%, rgba(0,153,204,0.25) 45%, rgba(3,4,12,0.95) 80%)';
+        });
+      }
+
+      // 3. Glassmorphism Sliders
+      var glassBlur = document.getElementById('slider-glass-blur');
+      var glassBg = document.getElementById('slider-glass-bg');
+      var glassBorder = document.getElementById('slider-glass-border');
+      var glassRadius = document.getElementById('slider-glass-radius');
+      var glassCard = document.getElementById('glass-target-card');
+      var glassCode = document.getElementById('code-glass-output');
+
+      function updateGlass() {
+        if (!glassCard) return;
+        var blurVal = glassBlur ? glassBlur.value : 20;
+        var bgVal = glassBg ? glassBg.value / 100 : 0.15;
+        var borderVal = glassBorder ? glassBorder.value / 100 : 0.2;
+        var radVal = glassRadius ? glassRadius.value : 24;
+
+        var valBlurEl = document.getElementById('val-glass-blur');
+        var valBgEl = document.getElementById('val-glass-bg');
+        var valBorderEl = document.getElementById('val-glass-border');
+        var valRadEl = document.getElementById('val-glass-radius');
+
+        if (valBlurEl) valBlurEl.textContent = blurVal + 'px';
+        if (valBgEl) valBgEl.textContent = (glassBg ? glassBg.value : 15) + '%';
+        if (valBorderEl) valBorderEl.textContent = (glassBorder ? glassBorder.value : 20) + '%';
+        if (valRadEl) valRadEl.textContent = radVal + 'px';
+
+        var styleStr = 'background:rgba(255,255,255,' + bgVal.toFixed(2) + ');backdrop-filter:blur(' + blurVal + 'px);border:1px solid rgba(255,255,255,' + borderVal.toFixed(2) + ');border-radius:' + radVal + 'px';
+        glassCard.setAttribute('style', styleStr);
+        if (glassCode) glassCode.textContent = 'style="' + styleStr + '"';
+      }
+
+      [glassBlur, glassBg, glassBorder, glassRadius].forEach(function (sl) {
+        if (sl) sl.addEventListener('input', updateGlass);
+      });
+
+      // 4. Elementor Mockup Accordions
+      var accHeaders = document.querySelectorAll('.el-accordion-header');
+      accHeaders.forEach(function (hdr) {
+        hdr.addEventListener('click', function () {
+          var targetId = this.dataset.target;
+          var targetBody = document.getElementById(targetId);
+
+          accHeaders.forEach(function (h) { h.classList.remove('active'); });
+          document.querySelectorAll('.el-accordion-body').forEach(function (b) { b.classList.remove('active'); });
+
+          this.classList.add('active');
+          if (targetBody) targetBody.classList.add('active');
+        });
+      });
+    })();
+  </script>
+
+</body>
+
+</html>
