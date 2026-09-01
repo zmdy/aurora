@@ -22,7 +22,11 @@
         'rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'rotateInUpLeft', 'rotateInUpRight',
         'lightSpeedIn', 'rollIn',
         'bounce', 'flash', 'pulse', 'rubberBand', 'shake', 'headShake', 'swing', 'tada', 'wobble', 'jello',
-        'flipInX', 'flipInY'
+        'flipInX', 'flipInY',
+        // Aurora blur set (assets/css/children-animations.css) — CSS-only
+        // @keyframes, driven through this same animate.css engine.
+        'auroraBlurIn', 'auroraBlurInUp', 'auroraBlurInDown', 'auroraBlurInLeft',
+        'auroraBlurInRight', 'auroraBlurZoomIn', 'auroraFocusIn'
     ];
 
     var ANIMATION_CLASS_MAP = {
@@ -259,10 +263,35 @@
     // ANIMATE.CSS ENGINE
     // ─────────────────────────────────────────────────────────────────────────
 
-    function animateChild(child, animClass, duration, delay) {
+    // Strips the animate.css entrance classes and the inline animation props
+    // left on a child once its entrance has finished. This is what lets the
+    // Children Hover Effect transition work on the frontend.
+    //
+    // A CSS animation whose fill-mode is `both` keeps its final keyframe
+    // "active" forever after it ends, which means the animation KEEPS
+    // OWNERSHIP of transform/filter in the cascade. While a property is owned
+    // by an animation, CSS transitions on that same property are ignored — so
+    // the hover's `transition: transform` never ran and the hover jumped
+    // between its two states abruptly. (The editor often looked fine because
+    // the scroll-triggered entrance hadn't actually played/stuck there yet.)
+    // Clearing the finished entrance hands transform/filter back to the inline
+    // style + transition the hover engine sets, so the hover animates smoothly.
+    function clearEntranceState(child) {
+        if (child._auroraEntranceEnd) {
+            child.removeEventListener('animationend', child._auroraEntranceEnd);
+            child._auroraEntranceEnd = null;
+        }
         for (var k = 0; k < ALL_ANIMATION_CLASSES.length; k++) {
             child.classList.remove(ALL_ANIMATION_CLASSES[k]);
         }
+        child.classList.remove('animated');
+        child.style.animationDuration = '';
+        child.style.animationDelay = '';
+        child.style.animationFillMode = '';
+    }
+
+    function animateChild(child, animClass, duration, delay) {
+        clearEntranceState(child);
 
         child.style.visibility = 'visible';
         child.style.opacity = '';
@@ -270,12 +299,25 @@
         child.style.animationDelay = delay + 'ms';
         child.style.animationFillMode = 'both';
 
+        // Guarded on e.target === child so a nested widget's own animate.css
+        // animationend (which bubbles up to this child) can't strip the
+        // parent's entrance before it has actually finished.
+        child._auroraEntranceEnd = function (e) {
+            if (e.target !== child) return;
+            clearEntranceState(child);
+        };
+        child.addEventListener('animationend', child._auroraEntranceEnd);
+
         void child.offsetWidth;
 
         child.classList.add('animated', animClass);
     }
 
     function resetChild(child, animClass) {
+        if (child._auroraEntranceEnd) {
+            child.removeEventListener('animationend', child._auroraEntranceEnd);
+            child._auroraEntranceEnd = null;
+        }
         for (var k = 0; k < ALL_ANIMATION_CLASSES.length; k++) {
             child.classList.remove(ALL_ANIMATION_CLASSES[k]);
         }
@@ -406,6 +448,10 @@
         var children = getChildren(wrapper, { targetType: 'all_widgets', depth: 'all' });
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
+            if (child._auroraEntranceEnd) {
+                child.removeEventListener('animationend', child._auroraEntranceEnd);
+                child._auroraEntranceEnd = null;
+            }
             for (var k = 0; k < ALL_ANIMATION_CLASSES.length; k++) {
                 child.classList.remove(ALL_ANIMATION_CLASSES[k]);
             }
@@ -479,9 +525,14 @@
         var useProximity = !!opts.proximity;
         var intensity = opts.proximityIntensity !== undefined ? opts.proximityIntensity : 0.5;
 
-        // Apply transition and hardware acceleration to children
+        // Apply transition and hardware acceleration to children. Set the
+        // transition with `important` so a theme/Elementor rule that declares
+        // `transition: none` (or its own transition) on the same element can't
+        // silently swallow the hover easing — that would make the hover snap
+        // between states with no duration, the exact frontend symptom this
+        // guards against.
         children.forEach(function (child) {
-            child.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.25, 1, 0.5, 1)';
+            child.style.setProperty('transition', 'transform ' + duration + 'ms cubic-bezier(0.25, 1, 0.5, 1)', 'important');
             child.style.willChange = 'transform';
         });
 

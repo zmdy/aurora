@@ -36,9 +36,19 @@ class Children_Animation_Controls extends Animation_Module {
 
 	/**
 	 * Enqueues Elementor's native animate.css style, ensuring it loads on
-	 * the frontend even when Elementor doesn't auto-enqueue it.
+	 * the frontend even when Elementor doesn't auto-enqueue it, plus Aurora's
+	 * own blur-animation set (which animate.css doesn't provide).
 	 */
 	public function enqueue_styles(): void {
+		// Aurora's blur/focus @keyframes — the only entrance effects in this
+		// module that animate.css can't cover. Tiny, CSS-only, no dependency.
+		wp_enqueue_style(
+			'aurora-children-animations',
+			AURORA_URL . 'assets/css/children-animations.css',
+			[],
+			AURORA_VERSION
+		);
+
 		// Try the pre-registered handle first (some Elementor versions register it).
 		if ( wp_style_is( 'elementor-animations', 'registered' ) ) {
 			wp_enqueue_style( 'elementor-animations' );
@@ -81,9 +91,11 @@ class Children_Animation_Controls extends Animation_Module {
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 10 ],
-			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 10 ],
-			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 10 ],
+			// _section_responsive is the last Advanced-tab section on structural
+			// elements — hooking after it places Aurora's panel at the bottom.
+			[ 'hook' => 'elementor/element/section/_section_responsive/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/column/_section_responsive/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/container/_section_responsive/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/icon-list/section_icon_list/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/icon-list/section_text_style/after_section_end', 'priority' => 10 ],
 			[ 'hook' => 'elementor/element/image-gallery/section_gallery/after_section_end', 'priority' => 10 ],
@@ -152,6 +164,18 @@ class Children_Animation_Controls extends Animation_Module {
 							'fade-up'    => esc_html__( 'Fade Up (Aurora)', 'aurora-for-elementor' ),
 							'fade-down'  => esc_html__( 'Fade Down (Aurora)', 'aurora-for-elementor' ),
 							'fade-in'    => esc_html__( 'Fade In (Aurora)', 'aurora-for-elementor' ),
+						],
+					],
+					[
+						'label'   => esc_html__( 'Blur (Aurora)', 'aurora-for-elementor' ),
+						'options' => [
+							'auroraBlurIn'      => esc_html__( 'Blur In', 'aurora-for-elementor' ),
+							'auroraBlurInUp'    => esc_html__( 'Blur In Up', 'aurora-for-elementor' ),
+							'auroraBlurInDown'  => esc_html__( 'Blur In Down', 'aurora-for-elementor' ),
+							'auroraBlurInLeft'  => esc_html__( 'Blur In Left', 'aurora-for-elementor' ),
+							'auroraBlurInRight' => esc_html__( 'Blur In Right', 'aurora-for-elementor' ),
+							'auroraBlurZoomIn'  => esc_html__( 'Blur Zoom In', 'aurora-for-elementor' ),
+							'auroraFocusIn'     => esc_html__( 'Focus In', 'aurora-for-elementor' ),
 						],
 					],
 					[

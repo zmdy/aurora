@@ -1,0 +1,167 @@
+/**
+ * Aurora for Elementor — Children Animation: Blur set
+ *
+ * A CSS-only family of blur/focus entrance animations for the "Animate
+ * Children Elements" module. animate.css (bundled with Elementor) has no
+ * blur-based effect, so these live here instead.
+ *
+ * They deliberately follow animate.css's own convention — one `@keyframes`
+ * whose name matches a class that only maps `animation-name` — so the exact
+ * same runtime engine in children-animations.js drives them: it sets
+ * animation-duration / -delay / -fill-mode inline and toggles the
+ * `.animated <class>` pair. No JavaScript specific to blur is required, and
+ * the entrance-cleanup in animateChild() strips the class on animationend,
+ * leaving the element perfectly sharp (filter:none) afterwards.
+ *
+ * @package Aurora
+ */
+
+.animated.auroraBlurIn,
+.animated.auroraBlurInUp,
+.animated.auroraBlurInDown,
+.animated.auroraBlurInLeft,
+.animated.auroraBlurInRight,
+.animated.auroraBlurZoomIn,
+.animated.auroraFocusIn {
+	/* Hint the compositor; harmless once the class is stripped on end. */
+	will-change: filter, transform, opacity;
+}
+
+/* ── Blur In (pure focus, no movement) ─────────────────────────────────── */
+.auroraBlurIn {
+	animation-name: auroraBlurIn;
+}
+@keyframes auroraBlurIn {
+	from {
+		opacity: 0;
+		filter: blur(12px);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+	}
+}
+
+/* ── Blur In Up ────────────────────────────────────────────────────────── */
+.auroraBlurInUp {
+	animation-name: auroraBlurInUp;
+}
+@keyframes auroraBlurInUp {
+	from {
+		opacity: 0;
+		filter: blur(12px);
+		transform: translate3d(0, 40px, 0);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* ── Blur In Down ──────────────────────────────────────────────────────── */
+.auroraBlurInDown {
+	animation-name: auroraBlurInDown;
+}
+@keyframes auroraBlurInDown {
+	from {
+		opacity: 0;
+		filter: blur(12px);
+		transform: translate3d(0, -40px, 0);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* ── Blur In Left ──────────────────────────────────────────────────────── */
+.auroraBlurInLeft {
+	animation-name: auroraBlurInLeft;
+}
+@keyframes auroraBlurInLeft {
+	from {
+		opacity: 0;
+		filter: blur(12px);
+		transform: translate3d(-40px, 0, 0);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* ── Blur In Right ─────────────────────────────────────────────────────── */
+.auroraBlurInRight {
+	animation-name: auroraBlurInRight;
+}
+@keyframes auroraBlurInRight {
+	from {
+		opacity: 0;
+		filter: blur(12px);
+		transform: translate3d(40px, 0, 0);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* ── Blur Zoom In (settle in from slightly enlarged + blurred) ─────────── */
+.auroraBlurZoomIn {
+	animation-name: auroraBlurZoomIn;
+}
+@keyframes auroraBlurZoomIn {
+	from {
+		opacity: 0;
+		filter: blur(14px);
+		transform: scale3d(1.12, 1.12, 1);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+/* ── Focus In (heavy defocus → sharp, a camera pulling focus) ──────────── */
+.auroraFocusIn {
+	animation-name: auroraFocusIn;
+}
+@keyframes auroraFocusIn {
+	0% {
+		opacity: 0;
+		filter: blur(24px);
+		transform: scale3d(1.05, 1.05, 1);
+	}
+	60% {
+		opacity: 1;
+		filter: blur(6px);
+	}
+	100% {
+		opacity: 1;
+		filter: blur(0);
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+/* Respect users who asked for less motion: keep the fade, drop the blur/move
+   so the reveal is instant and non-nauseating. */
+@media (prefers-reduced-motion: reduce) {
+	.auroraBlurIn,
+	.auroraBlurInUp,
+	.auroraBlurInDown,
+	.auroraBlurInLeft,
+	.auroraBlurInRight,
+	.auroraBlurZoomIn,
+	.auroraFocusIn {
+		animation-name: auroraBlurReducedFade;
+	}
+	@keyframes auroraBlurReducedFade {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+}

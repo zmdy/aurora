@@ -101,12 +101,12 @@ abstract class Animation_Module {
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			// Standard Advanced Tab background section (present on all widgets in Elementor Free and Pro).
-			[ 'hook' => 'elementor/element/common/_section_background/after_section_end', 'priority' => 10 ],
-			[ 'hook' => 'elementor/element/common-optimized/_section_background/after_section_end', 'priority' => 10 ],
-			// Effects section (present on containers or when Motion Effects / Pro is active).
-			[ 'hook' => 'elementor/element/common/section_effects/after_section_end', 'priority' => 10 ],
-			[ 'hook' => 'elementor/element/common-optimized/section_effects/after_section_end', 'priority' => 10 ],
+			// _section_responsive is the LAST section of the common Advanced
+			// tab (it's appended after the widget's own controls — see
+			// Widget_Base::get_stack()), so hooking after it lands Aurora's
+			// panel at the BOTTOM of the Advanced tab rather than the top.
+			[ 'hook' => 'elementor/element/common/_section_responsive/after_section_end', 'priority' => 10 ],
+			[ 'hook' => 'elementor/element/common-optimized/_section_responsive/after_section_end', 'priority' => 10 ],
 		];
 	}
 

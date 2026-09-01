@@ -51,9 +51,11 @@ class Cursor_Follow_Controls extends Animation_Module {
 			[ 'hook' => 'elementor/element/image/section_style_image/after_section_end', 'priority' => 50 ],
 			[ 'hook' => 'elementor/element/icon-box/section_style_box/after_section_end', 'priority' => 50 ],
 			[ 'hook' => 'elementor/element/button/section_style/after_section_end', 'priority' => 50 ],
-			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 40 ],
-			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 40 ],
-			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 40 ],
+			// _section_responsive is the last Advanced-tab section on structural
+			// elements — hooking after it places Aurora's panel at the bottom.
+			[ 'hook' => 'elementor/element/section/_section_responsive/after_section_end', 'priority' => 40 ],
+			[ 'hook' => 'elementor/element/column/_section_responsive/after_section_end', 'priority' => 40 ],
+			[ 'hook' => 'elementor/element/container/_section_responsive/after_section_end', 'priority' => 40 ],
 		];
 	}
 

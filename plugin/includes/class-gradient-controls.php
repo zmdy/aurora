@@ -61,9 +61,13 @@ class Gradient_Controls extends Animation_Module {
 	 */
 	protected function get_controls_hooks(): array {
 		return [
-			[ 'hook' => 'elementor/element/section/section_effects/after_section_end', 'priority' => 20 ],
-			[ 'hook' => 'elementor/element/column/section_effects/after_section_end', 'priority' => 20 ],
-			[ 'hook' => 'elementor/element/container/section_effects/after_section_end', 'priority' => 20 ],
+			// Structural elements register their own Advanced-tab sections;
+			// _section_responsive is the LAST one, so hooking after it drops
+			// Aurora's panel at the BOTTOM of the Advanced tab (instead of the
+			// top) while still passing the real element to applies_to_element().
+			[ 'hook' => 'elementor/element/section/_section_responsive/after_section_end', 'priority' => 20 ],
+			[ 'hook' => 'elementor/element/column/_section_responsive/after_section_end', 'priority' => 20 ],
+			[ 'hook' => 'elementor/element/container/_section_responsive/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/heading/section_title_style/after_section_end', 'priority' => 20 ],
 			[ 'hook' => 'elementor/element/text-editor/section_style/after_section_end', 'priority' => 20 ],
 			// Icon's own dedicated Style-tab section is 'section_style_icon'
