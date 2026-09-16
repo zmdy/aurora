@@ -165,35 +165,25 @@ final class Asset_Manager {
 			true
 		);
 
-		// ── Vendor: WebGL Shaders Engine + Gradient module ────────────────────
-		// Inside the editor/preview iframe both are always loaded — same
-		// reasoning as the Text Animation bundle above: a "frontend_available"
-		// control (like every Gradient control) previews live, entirely in
-		// JS, the moment the user flips it on, with no PHP re-render in
-		// between. If the script weren't already on the page, the Frontend
-		// Handler would never exist and the live preview would silently do
-		// nothing until the next save/reload.
+		// ── Gradient module ───────────────────────────────────────────────────
+		// Inside the editor/preview iframe it's always loaded — same reasoning
+		// as the Text Animation bundle above: a "frontend_available" control
+		// (like every Gradient control) previews live, entirely in JS, the
+		// moment the user flips it on, with no PHP re-render in between. If the
+		// script weren't already on the page, the Frontend Handler would never
+		// exist and the live preview would silently do nothing until the next
+		// save/reload.
 		//
-		// On the real frontend there's no such live-editing concern, so
-		// both scripts are instead conditionally enqueued from
+		// On the real frontend there's no such live-editing concern, so it's
+		// instead conditionally enqueued from
 		// Gradient_Controls::get_render_attributes() — only when a page
-		// actually has an element with Gradient enabled (and aurora-shaders
-		// only when that element specifically uses the WebGL Mesh Shader
-		// type), the same pattern already used for Text Animation's
-		// per-effect chunks.
+		// actually has an element with Gradient enabled, the same pattern
+		// already used for Text Animation's per-effect chunks.
 		if ( $is_editor_context ) {
-			wp_enqueue_script(
-				'aurora-shaders',
-				AURORA_URL . 'assets/js/vendor/aurora-shaders.js',
-				[],
-				AURORA_VERSION,
-				true
-			);
-
 			wp_enqueue_script(
 				'aurora-gradient-module',
 				AURORA_URL . 'assets/js/gradient-module.js',
-				[ 'jquery', 'elementor-frontend', 'aurora-shaders' ],
+				[ 'jquery', 'elementor-frontend' ],
 				AURORA_VERSION,
 				true
 			);
@@ -206,23 +196,6 @@ final class Asset_Manager {
 			'aurora-cursor-follow',
 			AURORA_URL . 'assets/js/cursor-follow.js',
 			[ 'jquery', 'elementor-frontend' ],
-			AURORA_VERSION,
-			true
-		);
-
-		// ── Image Effects module ──────────────────────────────────────────────
-		// Handles the entrance animations (GSAP or Anime.js, user-selectable,
-		// + IntersectionObserver for the scroll trigger) — the hover effects
-		// are pure CSS, see assets/css/image-effects.css.
-		$img_deps = [ 'jquery', 'aurora-animejs', 'elementor-frontend' ];
-		if ( $has_gsap ) {
-			$img_deps[] = 'aurora-gsap';
-		}
-
-		wp_enqueue_script(
-			'aurora-image-effects',
-			AURORA_URL . 'assets/js/image-effects.js',
-			$img_deps,
 			AURORA_VERSION,
 			true
 		);
@@ -242,30 +215,10 @@ final class Asset_Manager {
 			AURORA_VERSION
 		);
 
-		// ── Glassmorphism module ──────────────────────────────────────────────
-		// No JS — the effect is a single `style` attribute computed in PHP.
-		// This stylesheet only covers the fallback for browsers without backdrop-filter.
-		wp_enqueue_style(
-			'aurora-glass-module',
-			AURORA_URL . 'assets/css/glass-module.css',
-			[],
-			AURORA_VERSION
-		);
-
 		// ── Cursor Follow module ──────────────────────────────────────────────
 		wp_enqueue_style(
 			'aurora-cursor-follow',
 			AURORA_URL . 'assets/css/cursor-follow.css',
-			[],
-			AURORA_VERSION
-		);
-
-		// ── Image Effects module ──────────────────────────────────────────────
-		// Covers the hover effects (pure CSS) and the overlay panels used by
-		// the wipe/curtain/iris entrance effects.
-		wp_enqueue_style(
-			'aurora-image-effects',
-			AURORA_URL . 'assets/css/image-effects.css',
 			[],
 			AURORA_VERSION
 		);

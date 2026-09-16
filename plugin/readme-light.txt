@@ -4,17 +4,17 @@ Tags: elementor, animation, gradient, hover effects, animejs
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.7.0
+Stable tag: 0.8.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-The open-source Swiss Army knife for Elementor design: text & image animations, gradients, glassmorphism, cursor follow, and more.
+The open-source Swiss Army knife for Elementor design: text & children animations, gradients, cursor follow, and more.
 
 == Description ==
 
 Aurora adds a set of advanced design modules to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
 
-Activating Aurora adds an **Aurora** item to the wp-admin menu: a dashboard with a live preview of the Mesh Shader Engine, a per-module on/off switch (turning a module off removes its controls from the Advanced tab entirely and stops loading its assets), and version/build/support info.
+Activating Aurora adds an **Aurora** item to the wp-admin menu: a dashboard with a live animated brand preview, a per-module on/off switch (turning a module off removes its controls from the Advanced tab entirely and stops loading its assets), and version/build/support info.
 
 = Module 1 — Text Animation =
 
@@ -26,19 +26,11 @@ Available on Sections, Columns, Containers, and Widgets. Applies a staggered ent
 
 = Module 3 — Gradient =
 
-Available on Sections, Columns, Containers (as a background), Heading/Text Editor widgets (as a text-fill), the Icon widget (as an icon-fill), and Icon Box (choice of box background or icon-fill). Multi-stop gradients (3+ colors) in linear, radial, or conic form, a "Follow Mouse" spotlight mode that recenters a radial gradient on the live cursor position (Follow Mouse isn't available on SVG-based icon fills), or the animated WebGL Mesh Shader Engine with seven presets — Paper, Liquid, Wave, Silk, Stripe, and two Aurora Borealis-inspired styles (a drifting flare and rippling vertical curtains) — all sharing the same Distortion, Swirl, Scale, Angle, Grain, and Liquid Cursor controls plus your chosen color stops.
+Available on Sections, Columns, Containers (as a background), Heading/Text Editor widgets (as a text-fill), the Icon widget (as an icon-fill), and Icon Box (choice of box background or icon-fill). Multi-stop gradients (3+ colors) in linear, radial, or conic form, with a "Follow Mouse" spotlight mode that recenters a radial gradient on the live cursor position (Follow Mouse isn't available on SVG-based icon fills) and an optional animation — moving blobs / pan or a hue-rotation loop — over your chosen color stops.
 
-= Module 4 — Glassmorphism =
-
-Available on the Image widget and on Sections, Columns, Containers. A translucent, blurred "frosted glass" background — resolved entirely in PHP into a single inline style attribute, with a CSS fallback for browsers without `backdrop-filter` support. No JavaScript involved.
-
-= Module 5 — Cursor Follow =
+= Module 4 — Cursor Follow =
 
 Available on any Elementor element. Replaces the native cursor with a two-part custom cursor — a dot that tracks the mouse instantly and a ring that trails behind it — with configurable hover states for interactive elements and images.
-
-= Module 6 — Image Effects =
-
-Available on the native Image widget. Two independent controls: an Entrance Animation — 8 spring/elastic entrance effects powered by Anime.js — and a Hover Effect (7 pure-CSS effects, including a Shine sweep).
 
 = Requirements =
 
@@ -59,7 +51,7 @@ Unminified JavaScript source files (`assets/js/src/`) and developer build toolin
 1. Upload the plugin files to the `/wp-content/plugins/aurora-for-elementor` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the "Plugins" screen in WordPress.
 3. Make sure Elementor is installed and activated.
-4. Edit any element with Elementor and open the "Advanced" tab to find the Aurora sections (Text Animation, Animate Children Elements, Gradient, Glassmorphism, Cursor Follow, Image Effects).
+4. Edit any element with Elementor and open the "Advanced" tab to find the Aurora sections (Text Animation, Animate Children Elements, Gradient, Cursor Follow).
 
 == Frequently Asked Questions ==
 
@@ -79,9 +71,15 @@ Yes. English is the default language, and a Portuguese (Brazil) translation is b
 
 1. Text Animation controls in the Elementor Advanced tab.
 2. Gradient module with the Follow Mouse spotlight enabled.
-3. Image Effects — entrance animation and Shine hover effect.
 
 == Changelog ==
+
+= 0.8.0 =
+* Removed the Glassmorphism and Image Effects modules.
+* Removed the Mesh Shader Engine gradient type — Gradient now offers Linear, Radial, and Conic only.
+
+= 0.7.1 =
+* Added new Blur entrance Children Animations
 
 = 0.7.0 =
 * Added the "Aurora" wp-admin dashboard: a Dashboard tab with a live Mesh Shader Engine preview, a Modules tab to turn any of the 6 modules on/off, and an About tab with version, build, and support links.

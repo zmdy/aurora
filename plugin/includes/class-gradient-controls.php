@@ -156,33 +156,8 @@ class Gradient_Controls extends Animation_Module {
 					'linear' => esc_html__( 'Linear', 'aurora-for-elementor' ),
 					'radial' => esc_html__( 'Radial', 'aurora-for-elementor' ),
 					'conic'  => esc_html__( 'Conic', 'aurora-for-elementor' ),
-					'mesh'   => esc_html__( 'Mesh Shader Engine', 'aurora-for-elementor' ),
 				],
 				'condition'          => [ 'aurora_gradient_enable' => 'yes' ],
-				'frontend_available' => true,
-			]
-		);
-
-		// ── Mesh Shader Style Preset ──────────────────────────────────────────
-		$element->add_control(
-			'aurora_gradient_mesh_style',
-			[
-				'label'              => esc_html__( 'Mesh Shader Style', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::SELECT,
-				'default'            => 'paper',
-				'options'            => [
-					'paper'           => esc_html__( 'Paper Shader (Dithered Grain Noise)', 'aurora-for-elementor' ),
-					'liquid'          => esc_html__( 'Liquid Mesh (Fluid Domain Warping)', 'aurora-for-elementor' ),
-					'wave'            => esc_html__( 'Wave Mesh (Undulating Color Bands)', 'aurora-for-elementor' ),
-					'silk'            => esc_html__( 'Silk Shader (Specular Sheen)', 'aurora-for-elementor' ),
-					'stripe'          => esc_html__( 'Stripe Mesh (Chromatic Stripes)', 'aurora-for-elementor' ),
-					'aurora'          => esc_html__( 'Aurora Borealis (Flowing Flares)', 'aurora-for-elementor' ),
-					'aurora_curtains' => esc_html__( 'Aurora Curtains (Vertical Bands)', 'aurora-for-elementor' ),
-				],
-				'condition'          => [
-					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => 'mesh',
-				],
 				'frontend_available' => true,
 			]
 		);
@@ -203,155 +178,7 @@ class Gradient_Controls extends Animation_Module {
 				'default'            => [ 'size' => 135 ],
 				'condition'          => [
 					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => [ 'linear', 'conic', 'mesh' ],
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		// ── Mesh Distortion (%) ───────────────────────────────────────────────
-		$element->add_control(
-			'aurora_gradient_distortion',
-			[
-				'label'     => esc_html__( 'Distortion (%)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
-					'px' => [
-						'min'  => 0,
-						'max'  => 100,
-						'step' => 1,
-					],
-				],
-				'default'   => [ 'size' => 40 ],
-				'condition' => [
-					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => 'mesh',
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		// ── Mesh Swirl (%) ───────────────────────────────────────────────────
-		$element->add_control(
-			'aurora_gradient_swirl',
-			[
-				'label'     => esc_html__( 'Swirl (%)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
-					'px' => [
-						'min'  => 0,
-						'max'  => 100,
-						'step' => 1,
-					],
-				],
-				'default'   => [ 'size' => 25 ],
-				'condition' => [
-					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => 'mesh',
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		// ── Mesh Scale ───────────────────────────────────────────────────────
-		$element->add_control(
-			'aurora_gradient_scale',
-			[
-				'label'     => esc_html__( 'Scale', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
-					'px' => [
-						'min'  => 0.5,
-						'max'  => 3.0,
-						'step' => 0.05,
-					],
-				],
-				'default'   => [ 'size' => 1.25 ],
-				'condition' => [
-					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => 'mesh',
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		// ── Film Grain Noise ──────────────────────────────────────────────────
-		$element->add_control(
-			'aurora_gradient_grain_enable',
-			[
-				'label'              => esc_html__( 'Add Paper Film Grain', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
-				'return_value'       => 'yes',
-				'default'            => 'yes',
-				'description'        => esc_html__( 'Applies an analog paper film grain / dither texture overlay across the gradient mesh.', 'aurora-for-elementor' ),
-				'condition'          => [
-					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => 'mesh',
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		$element->add_control(
-			'aurora_gradient_grain_intensity',
-			[
-				'label'     => esc_html__( 'Grain Intensity (%)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
-					'px' => [
-						'min'  => 0,
-						'max'  => 100,
-						'step' => 1,
-					],
-				],
-				'default'   => [ 'size' => 35 ],
-				'condition' => [
-					'aurora_gradient_enable'       => 'yes',
-					'aurora_gradient_type'         => 'mesh',
-					'aurora_gradient_grain_enable' => 'yes',
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		// ── Liquid Cursor Follower ────────────────────────────────────────────
-		$element->add_control(
-			'aurora_gradient_liquid_cursor',
-			[
-				'label'              => esc_html__( 'Liquid Cursor Distortion', 'aurora-for-elementor' ),
-				'type'               => Controls_Manager::SWITCHER,
-				'label_on'           => esc_html__( 'Yes', 'aurora-for-elementor' ),
-				'label_off'          => esc_html__( 'No', 'aurora-for-elementor' ),
-				'return_value'       => 'yes',
-				'default'            => '',
-				'description'        => esc_html__( 'Creates a dynamic fluid wave displacement as the mouse moves over the gradient mesh.', 'aurora-for-elementor' ),
-				'condition'          => [
-					'aurora_gradient_enable' => 'yes',
-					'aurora_gradient_type'   => 'mesh',
-				],
-				'frontend_available' => true,
-			]
-		);
-
-		$element->add_control(
-			'aurora_gradient_cursor_radius',
-			[
-				'label'     => esc_html__( 'Cursor Wave Radius (px)', 'aurora-for-elementor' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => [
-					'px' => [
-						'min'  => 50,
-						'max'  => 800,
-						'step' => 10,
-					],
-				],
-				'default'   => [ 'size' => 250 ],
-				'condition' => [
-					'aurora_gradient_enable'        => 'yes',
-					'aurora_gradient_type'          => 'mesh',
-					'aurora_gradient_liquid_cursor' => 'yes',
+					'aurora_gradient_type'   => [ 'linear', 'conic' ],
 				],
 				'frontend_available' => true,
 			]
@@ -623,10 +450,7 @@ class Gradient_Controls extends Animation_Module {
 		}
 
 		$type = $settings['aurora_gradient_type'] ?? 'linear';
-		$type = in_array( $type, [ 'linear', 'radial', 'conic', 'mesh' ], true ) ? $type : 'linear';
-
-		$mesh_style = $settings['aurora_gradient_mesh_style'] ?? 'paper';
-		$mesh_style = in_array( $mesh_style, [ 'paper', 'liquid', 'wave', 'silk', 'stripe', 'aurora', 'aurora_curtains' ], true ) ? $mesh_style : 'paper';
+		$type = in_array( $type, [ 'linear', 'radial', 'conic' ], true ) ? $type : 'linear';
 
 		$style = $settings['aurora_gradient_animation_style'] ?? 'mesh';
 		$style = in_array( $style, [ 'mesh', 'loop' ], true ) ? $style : 'mesh';
@@ -648,14 +472,6 @@ class Gradient_Controls extends Animation_Module {
 			'data-aurora-gradient-enable'           => '1',
 			'data-aurora-gradient-target'           => esc_attr( $target ),
 			'data-aurora-gradient-type'             => esc_attr( $type ),
-			'data-aurora-gradient-mesh-style'       => esc_attr( $mesh_style ),
-			'data-aurora-gradient-distortion'       => esc_attr( (int) ( $settings['aurora_gradient_distortion']['size'] ?? 40 ) ),
-			'data-aurora-gradient-swirl'            => esc_attr( (int) ( $settings['aurora_gradient_swirl']['size'] ?? 25 ) ),
-			'data-aurora-gradient-scale'            => esc_attr( (float) ( $settings['aurora_gradient_scale']['size'] ?? 1.25 ) ),
-			'data-aurora-gradient-grain-enable'     => ( 'yes' === ( $settings['aurora_gradient_grain_enable'] ?? '' ) ) ? '1' : '0',
-			'data-aurora-gradient-grain-intensity' => esc_attr( (int) ( $settings['aurora_gradient_grain_intensity']['size'] ?? 35 ) ),
-			'data-aurora-gradient-liquid-cursor'    => ( 'yes' === ( $settings['aurora_gradient_liquid_cursor'] ?? '' ) ) ? '1' : '0',
-			'data-aurora-gradient-cursor-radius'    => esc_attr( (int) ( $settings['aurora_gradient_cursor_radius']['size'] ?? 250 ) ),
 			'data-aurora-gradient-angle'            => esc_attr( (int) ( $settings['aurora_gradient_angle']['size'] ?? 135 ) ),
 			'data-aurora-gradient-stops'            => esc_attr( wp_json_encode( $stops ) ),
 			'data-aurora-gradient-animate'          => $animate ? '1' : '0',
@@ -676,19 +492,14 @@ class Gradient_Controls extends Animation_Module {
 	 * here still get printed before wp_footer).
 	 *
 	 * Skipped entirely inside the editor/preview context: there,
-	 * Asset_Manager already loads both scripts unconditionally, since
+	 * Asset_Manager already loads the gradient script unconditionally, since
 	 * every Gradient control is `frontend_available` (previews live,
 	 * entirely in JS) — if the script weren't already on the page the
 	 * first time a user enables Gradient on some element, the Frontend
 	 * Handler would never exist and nothing would happen until the next
 	 * save/reload.
 	 *
-	 * `aurora-gradient-module` is enqueued for ANY enabled gradient (it
-	 * also drives the plain CSS linear/radial/conic paths); `aurora-shaders`
-	 * — the WebGL vendor lib — only when this specific element uses the
-	 * Mesh Shader Engine, since that's the only path that needs it.
-	 *
-	 * @param string $type Resolved gradient type ('linear'|'radial'|'conic'|'mesh').
+	 * @param string $type Resolved gradient type ('linear'|'radial'|'conic').
 	 */
 	private function enqueue_gradient_scripts( string $type ): void {
 
@@ -697,22 +508,10 @@ class Gradient_Controls extends Animation_Module {
 			return;
 		}
 
-		if ( 'mesh' === $type ) {
-			wp_enqueue_script(
-				'aurora-shaders',
-				AURORA_URL . 'assets/js/vendor/aurora-shaders.js',
-				[],
-				AURORA_VERSION,
-				true
-			);
-		}
-
 		wp_enqueue_script(
 			'aurora-gradient-module',
 			AURORA_URL . 'assets/js/gradient-module.js',
-			'mesh' === $type
-				? [ 'jquery', 'elementor-frontend', 'aurora-shaders' ]
-				: [ 'jquery', 'elementor-frontend' ],
+			[ 'jquery', 'elementor-frontend' ],
 			AURORA_VERSION,
 			true
 		);

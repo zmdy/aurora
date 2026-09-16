@@ -307,7 +307,7 @@ final class Admin_Page {
 						<div class="aurora-card">
 							<h3><?php esc_html_e( 'About', 'aurora-for-elementor' ); ?></h3>
 							<p>
-								<?php esc_html_e( 'The open-source Swiss Army knife for Elementor design: text & image animations, gradients, glassmorphism, cursor follow, and more.', 'aurora-for-elementor' ); ?>
+								<?php esc_html_e( 'The open-source Swiss Army knife for Elementor design: text & children animations, gradients, cursor follow, and more.', 'aurora-for-elementor' ); ?>
 							</p>
 							<dl class="aurora-meta-list">
 								<div>

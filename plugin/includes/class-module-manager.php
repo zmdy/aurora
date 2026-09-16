@@ -56,17 +56,10 @@ final class Module_Manager {
 			],
 			'gradient'         => [
 				'label'       => esc_html__( 'Gradient', 'aurora-for-elementor' ),
-				'description' => esc_html__( 'Multi-stop linear, radial, and conic gradients, the animated WebGL Mesh Shader Engine, and a Follow Mouse spotlight mode.', 'aurora-for-elementor' ),
+				'description' => esc_html__( 'Multi-stop linear, radial, and conic gradients, with a Follow Mouse spotlight mode and hue-rotation / pan animation.', 'aurora-for-elementor' ),
 				'icon'        => AURORA_URL . 'assets/branding/icons/aurora_icon_green_module_gradient.svg',
 				'icon_type'   => 'svg',
 				'class'       => Gradient_Controls::class,
-			],
-			'glassmorphism'    => [
-				'label'       => esc_html__( 'Glassmorphism', 'aurora-for-elementor' ),
-				'description' => esc_html__( 'A translucent, blurred "frosted glass" background resolved entirely in PHP — no JavaScript involved.', 'aurora-for-elementor' ),
-				'icon'        => AURORA_URL . 'assets/branding/icons/aurora_icon_green_module_glassmorphism.svg',
-				'icon_type'   => 'svg',
-				'class'       => Glassmorphism_Controls::class,
 			],
 			'cursor_follow'    => [
 				'label'       => esc_html__( 'Cursor Follow', 'aurora-for-elementor' ),
@@ -74,13 +67,6 @@ final class Module_Manager {
 				'icon'        => 'dashicons-move',
 				'icon_type'   => 'dashicon',
 				'class'       => Cursor_Follow_Controls::class,
-			],
-			'image_effects'    => [
-				'label'       => esc_html__( 'Image Effects', 'aurora-for-elementor' ),
-				'description' => esc_html__( 'Entrance animations and hover effects for the native Elementor Image widget.', 'aurora-for-elementor' ),
-				'icon'        => 'dashicons-format-image',
-				'icon_type'   => 'dashicon',
-				'class'       => Image_Effects_Controls::class,
 			],
 		];
 	}
