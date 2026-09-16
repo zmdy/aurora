@@ -23,6 +23,9 @@ docs/*.webm
 dist/
 build/
 _dist_temp/
+# `npm run build:main` output — the assembled main-branch layout, built on
+# the dev branch for review/copy; never committed to dev.
+/main/
 *.min.js.map
 *.min.css.map
 !assets/js/dist/

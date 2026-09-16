@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node plugin/scripts/build-text-effects.mjs",
     "pack": "node plugin/scripts/pack-plugin.mjs",
-    "pack:dev": "node plugin/scripts/pack-plugin.mjs dev"
+    "pack:dev": "node plugin/scripts/pack-plugin.mjs dev",
+    "build:main": "node plugin/scripts/prepare-main.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.24.2",
