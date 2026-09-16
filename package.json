@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node plugin/scripts/build-text-effects.mjs",
-    "pack": "node plugin/scripts/pack-plugin.mjs"
+    "pack": "node plugin/scripts/pack-plugin.mjs",
+    "pack:dev": "node plugin/scripts/pack-plugin.mjs dev"
   },
   "devDependencies": {
     "esbuild": "^0.24.2",

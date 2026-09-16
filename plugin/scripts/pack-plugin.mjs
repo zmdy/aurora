@@ -8,7 +8,15 @@
  * Runs natively on macOS, Linux, and Windows (using PowerShell).
  * Requires NO external NPM dependencies.
  *
- * Run with: npm run pack
+ * Two build modes:
+ *   - FINAL  (npm run pack)            -> aurora-for-elementor-{full,light}.zip
+ *   - DEV    (npm run pack dev  |  npm run pack:dev)
+ *                                      -> aurora-for-elementor-{full,light}-dev.zip
+ *     A dev build is stamped as such everywhere it surfaces: a "-dev" version
+ *     suffix in the plugin header (and therefore AURORA_VERSION), a "(Dev)"
+ *     Plugin Name, a "-dev" Stable tag, and the "-dev" zip filenames. All of
+ *     that lands ONLY in the staged/zipped copy — the committed source files
+ *     are never dirtied with dev markers.
  */
 
 import fs from 'fs';
@@ -232,6 +240,25 @@ function syncTestedUpTo(readmePath, wpVersion) {
 }
 
 /**
+ * Stamps the STAGED plugin copy as a development build: appends a "-dev"
+ * suffix to the plugin header's Version (which is also what AURORA_VERSION
+ * reads at runtime for cache-busting) and a " (Dev)" marker to the Plugin
+ * Name so an installed dev build is unmistakable in wp-admin. Only ever
+ * touches the staged copy under _dist_temp — never the committed source.
+ */
+function applyDevMetadata(stagedRoot, devVersion) {
+    const phpPath = path.join(stagedRoot, 'aurora-for-elementor.php');
+    if (!fs.existsSync(phpPath)) return;
+    let php = fs.readFileSync(phpPath, 'utf8');
+    php = php.replace(/^(\s*\*\s*Version:\s*)(\S+)/m, `$1${devVersion}`);
+    php = php.replace(/^(\s*\*\s*Plugin Name:\s*)(.+)$/m, (full, prefix, name) =>
+        /\(Dev\)\s*$/.test(name) ? full : `${prefix}${name.trim()} (Dev)`
+    );
+    fs.writeFileSync(phpPath, php);
+    console.log(`   Stamped staged plugin as DEV build (Version ${devVersion}, Plugin Name "… (Dev)")`);
+}
+
+/**
  * Recursively copies a directory while excluding specified files/folders.
  * `excludeRoot` is the folder `excludes` paths are computed relative to
  * (may differ from `src` itself only on the very first/outer call).
@@ -313,25 +340,37 @@ function zipFolder(destZipPath) {
 }
 
 async function main() {
-    console.log('=== Starting Cross-Platform Packaging Process ===');
+    // Build mode: a bare `dev` positional (npm run pack dev) or a `--dev`
+    // flag (npm run pack:dev) produces a development build; anything else is
+    // the clean FINAL/release build destined for main. Both spellings are
+    // accepted so it works however npm forwards the argument.
+    const isDev = process.argv.slice(2).some((a) => a === 'dev' || a === '--dev');
+    const MODE_LABEL = isDev ? 'DEV' : 'FINAL';
+
+    console.log(`=== Starting Cross-Platform Packaging Process (${MODE_LABEL} build) ===`);
 
     // 1. Clean up old build temp folders
     if (fs.existsSync(TEMP_DIR)) {
         fs.rmSync(TEMP_DIR, { recursive: true, force: true });
     }
 
-    // 1b. Version is read once from the PHP header and used as the
-    // single source of truth for every readme's Stable tag from here on.
-    const version = readPluginVersion();
-    console.log(`-> Plugin version (from aurora-for-elementor.php): ${version}`);
-    syncStableTag(path.join(PLUGIN_ROOT, 'readme.txt'), version);
-    syncStableTag(path.join(PLUGIN_ROOT, 'readme-light.txt'), version);
+    // 1b. Version is read once from the PHP header. baseVersion is the plain
+    // release version and the single source of truth for the committed source
+    // readmes' Stable tag / changelog. A dev build additionally ships as
+    // "<base>-dev", but that suffix only ever lands in the staged/zipped copy
+    // (see step 2c) — the committed source is always synced to baseVersion, so
+    // packing a dev build never dirties the repo with a "-dev" marker.
+    const baseVersion = readPluginVersion();
+    const version = isDev ? `${baseVersion}-dev` : baseVersion;
+    console.log(`-> Plugin version (from aurora-for-elementor.php): ${baseVersion}${isDev ? ` -> packaging as ${version}` : ''}`);
+    syncStableTag(path.join(PLUGIN_ROOT, 'readme.txt'), baseVersion);
+    syncStableTag(path.join(PLUGIN_ROOT, 'readme-light.txt'), baseVersion);
 
-    // 1c. Changelog must already have an entry for this exact version —
+    // 1c. Changelog must already have an entry for the base version —
     // fails the pack with a clear instruction if not (see
     // assertChangelogIsCurrent() for why this can't be auto-written).
-    assertChangelogIsCurrent(path.join(PLUGIN_ROOT, 'readme.txt'), version, 'Full version');
-    assertChangelogIsCurrent(path.join(PLUGIN_ROOT, 'readme-light.txt'), version, 'Light version');
+    assertChangelogIsCurrent(path.join(PLUGIN_ROOT, 'readme.txt'), baseVersion, 'Full version');
+    assertChangelogIsCurrent(path.join(PLUGIN_ROOT, 'readme-light.txt'), baseVersion, 'Light version');
 
     // 1d. Best-effort: keep "Tested up to" pointed at the current stable
     // WordPress release. Silently a no-op if offline (see
@@ -377,10 +416,25 @@ async function main() {
     fs.copyFileSync(licenseSrcPath, licenseDestPath);
     console.log(`-> Bundled LICENSE.txt from ${path.relative(REPO_ROOT, licenseSrcPath)}`);
 
+    // 2c. Dev builds: stamp the STAGED copy (never the committed source) as a
+    // development build. Done once here so both the Full and Light zips inherit
+    // it — the Light step below only rewrites the PHP *description* and swaps in
+    // the light readme, leaving these Version/Name/Stable-tag markers intact.
+    if (isDev) {
+        console.log('-> Applying DEV markers to the staged copy...');
+        applyDevMetadata(TEMP_PLUGIN_PATH, version);
+        syncStableTag(path.join(TEMP_PLUGIN_PATH, 'readme.txt'), version);
+    }
+
+    // "-dev" suffix keeps dev artifacts from ever being mistaken for a release
+    // zip (and from clobbering the committed release zips on disk).
+    const zipSuffix = isDev ? '-dev' : '';
+
     // 3. Package Full Version
-    console.log('-> Building Full Version ZIP (aurora-for-elementor-full.zip)...');
+    const fullZipName = `aurora-for-elementor-full${zipSuffix}.zip`;
+    console.log(`-> Building Full Version ZIP (${fullZipName})...`);
     assertStableTagMatches(path.join(TEMP_PLUGIN_PATH, 'readme.txt'), version, 'Full version');
-    const fullZipPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor-full.zip');
+    const fullZipPath = path.join(PLUGIN_ROOT, fullZipName);
     zipFolder(fullZipPath);
     console.log('✅ Full version package built successfully.');
 
@@ -422,10 +476,17 @@ async function main() {
         fs.copyFileSync(readmeLightRootPath, readmeTempPath);
     }
 
+    // The light readme was just copied fresh from source (base Stable tag),
+    // so re-apply the "-dev" Stable tag to the staged light readme too.
+    if (isDev) {
+        syncStableTag(readmeTempPath, version);
+    }
+
     // 5. Package Light Version
-    console.log('-> Building Light Version ZIP (aurora-for-elementor-light.zip)...');
+    const lightZipName = `aurora-for-elementor-light${zipSuffix}.zip`;
+    console.log(`-> Building Light Version ZIP (${lightZipName})...`);
     assertStableTagMatches(path.join(TEMP_PLUGIN_PATH, 'readme.txt'), version, 'Light version');
-    const lightZipPath = path.join(PLUGIN_ROOT, 'aurora-for-elementor-light.zip');
+    const lightZipPath = path.join(PLUGIN_ROOT, lightZipName);
     zipFolder(lightZipPath);
     console.log('✅ Light version package built successfully.');
 
@@ -433,7 +494,7 @@ async function main() {
     console.log('-> Cleaning up temporary files...');
     fs.rmSync(TEMP_DIR, { recursive: true, force: true });
 
-    console.log('=== Packaging completed! ===');
+    console.log(`=== Packaging completed! (${MODE_LABEL} build) ===`);
     console.log(`Generated in plugin/:\n - ${path.relative(PLUGIN_ROOT, fullZipPath)}\n - ${path.relative(PLUGIN_ROOT, lightZipPath)}`);
 }
 
