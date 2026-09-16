@@ -1,376 +1,266 @@
 <div align="center">
   <img src="assets/branding/logo_aurora_animated_tagline.svg" alt="Aurora for Elementor" width="280" />
 
-  <p><strong>The open-source Swiss Army knife for Elementor design.</strong></p>
+  <p><strong>The open-source Swiss Army knife for Elementor design — Development Repository.</strong></p>
   <!-- Badges -->
-  <img src="https://img.shields.io/badge/WordPress-21759B.svg?style=for-the-badge&logo=WordPress&logoColor=white" alt="WordPress">
+  <img src="https://img.shields.io/badge/Branch-dev-orange.svg?style=for-the-badge&logo=git&logoColor=white" alt="dev branch" />
+  <img src="https://img.shields.io/badge/WordPress-21759B.svg?style=for-the-badge&logo=WordPress&logoColor=white" alt="WordPress" />
   <img src="https://img.shields.io/badge/Elementor-92003B.svg?style=for-the-badge&logo=Elementor&logoColor=white" alt="Elementor" />
-  <img src="https://img.shields.io/badge/Anime.js-000000.svg?style=for-the-badge&logo=animedotjs&logoColor=white" alt="Anime.JS">
-  <img src="https://img.shields.io/badge/GSAP-0AE448.svg?style=for-the-badge&logo=GSAP&logoColor=white" alt="GSAP">
+  <img src="https://img.shields.io/badge/GSAP-0AE448.svg?style=for-the-badge&logo=GSAP&logoColor=white" alt="GSAP" />
+  <img src="https://img.shields.io/badge/Anime.js-000000.svg?style=for-the-badge&logo=animedotjs&logoColor=white" alt="Anime.JS" />
   <img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
   <img src="https://img.shields.io/badge/License-GPL_v3-blue?style=for-the-badge" alt="GPL License" />
 </div>
 
-Aurora adds **advanced text animations** (GSAP + Anime.js), **staggered children element animations**, **multi-stop gradients** (including a mouse-following spotlight), and a **custom cursor follow effect** to the **Advanced** tab of every Elementor widget, section, column, and container — no code required, straight from the panel.
+> [!NOTE]
+> **This is the `dev` branch** containing full developer tooling, source code (`assets/js/src/`), packaging scripts (`plugin/scripts/`), and the documentation/showcase site under `docs/`. Production release builds and published site layouts are assembled for `main` via `npm run build:main`.
 
 ---
 
-<h2 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_blue_features.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
-  Features
-</h2>
-
-<h3 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_green_module_animate_text.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
-  Module 1 — Text Animation
-</h3>
-
-Available on **any Elementor widget** (Heading, Text Editor, Button, etc.) via **Advanced → ✨ Text Animation (Aurora)**.
-
-Automatically splits text content into **characters**, **words**, or **lines** and applies one of **24 available animations**, triggered on scroll or on page load.
-
-| # | Library | Name | Effect |
-|---|---------|------|--------|
-| gs-1 | GSAP | Fade Up | Characters rise with fade |
-| gs-2 | GSAP | Clip Reveal | Slides up from behind a mask |
-| gs-3 | GSAP | Scramble Text | Shuffles characters → reveals final text |
-| gs-4 | GSAP | Elastic Bounce | Bounces with elastic easing |
-| gs-5 | GSAP | 3D Flip | Y-axis rotation in 3D perspective |
-| gs-6 | GSAP | Slide In | Slides in from the left |
-| gs-7 | GSAP | Scale Up | Grows from zero |
-| gs-8 | GSAP | Wave | Sinusoidal Y offset per index |
-| gs-9 | GSAP | Bounce Drop | Drops from above with bounce |
-| gs-10 | GSAP | Glitch | Digital shake then stabilizes |
-| ml-1 | Anime.js | Float Up | Rises smoothly (easeOutExpo) |
-| ml-2 | Anime.js | Scale In | Scale 0.2 → 1 with back ease |
-| ml-3 | Anime.js | Drop Down | Falls from above (easeOutExpo) |
-| ml-4 | Anime.js | Slide From Right | Slides in from the right |
-| ml-5 | Anime.js | Wave | Sinusoidal wave by index |
-| ml-6 | Anime.js | Flip X | 3D rotation on the X axis |
-| ml-7 | Anime.js | Typewriter | Typewriter effect, one character at a time |
-| ml-8 | Anime.js | Blur Reveal | Blurred → sharp |
-| ml-9 | Anime.js | Skew In | Skews then snaps into position |
-| ml-10 | Anime.js | Explosion | Large scale → normal |
-| ml-11 | Anime.js | Native Split (Letters) | Native Anime.js v4 text splitter, per letter |
-| ml-12 | Anime.js | Clip Wrap (Words) | Masked reveal per word |
-| ml-13 | Anime.js | Echo Clone (Letters) | Cloned trailing echo per letter |
-| ml-14 | Anime.js | Native Scramble | Native Anime.js v4 scramble effect |
-
-**Available controls per animation:**
-- Library (GSAP / Anime.js)
-- Animation type
-- Split by (Characters / Words / Lines)
-- Duration (ms)
-- Initial delay (ms)
-- Stagger delay between units (ms)
-- Trigger: scroll or page load
-- Visibility threshold (%)
-- Replay on re-entering viewport
-
----
-
-<h3 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_green_module_animate_children.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
-  Module 2 — Animate Children Elements
-</h3>
-
-Available on **Sections, Columns, Containers, and Widgets** via **Advanced → 🎬 Animate Children Elements (Aurora)**.
-
-Applies an entrance animation in cascade (stagger) to each child element, one after the other, with a configurable delay.
-
-**Available animations:**
-| Name | Effect |
-|------|--------|
-| Fade Up | Rises with fade (default) |
-| Fade Down | Drops with fade |
-| Fade In | Opacity only |
-| Slide Left | Slides in from the left |
-| Slide Right | Slides in from the right |
-| Zoom In | Grows from 65% → 100% |
-| Zoom Out | Shrinks from 135% → 100% |
-| Flip Up | 3D rotation on the X axis |
-| Rotate In | Z rotation + scale |
-| Bounce In | Rises with elastic ease |
-
-**Available controls:**
-- Animation type
-- CSS selector for children (customizable)
-- Duration per child (ms)
-- Initial delay (ms)
-- Stagger delay between children (ms)
-- Trigger: scroll or page load
-- Visibility threshold (%)
-- Replay on re-entering viewport
-
----
-
-<h3 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_green_module_gradient.svg" alt="Features icon" style="height: 32px; margin-right: 8px;"/>
-  Module 3 — Gradient
-</h3>
-
-Available on **Sections, Columns, Containers** (as a background) and on **Heading / Text Editor** widgets (as a text-fill) via **Advanced → 🌈 Gradient (Aurora)**.
-
-Multi-stop gradients (3 or more colors, each with its own position) in linear, radial, or conic form, with three optional motion modes:
-
-| Mode | Effect |
-|------|--------|
-| Static | No motion — a plain multi-stop gradient |
-| Mesh (backgrounds) / Pan (text) | Backgrounds get drifting blurred color blobs; text gets a sliding gradient (background-clip:text can't render blurred blob layers) |
-| Color Loop | Continuous hue-rotation cycle |
-| **Follow Mouse (Spotlight)** | Radial-only: recenters the gradient on the live cursor position as it moves over the element — the same "spotlight" effect used behind a hero or footer background |
-
-**Available controls:**
-- Type (Linear / Radial / Conic)
-- Angle (linear/conic)
-- Gradient colors (repeater, min. 3, each with its own position %)
-- Follow Mouse toggle + spotlight radius (px) — radial only
-- Animate toggle + Animation Style (Mesh/Pan or Color Loop) + Cycle Duration (s) — hidden while Follow Mouse is active, since the two drive the background in incompatible ways (one from a timer, the other from the cursor)
-
----
-
-<h3 style="display: flex; align-items: center;">
-  Module 4 — Cursor Follow
-</h3>
-
-Available on **any Elementor element** (widgets, Sections, Columns, Containers) via **Advanced → 🖱️ Cursor Follow (Aurora)**.
-
-Replaces the native cursor with a two-part custom cursor — an inner dot that tracks the mouse instantly and an outer ring that trails behind it — while the pointer is inside the element it's enabled on ("zone"). Zones can be nested (e.g. a hero section zone with a button zone inside it); the innermost one under the cursor wins. Interactive elements (links, buttons) and images each get their own configurable hover scale and highlight color, matching a common pattern from modern agency/portfolio sites.
-
-**Available controls:**
-- Dot color, ring color
-- Dot size (px), ring resting size (px)
-- Trail delay (ms) — how long the ring takes to catch up with the dot
-- Interactive elements selector (default `a, button, .cursor-pointer`) + hover scale
-- Image elements selector (default `img, .zoom-target`) + hover scale
-
----
-
-<h2 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_blue_install.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
-  Installation
-</h2>
-
-### Via ZIP upload
-
-1. Download this repository as a `.zip`
-2. In the WordPress dashboard, go to **Plugins → Add New → Upload Plugin**
-3. Select the `.zip` file and click **Install Now**
-4. Activate the plugin
-
-### Via FTP / CLI
-
-1. Clone this repository inside `wp-content/plugins/`:
+## 🛠️ Developer Quick Reference
 
 ```bash
-git clone https://github.com/zmdy/aurora \
-  wp-content/plugins/aurora-for-elementor
+npm install          # Install dev dependencies (Vite & esbuild for text effects)
+npm run build        # Compile assets/js/src/ -> assets/js/dist/ (all 88 text effects + bundles)
+npm run pack:dev     # Build development ZIPs (stamped with -dev suffix and (Dev) title)
+npm run pack         # Build release FINAL ZIPs (enforces changelog & version checks)
+npm run build:main   # Assemble complete main-branch release layout into main/
 ```
-
-2. Activate the plugin from the WordPress dashboard
 
 ---
 
-<h2 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_blue_specs.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
-  Project Specs
-</h2>
+## 📦 Project Architecture & Branches
 
-| Requirement | Minimum version |
-|-------------|----------------|
-| WordPress | 5.9+ |
-| PHP | 7.4+ |
-| Elementor | 3.0+ |
-| Elementor Pro | Not required |
+The project maintains a clean separation between **active development** (`dev`) and **production release distribution** (`main`):
 
-Animation libraries are bundled with the plugin (no CDN dependency):
-- **GSAP 3.12.5** — `assets/js/vendor/gsap.min.js`
-- **Anime.js 4.4.1** — `assets/js/vendor/anime.min.js`
+```mermaid
+graph LR
+    subgraph "dev branch (Active Development)"
+        A[assets/js/src/] -->|npm run build| B[assets/js/dist/]
+        C[plugin/ PHP Core]
+        D[docs/ Showcase Site]
+    end
+    
+    subgraph "Build Tooling (plugin/scripts/)"
+        E[pack-plugin.mjs]
+        F[prepare-main.mjs]
+    end
+    
+    B & C --> E
+    E -->|npm run pack:dev| G[plugin/*-dev.zip]
+    E -->|npm run pack| H[plugin/*.zip]
+    
+    B & C & D & H --> F
+    F -->|npm run build:main| I["main/ Directory<br/>(Ready for main branch)"]
+```
 
-
-### Project Structure
+### Directory Structure (`dev` branch)
 
 ```
 aurora/
-├── assets/                                     ← Shared by the plugin AND the showcase site
+├── assets/                                     ← Core assets shared by plugin and showcase site
 │   ├── js/
-│   │   ├── src/                                ← Text Animation SOURCE (needs `npm run build`)
-│   │   │   ├── core/                           ←   Shared runtime (split, engine, Elementor handler)
+│   │   ├── src/                                ← SOURCE for Text Animations (ES Modules)
+│   │   │   ├── core/                           ←   Runtime engine, DOM splitter, Elementor handler
 │   │   │   ├── effects/gsap/                   ←   One file per GSAP effect (gs-1 … gs-35)
 │   │   │   ├── effects/anime/                  ←   One file per Anime.js effect (ml-1 … ml-53)
-│   │   │   └── entries/                        ←   editor.js (all effects) / frontend-core.js (runtime only)
-│   │   ├── dist/                               ← Text Animation BUILD OUTPUT (committed — no build step needed to run the plugin)
-│   │   │   ├── aurora-text-editor.js           ←   Full bundle, loaded only inside the Elementor editor/preview
-│   │   │   ├── aurora-text-core.js             ←   Shared runtime, loaded on the real frontend
-│   │   │   └── effects/{gs-1,ml-15,...}.js     ←   One tiny chunk per effect — PHP enqueues only the one a widget uses
-│   │   ├── children-animations.js              ← Children stagger + blur set (animate.css)
-│   │   ├── gradient-module.js                  ← Gradient rendering + mouse tracking
-│   │   ├── cursor-follow.js                    ← Dot/ring cursor + zone tracking
-│   │   └── vendor/                             ← Bundled GSAP & Anime.js
+│   │   │   └── entries/                        ←   frontend-core.js and editor.js entry points
+│   │   ├── dist/                               ← BUILD OUTPUT (committed to repo)
+│   │   │   ├── aurora-text-core.js             ←   Complete frontend bundle (all 88 effects bundled)
+│   │   │   ├── aurora-text-editor.js           ←   Editor bundle with preview handlers
+│   │   │   └── effects/{id}.js                 ←   Standalone effect chunks
+│   │   ├── children-animations.js              ← Module 2: Children cascade/stagger + blur set
+│   │   ├── gradient-module.js                  ← Module 3: Multi-stop gradient & spotlight
+│   │   ├── cursor-follow.js                    ← Module 4: Custom cursor tracker
+│   │   └── vendor/                             ← Bundled vendor libs (gsap.min.js, anime.min.js)
 │   └── css/
-│       ├── text-animations.css                 ← Base styles & helpers
+│       ├── text-animations.css                 ← Text animations reset & base styles
 │       ├── children-animations.css             ← Children blur animation keyframes
 │       ├── gradient-module.css                 ← Gradient base styles
-│       └── cursor-follow.css                   ← Cursor Follow base styles
-├── docs/                                       ← Marketing/showcase site (multi-page), served from this folder
-│   ├── index.html                              ←   Home page
-│   └── text-effects/
-│       └── index.html                          ←   Live playground + full 88-effect catalog
-├── plugin/                                     ← Everything that ships inside the distributed .zip
-│   ├── aurora-for-elementor.php                ←   Main bootstrap file
-│   ├── includes/
-│   │   ├── class-plugin-core.php               ←     Singleton: loads modules & assets
-│   │   ├── class-animation-module.php          ←     Shared base class for every module
-│   │   ├── class-module-manager.php            ←     Module registry
-│   │   ├── class-asset-manager.php             ←     Frontend/editor asset enqueueing
+│       └── cursor-follow.css                   ← Cursor follow base styles
+├── docs/                                       ← Showcase and documentation site
+│   ├── index.html                              ←   Showcase landing page
+│   └── text-effects/                           ←   Interactive text effects catalog
+├── plugin/                                     ← WordPress Plugin root
+│   ├── aurora-for-elementor.php                ←   Main plugin bootstrap file
+│   ├── includes/                               ←   PHP classes & Elementor control modules
+│   │   ├── class-plugin-core.php               ←     Singleton bootstrap & loader
+│   │   ├── class-animation-module.php          ←     Base class for Elementor modules
+│   │   ├── class-asset-manager.php             ←     Asset enqueuing & deduplication
 │   │   ├── class-text-animation-controls.php   ←     Module 1: Text Animation
-│   │   ├── class-children-animation-controls.php ←   Module 2: Animate Children Elements
-│   │   ├── class-gradient-controls.php         ←     Module 3: Gradient (incl. Follow Mouse)
+│   │   ├── class-children-animation-controls.php ←   Module 2: Children Animation
+│   │   ├── class-gradient-controls.php         ←     Module 3: Gradient
 │   │   └── class-cursor-follow-controls.php    ←     Module 4: Cursor Follow
-│   ├── languages/
-│   │   ├── aurora-for-elementor.pot            ←     Translation template
-│   │   ├── aurora-for-elementor-pt_BR.po       ←     Portuguese (Brazil) translation
-│   │   └── aurora-for-elementor-pt_BR.mo       ←     Compiled Portuguese (Brazil) translation
-│   ├── scripts/
+│   ├── languages/                              ←   i18n POT/PO/MO files
+│   ├── scripts/                                ←   Node.js packaging & build automation
 │   │   ├── build-text-effects.mjs              ←     Compiles assets/js/src/ → assets/js/dist/
-│   │   └── pack-plugin.mjs                     ←     Builds the distributable ZIPs (output here in plugin/)
-│   ├── readme.txt                              ←   WordPress.org readme (full edition)
-│   ├── readme-light.txt                        ←   WordPress.org readme (light edition)
-│   ├── aurora-for-elementor-full.zip           ←   Generated by `npm run pack`
-│   └── aurora-for-elementor-light.zip          ←   Generated by `npm run pack`
-├── showcase/                                   ← Assets referenced by index.html
-├── LICENSE
+│   │   ├── pack-plugin.mjs                     ←     Cross-platform ZIP packaging script
+│   │   └── prepare-main.mjs                    ←     Main branch layout assembler
+│   ├── readme.txt                              ←   WordPress.org readme (Full version)
+│   └── readme-light.txt                        ←   WordPress.org readme (Light version)
+├── package.json
 └── README.md
 ```
 
-### Building the Text Animation module
+---
 
-The Text Animation module is the only part of Aurora with a build step — every other module is plain PHP/JS/CSS, no tooling required. Its source lives in `assets/js/src/` (one file per effect, under `effects/gsap/` and `effects/anime/`) and is compiled with **Vite** into the flat files the plugin actually loads (`assets/js/dist/`). `assets/js/dist/` is committed to the repo, so installing the plugin from a .zip or running it as-is never requires Node/npm — the build step is only needed when you change a file under `assets/js/src/`.
+## ⚡ Build System & Commands
 
-#### Prerequisites
+### 1. Compiling Text Effects (`npm run build`)
 
-- Node.js 18+ and npm (check with `node -v` / `npm -v`)
+The Text Animation module's source is modularized in `assets/js/src/`. To compile it into production bundles:
 
-#### One-time setup
-
-```
-cd aurora
-npm install
-```
-
-This reads `package.json` and installs Vite into `node_modules/` (already `.gitignore`d — never committed).
-
-#### Compiling
-
-```
+```bash
 npm run build
 ```
 
-This runs `plugin/scripts/build-text-effects.mjs`, which drives Vite's build API directly (no `vite.config.js` — see the script's own header comment for why: `iife` output doesn't support multi-entry code-splitting, so every bundle is produced as its own isolated build call). One run regenerates everything in `assets/js/dist/`:
+This runs `plugin/scripts/build-text-effects.mjs` using Vite's programmatic API to generate:
+- **`aurora-text-core.js`**: Frontend runtime bundle containing all 88 GSAP & Anime.js effects registered synchronously on load (~73 KB total, ~15 KB gzipped).
+- **`aurora-text-editor.js`**: Editor-specific bundle loaded inside the Elementor editor with live controls preview.
+- **`effects/{id}.js`**: Individual standalone chunk files for compatibility.
 
-| Output | What it is | When it's loaded |
-|---|---|---|
-| `aurora-text-editor.js` | Core runtime + **all** effects baked in, one file | Only inside the Elementor editor/preview iframe |
-| `aurora-text-core.js` | Core runtime only, no effects | Every real (non-editor) frontend page |
-| `effects/{id}.js` (e.g. `gs-1.js`, `ml-23.js`) | One effect each, self-contained | Only the effect(s) a given widget actually uses, enqueued per-widget by PHP |
+> [!TIP]
+> Always run `npm run build` after modifying any file in `assets/js/src/` before creating a package or testing changes.
 
-Re-run `npm run build` after editing, adding, or removing anything under `assets/js/src/` — it's the only step that turns those source changes into what the plugin actually serves. Nothing needs to be manually copied or renamed; the script discovers every effect file automatically from its `{id}-{slug}.js` filename.
+---
 
-#### Adding a new effect
+### 2. Packaging Plugin ZIPs (`npm run pack` / `npm run pack:dev`)
 
-1. Create `assets/js/src/effects/gsap/{id}-{slug}.js` or `assets/js/src/effects/anime/{id}-{slug}.js`, following the shape of any existing file in that folder (`export default { id, run(units, opts, textEl) {...} }`, plus `registerEffect(effect)`).
-2. Add one import line to `assets/js/src/entries/editor.js` (so the editor bundle picks it up).
-3. Add its select option in `plugin/includes/class-text-animation-controls.php`.
-4. Run `npm run build`.
+Aurora ships in two distinct package editions:
+1. **Full Edition (`aurora-for-elementor-full*.zip`)**: Includes GSAP, Anime.js, and all 88 text effect animations.
+2. **Light Edition (`aurora-for-elementor-light*.zip`)**: Excludes the proprietary GSAP vendor files and GSAP effects, automatically falling back to Anime.js (100% MIT/GPL compatible, ready for WordPress.org).
 
-Nothing else in the codebase needs to change — no manifest to update, no ids to register elsewhere.
+The packager supports **two build modes**:
 
-#### GSAP → Anime.js parity
+#### A. Development Build Mode (`npm run pack:dev` or `npm run pack dev`)
 
-Every GSAP effect (`gs-1`..`gs-35`) has an Anime.js effect with the same visual result, so the Library control is a real choice rather than Anime.js being a smaller fallback set. This exists to prepare for an eventual WordPress.org submission: GSAP's core license (GreenSock's "Standard No-Charge License") isn't GPL-compatible, while Anime.js is MIT. GSAP is still bundled and selectable today — nothing has been removed — but if GSAP is ever dropped, no effect is lost; the Library default just needs to switch to `animejs` and each `aurora_text_animation_gsap` value needs to be remapped to its Anime.js counterpart below.
+```bash
+npm run pack:dev
+```
 
-| GSAP | Anime.js | | GSAP | Anime.js |
-|---|---|---|---|---|
-| gs-1 Fade Up | ml-1 Float Up | | gs-14 Neon Flicker | ml-32 Neon Flicker |
-| gs-2 Clip Reveal | ml-12 Clip Wrap | | gs-15 CRT Boot | ml-33 CRT Boot |
-| gs-3 Scramble Text | ml-14 Native Scramble | | gs-16 Domino Fall | ml-34 Domino Fall |
-| gs-4 Elastic Bounce | ml-24 Elastic Bounce | | gs-17 Pendulum Swing | ml-35 Pendulum Swing |
-| gs-5 3D Flip | ml-25 3D Flip | | gs-18 Unfold 3D | ml-36 Unfold 3D |
-| gs-6 Slide In | ml-26 Slide In | | gs-19 Stretch Warp | ml-37 Stretch Warp |
-| gs-7 Scale Up | ml-2 Scale In | | gs-20 Heartbeat | ml-38 Heartbeat |
-| gs-8 Wave | ml-5 Wave | | gs-21 Vertical Blinds | ml-39 Vertical Blinds |
-| gs-9 Bounce Drop | ml-27 Bounce Drop | | gs-22 Rubber Stamp | ml-40 Rubber Stamp |
-| gs-10 Glitch | ml-28 Glitch | | gs-23 VHS Tracking | ml-41 VHS Tracking |
-| gs-11 Rotate In | ml-29 Rotate In | | gs-24 Liquid Fill Reveal | ml-42 Liquid Fill Reveal |
-| gs-12 Slot Machine | ml-30 Slot Machine | | gs-25 Perspective Fly | ml-43 Perspective Fly |
-| gs-13 Spin In | ml-31 Spin In | | gs-26 Cinema Title | ml-44 Cinema Title |
-| gs-27 Text Emerge | ml-45 Text Emerge | | gs-30 Text Reveal Wall | ml-48 Text Reveal Wall |
-| gs-28 Stagger Flip 3D | ml-46 Stagger Flip 3D | | gs-31 Letter Roll | ml-49 Letter Roll |
-| gs-29 Scroll Highlight | ml-47 Scroll Highlight | | gs-32 Elastic Text | ml-50 Elastic Text |
-| gs-33 Letter Swap | ml-51 Letter Swap | | gs-34 Mesh Text Hover | ml-52 Mesh Text Hover |
-| gs-35 Appear Text | ml-53 Appear Text | | | |
+- **Purpose**: Creates ZIP packages for testing on local or staging WordPress sites.
+- **Dev Stamping**: Automatically stamps the staged plugin with development markers:
+  - Appends `-dev` to the version in `aurora-for-elementor.php` (e.g. `0.7.1-dev`), which also updates `AURORA_VERSION` for browser cache-busting.
+  - Adds `(Dev)` to the Plugin Name in the header (`Aurora for Elementor (Dev)`).
+  - Updates `Stable tag:` to `<version>-dev` in `readme.txt`.
+  - Outputs files as **`aurora-for-elementor-full-dev.zip`** and **`aurora-for-elementor-light-dev.zip`** in `plugin/`.
+- **Zero Repo Dirt**: Dev metadata is applied **only** to the temporary staging directory (`_dist_temp`) during packaging — committed source files remain 100% clean.
 
-### Packaging the plugin
-
-You can compile production-ready ZIP archives of the plugin for distribution. The packager automatically creates two separate editions in `plugin/`:
-
-1. **`aurora-for-elementor-full.zip`**: The complete edition including all animation modules and libraries (GSAP, Anime.js, and Motion One).
-2. **`aurora-for-elementor-light.zip`**: A lightweight edition without the GSAP library. The plugin automatically detects the absence of GSAP at runtime, hiding GSAP options in the Elementor controls and falling back to Anime.js.
-
-The packaging tool is fully cross-platform and runs natively on Windows (via PowerShell), macOS, and Linux with no external dependencies.
-
-#### Compiling ZIPs
+#### B. Final Release Build Mode (`npm run pack`)
 
 ```bash
 npm run pack
 ```
 
-This runs `plugin/scripts/pack-plugin.mjs`, which merges `plugin/` (PHP, includes, languages, readme) with the repo-root `assets/` folder into a temporary directory, excluding dev-only files, strips GSAP vendor files for the light edition, and generates both archives inside `plugin/`.
-
-### Translations
-
-English is the plugin's default language. A Portuguese (Brazil) translation is bundled in `plugin/languages/`, loaded automatically via the standard WordPress i18n API (`load_plugin_textdomain`) when the site's locale is `pt_BR`. To add another language, copy `plugin/languages/aurora-for-elementor.pot` to `plugin/languages/aurora-for-elementor-{locale}.po`, translate the strings, and compile it to a `.mo` file (e.g. with `msgfmt` or Poedit).
-
-### How it works
-
-1. **PHP registers controls** in the Elementor Advanced tab via hooks:
-   - `elementor/element/common/section_effects/after_section_end`
-   - `elementor/element/section/section_effects/after_section_end`
-   - `elementor/element/column/section_effects/after_section_end`
-   - `elementor/element/container/section_effects/after_section_end`
-
-2. **PHP injects `data-*` attributes** onto the element wrapper via:
-   - `elementor/frontend/element/before_render`
-   - `elementor/frontend/widget/before_render`
-
-3. **JavaScript** detects elements by their `data-aurora-*-enable="1"` attribute, registers an Elementor Frontend Handler per module for live preview in the editor, and applies effects via GSAP/Anime.js (animations), `IntersectionObserver` (scroll triggers), or a live `mousemove` listener (the Gradient module's Follow Mouse spotlight and the Cursor Follow module's dot/ring tracking).
-
-## 💡 Inspiration
-
-- [Moving Letters — Tobias Ahlin](https://tobiasahlin.com/moving-letters/)
-- [GSAP — GreenSock](https://gsap.com/)
-- [Anime.js](https://animejs.com/)
-- [Animation Addons for Elementor](https://animation-addons.com/)
-
+- **Purpose**: Compiles clean, production-ready release ZIPs: **`aurora-for-elementor-full.zip`** and **`aurora-for-elementor-light.zip`** in `plugin/`.
+- **Enforced Release Guards**:
+  - **Version Sync**: Reads the canonical version from `aurora-for-elementor.php` and synchronizes `Stable tag:` in `readme.txt` and `readme-light.txt`.
+  - **Changelog Validation**: Verifies that the newest heading in `== Changelog ==` of both readmes matches the version being packaged. If missing, the build fails with an explicit error to prevent shipping unversioned changelogs.
+  - **WordPress Version Check**: Queries `api.wordpress.org` to check the current stable WordPress release and syncs `Tested up to:` (gracefully skips if offline).
+  - **License Bundling**: Ensures the full GPLv3 `LICENSE.txt` is bundled in the root of both packages.
 
 ---
 
-<h2 style="display: flex; align-items: center;">
-  <img src="./assets/branding/icons/aurora_icon_blue_contributing.svg" alt="Features icon" style="height: 48px; margin-right: 8px;"/>
-  Contributing
-</h2>
+### 3. Main Branch Assembler (`npm run build:main`)
 
-This project is distributed under the [GPL License](./LICENSE).
+The `dev` branch contains development tooling and docs, while the `main` branch contains the clean distribution layout and site root. The assembler bridges this workflow:
 
-Pull requests are welcome! For major changes, please open an Issue first to discuss what you'd like to change.
+```bash
+npm run build:main
+```
 
-1. Fork the project
-2. Create your branch (`git checkout -b feature/new-animation`)
-3. Commit your changes (`git commit -m 'feat: add new animation'`)
-4. Push to the branch (`git push origin feature/new-animation`)
-5. Open a Pull Request
+This runs `plugin/scripts/prepare-main.mjs`, which compiles and stages the entire `main` branch into a top-level `main/` directory:
+
+```
+main/
+├── index.html                           ← Site home (moved from docs/ with rewritten asset paths)
+├── assets/                              ← Shared production assets (js/src excluded)
+├── docs/
+│   └── text-effects/index.html          ← Interactive showcase pages (paths updated)
+└── build/                               ← Production ZIPs (FINAL build mode)
+    ├── aurora-for-elementor-full.zip
+    └── aurora-for-elementor-light.zip
+```
+
+#### Path Transformations Handled Automatically:
+- **`main/index.html`**: Re-points `../assets/` to `./assets/` and links to `text-effects/` to `./docs/text-effects/`.
+- **`main/docs/*`**: Re-points home navigation links to `../../` while preserving relative asset paths.
+- **Distribution Packages**: Automatically invokes `pack-plugin.mjs` in FINAL mode and places both ZIP archives in `main/build/`.
+
+---
+
+## 🔄 Release & Deployment Workflow
+
+To release a new version from `dev` to `main`:
+
+1. **Bump Version & Update Changelog**:
+   - Update `Version: x.y.z` in `plugin/aurora-for-elementor.php`.
+   - Add a `= x.y.z =` entry under `== Changelog ==` in `plugin/readme.txt` and `plugin/readme-light.txt`.
+2. **Compile JS Bundles**:
+   ```bash
+   npm run build
+   ```
+3. **Assemble Main Branch Directory**:
+   ```bash
+   npm run build:main
+   ```
+4. **Deploy to `main`**:
+   - Verify contents in `main/`.
+   - Commit changes on `dev` and push:
+     ```bash
+     git add .
+     git commit -m "chore: prepare release x.y.z"
+     git push origin dev
+     ```
+   - Synchronize/push the assembled `main/` output to the `main` branch.
+
+---
+
+## 🧩 Core Animation Modules
+
+### Module 1 — Text Animation
+- **Hook**: `Advanced → ✨ Text Animation (Aurora)` on headings, text editors, buttons.
+- **Features**: Splits text by **Chars**, **Words**, or **Lines**.
+- **Libraries**: 35 GSAP effects + 53 Anime.js effects (88 total).
+- **Triggers**: Scroll (with configurable threshold and replay) or Page Load.
+- **Extras**: Hover Scatter interaction with intensity and duration controls.
+
+### Module 2 — Animate Children Elements
+- **Hook**: `Advanced → 🎬 Animate Children Elements (Aurora)` on Containers, Sections, Columns, and Widgets.
+- **Features**: Cascading stagger animations on direct children.
+- **Effects**: Fade (Up/Down/In), Slide (Left/Right), Zoom (In/Out), Flip Up, Rotate In, Bounce In, and Blur entrance set.
+
+### Module 3 — Gradient
+- **Hook**: `Advanced → 🌈 Gradient (Aurora)` on Containers (background) and Headings/Text (text-fill).
+- **Features**: Multi-stop Linear, Radial, and Conic gradients with color stops repeater.
+- **Motion Styles**: Static, Pan / Mesh, Color Loop (hue rotation), and **Follow Mouse (Spotlight)** tracking.
+
+### Module 4 — Cursor Follow
+- **Hook**: `Advanced → 🖱️ Cursor Follow (Aurora)` on any element.
+- **Features**: Two-part interactive custom cursor (inner dot + trailing outer ring) with interactive element scaling (links, buttons, images).
+
+---
+
+## 🌐 Translations & Internationalization
+
+Default language: **English (`en_US`)**.  
+Bundled translations: **Portuguese - Brazil (`pt_BR`)**.
+
+Translation files live in `plugin/languages/`:
+- `aurora-for-elementor.pot` — Translation template.
+- `aurora-for-elementor-pt_BR.po` / `.mo` — Brazilian Portuguese translation.
+
+To regenerate or compile translations:
+```bash
+# Compile PO to MO (using gettext msgfmt)
+msgfmt plugin/languages/aurora-for-elementor-pt_BR.po -o plugin/languages/aurora-for-elementor-pt_BR.mo
+```
+
+---
+
+## 📜 License
+
+Aurora for Elementor is open-source software licensed under the [GNU General Public License v3.0 (GPLv3)](./LICENSE).
 
 [![Feito no Brasil](https://selo.feitonobrasil.dev.br/pt-br/colorido/1x.svg)](https://feitonobrasil.dev.br)
