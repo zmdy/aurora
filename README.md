@@ -263,4 +263,11 @@ msgfmt plugin/languages/aurora-for-elementor-pt_BR.po -o plugin/languages/aurora
 
 Aurora for Elementor is open-source software licensed under the [GNU General Public License v3.0 (GPLv3)](./LICENSE).
 
-[![Feito no Brasil](https://selo.feitonobrasil.dev.br/pt-br/colorido/1x.svg)](https://feitonobrasil.dev.br)
+<br />
+
+<div align="center">
+  <a href="https://feitonobrasil.dev.br" target="_blank" rel="noopener noreferrer">
+    <img src="https://selo.feitonobrasil.dev.br/pt-br/colorido/1x.svg" alt="Selo Feito no Brasil" width="135" />
+  </a>
+  <p><sub>Orgulhosamente desenvolvido no Brasil para a comunidade global WordPress &amp; Elementor.</sub></p>
+</div>
