@@ -5,7 +5,7 @@ import { JSDOM } from 'jsdom';
 
 /**
  * Loads the built scripts into a fresh JSDOM window, the way a page would.
- * Run `npm run build:dist` first; the suite is skipped when dist/ is missing.
+ * Run `npm run build` first; the suite is skipped when dist/ is missing.
  */
 var dist = resolve(__dirname, '../../../dist');
 var built = existsSync(resolve(dist, 'manifest.json'));

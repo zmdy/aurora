@@ -1,18 +1,17 @@
 {
-  "name": "aurora-for-elementor",
+  "name": "aurora",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "MIT",
-  "description": "Build tooling for Aurora for Elementor. Aurora itself ships as plain PHP/JS/CSS (no build step required to run the plugin) — Vite here is only a developer convenience for maintaining the Text Animation module's per-effect source files (assets/js/src/) and compiling them into the flat, framework-free bundles the plugin actually loads (assets/js/dist/). The compiled dist/ files ARE committed, so end users never need Node/npm.",
+  "description": "The open-source Swiss Army knife for animated web design. Monorepo: shared core, animation modules and builder adapters.",
   "type": "module",
   "scripts": {
-    "build": "node plugin/scripts/build-text-effects.mjs",
-    "pack": "node plugin/scripts/pack-plugin.mjs",
-    "pack:dev": "node plugin/scripts/pack-plugin.mjs dev",
-    "build:main": "node plugin/scripts/prepare-main.mjs",
+    "build": "node tools/build.mjs",
+    "build:elementor": "node tools/generate-elementor.mjs",
+    "pack": "node tools/pack-elementor.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:dist": "node tools/build.mjs"
+    "test:php": "php adapters/elementor/test/stub-test.php"
   },
   "devDependencies": {
     "esbuild": "^0.24.2",
