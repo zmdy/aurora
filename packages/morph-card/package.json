@@ -1,0 +1,12 @@
+{
+    "name": "@aurora/morph-card",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Aurora Morph Card: a card that morphs between post, profile, polaroid and custom layouts.",
+    "license": "MIT",
+    "main": "src/index.js",
+    "dependencies": {
+        "@aurora/core": "*"
+    }
+}

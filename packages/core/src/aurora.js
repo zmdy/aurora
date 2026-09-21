@@ -157,6 +157,8 @@ export function createAurora(initialConfig) {
             el: el,
             name: name,
             get options() { return Object.assign({}, current); },
+            /** Module-specific methods returned by `init` as `api` (for example the morph card's `next()`). */
+            get api() { return handle && handle.api ? handle.api : null; },
             update: function (partial) {
                 if (destroyed) return instance;
                 var changes = normalizeOptions(mod.schema, partial, function (m) { warn(m, name); });

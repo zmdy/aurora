@@ -279,3 +279,24 @@ describe('warnings', () => {
         expect(spy.mock.calls[0][0]).toContain('[Aurora:demo]');
     });
 });
+
+describe('instance.api', () => {
+    it('exposes the `api` object returned by init', () => {
+        var { def } = makeModule({
+            init: function () { return { api: { ping: function () { return 'pong'; } } }; },
+        });
+        aurora.register(def);
+        var el = document.createElement('div');
+        document.body.appendChild(el);
+        var instance = aurora.demo(el);
+        expect(instance.api.ping()).toBe('pong');
+    });
+
+    it('is null when the module has no api', () => {
+        var { def } = makeModule();
+        aurora.register(def);
+        var el = document.createElement('div');
+        document.body.appendChild(el);
+        expect(aurora.demo(el).api).toBeNull();
+    });
+});
