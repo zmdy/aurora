@@ -1,3 +1,4 @@
+import { STYLESHEET } from '../src/styles.js';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createAurora } from '@aurora/core';
 import { morphCard } from '../src/index.js';
@@ -146,5 +147,20 @@ describe('morph card module', () => {
         stage().setAttribute('data-aurora-morph-card-autoplay', 'false');
         aurora.init();
         expect(stage().querySelector('.amc-card')).not.toBeNull();
+        expect(stage().classList.contains('aurora-morph-card')).toBe(true);
+    });
+
+    it('every rule of the stylesheet is scoped to the card root the module renders', () => {
+        aurora.morphCard(stage(), { states: states });
+        expect(stage().querySelector('.amc-card')).not.toBeNull();
+        expect(stage().classList.contains('aurora-morph-card')).toBe(true);
+        var rules = STYLESHEET.split('}').map((r) => r.split('{')[0].trim()).filter((sel) => sel && !sel.startsWith('@'));
+        rules.forEach((selector) => {
+            selector.split(',').forEach((part) => {
+                var trimmed = part.trim();
+                if (/^(from|to|\d+%)$/.test(trimmed)) return;
+                expect(trimmed.startsWith('.aurora-morph-card')).toBe(true);
+            });
+        });
     });
 });
