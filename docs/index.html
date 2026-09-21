@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="Bring your website to life. Aurora adds scroll-triggered text effects, cascading layouts, animated gradients, custom cursors and morphing cards to any site, Webflow or Elementor. Free and open source.">
-  <title>Aurora — Bring your website to life</title>
+    content="Aurora is the open-source Swiss Army knife for animated web design: text effects, animated gradients, cascading layouts, custom cursors and morphing cards for any website, Webflow or Elementor.">
+  <title>Aurora — The open-source Swiss Army knife for animated web design</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
   <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
@@ -509,54 +509,44 @@
    ═══════════════════════════════════════════════════════════════════ */
     .nav {
       position: fixed;
-      top: 1.25rem;
+      top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
-      pointer-events: none;
-      transition: transform var(--t-normal);
+      background: transparent;
+      box-shadow: none;
+      transition: background var(--t-normal), box-shadow var(--t-normal);
     }
 
     .nav .container {
-      max-width: 1080px;
-      padding: 0 var(--s-4);
+      max-width: 1180px;
+      padding: 0 var(--s-6);
     }
 
     .nav__inner {
-      pointer-events: auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: var(--s-8);
-      padding: 10px 24px;
-      border-radius: var(--r-full);
-      background: rgba(7, 9, 26, 0.42);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      transition: all var(--t-normal);
+      height: 76px;
+      transition: height var(--t-normal);
+    }
+
+    /* Past the hero: solid white with a soft shadow underneath. */
+    .nav.scrolled {
+      background: #fff;
+      box-shadow: 0 1px 0 rgba(15, 20, 50, .04), 0 8px 28px rgba(15, 20, 50, .08);
     }
 
     .nav.scrolled .nav__inner {
-      background: rgba(3, 4, 12, 0.68);
-      backdrop-filter: blur(28px) saturate(220%);
-      -webkit-backdrop-filter: blur(28px) saturate(220%);
-      border-color: rgba(5, 177, 114, 0.4);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(5, 177, 114, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
+      height: 64px;
     }
 
     .nav__logo {
       height: 32px;
       width: auto;
-      /* Solid white while floating over the hero (brightness(0) crushes
-         every color to black, invert(1) flips that to white) — flattens
-         the logo's own color animation to a plain white mark so it reads
-         cleanly over a photo/gradient background. Removed once .nav
-         picks up its .scrolled glass (still translucent — see
-         .nav.scrolled .nav__inner above, never solid), revealing the
-         real animated, full-color logo. */
+      /* Solid white over the hero photo; the real animated full-color logo
+         appears once the bar turns white. */
       filter: brightness(0) invert(1);
       transition: filter var(--t-normal);
     }
@@ -787,13 +777,66 @@
     }
 
     @media (max-width: 768px) {
-      .nav {
-        top: .75rem;
-      }
-
       .nav__links {
         display: none;
       }
+    }
+
+    /* ─── Nav on the white (scrolled) bar ───────────────────────────── */
+
+    .nav.scrolled .nav__links a,
+    .nav.scrolled .nav__dropdown-trigger {
+      color: #4a5070;
+    }
+
+    .nav.scrolled .nav__links a:hover,
+    .nav.scrolled .nav__dropdown-trigger:hover,
+    .nav.scrolled .nav__dropdown.open .nav__dropdown-trigger {
+      color: #03040c;
+    }
+
+    .nav.scrolled .nav__docs-btn {
+      border-color: rgba(3, 4, 12, .16);
+      color: #0d1030;
+    }
+
+    .nav.scrolled .nav__docs-btn:hover {
+      border-color: rgba(5, 177, 114, .6);
+      background: rgba(5, 177, 114, .08);
+      color: #03040c;
+    }
+
+    .nav.scrolled .nav__icon-link {
+      border-color: rgba(3, 4, 12, .16);
+      color: #4a5070;
+    }
+
+    .nav.scrolled .nav__icon-link:hover {
+      color: #03040c;
+      border-color: rgba(3, 4, 12, .32);
+      background: rgba(3, 4, 12, .04);
+    }
+
+    .nav.scrolled .nav__dropdown-menu {
+      background: #fff;
+      border-color: rgba(3, 4, 12, .08);
+      box-shadow: 0 16px 40px rgba(15, 20, 50, .14);
+    }
+
+    .nav.scrolled .nav__dropdown-menu a {
+      color: #0d1030;
+    }
+
+    .nav.scrolled .nav__dropdown-menu a:hover {
+      background: rgba(3, 4, 12, .05);
+    }
+
+    .nav.scrolled .nav__dropdown-title {
+      color: #03040c;
+    }
+
+    .nav.scrolled .nav__dropdown-desc {
+      color: #6b7194;
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -2493,7 +2536,6 @@
 
     /* ── Footer ── */
     .footer {
-      border-top: 1px solid rgba(255, 255, 255, .05);
       padding: var(--s-12) 0 var(--s-8);
       background: var(--c-night);
     }
@@ -2792,14 +2834,14 @@
         </div>
 
         <h1 class="hero__title">
-          <span class="word-stack fade-in-up fade-in-up--1">Bring your</span>
-          <span class="word-stack line-outlined fade-in-up fade-in-up--2">website</span>
-          <span class="word-stack line-gradient fade-in-up fade-in-up--3">to life.</span>
+          <span class="word-stack fade-in-up fade-in-up--1">Color &amp;</span>
+          <span class="word-stack line-outlined fade-in-up fade-in-up--2">Motion,</span>
+          <span class="word-stack line-gradient fade-in-up fade-in-up--3">Unleashed.</span>
         </h1>
 
         <p class="hero__sub fade-in-up fade-in-up--4">
-          Scroll-triggered text effects, cascading layouts, flowing gradients, custom cursors and cards that morph.
-          Paste two lines into any site, or switch it on from Webflow and Elementor. Free and open source.
+          The open-source Swiss Army knife for animated web design. Text effects, flowing gradients, cascading
+          layouts, custom cursors and morphing cards in one toolkit, ready for plain HTML, Webflow and Elementor.
         </p>
 
         <div class="hero__actions fade-in-up fade-in-up--4">
@@ -2862,9 +2904,9 @@
   <section id="modules" class="modules-section section-gap-lg">
     <div class="container">
       <div class="section-header">
-        <div class="eyebrow">What You Get</div>
-        <h2 class="display-2" style="margin-top:1rem">Make Every Page Feel Alive</h2>
-        <p>Five modules that work on their own or together. Use one, or combine them all.</p>
+        <div class="eyebrow">The Toolkit</div>
+        <h2 class="display-2" style="margin-top:1rem">Every Tool You Need to Animate</h2>
+        <p>Five modules that work on their own or together. Pick the blade you need, or unfold them all.</p>
       </div>
 
       <div class="modules-grid">
@@ -3047,8 +3089,8 @@
       <div class="cta-box">
         <div class="eyebrow" style="margin-bottom:1.5rem">Get Started</div>
         <h2 class="display-2">Ready to <span class="text-gradient">animate?</span></h2>
-        <p>Add Aurora to your site in minutes: paste two script tags, drop in the Webflow snippet, or install the
-          Elementor plugin. Free, open source and no strings attached.</p>
+        <p>Aurora is the open-source Swiss Army knife for animated web design. Add it to your site in minutes:
+          paste two script tags, drop in the Webflow snippet, or install the Elementor plugin. Free, with no strings attached.</p>
         <div class="cta-actions">
           <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
