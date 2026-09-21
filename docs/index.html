@@ -532,10 +532,10 @@
       transition: height var(--t-normal);
     }
 
-    /* Past the hero: solid white with a soft shadow underneath. */
+    /* Past the hero: solid dark navy (--c-elevated) with a soft shadow underneath. */
     .nav.scrolled {
-      background: #fff;
-      box-shadow: 0 1px 0 rgba(15, 20, 50, .04), 0 8px 28px rgba(15, 20, 50, .08);
+      background: var(--c-elevated);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, .05), 0 10px 30px rgba(0, 0, 0, .45);
     }
 
     .nav.scrolled .nav__inner {
@@ -546,7 +546,7 @@
       height: 32px;
       width: auto;
       /* Solid white over the hero photo; the real animated full-color logo
-         appears once the bar turns white. */
+         appears once the bar turns solid. */
       filter: brightness(0) invert(1);
       transition: filter var(--t-normal);
     }
@@ -657,6 +657,10 @@
       pointer-events: none;
       transition: opacity var(--t-fast), transform var(--t-fast), visibility var(--t-fast);
       z-index: 1001;
+    }
+
+    .nav.scrolled .nav__dropdown-menu {
+      background: var(--c-night);
     }
 
     .nav__dropdown:hover .nav__dropdown-menu,
@@ -780,63 +784,6 @@
       .nav__links {
         display: none;
       }
-    }
-
-    /* ─── Nav on the white (scrolled) bar ───────────────────────────── */
-
-    .nav.scrolled .nav__links a,
-    .nav.scrolled .nav__dropdown-trigger {
-      color: #4a5070;
-    }
-
-    .nav.scrolled .nav__links a:hover,
-    .nav.scrolled .nav__dropdown-trigger:hover,
-    .nav.scrolled .nav__dropdown.open .nav__dropdown-trigger {
-      color: #03040c;
-    }
-
-    .nav.scrolled .nav__docs-btn {
-      border-color: rgba(3, 4, 12, .16);
-      color: #0d1030;
-    }
-
-    .nav.scrolled .nav__docs-btn:hover {
-      border-color: rgba(5, 177, 114, .6);
-      background: rgba(5, 177, 114, .08);
-      color: #03040c;
-    }
-
-    .nav.scrolled .nav__icon-link {
-      border-color: rgba(3, 4, 12, .16);
-      color: #4a5070;
-    }
-
-    .nav.scrolled .nav__icon-link:hover {
-      color: #03040c;
-      border-color: rgba(3, 4, 12, .32);
-      background: rgba(3, 4, 12, .04);
-    }
-
-    .nav.scrolled .nav__dropdown-menu {
-      background: #fff;
-      border-color: rgba(3, 4, 12, .08);
-      box-shadow: 0 16px 40px rgba(15, 20, 50, .14);
-    }
-
-    .nav.scrolled .nav__dropdown-menu a {
-      color: #0d1030;
-    }
-
-    .nav.scrolled .nav__dropdown-menu a:hover {
-      background: rgba(3, 4, 12, .05);
-    }
-
-    .nav.scrolled .nav__dropdown-title {
-      color: #03040c;
-    }
-
-    .nav.scrolled .nav__dropdown-desc {
-      color: #6b7194;
     }
 
     /* ═══════════════════════════════════════════════════════════════════
