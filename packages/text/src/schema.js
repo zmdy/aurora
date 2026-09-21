@@ -43,8 +43,9 @@ export var schema = {
             label: 'Visible ratio',
             description: 'Capped at 5% internally so headings above the fold always start.',
             group: 'Trigger',
+            when: { trigger: 'scroll' },
         },
-        replay: { type: 'boolean', default: false, label: 'Replay on every scroll', group: 'Trigger' },
+        replay: { type: 'boolean', default: false, label: 'Replay on every scroll', group: 'Trigger', when: { trigger: 'scroll' } },
         target: {
             type: 'selector',
             default: '',
@@ -59,7 +60,7 @@ export var schema = {
             description: 'Units jump to random offsets on hover and settle back with an elastic ease.',
             group: 'Hover',
         },
-        hoverIntensity: { type: 'number', default: 24, min: 1, max: 200, unit: 'px', label: 'Scatter intensity', group: 'Hover' },
-        hoverDuration: { type: 'number', default: 350, min: 50, max: 3000, unit: 'ms', label: 'Scatter duration', group: 'Hover' },
+        hoverIntensity: { type: 'number', default: 24, min: 1, max: 200, unit: 'px', label: 'Scatter intensity', group: 'Hover', when: { hoverScatter: true } },
+        hoverDuration: { type: 'number', default: 350, min: 50, max: 3000, unit: 'ms', label: 'Scatter duration', group: 'Hover', when: { hoverScatter: true } },
     },
 };

@@ -16,7 +16,8 @@ export var children = defineModule({
     schema: schema,
 
     init: function (el, options, ctx) {
-        var targets = resolveChildren(el, options);
+        var root = (options.root && el.querySelector(options.root)) || el;
+        var targets = resolveChildren(root, options);
         var animations = [];
         var unmountHover = null;
         var played = false;

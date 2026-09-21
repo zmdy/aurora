@@ -36,6 +36,7 @@ export var schema = {
         stops: {
             type: 'string',
             default: '#7c6cff;#ff7a2f;#2af598',
+            ui: 'stops',
             label: 'Color stops',
             description: 'Colors separated by ";", each with an optional position: "#ff0080;#7928ca 60;#2af598". A JSON array of {color, offset} is also accepted.',
             group: 'Gradient',
@@ -48,6 +49,7 @@ export var schema = {
             unit: 'deg',
             label: 'Angle',
             group: 'Gradient',
+            when: { type: ['linear', 'conic'] },
         },
 
         animation: {
@@ -66,6 +68,7 @@ export var schema = {
             unit: 's',
             label: 'Cycle duration',
             group: 'Animation',
+            when: { animation: ['flow', 'hue'] },
         },
 
         followMouse: {
@@ -83,6 +86,7 @@ export var schema = {
             unit: 'px',
             label: 'Spotlight radius',
             group: 'Cursor',
+            when: { followMouse: true },
         },
 
         textMode: {
@@ -100,13 +104,14 @@ export var schema = {
             values: MESH_STYLES,
             label: 'Mesh style',
             group: 'Mesh',
+            when: { type: 'mesh' },
         },
-        distortion: { type: 'number', default: 40, min: 0, max: 100, label: 'Distortion', group: 'Mesh' },
-        swirl: { type: 'number', default: 25, min: 0, max: 100, label: 'Swirl', group: 'Mesh' },
-        scale: { type: 'number', default: 1.25, min: 0.1, max: 5, step: 0.05, label: 'Scale', group: 'Mesh' },
-        grain: { type: 'boolean', default: false, label: 'Film grain', group: 'Mesh' },
-        grainIntensity: { type: 'number', default: 35, min: 0, max: 100, label: 'Grain intensity', group: 'Mesh' },
-        liquidCursor: { type: 'boolean', default: false, label: 'Liquid cursor', group: 'Mesh' },
-        cursorRadius: { type: 'number', default: 250, min: 20, max: 1000, unit: 'px', label: 'Cursor radius', group: 'Mesh' },
+        distortion: { type: 'number', default: 40, min: 0, max: 100, label: 'Distortion', group: 'Mesh', when: { type: 'mesh' } },
+        swirl: { type: 'number', default: 25, min: 0, max: 100, label: 'Swirl', group: 'Mesh', when: { type: 'mesh' } },
+        scale: { type: 'number', default: 1.25, min: 0.1, max: 5, step: 0.05, label: 'Scale', group: 'Mesh', when: { type: 'mesh' } },
+        grain: { type: 'boolean', default: false, label: 'Film grain', group: 'Mesh', when: { type: 'mesh' } },
+        grainIntensity: { type: 'number', default: 35, min: 0, max: 100, label: 'Grain intensity', group: 'Mesh', when: { type: 'mesh', grain: true } },
+        liquidCursor: { type: 'boolean', default: false, label: 'Liquid cursor', group: 'Mesh', when: { type: 'mesh' } },
+        cursorRadius: { type: 'number', default: 250, min: 20, max: 1000, unit: 'px', label: 'Cursor radius', group: 'Mesh', when: { type: 'mesh', liquidCursor: true } },
     },
 };

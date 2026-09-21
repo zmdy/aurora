@@ -154,4 +154,10 @@ describe('children module', () => {
         expect(calls).toHaveLength(3);
         expect(calls[1].animation.timing.delay).toBe(40);
     });
+
+    it('animates the children of the root selector instead of the element', () => {
+        document.body.innerHTML = '<div id="root"><div class="inner"><i id="a"></i><i id="b"></i></div><p id="other"></p></div>';
+        aurora.children(document.getElementById('root'), { trigger: 'load', root: '.inner' });
+        expect(calls.map((c) => c.el.id)).toEqual(['a', 'b']);
+    });
 });

@@ -92,18 +92,27 @@ export var schema = {
             label: 'Visible ratio',
             description: 'How much of the element must be visible before the animation starts.',
             group: 'Trigger',
+            when: { trigger: 'scroll' },
         },
         replay: {
             type: 'boolean',
             default: false,
             label: 'Replay on every scroll',
             group: 'Trigger',
+            when: { trigger: 'scroll' },
         },
         selector: {
             type: 'selector',
             default: '',
             label: 'Target selector',
             description: 'CSS selector for the elements to animate. Empty animates the direct children.',
+            group: 'Targets',
+        },
+        root: {
+            type: 'selector',
+            default: '',
+            label: 'Root selector',
+            description: 'CSS selector, relative to the element, of the node whose children are animated. Empty uses the element itself. Builder adapters set this to skip wrapper nodes.',
             group: 'Targets',
         },
         depth: {
@@ -114,6 +123,7 @@ export var schema = {
             label: 'Depth',
             description: 'Without a selector: how many levels of descendants to animate.',
             group: 'Targets',
+            when: { selector: '' },
         },
 
         hover: {
@@ -128,12 +138,13 @@ export var schema = {
             values: ['lift', 'slide', 'scale', 'tilt', 'flip-x', 'flip-y', 'custom'],
             label: 'Hover preset',
             group: 'Hover',
+            when: { hover: true },
         },
-        hoverX: { type: 'number', default: 0, min: -200, max: 200, unit: 'px', label: 'Custom: move X', group: 'Hover' },
-        hoverY: { type: 'number', default: -10, min: -200, max: 200, unit: 'px', label: 'Custom: move Y', group: 'Hover' },
-        hoverScale: { type: 'number', default: 1.05, min: 0.5, max: 3, step: 0.01, label: 'Custom: scale', group: 'Hover' },
-        hoverRotate: { type: 'number', default: 0, min: -180, max: 180, unit: 'deg', label: 'Custom: rotate', group: 'Hover' },
-        hoverSkew: { type: 'number', default: 0, min: -60, max: 60, unit: 'deg', label: 'Custom: skew', group: 'Hover' },
+        hoverX: { type: 'number', default: 0, min: -200, max: 200, unit: 'px', label: 'Custom: move X', group: 'Hover', when: { hover: true, hoverPreset: 'custom' } },
+        hoverY: { type: 'number', default: -10, min: -200, max: 200, unit: 'px', label: 'Custom: move Y', group: 'Hover', when: { hover: true, hoverPreset: 'custom' } },
+        hoverScale: { type: 'number', default: 1.05, min: 0.5, max: 3, step: 0.01, label: 'Custom: scale', group: 'Hover', when: { hover: true, hoverPreset: 'custom' } },
+        hoverRotate: { type: 'number', default: 0, min: -180, max: 180, unit: 'deg', label: 'Custom: rotate', group: 'Hover', when: { hover: true, hoverPreset: 'custom' } },
+        hoverSkew: { type: 'number', default: 0, min: -60, max: 60, unit: 'deg', label: 'Custom: skew', group: 'Hover', when: { hover: true, hoverPreset: 'custom' } },
         hoverDuration: {
             type: 'number',
             default: 300,
@@ -142,6 +153,7 @@ export var schema = {
             unit: 'ms',
             label: 'Hover duration',
             group: 'Hover',
+            when: { hover: true },
         },
         proximity: {
             type: 'boolean',
@@ -149,6 +161,7 @@ export var schema = {
             label: 'Proximity wave',
             description: 'Neighbours of the hovered child follow the hover effect with a falloff.',
             group: 'Hover',
+            when: { hover: true },
         },
         proximityIntensity: {
             type: 'number',
@@ -158,6 +171,7 @@ export var schema = {
             step: 0.05,
             label: 'Proximity intensity',
             group: 'Hover',
+            when: { hover: true, proximity: true },
         },
     },
 };
