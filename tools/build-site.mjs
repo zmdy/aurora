@@ -435,7 +435,11 @@ function effectsPage() {
 
 // ── Build ───────────────────────────────────────────────────────────────
 
-rmSync(out, { recursive: true, force: true });
+// docs/index.html is hand-maintained (the landing page); everything else in
+// docs/ is generated. Only generated files are removed here.
+['modules', 'examples', 'text-effects', 'assets', 'install.html', 'webflow.html', 'elementor.html'].concat(
+    manifest.files.map(function (f) { return f.file; })
+).forEach(function (name) { rmSync(resolve(out, name), { recursive: true, force: true }); });
 mkdirSync(out, { recursive: true });
 
 manifest.files.forEach(function (f) { copyFileSync(resolve(dist, f.file), resolve(out, f.file)); });
@@ -449,7 +453,6 @@ copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, '
 });
 writeFileSync(resolve(out, '.nojekyll'), '');
 
-write('index.html', homePage());
 write('install.html', installPage());
 write('webflow.html', webflowPage());
 write('elementor.html', elementorPage());
@@ -459,4 +462,4 @@ ORDER.forEach(function (name) {
     write('examples/' + name + '.html', standalone(name, 'local', false));
 });
 
-console.log('Site built in docs/ (' + (ORDER.length * 2 + 5) + ' pages).');
+console.log('Site built in docs/ (' + (ORDER.length * 2 + 4) + ' pages; index.html is hand-maintained).');

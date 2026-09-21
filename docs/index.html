@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="Aurora for Elementor — 88+ premium text animations, gradients, glassmorphism, cursor follow and image effects. The open-source Swiss Army knife for Elementor design.">
-  <title>Aurora for Elementor — Color & Motion, Unleashed</title>
-  <link rel="icon" href="../assets/branding/aurora_favicon.svg" type="image/svg+xml">
+    content="Aurora: the open-source Swiss Army knife for animated web design. Five animation modules as standalone scripts for plain HTML, Webflow and Elementor. No GSAP, no build step.">
+  <title>Aurora — Animated web design, for any builder</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
   <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,15 +16,8 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap"
     rel="stylesheet">
 
-  <!-- Plugin CSS -->
-  <!-- Plugin CSS Modules -->
-  <link href="../assets/css/text-animations.css" rel="stylesheet">
-  <link href="../assets/css/gradient-module.css" rel="stylesheet">
-  <link href="../assets/css/glass-module.css" rel="stylesheet">
-  <link href="../assets/css/cursor-follow.css" rel="stylesheet">
-  <link href="../assets/css/image-effects.css" rel="stylesheet">
-  <link href="../assets/css/morph-card.css" rel="stylesheet">
-  <link href="../assets/css/editor.css" rel="stylesheet">
+  <!-- Hides animated text until Aurora runs (no flash); 4s failsafe. -->
+  <script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
 
   <style>
     /* ═══════════════════════════════════════════════════════════════════
@@ -812,7 +805,7 @@
       display: flex;
       align-items: center;
       overflow: hidden;
-      background-image: url('../assets/branding/aurora-hero.webp');
+      background-image: url('assets/aurora-hero.webp');
       background-size: cover;
       background-position: center;
     }
@@ -2457,7 +2450,7 @@
    ═══════════════════════════════════════════════════════════════════ */
     .cta-section {
       background-color: var(--c-surface);
-      background-image: url('../assets/branding/aurora-cta.webp');
+      background-image: url('assets/aurora-cta.webp');
       background-size: cover;
       background-position: center;
       position: relative;
@@ -2713,6 +2706,7 @@
       background: rgba(5, 177, 114, .35);
       border-radius: 99px;
     }
+    .aurora-js:not(.aurora-ready) [data-aurora-text] { visibility: hidden; }
   </style>
 </head>
 
@@ -2730,50 +2724,46 @@
     <div class="container">
       <div class="nav__inner">
         <a href="#top" aria-label="Aurora home">
-          <img src="../assets/branding/logo_aurora_animated.svg" class="nav__logo" alt="Aurora for Elementor">
+          <img src="assets/logo_aurora_animated.svg" class="nav__logo" alt="Aurora">
         </a>
 
         <ul class="nav__links" role="list">
-          <li><a href="text-effects/">Text Effects Playground</a></li>
+          <li><a href="text-effects/">Text Effects</a></li>
           <li class="nav__dropdown" id="nav-modules-dropdown">
             <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
               Modules
               <svg class="nav__dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
-            <div class="nav__dropdown-menu" role="menu" aria-label="Plugin modules">
-              <a href="text-effects/" role="menuitem">
+            <div class="nav__dropdown-menu" role="menu" aria-label="Aurora modules">
+              <a href="modules/text.html" role="menuitem">
                 <span class="nav__dropdown-icon nav__dropdown-icon--green">✨</span>
-                <span><span class="nav__dropdown-title">Text Animation</span><span class="nav__dropdown-desc">88+ GSAP/Anime.js effects</span></span>
+                <span><span class="nav__dropdown-title">Text</span><span class="nav__dropdown-desc">53 effects on Anime.js v4</span></span>
               </a>
-              <a href="#gradient-spotlight" role="menuitem">
-                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🌈</span>
-                <span><span class="nav__dropdown-title">Gradient &amp; Spotlight</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
+              <a href="modules/children.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🎬</span>
+                <span><span class="nav__dropdown-title">Animate Children</span><span class="nav__dropdown-desc">Stagger, hover, proximity</span></span>
               </a>
-              <a href="#glassmorphism" role="menuitem">
-                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🧊</span>
-                <span><span class="nav__dropdown-title">Glassmorphism</span><span class="nav__dropdown-desc">Frosted glass, zero JS</span></span>
+              <a href="modules/gradient.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🌈</span>
+                <span><span class="nav__dropdown-title">Gradient</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
               </a>
-              <a href="#modules" role="menuitem">
+              <a href="modules/cursor.html" role="menuitem">
                 <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
-                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Custom dot + ring zones</span></span>
+                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Dot + ring zones</span></span>
               </a>
-              <a href="#image-effects" role="menuitem">
-                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🖼️</span>
-                <span><span class="nav__dropdown-title">Image Effects</span><span class="nav__dropdown-desc">13 entrance + 7 hover effects</span></span>
-              </a>
-              <a href="#modules" role="menuitem">
-                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🎬</span>
-                <span><span class="nav__dropdown-title">Children Stagger</span><span class="nav__dropdown-desc">Cascade entrance for any container</span></span>
+              <a href="modules/morph-card.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🪪</span>
+                <span><span class="nav__dropdown-title">Morph Card</span><span class="nav__dropdown-desc">Post, profile, polaroid</span></span>
               </a>
             </div>
           </li>
-          <li><a href="#morph-card">Morph Card</a></li>
+          <li><a href="install.html">Install</a></li>
           <li><a href="#how-it-works">How It Works</a></li>
         </ul>
 
         <div class="nav__actions">
-          <a href="/docs" class="nav__docs-btn">
-            Docs <span class="nav__soon-badge">Soon</span>
+          <a href="install.html" class="nav__docs-btn">
+            Docs
           </a>
           <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -2798,35 +2788,35 @@
       <div class="container">
         <div class="hero__badge">
           <span class="hero__badge-dot"></span>
-          Open Source · GPL v3 · Free Forever
+          Open Source · MIT · Free Forever
         </div>
 
         <h1 class="hero__title">
-          <span class="word-stack fade-in-up fade-in-up--1">Color &amp;</span>
-          <span class="word-stack line-outlined fade-in-up fade-in-up--2">Motion,</span>
-          <span class="word-stack line-gradient fade-in-up fade-in-up--3">Unleashed.</span>
+          <span class="word-stack fade-in-up fade-in-up--1">Motion for</span>
+          <span class="word-stack line-outlined fade-in-up fade-in-up--2">any</span>
+          <span class="word-stack line-gradient fade-in-up fade-in-up--3">builder.</span>
         </h1>
 
         <p class="hero__sub fade-in-up fade-in-up--4">
-          The open-source Swiss Army knife for Elementor design. 88+ premium text animations, multi-stop gradients,
-          glassmorphism, cursor follow — all from the Advanced tab.
+          The open-source Swiss Army knife for animated web design. Five animation modules as standalone scripts —
+          paste them into plain HTML, Webflow or use the Elementor plugin. No GSAP, no build step.
         </p>
 
         <div class="hero__actions fade-in-up fade-in-up--4">
-          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary"
-            aria-label="Download Aurora for free on GitHub">
+          <a href="install.html" class="btn-primary"
+            aria-label="Get started with Aurora">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Download Aurora Free
+            Get Started
           </a>
-          <a href="text-effects/" class="btn-ghost" aria-label="Try the live animation playground">
+          <a href="text-effects/" class="btn-ghost" aria-label="Browse the live text effects">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5,3 19,12 5,21" />
             </svg>
-            Live Text Playground
+            Live Text Effects
           </a>
         </div>
       </div>
@@ -2840,30 +2830,30 @@
     <div class="marquee-track">
       <!-- Block 1 -->
       <div class="marquee-item"><span class="marquee-dot"></span>Text Animation</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Animate Children</div>
       <div class="marquee-item"><span class="marquee-dot"></span>Gradient Mesh</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Glassmorphism</div>
       <div class="marquee-item"><span class="marquee-dot"></span>Cursor Follow</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Image Effects</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Children Stagger</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>GSAP Powered</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Anime.js Powered</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Scroll Trigger</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>No Code Required</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>GPL v3 Licensed</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Morph Card</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Standalone Scripts</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Anime.js v4</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Web Animations API</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>No GSAP</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Webflow Ready</div>
       <div class="marquee-item"><span class="marquee-dot"></span>Elementor Ready</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>MIT Licensed</div>
       <!-- Block 2 (duplicate for seamless loop) -->
       <div class="marquee-item"><span class="marquee-dot"></span>Text Animation</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Animate Children</div>
       <div class="marquee-item"><span class="marquee-dot"></span>Gradient Mesh</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Glassmorphism</div>
       <div class="marquee-item"><span class="marquee-dot"></span>Cursor Follow</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Image Effects</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Children Stagger</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>GSAP Powered</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Anime.js Powered</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>Scroll Trigger</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>No Code Required</div>
-      <div class="marquee-item"><span class="marquee-dot"></span>GPL v3 Licensed</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Morph Card</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Standalone Scripts</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Anime.js v4</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Web Animations API</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>No GSAP</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Webflow Ready</div>
       <div class="marquee-item"><span class="marquee-dot"></span>Elementor Ready</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>MIT Licensed</div>
     </div>
   </div>
   <!-- ═══════════════════════════════════════════════════════════════════
@@ -2872,53 +2862,47 @@
   <section id="modules" class="modules-section section-gap-lg">
     <div class="container">
       <div class="section-header">
-        <div class="eyebrow">Plugin Modules</div>
-        <h2 class="display-2" style="margin-top:1rem">Six Modules, One Plugin</h2>
-        <p>Every module adds a section to Elementor's Advanced tab — no page builder lock-in.</p>
+        <div class="eyebrow">Modules</div>
+        <h2 class="display-2" style="margin-top:1rem">Five Modules, Any Builder</h2>
+        <p>Each module is its own script. Load only what you use, on any page.</p>
       </div>
 
       <div class="modules-grid">
         <div class="module-card">
           <div class="module-card__icon module-card__icon--green">✨</div>
-          <div class="module-card__num">01 — Text Animation</div>
-          <h3 class="module-card__title">88+ Text Effects</h3>
-          <p class="module-card__desc">Split titles into chars, words, or lines and animate them with GSAP or Anime.js
-            on scroll or page load. Add Hover Scatter for interactive depth.</p>
+          <div class="module-card__num">01 — Text</div>
+          <h3 class="module-card__title">53 Text Effects</h3>
+          <p class="module-card__desc">Split text into characters, words or lines and animate it on scroll or on load with Anime.js v4. Add Hover Scatter for interactive depth.</p>
         </div>
         <div class="module-card">
-          <div class="module-card__icon module-card__icon--teal">🌈</div>
-          <div class="module-card__num">02 — Gradient</div>
-          <h3 class="module-card__title">Gradient & Spotlight</h3>
-          <p class="module-card__desc">Multi-stop linear, radial, or conic gradients with animated mesh drift or a
-            Follow Mouse spotlight. Applies as background or text fill.</p>
+          <div class="module-card__icon module-card__icon--teal">🎬</div>
+          <div class="module-card__num">02 — Animate Children</div>
+          <h3 class="module-card__title">Cascade Animations</h3>
+          <p class="module-card__desc">Staggered entrances for the children of any element, plus hover and proximity effects. Pure Web Animations API.</p>
         </div>
         <div class="module-card">
-          <div class="module-card__icon module-card__icon--violet">🧊</div>
-          <div class="module-card__num">03 — Glassmorphism</div>
-          <h3 class="module-card__title">Frosted Glass Panels</h3>
-          <p class="module-card__desc">Translucent blurred backgrounds resolved in PHP into a single inline style — with
-            CSS fallback. Zero JavaScript. Zero overhead.</p>
+          <div class="module-card__icon module-card__icon--violet">🌈</div>
+          <div class="module-card__num">03 — Gradient</div>
+          <h3 class="module-card__title">Gradients, Text &amp; Mesh</h3>
+          <p class="module-card__desc">Multi-stop gradients for backgrounds, text and icons, with flow and hue animation, a cursor spotlight and WebGL mesh styles.</p>
         </div>
         <div class="module-card">
           <div class="module-card__icon module-card__icon--green">🖱️</div>
           <div class="module-card__num">04 — Cursor Follow</div>
           <h3 class="module-card__title">Custom Cursor Zones</h3>
-          <p class="module-card__desc">A two-part cursor (dot + ring) with configurable trail delay and distinct hover
-            states for links, buttons, and images inside each zone.</p>
+          <p class="module-card__desc">A dot and a trailing ring scoped to an element, with hover states for links and images. The native cursor stays unless you hide it.</p>
         </div>
         <div class="module-card">
-          <div class="module-card__icon module-card__icon--teal">🖼️</div>
-          <div class="module-card__num">05 — Image Effects</div>
-          <h3 class="module-card__title">Entrance & Hover</h3>
-          <p class="module-card__desc">13 GSAP entrance effects (wipe, curtain, iris expand, blur reveal…) plus 7
-            pure-CSS hover effects including the Shine Sweep.</p>
+          <div class="module-card__icon module-card__icon--teal">🪪</div>
+          <div class="module-card__num">05 — Morph Card</div>
+          <h3 class="module-card__title">Cards That Morph</h3>
+          <p class="module-card__desc">A card that morphs between post, profile and polaroid layouts on its own, or under your control with next() and goTo().</p>
         </div>
         <div class="module-card">
-          <div class="module-card__icon module-card__icon--violet">🎬</div>
-          <div class="module-card__num">06 — Children Stagger</div>
-          <h3 class="module-card__title">Cascade Animations</h3>
-          <p class="module-card__desc">Applies a staggered entrance to each child element of a Section, Column, or
-            Container — one after the other with configurable delay.</p>
+          <div class="module-card__icon module-card__icon--violet">🧩</div>
+          <div class="module-card__num">06 — Adapters</div>
+          <h3 class="module-card__title">Every Builder</h3>
+          <p class="module-card__desc">Elementor gets a plugin with a control for every option; Webflow gets Custom Code and Custom Attributes. All generated from the same schemas.</p>
         </div>
       </div>
 
@@ -2933,556 +2917,73 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-     DEEP DIVE FEATURE SHOWCASE
+     STANDALONE
      ═══════════════════════════════════════════════════════════════════ -->
-
-  <!-- ═══════════════════════════════════════════════════════════════════
-     01. MORPH CARD WIDGET SHOWCASE SECTION
-     ═══════════════════════════════════════════════════════════════════ -->
-  <section id="morph-card" class="section-gap-lg">
+  <section id="standalone" class="section-gap-lg">
     <div class="container">
       <div class="section-header">
-        <div class="eyebrow">Exclusive Elementor Widget</div>
-        <h2 class="display-2" style="margin-top:1rem">Morph Card Widget</h2>
-        <p>Dynamic cards with fluid motion physics powered by Motion One &amp; Anime.js.</p>
+        <div class="eyebrow">Standalone</div>
+        <h2 class="display-2" style="margin-top:1rem">Copy, Paste, Animate</h2>
+        <p>Two script tags and one attribute. No build step, no framework, no dependencies to install.</p>
       </div>
 
-      <div class="morph-showcase-box">
-        <div class="morph-stage">
-          <!-- Native Morph Card Container -->
-          <div class="morph-card" id="demo-morph-card" data-template="instagram"
-            style="width:100%;max-width:340px;background:rgba(13,16,48,0.85);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.6);backdrop-filter:blur(20px)">
-            <div class="morph-card__header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-              <div class="morph-card__avatar"
-                style="width:44px;height:44px;border-radius:50%;background:var(--g-aurora);padding:2px">
-                <img src="../assets/branding/aurora_favicon.svg" alt="Avatar"
-                  style="width:100%;height:100%;border-radius:50%;background:#03040c;object-fit:cover">
-              </div>
-              <div>
-                <h4 id="morph-title"
-                  style="font-family:var(--f-heading);font-size:15px;font-weight:700;color:#fff;margin:0">@aurora.design
-                </h4>
-                <span id="morph-subtitle" style="font-size:12px;color:rgba(255,255,255,0.55)">Motion System
-                  Active</span>
-              </div>
-            </div>
-
-            <div class="morph-card__image"
-              style="width:100%;height:200px;border-radius:16px;overflow:hidden;margin-bottom:16px;position:relative">
-              <img id="morph-img"
-                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
-                alt="Morph Preview" style="width:100%;height:100%;object-fit:cover">
-              <div class="morph-card__badge"
-                style="position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:99px;background:rgba(5,177,114,0.85);backdrop-filter:blur(8px);font-family:var(--f-mono);font-size:11px;font-weight:700;color:#03040c">
-                STATE 01</div>
-            </div>
-
-            <div class="morph-card__footer">
-              <p id="morph-desc" style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:12px">
-                Seamless transition of border-radius, opacity, padding, and 3D rotation without DOM reflows.</p>
-              <div
-                style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-family:var(--f-mono);font-size:11px;color:var(--c-green)">
-                <span>ENGINE: MOTION ONE</span>
-                <span>100% HARDWARE</span>
-              </div>
-            </div>
-          </div>
+      <div style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);margin-bottom:var(--s-8);backdrop-filter:blur(20px);text-align:center">
+        <h3 class="display-2" data-aurora-text="blur-reveal" data-aurora-text-split="words" data-aurora-text-replay="true" style="margin:0 0 var(--s-6)">This heading runs on the standalone script.</h3>
+        <div data-aurora-children="slide" data-aurora-children-direction="up" data-aurora-children-stagger="120" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4);max-width:640px;margin:0 auto">
+          <div style="padding:20px;border-radius:var(--r-lg);border:1px solid rgba(255,255,255,0.12);background:rgba(13,16,48,0.85);font-family:var(--f-mono);font-size:12px;color:var(--c-green)">core</div>
+          <div style="padding:20px;border-radius:var(--r-lg);border:1px solid rgba(255,255,255,0.12);background:rgba(13,16,48,0.85);font-family:var(--f-mono);font-size:12px;color:var(--c-teal)">text</div>
+          <div style="padding:20px;border-radius:var(--r-lg);border:1px solid rgba(255,255,255,0.12);background:rgba(13,16,48,0.85);font-family:var(--f-mono);font-size:12px;color:var(--c-violet)">children</div>
         </div>
+      </div>
 
-        <div class="morph-btn-group">
-          <div class="eyebrow" style="margin-bottom:0.5rem">Select Card Template State</div>
-          <button class="morph-btn active" data-state="instagram">
-            <span>📸 Instagram Post</span>
-            <small style="opacity:0.6">Square / Modern</small>
-          </button>
-          <button class="morph-btn" data-state="profile">
-            <span>👤 Creative Profile</span>
-            <small style="opacity:0.6">Badge / Compact</small>
-          </button>
-          <button class="morph-btn" data-state="polaroid">
-            <span>🖼️ Vintage Polaroid</span>
-            <small style="opacity:0.6">Rotated / Frame</small>
-          </button>
-          <button class="morph-btn" data-state="custom">
-            <span>🎨 Custom Gradient</span>
-            <small style="opacity:0.6">Glow / Neon</small>
-          </button>
-        </div>
+      <div class="code-block" style="white-space:pre">
+<span class="cmt">&lt;!-- 1. Mark any element --&gt;</span>
+&lt;<span class="kw">h2</span> <span class="attr">data-aurora-text</span>=<span class="str">"blur-reveal"</span>&gt;Motion, unleashed.&lt;/<span class="kw">h2</span>&gt;
+
+<span class="cmt">&lt;!-- 2. Load the runtime, then the modules you use --&gt;</span>
+&lt;<span class="kw">script</span> <span class="attr">src</span>=<span class="str">"aurora.core.min.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;
+&lt;<span class="kw">script</span> <span class="attr">src</span>=<span class="str">"aurora.text.min.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;
+</div>
+
+      <div class="hero__actions" style="margin-top:var(--s-8);justify-content:center">
+        <a href="install.html" class="btn-primary">Install guide</a>
+        <a href="modules/text.html" class="btn-ghost">Try the playground</a>
       </div>
     </div>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-     02. IMAGE EFFECTS STUDIO SECTION
+     ANYWHERE
      ═══════════════════════════════════════════════════════════════════ -->
-  <section id="image-effects" class="section-gap-lg">
+  <section id="anywhere" class="section-gap-lg">
     <div class="container">
       <div class="section-header">
-        <div class="eyebrow">Module 06 — Image Effects</div>
-        <h2 class="display-2" style="margin-top:1rem">Image Reveal &amp; Hover Studio</h2>
-        <p>13 Entrance reveal animations (Wipe, Curtain, Iris, GSAP 3D) plus 7 pure-CSS hover effects.</p>
+        <div class="eyebrow">Use It Anywhere</div>
+        <h2 class="display-2" style="margin-top:1rem">One Toolkit, Three Ways In</h2>
+        <p>Same modules, same attributes, same options, wherever you build.</p>
       </div>
 
-      <!-- Entrance Animation Interactive Tester -->
-      <div
-        style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);margin-bottom:var(--s-8);backdrop-filter:blur(20px)">
-        <div style="display:grid;grid-template-columns:1fr 300px;gap:var(--s-8);align-items:center">
-          <div
-            style="height:380px;border-radius:var(--r-lg);overflow:hidden;position:relative;background:#000;display:flex;align-items:center;justify-content:center">
-            <div id="img-reveal-wrapper" class="aurora-img-wrapper"
-              style="width:100%;height:100%;position:relative;overflow:hidden">
-              <img id="img-reveal-target"
-                src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=1000&auto=format&fit=crop"
-                alt="Studio Preview" style="width:100%;height:100%;object-fit:cover">
-              <div id="img-reveal-overlay" class="aurora-reveal-overlay"
-                style="position:absolute;inset:0;background:var(--c-green);z-index:2;transform:scaleX(0);transform-origin:left">
-              </div>
-            </div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:var(--s-4)">
-            <div class="ctrl-group">
-              <span class="ctrl-label">Entrance Effect (13 Options)</span>
-              <select class="ctrl-select" id="select-img-reveal">
-                <option value="wipe-lr">Wipe Reveal (Left → Right)</option>
-                <option value="wipe-bt">Wipe Reveal (Bottom → Top)</option>
-                <option value="curtain">Curtain Reveal (Split Center)</option>
-                <option value="iris">Iris Reveal (Circle Expand)</option>
-                <option value="gsap-3d">GSAP 3D Flip</option>
-                <option value="blur">Blur Reveal</option>
-                <option value="skew">Skew Reveal</option>
-                <option value="zoom-in">Zoom In</option>
-                <option value="zoom-out">Zoom Out</option>
-                <option value="fade-up" selected>Fade Up</option>
-                <option value="slide-left">Slide Left</option>
-                <option value="slide-right">Slide Right</option>
-                <option value="fade-in">Fade In</option>
-              </select>
-            </div>
-
-            <div class="ctrl-group">
-              <span class="ctrl-label">Overlay Panel Color</span>
-              <div style="display:flex;gap:8px">
-                <button class="color-dot active" data-color="#05b172"
-                  style="width:32px;height:32px;border-radius:50%;background:#05b172;border:2px solid #fff;cursor:pointer"></button>
-                <button class="color-dot" data-color="#7c5cff"
-                  style="width:32px;height:32px;border-radius:50%;background:#7c5cff;border:2px solid transparent;cursor:pointer"></button>
-                <button class="color-dot" data-color="#0099cc"
-                  style="width:32px;height:32px;border-radius:50%;background:#0099cc;border:2px solid transparent;cursor:pointer"></button>
-                <button class="color-dot" data-color="#ffffff"
-                  style="width:32px;height:32px;border-radius:50%;background:#ffffff;border:2px solid transparent;cursor:pointer"></button>
-              </div>
-            </div>
-
-            <button class="pg-replay-btn" id="btn-replay-img"
-              style="margin-top:12px;width:100%;justify-content:center;padding:14px">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
-                <path d="M1 4v6h6M23 20v-6h-6" />
-                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
-              </svg>
-              Replay Entrance Animation
-            </button>
-          </div>
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--green">📄</div>
+          <div class="module-card__num">Plain HTML</div>
+          <h3 class="module-card__title">Standalone Scripts</h3>
+          <p class="module-card__desc">Copy the scripts next to your page, or load them from a CDN with SRI hashes. Works with any framework or none.</p>
+          <p class="module-card__desc" style="margin-top:12px"><a href="install.html" style="color:var(--c-teal)">Install guide →</a></p>
         </div>
-      </div>
-
-      <!-- 7 CSS Hover Effects Showcase Grid -->
-      <div class="eyebrow" style="margin-bottom:1rem">7 Hover Effects (100% Pure CSS)</div>
-      <div class="img-effects-grid">
-        <div class="hover-effect-card">
-          <div class="hover-effect-card__img-box aurora-hover-shine">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop"
-              alt="Shine Sweep">
-          </div>
-          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">1. Shine Sweep</h4>
-          <p class="text-muted" style="font-size:12px">Angled light band sweeping across image</p>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--teal">🌊</div>
+          <div class="module-card__num">Webflow</div>
+          <h3 class="module-card__title">Custom Code + Attributes</h3>
+          <p class="module-card__desc">Add the snippet once in Site settings, then use Custom Attributes in the Designer. Collection Lists animate too.</p>
+          <p class="module-card__desc" style="margin-top:12px"><a href="webflow.html" style="color:var(--c-teal)">Webflow guide →</a></p>
         </div>
-
-        <div class="hover-effect-card">
-          <div class="hover-effect-card__img-box aurora-hover-zoom">
-            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400&auto=format&fit=crop"
-              alt="Zoom In">
-          </div>
-          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">2. Zoom In</h4>
-          <p class="text-muted" style="font-size:12px">Smooth expansion contained inside mask</p>
-        </div>
-
-        <div class="hover-effect-card">
-          <div class="hover-effect-card__img-box aurora-hover-grayscale">
-            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop"
-              alt="Grayscale to Color">
-          </div>
-          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">3. Grayscale → Color</h4>
-          <p class="text-muted" style="font-size:12px">Black &amp; white at rest, full color on hover</p>
-        </div>
-
-        <div class="hover-effect-card">
-          <div class="hover-effect-card__img-box aurora-hover-blur">
-            <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=400&auto=format&fit=crop"
-              alt="Blur Focus">
-          </div>
-          <h4 style="font-family:var(--f-heading);font-size:14px;color:#fff">4. Blur → Sharp</h4>
-          <p class="text-muted" style="font-size:12px">Blurred at rest, sharp focus on hover</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════
-     03. GRADIENT & SPOTLIGHT STUDIO SECTION
-     ═══════════════════════════════════════════════════════════════════ -->
-  <section id="gradient-spotlight" class="section-gap-lg">
-    <div class="container">
-      <div class="section-header">
-        <div class="eyebrow">Module 03 — Gradient &amp; Spotlight</div>
-        <h2 class="display-2" style="margin-top:1rem">Multi-stop Gradient &amp; Spotlight</h2>
-        <p>Multi-stop gradients featuring a real-time Spotlight mode that tracks your cursor.</p>
-      </div>
-
-      <div
-        style="background:rgba(7,9,26,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-xl);padding:var(--s-8);backdrop-filter:blur(20px)">
-        <div id="spotlight-interactive-box"
-          style="width:100%;height:320px;border-radius:var(--r-lg);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 50%, rgba(5,177,114,0.4) 0%, rgba(0,153,204,0.2) 40%, rgba(3,4,12,0.95) 80%);border:1px solid rgba(255,255,255,0.1);cursor:crosshair">
-          <div style="text-align:center;pointer-events:none;z-index:2">
-            <h3 class="display-3" style="color:#fff;margin-bottom:8px">Spotlight Follow Mouse</h3>
-            <p class="text-muted">Move your cursor inside this container to watch the radial spotlight follow your
-              pointer live.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════
-     04. GLASSMORPHISM BUILDER SECTION
-     ═══════════════════════════════════════════════════════════════════ -->
-  <section id="glassmorphism" class="section-gap-lg">
-    <div class="container">
-      <div class="section-header">
-        <div class="eyebrow">Module 04 — Glassmorphism</div>
-        <h2 class="display-2" style="margin-top:1rem">Frosted Glass Builder</h2>
-        <p>Adjust glass parameters in real-time and view the inline CSS generated by PHP.</p>
-      </div>
-
-      <div class="glass-builder-grid">
-        <div class="glass-preview-stage">
-          <div class="glass-sample-card" id="glass-target-card"
-            style="background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px">
-            <h4 style="font-family:var(--f-heading);font-size:18px;font-weight:700;margin-bottom:8px">Glassmorphic Panel
-            </h4>
-            <p style="font-size:13px;opacity:0.85;line-height:1.6">Translucent backdrop blur, opacity, and border radius
-              computed at render time.</p>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:var(--s-4)">
-          <div class="ctrl-group">
-            <span class="ctrl-label">Backdrop Blur (<span id="val-glass-blur">20px</span>)</span>
-            <input type="range" class="ctrl-range" id="slider-glass-blur" min="0" max="40" value="20">
-          </div>
-
-          <div class="ctrl-group">
-            <span class="ctrl-label">Background Opacity (<span id="val-glass-bg">15%</span>)</span>
-            <input type="range" class="ctrl-range" id="slider-glass-bg" min="0" max="100" value="15">
-          </div>
-
-          <div class="ctrl-group">
-            <span class="ctrl-label">Border Opacity (<span id="val-glass-border">20%</span>)</span>
-            <input type="range" class="ctrl-range" id="slider-glass-border" min="0" max="100" value="20">
-          </div>
-
-          <div class="ctrl-group">
-            <span class="ctrl-label">Border Radius (<span id="val-glass-radius">24px</span>)</span>
-            <input type="range" class="ctrl-range" id="slider-glass-radius" min="0" max="50" value="24">
-          </div>
-
-          <div
-            style="margin-top:12px;background:#03040c;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-family:var(--f-mono);font-size:11px;color:var(--c-green)">
-            <span style="color:rgba(255,255,255,0.4)">// PHP Inline Style Output:</span><br>
-            <code
-              id="code-glass-output">style="background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px"</code>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════
-     05. ELEMENTOR PANEL MOCKUP SECTION
-     ═══════════════════════════════════════════════════════════════════ -->
-  <section id="elementor-panel" class="section-gap-lg">
-    <div class="container">
-      <div class="section-header">
-        <div class="eyebrow">Native Editor Experience</div>
-        <h2 class="display-2" style="margin-top:1rem">Seamless Elementor Integration</h2>
-        <p>Controls injected directly into the Advanced tab of the Elementor editor panel.</p>
-      </div>
-
-      <div class="el-mockup-container">
-        <!-- Sidebar Panel -->
-        <div class="el-sidebar">
-          <div class="el-sidebar-header">
-            <span>EDIT HEADING</span>
-            <small style="color:#92003b">ELEMENTOR PRO</small>
-          </div>
-          <div class="el-tabs-nav">
-            <button class="el-tab-item">Content</button>
-            <button class="el-tab-item">Style</button>
-            <button class="el-tab-item active">Advanced</button>
-          </div>
-
-          <div style="overflow-y:auto;flex:1">
-            <!-- Accordion 1: Text Animation -->
-            <div class="el-accordion-section">
-              <button class="el-accordion-header active" data-target="panel-text">
-                <span>✨ Text Animation (Aurora)</span>
-                <span>▼</span>
-              </button>
-              <div class="el-accordion-body active" id="panel-text">
-                <div class="el-field-group">
-                  <label class="el-field-label">Enable Animation</label>
-                  <select class="el-field-select">
-                    <option>Yes</option>
-                    <option>No</option>
-                  </select>
-                </div>
-                <div class="el-field-group">
-                  <label class="el-field-label">Library</label>
-                  <select class="el-field-select">
-                    <option>GSAP 3.12</option>
-                    <option>Anime.js 4.4</option>
-                  </select>
-                </div>
-                <div class="el-field-group">
-                  <label class="el-field-label">Effect Type</label>
-                  <select class="el-field-select">
-                    <option>Fade Up (gs-1)</option>
-                    <option>Clip Reveal (gs-2)</option>
-                    <option>Scramble Text (gs-3)</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Accordion 2: Gradient -->
-            <div class="el-accordion-section">
-              <button class="el-accordion-header" data-target="panel-gradient">
-                <span>🌈 Gradient (Aurora)</span>
-                <span>▶</span>
-              </button>
-              <div class="el-accordion-body" id="panel-gradient">
-                <div class="el-field-group">
-                  <label class="el-field-label">Motion Mode</label>
-                  <select class="el-field-select">
-                    <option>Follow Mouse (Spotlight)</option>
-                    <option>WebGL Mesh</option>
-                    <option>Color Loop</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Accordion 3: Glassmorphism -->
-            <div class="el-accordion-section">
-              <button class="el-accordion-header" data-target="panel-glass">
-                <span>🧊 Glassmorphism (Aurora)</span>
-                <span>▶</span>
-              </button>
-              <div class="el-accordion-body" id="panel-glass">
-                <div class="el-field-group">
-                  <label class="el-field-label">Backdrop Blur</label>
-                  <input type="range" class="ctrl-range" value="20">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Live Canvas Preview -->
-        <div class="el-canvas-preview">
-          <div
-            style="position:absolute;top:16px;left:20px;font-family:var(--f-mono);font-size:11px;color:rgba(255,255,255,0.4)">
-            ELEMENTOR LIVE PREVIEW CANVAS</div>
-          <div id="el-canvas-heading"
-            style="font-family:var(--f-display);font-size:3rem;font-weight:700;color:#fff;text-align:center">
-            ELEMENTOR PRO
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="deep-dive" class="deep-dive-section section-gap-lg" style="background:var(--c-night)">
-    <div class="container">
-      <div class="section-header">
-        <div class="eyebrow">Deep Feature Showcase</div>
-        <h2 class="display-2" style="margin-top:1rem">Engineered Beyond Text Motion</h2>
-        <p>Explore the four pillar modules powering custom gradients, glassmorphism, cursor physics &amp; 3D
-          perspective.</p>
-      </div>
-
-      <div class="deep-dive-grid">
-        <!-- Card 1: Multi-Stop Gradient Engine -->
-        <div class="feature-deep-card">
-          <div class="feature-preview-box preview-gradient-mesh">
-            <span
-              style="font-family:var(--f-display);font-size:1.8rem;font-weight:700;color:#fff;text-shadow:0 10px 20px rgba(0,0,0,0.4)">Gradient
-              Mesh &amp; Spotlight</span>
-          </div>
-          <div>
-            <div class="eyebrow" style="margin-bottom:0.5rem">Module 02</div>
-            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">
-              Multi-Stop Gradient &amp; Spotlight</h3>
-            <p class="text-muted" style="font-size:14px;line-height:1.7">Linear, radial, or conic gradients with
-              animated mesh drift or follow-mouse spotlight. Applies seamlessly to element backgrounds or text fills
-              with hardware acceleration.</p>
-          </div>
-        </div>
-
-        <!-- Card 2: Glassmorphic Panel Engine -->
-        <div class="feature-deep-card">
-          <div class="feature-preview-box"
-            style="background:radial-gradient(circle at center, rgba(124,92,255,0.3), transparent 70%)">
-            <div class="preview-glass-box">
-              <div style="font-family:var(--f-heading);font-size:1.2rem;font-weight:700;color:#fff">Frosted Glass</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px">PHP Zero-JS Backdrop Filter</div>
-            </div>
-          </div>
-          <div>
-            <div class="eyebrow" style="margin-bottom:0.5rem">Module 03</div>
-            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">
-              PHP-Powered Glassmorphism</h3>
-            <p class="text-muted" style="font-size:14px;line-height:1.7">Translucent blurred backgrounds resolved
-              directly in PHP into clean inline styles. Zero JavaScript execution overhead at runtime, with automatic
-              legacy CSS fallbacks.</p>
-          </div>
-        </div>
-
-        <!-- Card 3: Cursor Follower Zones -->
-        <div class="feature-deep-card">
-          <div class="feature-preview-box"
-            style="background:rgba(255,255,255,0.02);display:flex;gap:1rem;flex-wrap:wrap">
-            <button type="button" class="btn-primary" style="padding:10px 20px;font-size:13px">Hover Target 1</button>
-            <button class="btn-ghost" style="padding:10px 20px;font-size:13px">Hover Target 2</button>
-          </div>
-          <div>
-            <div class="eyebrow" style="margin-bottom:0.5rem">Module 04</div>
-            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">
-              Custom Cursor Follower Zones</h3>
-            <p class="text-muted" style="font-size:14px;line-height:1.7">A two-part cursor (dot + ring) with
-              customizable spring trail physics and distinct hover states for buttons, links, cards, and custom data
-              attributes.</p>
-          </div>
-        </div>
-
-        <!-- Card 4: 3D Perspective Tilt & Image Parallax -->
-        <div class="feature-deep-card">
-          <div class="feature-preview-box" style="perspective:600px">
-            <div class="preview-tilt-card" id="tilt-card-demo">
-              <span style="font-family:var(--f-heading);font-size:1rem;font-weight:700;color:#fff">Interactive 3D
-                Perspective Tilt</span>
-            </div>
-          </div>
-          <div>
-            <div class="eyebrow" style="margin-bottom:0.5rem">Module 05</div>
-            <h3 style="font-family:var(--f-heading);font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.5rem">3D
-              Image Perspective &amp; Glare</h3>
-            <p class="text-muted" style="font-size:14px;line-height:1.7">Gyroscope/mouse 3D perspective tilt with
-              specular light glare reflection and scroll parallax curve controls for images and cards.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════
-     DISTRIBUTION ROADMAP (WORDPRESS.ORG & GITHUB EDITIONS)
-     ═══════════════════════════════════════════════════════════════════ -->
-  <section id="editions" class="editions-section section-gap-lg">
-    <div class="container">
-      <div class="section-header">
-        <div class="eyebrow">Distribution Roadmap</div>
-        <h2 class="display-2" style="margin-top:1rem">Choose Your Aurora Edition</h2>
-        <p>From 1-click WordPress.org installation to the full dual-engine GSAP 3 Enterprise build on GitHub.</p>
-      </div>
-
-      <div class="editions-grid">
-        <!-- WordPress.org Version -->
-        <div class="edition-card edition-card--wp">
-          <div>
-            <div class="edition-badge edition-badge--wp">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10C22 6.477 17.523 2 12 2z">
-                </path>
-                <path d="M12 6v12M6 12h12"></path>
-              </svg>
-              Coming Soon to WordPress.org
-            </div>
-            <h3 class="edition-title">WordPress.org Edition</h3>
-            <p class="edition-desc">Lightweight official edition built for the WordPress Plugin Directory with 1-click
-              automatic updates inside WP Admin.</p>
-
-            <ul class="edition-features">
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> Built-in text motion powered natively by Anime.js</li>
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> 44 text effects + Native character/word/line splitter</li>
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> Native integration inside Elementor's Advanced tab</li>
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> 100% Free &amp; Open Source (GPL v3 License)</li>
-            </ul>
-          </div>
-
-          <div
-            style="padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-            <span style="font-size:12px;color:rgba(255,255,255,.4)">Status: Review in progress by WP.org team</span>
-            <span class="btn-ghost" style="padding:8px 16px;font-size:12px;opacity:.7;cursor:default">Release Coming
-              Soon</span>
-          </div>
-        </div>
-
-        <!-- GitHub Enterprise Edition -->
-        <div class="edition-card edition-card--gh">
-          <div>
-            <div class="edition-badge edition-badge--gh">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              Available Now on GitHub
-            </div>
-            <h3 class="edition-title">GitHub Power Edition (GSAP 3)</h3>
-            <p class="edition-desc">Full-featured enterprise edition powered by dual motion engines (GSAP 3 + Anime.js
-              3), all 88+ effects, static code export &amp; advanced physics.</p>
-
-            <ul class="edition-features">
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> All 88+ registered text effects (GSAP 3 + Anime.js 3)</li>
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> Clean HTML/JS snippet generator for static websites</li>
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> Complete source code, unminified chunks &amp; build scripts</li>
-              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg> Direct .zip plugin download ready for Elementor</li>
-            </ul>
-          </div>
-
-          <div
-            style="padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-            <span style="font-size:12px;color:rgba(255,255,255,.4)">Version 1.0.0 Stable</span>
-            <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary"
-              style="padding:8px 18px;font-size:13px">
-              Download GSAP Edition (GitHub)
-            </a>
-          </div>
+        <div class="module-card">
+          <div class="module-card__icon module-card__icon--violet">🔌</div>
+          <div class="module-card__num">Elementor</div>
+          <h3 class="module-card__title">WordPress Plugin</h3>
+          <p class="module-card__desc">Every option is a control in the Advanced tab, generated from the module schemas. Local files only, no external requests.</p>
+          <p class="module-card__desc" style="margin-top:12px"><a href="elementor.html" style="color:var(--c-teal)">Elementor guide →</a></p>
         </div>
       </div>
     </div>
@@ -3501,49 +3002,43 @@
       <div class="arch-flow">
         <div class="arch-step">
           <div class="arch-step__num">01</div>
-          <h3 class="arch-step__title">PHP Registers Controls</h3>
-          <p class="arch-step__desc">Each module hooks into Elementor's Advanced tab via
-            <code>elementor/element/*/section_effects/after_section_end</code>.
-          </p>
+          <h3 class="arch-step__title">A Module Is a Schema</h3>
+          <p class="arch-step__desc">Each module declares its options once with <code>defineModule</code>: names, types,
+            defaults and ranges. Nothing else describes them.</p>
         </div>
         <div class="arch-step">
           <div class="arch-step__num">02</div>
-          <h3 class="arch-step__title">PHP Injects data-* Attrs</h3>
-          <p class="arch-step__desc">Settings are serialised as <code>data-aurora-*</code> attributes on the element
-            wrapper before rendering — zero runtime PHP.</p>
+          <h3 class="arch-step__title">Attributes or JavaScript</h3>
+          <p class="arch-step__desc">Set options with <code>data-aurora-*</code> attributes, one JSON attribute, or
+            <code>Aurora.text(el, options)</code>. All three read the same schema.</p>
         </div>
         <div class="arch-step">
           <div class="arch-step__num">03</div>
-          <h3 class="arch-step__title">JS Detects & Plays</h3>
-          <p class="arch-step__desc">The core runtime reads those attributes, splits text, and runs the selected effect
-            — triggered by IntersectionObserver or on load.</p>
+          <h3 class="arch-step__title">The Runtime Plays</h3>
+          <p class="arch-step__desc">A small core finds the elements, observes visibility, respects reduced motion and
+            cleans up on <code>destroy()</code>. It also watches for elements added later.</p>
         </div>
         <div class="arch-step">
           <div class="arch-step__num">04</div>
-          <h3 class="arch-step__title">Per-Widget Chunking</h3>
-          <p class="arch-step__desc">On the real frontend only the ONE effect a widget uses is enqueued. The 50KB full
-            bundle stays out of every page that doesn't need it.</p>
+          <h3 class="arch-step__title">Adapters Are Generated</h3>
+          <p class="arch-step__desc">The Elementor controls and this site's playgrounds and option tables are built
+            from the same schemas, so they never drift from the code.</p>
         </div>
       </div>
 
       <!-- Code example -->
       <div style="margin-top: var(--s-10)">
-        <div class="code-block">
-          <span class="cmt">&lt;!-- PHP renders this on the element wrapper --&gt;</span>
-          &lt;<span class="kw">div</span>
-          <span class="attr">data-aurora-enable</span>=<span class="str">"1"</span>
-          <span class="attr">data-aurora-library</span>=<span class="str">"gsap"</span>
-          <span class="attr">data-aurora-animation</span>=<span class="str">"gs-1"</span>
-          <span class="attr">data-aurora-split-by</span>=<span class="str">"chars"</span>
-          <span class="attr">data-aurora-duration</span>=<span class="str">"800"</span>
-          <span class="attr">data-aurora-stagger</span>=<span class="str">"35"</span>
-          <span class="attr">data-aurora-trigger</span>=<span class="str">"scroll"</span>
-          <span class="attr">data-aurora-threshold</span>=<span class="str">"0.3"</span>
-          <span class="attr">data-aurora-replay</span>=<span class="str">"1"</span>
-          &gt;
-          Your Heading Text Here
-          &lt;/<span class="kw">div</span>&gt;
-        </div>
+        <div class="code-block" style="white-space:pre">
+<span class="cmt">&lt;!-- Options as attributes: this is all a builder needs to write --&gt;</span>
+&lt;<span class="kw">h2</span>
+  <span class="attr">data-aurora-text</span>=<span class="str">"blur-reveal"</span>
+  <span class="attr">data-aurora-text-split</span>=<span class="str">"words"</span>
+  <span class="attr">data-aurora-text-duration</span>=<span class="str">"800"</span>
+  <span class="attr">data-aurora-text-trigger</span>=<span class="str">"scroll"</span>
+  <span class="attr">data-aurora-text-replay</span>=<span class="str">"true"</span>&gt;
+  Your Heading Text Here
+&lt;/<span class="kw">h2</span>&gt;
+</div>
       </div>
     </div>
   </section>
@@ -3556,8 +3051,8 @@
       <div class="cta-box">
         <div class="eyebrow" style="margin-bottom:1.5rem">Get Started</div>
         <h2 class="display-2">Ready to <span class="text-gradient">animate?</span></h2>
-        <p>Download Aurora, drop it into your WordPress plugins folder, activate, and open any Elementor widget's
-          Advanced tab. That's it — no API keys, no upsells.</p>
+        <p>Add two script tags to any page, drop the snippet into Webflow, or install the Elementor plugin.
+          No API keys, no upsells.</p>
         <div class="cta-actions">
           <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -3567,7 +3062,7 @@
             </svg>
             Download Aurora Free
           </a>
-          <a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener" class="btn-ghost">
+          <a href="install.html" class="btn-ghost">
             Read the Docs
           </a>
         </div>
@@ -3581,15 +3076,15 @@
     <div class="container">
       <div class="footer__grid">
         <div>
-          <img src="../assets/branding/logo_aurora_animated.svg" class="footer__logo" alt="Aurora for Elementor">
-          <p class="footer__tagline">The open-source Swiss Army knife for Elementor design. Color and motion, unleashed.
+          <img src="assets/logo_aurora_animated.svg" class="footer__logo" alt="Aurora">
+          <p class="footer__tagline">The open-source Swiss Army knife for animated web design. Color and motion, unleashed.
           </p>
         </div>
         <div>
-          <p class="footer__col-title">Plugin</p>
+          <p class="footer__col-title">Toolkit</p>
           <ul class="footer__links">
-            <li><a href="text-effects/">Live Playground</a></li>
-            <li><a href="text-effects/#effects">Animation Catalog</a></li>
+            <li><a href="text-effects/">Text Effects</a></li>
+            <li><a href="install.html">Install</a></li>
             <li><a href="#modules">Modules</a></li>
             <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
           </ul>
@@ -3597,9 +3092,8 @@
         <div>
           <p class="footer__col-title">Resources</p>
           <ul class="footer__links">
-            <li><a href="https://github.com/zmdy/aurora#readme" target="_blank" rel="noopener">Documentation</a></li>
-            <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (GPL
-                v3)</a></li>
+            <li><a href="install.html">Documentation</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a></li>
             <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
             <li><a href="https://github.com/zmdy/aurora/blob/main/README.md#contributing" target="_blank"
                 rel="noopener">Contributing</a></li>
@@ -3608,13 +3102,13 @@
       </div>
 
       <div class="footer__bottom">
-        <p class="footer__copyright">© 2026 Aurora for Elementor. Open source, forever.</p>
+        <p class="footer__copyright">© 2026 Aurora. Open source, forever.</p>
         <span class="footer__badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path
               d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
           </svg>
-          GPL v3 · Made in Brazil
+          MIT · Made in Brazil
         </span>
       </div>
     </div>
@@ -3623,23 +3117,9 @@
   <!-- ══════════════════════════════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
-  <script src="../assets/js/vendor/jquery.min.js"></script>
-  <script src="../assets/js/vendor/gsap.min.js"></script>
-  <script src="../assets/js/vendor/anime.min.js"></script>
-  <script src="../assets/js/vendor/motion.min.js"></script>
-  <script src="../assets/js/vendor/aurora-shaders.js"></script>
-  <script>
-    if (typeof gsap !== 'undefined') window.AuroraGSAP = window.gsap;
-    if (typeof anime !== 'undefined') window.AuroraAnimeJS = window.anime;
-    if (typeof Motion !== 'undefined') window.AuroraMotionOne = window.Motion;
-    else if (typeof motion !== 'undefined') window.AuroraMotionOne = window.motion;
-  </script>
-  <script src="../assets/js/dist/aurora-text-editor.js"></script>
-  <script src="../assets/js/children-animations.js"></script>
-  <script src="../assets/js/cursor-follow.js"></script>
-  <script src="../assets/js/image-effects.js"></script>
-  <script src="../assets/js/morph-card.js"></script>
-  <script src="../assets/js/gradient-module.js"></script>
+  <script src="aurora.core.min.js"></script>
+  <script src="aurora.text.min.js"></script>
+  <script src="aurora.children.min.js"></script>
 
   <script>
     /* ═══════════════════════════════════════════════════════════════════
@@ -4102,206 +3582,6 @@
       }
 
       loop();
-    })();
-  </script>
-
-  <script>
-    /* Hero Entrance Animations */
-    (function () {
-      function initHeroAnimations() {
-        if (typeof gsap === 'undefined') return;
-
-        var tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
-
-        tl.fromTo('.hero__badge',
-          { y: -30, opacity: 0, scale: 0.9 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.8, delay: 0.1 }
-        );
-
-        tl.fromTo('.hero__title .word-stack',
-          { y: 65, opacity: 0, skewY: 3 },
-          { y: 0, opacity: 1, skewY: 0, duration: 1.1, stagger: 0.14, ease: 'power4.out' },
-          '-=0.5'
-        );
-
-        tl.fromTo('.hero__sub',
-          { y: 25, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9 },
-          '-=0.7'
-        );
-
-        tl.fromTo('.hero__actions .btn-primary, .hero__actions .btn-ghost',
-          { y: 20, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.12, ease: 'back.out(1.7)' },
-          '-=0.6'
-        );
-
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initHeroAnimations);
-      } else {
-        initHeroAnimations();
-      }
-
-      /* Interactive 3D Perspective Tilt for Showcase Card */
-      var tiltCard = document.getElementById('tilt-card-demo') || document.getElementById('tilt-card-demo-light');
-      if (tiltCard) {
-        var parentBox = tiltCard.closest('.feature-preview-box');
-        if (parentBox) {
-          parentBox.addEventListener('mousemove', function (e) {
-            var rect = parentBox.getBoundingClientRect();
-            var x = e.clientX - rect.left - rect.width / 2;
-            var y = e.clientY - rect.top - rect.height / 2;
-            var rotX = (-y / (rect.height / 2)) * 18;
-            var rotY = (x / (rect.width / 2)) * 18;
-            tiltCard.style.transform = 'rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg) scale(1.05)';
-          });
-
-          parentBox.addEventListener('mouseleave', function () {
-            tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-          });
-        }
-      }
-    })();
-  </script>
-
-  <script>
-    /* Interactive Showcase Initializers (100% English) */
-    (function () {
-      'use strict';
-
-      // 1. Morph Card State Switcher
-      var morphCard = document.getElementById('demo-morph-card');
-      var morphBtns = document.querySelectorAll('.morph-btn');
-      var morphTitle = document.getElementById('morph-title');
-      var morphSubtitle = document.getElementById('morph-subtitle');
-      var morphDesc = document.getElementById('morph-desc');
-      var morphImg = document.getElementById('morph-img');
-
-      var morphStates = {
-        instagram: {
-          title: '@aurora.design',
-          sub: 'Motion System Active',
-          desc: 'Seamless transition of border-radius, opacity, padding, and 3D rotation without DOM reflows.',
-          img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
-          radius: '24px',
-          rot: '0deg'
-        },
-        profile: {
-          title: 'Aurora Studio',
-          sub: 'Design & Motion Agency',
-          desc: 'Compact layout highlighting avatar and engagement metrics.',
-          img: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop',
-          radius: '36px',
-          rot: '0deg'
-        },
-        polaroid: {
-          title: 'Polaroid Memory',
-          sub: 'Vintage Collection #04',
-          desc: 'Classic photo frame layout with subtle rotation and elevation shadow.',
-          img: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop',
-          radius: '8px',
-          rot: '-2deg'
-        },
-        custom: {
-          title: 'Neon Cyberpunk',
-          sub: 'WebGL Glow State',
-          desc: 'Vibrant gradient and glowing borders animated via Motion One.',
-          img: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800&auto=format&fit=crop',
-          radius: '16px',
-          rot: '2deg'
-        }
-      };
-
-      if (morphBtns.length) {
-        morphBtns.forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var stateKey = this.dataset.state;
-            var st = morphStates[stateKey];
-            if (!st || !morphCard) return;
-
-            morphBtns.forEach(function (b) { b.classList.remove('active'); });
-            this.classList.add('active');
-
-            if (window.AuroraMotionOne && window.AuroraMotionOne.animate) {
-              window.AuroraMotionOne.animate(morphCard, {
-                borderRadius: st.radius,
-                rotate: st.rot,
-                scale: [0.96, 1]
-              }, { duration: 0.5, easing: 'spring(1, 80, 10, 0)' });
-            } else {
-              morphCard.style.borderRadius = st.radius;
-              morphCard.style.transform = 'rotate(' + st.rot + ')';
-            }
-
-            if (morphTitle) morphTitle.textContent = st.title;
-            if (morphSubtitle) morphSubtitle.textContent = st.sub;
-            if (morphDesc) morphDesc.textContent = st.desc;
-            if (morphImg) morphImg.src = st.img;
-          });
-        });
-      }
-
-      // 2. Spotlight Follow Mouse Interactive Box
-      var spotBox = document.getElementById('spotlight-interactive-box');
-      if (spotBox) {
-        spotBox.addEventListener('mousemove', function (e) {
-          var rect = spotBox.getBoundingClientRect();
-          var x = ((e.clientX - rect.left) / rect.width) * 100;
-          var y = ((e.clientY - rect.top) / rect.height) * 100;
-          spotBox.style.background = 'radial-gradient(circle 240px at ' + x.toFixed(1) + '% ' + y.toFixed(1) + '%, rgba(5,177,114,0.5) 0%, rgba(0,153,204,0.25) 45%, rgba(3,4,12,0.95) 80%)';
-        });
-      }
-
-      // 3. Glassmorphism Sliders
-      var glassBlur = document.getElementById('slider-glass-blur');
-      var glassBg = document.getElementById('slider-glass-bg');
-      var glassBorder = document.getElementById('slider-glass-border');
-      var glassRadius = document.getElementById('slider-glass-radius');
-      var glassCard = document.getElementById('glass-target-card');
-      var glassCode = document.getElementById('code-glass-output');
-
-      function updateGlass() {
-        if (!glassCard) return;
-        var blurVal = glassBlur ? glassBlur.value : 20;
-        var bgVal = glassBg ? glassBg.value / 100 : 0.15;
-        var borderVal = glassBorder ? glassBorder.value / 100 : 0.2;
-        var radVal = glassRadius ? glassRadius.value : 24;
-
-        var valBlurEl = document.getElementById('val-glass-blur');
-        var valBgEl = document.getElementById('val-glass-bg');
-        var valBorderEl = document.getElementById('val-glass-border');
-        var valRadEl = document.getElementById('val-glass-radius');
-
-        if (valBlurEl) valBlurEl.textContent = blurVal + 'px';
-        if (valBgEl) valBgEl.textContent = (glassBg ? glassBg.value : 15) + '%';
-        if (valBorderEl) valBorderEl.textContent = (glassBorder ? glassBorder.value : 20) + '%';
-        if (valRadEl) valRadEl.textContent = radVal + 'px';
-
-        var styleStr = 'background:rgba(255,255,255,' + bgVal.toFixed(2) + ');backdrop-filter:blur(' + blurVal + 'px);border:1px solid rgba(255,255,255,' + borderVal.toFixed(2) + ');border-radius:' + radVal + 'px';
-        glassCard.setAttribute('style', styleStr);
-        if (glassCode) glassCode.textContent = 'style="' + styleStr + '"';
-      }
-
-      [glassBlur, glassBg, glassBorder, glassRadius].forEach(function (sl) {
-        if (sl) sl.addEventListener('input', updateGlass);
-      });
-
-      // 4. Elementor Mockup Accordions
-      var accHeaders = document.querySelectorAll('.el-accordion-header');
-      accHeaders.forEach(function (hdr) {
-        hdr.addEventListener('click', function () {
-          var targetId = this.dataset.target;
-          var targetBody = document.getElementById(targetId);
-
-          accHeaders.forEach(function (h) { h.classList.remove('active'); });
-          document.querySelectorAll('.el-accordion-body').forEach(function (b) { b.classList.remove('active'); });
-
-          this.classList.add('active');
-          if (targetBody) targetBody.classList.add('active');
-        });
-      });
     })();
   </script>
 
