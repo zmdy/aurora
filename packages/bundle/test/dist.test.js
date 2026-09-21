@@ -65,6 +65,15 @@ describe.skipIf(!built)('built scripts', () => {
         expect(window.Aurora.get(window.document.getElementById('c'), 'cursor')).not.toBeNull();
     });
 
+    it('marks the page with html.aurora-ready after the first initialization', async () => {
+        var window = page(['aurora.min.js'], '<div id="c" data-aurora-cursor></div>');
+        var events = 0;
+        window.document.addEventListener('aurora:ready', () => events++);
+        if (window.document.readyState !== 'complete') await new Promise((done) => window.addEventListener('load', done));
+        expect(window.document.documentElement.classList.contains('aurora-ready')).toBe(true);
+        expect(events).toBeLessThanOrEqual(1);
+    });
+
     it('the manifest lists every file with integrity hashes and every module schema', () => {
         var manifest = JSON.parse(read('manifest.json'));
         expect(manifest.files.map((f) => f.file)).toContain('aurora.min.js');
