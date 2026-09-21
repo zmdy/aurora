@@ -1,0 +1,13 @@
+{
+    "name": "@aurora/text",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Aurora Text: split-text entrance and loop effects powered by Anime.js.",
+    "license": "MIT",
+    "main": "src/index.js",
+    "dependencies": {
+        "@aurora/core": "*",
+        "animejs": "^4.4.1"
+    }
+}
