@@ -9,8 +9,8 @@
  * Requires Plugins:  elementor
  * Author:            Aurora
  * Author URI:        https://github.com/zmdy
- * License:           GPL v3
- * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+ * License:           MIT
+ * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       aurora-for-elementor
  * Domain Path:       /languages
  *

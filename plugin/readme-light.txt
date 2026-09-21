@@ -5,8 +5,8 @@ Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 0.8.0
-License: GPLv3
-License URI: https://www.gnu.org/licenses/gpl-3.0.html
+License: MIT
+License URI: https://opensource.org/licenses/MIT
 
 The open-source Swiss Army knife for Elementor design: text & children animations, gradients, cursor follow, and more.
 

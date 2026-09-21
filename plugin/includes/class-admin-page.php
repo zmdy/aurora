@@ -320,7 +320,7 @@ final class Admin_Page {
 								</div>
 								<div>
 									<dt><?php esc_html_e( 'License', 'aurora-for-elementor' ); ?></dt>
-									<dd>GPLv3</dd>
+									<dd>MIT</dd>
 								</div>
 								<div>
 									<dt><?php esc_html_e( 'Requires', 'aurora-for-elementor' ); ?></dt>

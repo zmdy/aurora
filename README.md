@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/Anime.js-000000.svg?style=for-the-badge&logo=animedotjs&logoColor=white" alt="Anime.JS" />
   <img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/License-GPL_v3-blue?style=for-the-badge" alt="GPL License" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
 </div>
 
 > [!NOTE]
@@ -261,7 +261,7 @@ msgfmt plugin/languages/aurora-for-elementor-pt_BR.po -o plugin/languages/aurora
 
 ## 📜 License
 
-Aurora for Elementor is open-source software licensed under the [GNU General Public License v3.0 (GPLv3)](./LICENSE).
+Aurora is open-source software licensed under the [MIT License](./LICENSE).
 
 <br />
 
