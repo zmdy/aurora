@@ -3,20 +3,27 @@
   "private": true,
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Build tooling for Aurora for Elementor. Aurora itself ships as plain PHP/JS/CSS (no build step required to run the plugin) — Vite here is only a developer convenience for maintaining the Text Animation module's per-effect source files (assets/js/src/) and compiling them into the flat, framework-free bundles the plugin actually loads (assets/js/dist/). The compiled dist/ files ARE committed, so end users never need Node/npm.",
+  "description": "Build tooling for Aurora for Elementor. Aurora itself ships as plain PHP/JS/CSS (no build step required to run the plugin) \u2014 Vite here is only a developer convenience for maintaining the Text Animation module's per-effect source files (assets/js/src/) and compiling them into the flat, framework-free bundles the plugin actually loads (assets/js/dist/). The compiled dist/ files ARE committed, so end users never need Node/npm.",
   "type": "module",
   "scripts": {
     "build": "node plugin/scripts/build-text-effects.mjs",
     "pack": "node plugin/scripts/pack-plugin.mjs",
     "pack:dev": "node plugin/scripts/pack-plugin.mjs dev",
-    "build:main": "node plugin/scripts/prepare-main.mjs"
+    "build:main": "node plugin/scripts/prepare-main.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "esbuild": "^0.24.2",
-    "vite": "^5.4.11"
+    "jsdom": "^25.0.1",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.9"
   },
   "allowScripts": {
     "esbuild@0.24.2": true,
     "esbuild@0.21.5": true
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
