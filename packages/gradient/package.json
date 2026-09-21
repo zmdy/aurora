@@ -1,0 +1,12 @@
+{
+    "name": "@aurora/gradient",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Aurora Gradient: multi-stop gradients for backgrounds, text and icons, with CSS animation, cursor spotlight and WebGL mesh styles.",
+    "license": "MIT",
+    "main": "src/index.js",
+    "dependencies": {
+        "@aurora/core": "*"
+    }
+}
