@@ -1,0 +1,17 @@
+{
+    "name": "@aurora/bundle",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Browser entry points: the runtime, one script per module, and the all-in-one bundle.",
+    "license": "MIT",
+    "main": "src/index.js",
+    "dependencies": {
+        "@aurora/core": "*",
+        "@aurora/children": "*",
+        "@aurora/cursor": "*",
+        "@aurora/gradient": "*",
+        "@aurora/morph-card": "*",
+        "@aurora/text": "*"
+    }
+}
