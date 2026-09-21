@@ -1,0 +1,12 @@
+{
+    "name": "@aurora/children",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Aurora Animate Children: staggered entrance, hover and proximity effects for the children of an element.",
+    "license": "MIT",
+    "main": "src/index.js",
+    "dependencies": {
+        "@aurora/core": "*"
+    }
+}
