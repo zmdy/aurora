@@ -11,7 +11,8 @@
     "pack": "node tools/pack-elementor.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:php": "php adapters/elementor/test/stub-test.php"
+    "test:php": "php adapters/elementor/test/stub-test.php",
+    "build:site": "node tools/build-site.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.24.2",
