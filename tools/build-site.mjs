@@ -1,5 +1,5 @@
 /**
- * Builds the Aurora website into build/site/.
+ * Builds the Aurora website into docs/ (the GitHub Pages source).
  *
  *   npm run build:site
  *
@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 
 var root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 var dist = resolve(root, 'dist');
-var out = resolve(root, 'build/site');
+var out = resolve(root, 'docs');
 
 if (!existsSync(resolve(dist, 'manifest.json'))) {
     console.error('dist/manifest.json not found. Run `npm run build` first.');
@@ -167,6 +167,7 @@ var NAV = [
     ['install.html', 'Install'],
     ['webflow.html', 'Webflow'],
     ['elementor.html', 'Elementor'],
+    ['text-effects/index.html', 'Text effects'],
 ];
 
 /**
@@ -193,7 +194,10 @@ function shell(page) {
 
     return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
         '<title>' + esc(page.title) + '</title>\n<meta name="description" content="' + esc(page.description) + '">\n' +
-        '<link rel="icon" href="' + base + 'assets/favicon.svg">\n<link rel="stylesheet" href="' + base + 'assets/site.css">\n' +
+        '<link rel="icon" href="' + base + 'assets/favicon.svg">\n<meta name="theme-color" content="#03040c">\n' +
+        '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap">\n' +
+        '<link rel="stylesheet" href="' + base + 'assets/site.css">\n' +
         '<script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>\n' +
         '</head>\n<body' + moduleAttr + '>\n<header class="site"><div class="wrap">' +
         '<a class="brand" href="' + base + 'index.html"><img src="' + base + 'assets/favicon.svg" alt="">Aurora</a>' +
@@ -293,7 +297,7 @@ function homePage() {
     }).join('\n');
 
     var body =
-        '<section class="hero"><div class="wrap">' +
+        '<section class="hero hero-image"><div class="wrap">' +
         '<h1 data-aurora-text="blur-reveal" data-aurora-text-split="words">Animated web design, for any builder.</h1>' +
         '<p class="lead">Aurora is an open-source toolkit of animation modules. Paste a script into plain HTML, drop it into Webflow, or install the Elementor plugin. Same modules, same attributes.</p>' +
         '<div class="cta"><a class="btn primary" href="install.html">Get started</a><a class="btn" href="' + REPO + '">View on GitHub</a></div></div></section>\n' +
@@ -307,7 +311,8 @@ function homePage() {
         '<div class="table-scroll"><table class="options"><thead><tr><th>Script</th><th>Size</th><th>Gzipped</th></tr></thead><tbody>' +
         manifest.files.filter(function (f) { return /min\.js$/.test(f.file); }).map(function (f) {
             return '<tr><td><code>' + f.file + '</code></td><td>' + kb(f.bytes) + '</td><td>' + kb(f.gzip) + '</td></tr>';
-        }).join('') + '</tbody></table></div></div></section>';
+        }).join('') + '</tbody></table></div>' +
+        '<div class="cta-band"><h2>Ready to animate?</h2><p class="sub">Two script tags and one attribute.</p><div class="cta"><a class="btn primary" href="install.html">Install</a><a class="btn" href="text-effects/index.html">Browse the text effects</a></div></div></div></section>';
 
     return shell({
         file: 'index.html',
@@ -377,10 +382,8 @@ function webflowPage() {
     return shell({ file: 'webflow.html', title: 'Aurora for Webflow', description: 'Use Aurora in Webflow with Custom Code and Custom Attributes.', body: body });
 }
 
-function elementorPage(hasZip) {
-    var download = hasZip
-        ? '<a class="btn primary" href="aurora-for-elementor.zip" download>Download aurora-for-elementor.zip</a>'
-        : '<a class="btn" href="' + REPO + '">Get it from GitHub</a>';
+function elementorPage() {
+    var download = '<a class="btn primary" href="' + REPO + '/releases/latest">Download the plugin zip</a>';
     var body =
         '<section class="hero" style="padding-bottom:24px"><div class="wrap"><h1>Aurora for Elementor</h1><p class="lead">The same modules, with a control for every option in the Advanced tab of your elements.</p><div class="cta">' + download + '</div></div></section>\n' +
         '<section class="block"><div class="wrap"><ol class="steps">' +
@@ -389,6 +392,45 @@ function elementorPage(hasZip) {
         '<li>Add the <strong>Aurora Morph Card</strong> widget from the panel for the card module.</li></ol>' +
         '<div class="note">The plugin loads local files only: no CDN and no external requests. Modules you turn off in the Aurora settings page load nothing. The controls are generated from the module schemas, so they always match the standalone scripts.</div></div></section>';
     return shell({ file: 'elementor.html', title: 'Aurora for Elementor', description: 'Install the Aurora plugin for Elementor.', body: body });
+}
+
+// ── Text effects gallery ────────────────────────────────────────────────
+
+function effectsPage() {
+    var effects = manifest.schemas.text.options.effect.values;
+    var cards = effects.map(function (v) {
+        return '<div class="fx-card" data-effect="' + v.value + '"><div class="fx-sample" data-fx="' + v.value + '">Aurora</div>' +
+            '<div class="fx-meta"><strong>' + esc(v.label) + '</strong><code>data-aurora-text="' + v.value + '"</code></div></div>';
+    }).join('\n');
+
+    var body =
+        '<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">' + effects.length + ' effects</span><h1>Text effects</h1>' +
+        '<p class="lead">Every text effect, running live with the standalone script. Click a card to replay it.</p></div></section>\n' +
+        '<section class="block"><div class="wrap"><input id="fx-filter" type="search" placeholder="Filter effects" aria-label="Filter effects" class="fx-filter">' +
+        '<div class="fx-grid" id="fx-grid">\n' + cards + '\n</div></div></section>\n' +
+        '<script>\n(function () {\n' +
+        '  var cards = Array.prototype.slice.call(document.querySelectorAll(".fx-card"));\n' +
+        '  function start() {\n' +
+        '    cards.forEach(function (card) {\n' +
+        '      var sample = card.querySelector(".fx-sample");\n' +
+        '      var fx = Aurora.text(sample, { effect: card.dataset.effect, trigger: "scroll" });\n' +
+        '      card.addEventListener("click", function () { fx.replay(); });\n' +
+        '    });\n' +
+        '  }\n' +
+        '  window.addEventListener("load", start);\n' +
+        '  document.getElementById("fx-filter").addEventListener("input", function (e) {\n' +
+        '    var q = e.target.value.trim().toLowerCase();\n' +
+        '    cards.forEach(function (card) { card.hidden = q && card.dataset.effect.indexOf(q) < 0; });\n' +
+        '  });\n' +
+        '})();\n</script>';
+
+    return shell({
+        file: 'text-effects/index.html',
+        title: 'Aurora text effects',
+        description: 'All ' + effects.length + ' Aurora text effects, running live.',
+        body: body,
+        scripts: ['aurora.core.min.js', 'aurora.text.min.js'],
+    });
 }
 
 // ── Build ───────────────────────────────────────────────────────────────
@@ -402,17 +444,19 @@ copyFileSync(resolve(root, 'site/assets/site.css'), resolve(out, 'assets/site.cs
 copyFileSync(resolve(root, 'site/assets/site.js'), resolve(out, 'assets/site.js'));
 copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, 'assets/favicon.svg'));
 
-var zip = resolve(root, 'build/aurora-for-elementor.zip');
-var hasZip = existsSync(zip);
-if (hasZip) copyFileSync(zip, resolve(out, 'aurora-for-elementor.zip'));
+['aurora-hero.webp', 'aurora-cta.webp', 'logo_aurora_animated.svg'].forEach(function (name) {
+    copyFileSync(resolve(root, 'assets/branding', name), resolve(out, 'assets', name));
+});
+writeFileSync(resolve(out, '.nojekyll'), '');
 
 write('index.html', homePage());
 write('install.html', installPage());
 write('webflow.html', webflowPage());
-write('elementor.html', elementorPage(hasZip));
+write('elementor.html', elementorPage());
+write('text-effects/index.html', effectsPage());
 ORDER.forEach(function (name) {
     write('modules/' + name + '.html', modulePage(name));
     write('examples/' + name + '.html', standalone(name, 'local', false));
 });
 
-console.log('Site built in build/site (' + (ORDER.length * 2 + 4) + ' pages).');
+console.log('Site built in docs/ (' + (ORDER.length * 2 + 5) + ' pages).');

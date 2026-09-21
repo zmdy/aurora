@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora Animate Children</title>
+<meta name="description" content="Staggered entrances, hover and proximity effects for the children of any element.">
+<link rel="icon" href="../assets/favicon.svg">
+<meta name="theme-color" content="#03040c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+</head>
+<body data-module="children">
+<header class="site"><div class="wrap"><a class="brand" href="../index.html"><img src="../assets/favicon.svg" alt="">Aurora</a><nav><a href="../modules/text.html">Text</a><a href="../modules/children.html" aria-current="page">Children</a><a href="../modules/gradient.html">Gradient</a><a href="../modules/cursor.html">Cursor</a><a href="../modules/morph-card.html">Morph Card</a><a href="../install.html">Install</a><a href="../webflow.html">Webflow</a><a href="../elementor.html">Elementor</a><a href="../text-effects/index.html">Text effects</a><a href="https://github.com/zmdy/aurora">GitHub</a></nav></div></header>
+<main>
+<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">Module</span><h1>Animate Children</h1><p class="lead">Animate the children of an element one after another. Uses the Web Animations API: no library needed.</p></div></section>
+<section class="block"><div class="wrap"><div class="stage"><div id="demo" class="tiles" data-aurora-children="slide" data-aurora-children-direction="up">
+  <div class="tile">1</div>
+  <div class="tile">2</div>
+  <div class="tile">3</div>
+  <div class="tile">4</div>
+  <div class="tile">5</div>
+  <div class="tile">6</div>
+</div></div>
+<div style="margin-top:12px"><button class="btn" id="replay" type="button">Replay</button> <a class="btn" href="../examples/children.html">Open the standalone example</a></div>
+<div class="playground"><div><h3 style="margin-top:0">Live attributes</h3><div class="codebox"><pre><code id="live-attrs"></code></pre></div><p style="color:var(--muted);font-size:.9rem">Change the controls and copy the attributes onto any element.</p></div><aside class="controls" id="controls" aria-label="Options"></aside></div></div></section>
+<section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 3.9 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Aurora Animate Children (standalone)&lt;/title&gt;
+&lt;style&gt;
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
+h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 520px; }
+.tile { background: #1b1b29; border: 1px solid #2a2a3d; border-radius: 12px; aspect-ratio: 1.3; display: grid; place-items: center; font-weight: 700; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div class=&quot;tiles&quot; data-aurora-children=&quot;slide&quot; data-aurora-children-direction=&quot;up&quot;&gt;
+  &lt;div class=&quot;tile&quot;&gt;1&lt;/div&gt;
+  &lt;div class=&quot;tile&quot;&gt;2&lt;/div&gt;
+  &lt;div class=&quot;tile&quot;&gt;3&lt;/div&gt;
+  &lt;div class=&quot;tile&quot;&gt;4&lt;/div&gt;
+  &lt;div class=&quot;tile&quot;&gt;5&lt;/div&gt;
+  &lt;div class=&quot;tile&quot;&gt;6&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
+        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.children.min.js&quot;
+        integrity=&quot;sha384-tnhcBzaAMwmQVCVcg9Ut6pa8asGNyGc3FLzoKlyHI+42QUaR+BzwhpaGlVsnssGi&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.children(document.querySelector('.grid'), { animation: 'zoom', stagger: 90 });
+fx.replay();
+fx.destroy();</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>Options</h2><p class="sub">Set them as <code>data-aurora-children-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-children-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>animation</code></td><td><code>data-aurora-children</code></td><td>enum</td><td><code>fade</code></td><td>Entrance or emphasis animation. &quot;none&quot; keeps only the hover effect.<br><small><code>none</code> <code>fade</code> <code>slide</code> <code>zoom</code> <code>bounce</code> <code>rotate</code> <code>flip</code> <code>blur</code> <code>focus</code> <code>pulse</code> <code>shake</code> <code>tada</code> <code>rubber-band</code> <code>wobble</code></small></td></tr>
+<tr><td><code>direction</code></td><td><code>data-aurora-children-direction</code></td><td>enum</td><td><code>up</code></td><td>&quot;up&quot; starts below the final position and moves up.<br><small><code>up</code> <code>down</code> <code>left</code> <code>right</code> <code>none</code></small></td></tr>
+<tr><td><code>alternate</code></td><td><code>data-aurora-children-alternate</code></td><td>enum</td><td><code>none</code></td><td>Alternates the direction between even and odd children.<br><small><code>none</code> <code>horizontal</code> <code>vertical</code></small></td></tr>
+<tr><td><code>distance</code></td><td><code>data-aurora-children-distance</code></td><td>number (px)</td><td><code>32</code></td><td>Travel distance</td></tr>
+<tr><td><code>duration</code></td><td><code>data-aurora-children-duration</code></td><td>number (ms)</td><td><code>600</code></td><td>Duration</td></tr>
+<tr><td><code>delay</code></td><td><code>data-aurora-children-delay</code></td><td>number (ms)</td><td><code>0</code></td><td>Initial delay</td></tr>
+<tr><td><code>stagger</code></td><td><code>data-aurora-children-stagger</code></td><td>number (ms)</td><td><code>150</code></td><td>Stagger between children</td></tr>
+<tr><td><code>easing</code></td><td><code>data-aurora-children-easing</code></td><td>string</td><td><code>cubic-bezier(0.22, 1, 0.36, 1)</code></td><td>Any CSS easing function.</td></tr>
+<tr><td><code>trigger</code></td><td><code>data-aurora-children-trigger</code></td><td>enum</td><td><code>scroll</code></td><td>Trigger<br><small><code>scroll</code> <code>load</code></small></td></tr>
+<tr><td><code>threshold</code></td><td><code>data-aurora-children-threshold</code></td><td>number</td><td><code>0.15</code></td><td>How much of the element must be visible before the animation starts.</td></tr>
+<tr><td><code>replay</code></td><td><code>data-aurora-children-replay</code></td><td>boolean</td><td><code>false</code></td><td>Replay on every scroll</td></tr>
+<tr><td><code>selector</code></td><td><code>data-aurora-children-selector</code></td><td>selector</td><td><code></code></td><td>CSS selector for the elements to animate. Empty animates the direct children.</td></tr>
+<tr><td><code>root</code></td><td><code>data-aurora-children-root</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node whose children are animated. Empty uses the element itself. Builder adapters set this to skip wrapper nodes.</td></tr>
+<tr><td><code>depth</code></td><td><code>data-aurora-children-depth</code></td><td>number</td><td><code>1</code></td><td>Without a selector: how many levels of descendants to animate.</td></tr>
+<tr><td><code>hover</code></td><td><code>data-aurora-children-hover</code></td><td>boolean</td><td><code>false</code></td><td>Hover effect</td></tr>
+<tr><td><code>hoverPreset</code></td><td><code>data-aurora-children-hover-preset</code></td><td>enum</td><td><code>lift</code></td><td>Hover preset<br><small><code>lift</code> <code>slide</code> <code>scale</code> <code>tilt</code> <code>flip-x</code> <code>flip-y</code> <code>custom</code></small></td></tr>
+<tr><td><code>hoverX</code></td><td><code>data-aurora-children-hover-x</code></td><td>number (px)</td><td><code>0</code></td><td>Custom: move X</td></tr>
+<tr><td><code>hoverY</code></td><td><code>data-aurora-children-hover-y</code></td><td>number (px)</td><td><code>-10</code></td><td>Custom: move Y</td></tr>
+<tr><td><code>hoverScale</code></td><td><code>data-aurora-children-hover-scale</code></td><td>number</td><td><code>1.05</code></td><td>Custom: scale</td></tr>
+<tr><td><code>hoverRotate</code></td><td><code>data-aurora-children-hover-rotate</code></td><td>number (deg)</td><td><code>0</code></td><td>Custom: rotate</td></tr>
+<tr><td><code>hoverSkew</code></td><td><code>data-aurora-children-hover-skew</code></td><td>number (deg)</td><td><code>0</code></td><td>Custom: skew</td></tr>
+<tr><td><code>hoverDuration</code></td><td><code>data-aurora-children-hover-duration</code></td><td>number (ms)</td><td><code>300</code></td><td>Hover duration</td></tr>
+<tr><td><code>proximity</code></td><td><code>data-aurora-children-proximity</code></td><td>boolean</td><td><code>false</code></td><td>Neighbours of the hovered child follow the hover effect with a falloff.</td></tr>
+<tr><td><code>proximityIntensity</code></td><td><code>data-aurora-children-proximity-intensity</code></td><td>number</td><td><code>0.5</code></td><td>Proximity intensity</td></tr>
+</tbody></table></div></div></section>
+
+</main>
+<footer class="site"><div class="wrap"><span>Aurora 1.0.0 · MIT License</span><span><a href="https://github.com/zmdy/aurora">Source</a> · <a href="../install.html">Install</a></span></div></footer>
+<script type="application/json" id="schema">{"primary":"animation","options":{"animation":{"type":"enum","default":"fade","values":["none","fade","slide","zoom","bounce","rotate","flip","blur","focus","pulse","shake","tada","rubber-band","wobble"],"label":"Animation","description":"Entrance or emphasis animation. \"none\" keeps only the hover effect.","group":"Entrance"},"direction":{"type":"enum","default":"up","values":["up","down","left","right","none"],"label":"Direction of travel","description":"\"up\" starts below the final position and moves up.","group":"Entrance"},"alternate":{"type":"enum","default":"none","values":["none","horizontal","vertical"],"label":"Alternate direction","description":"Alternates the direction between even and odd children.","group":"Entrance"},"distance":{"type":"number","default":32,"min":0,"max":400,"unit":"px","label":"Travel distance","group":"Entrance"},"duration":{"type":"number","default":600,"min":50,"max":5000,"unit":"ms","label":"Duration","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Initial delay","group":"Timing"},"stagger":{"type":"number","default":150,"min":0,"max":2000,"unit":"ms","label":"Stagger between children","group":"Timing"},"easing":{"type":"string","default":"cubic-bezier(0.22, 1, 0.36, 1)","label":"Easing","description":"Any CSS easing function.","group":"Timing"},"trigger":{"type":"enum","default":"scroll","values":["scroll","load"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.15,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"How much of the element must be visible before the animation starts.","group":"Trigger","when":{"trigger":"scroll"}},"replay":{"type":"boolean","default":false,"label":"Replay on every scroll","group":"Trigger","when":{"trigger":"scroll"}},"selector":{"type":"selector","default":"","label":"Target selector","description":"CSS selector for the elements to animate. Empty animates the direct children.","group":"Targets"},"root":{"type":"selector","default":"","label":"Root selector","description":"CSS selector, relative to the element, of the node whose children are animated. Empty uses the element itself. Builder adapters set this to skip wrapper nodes.","group":"Targets"},"depth":{"type":"number","default":1,"min":1,"max":10,"label":"Depth","description":"Without a selector: how many levels of descendants to animate.","group":"Targets","when":{"selector":""}},"hover":{"type":"boolean","default":false,"label":"Hover effect","group":"Hover"},"hoverPreset":{"type":"enum","default":"lift","values":["lift","slide","scale","tilt","flip-x","flip-y","custom"],"label":"Hover preset","group":"Hover","when":{"hover":true}},"hoverX":{"type":"number","default":0,"min":-200,"max":200,"unit":"px","label":"Custom: move X","group":"Hover","when":{"hover":true,"hoverPreset":"custom"}},"hoverY":{"type":"number","default":-10,"min":-200,"max":200,"unit":"px","label":"Custom: move Y","group":"Hover","when":{"hover":true,"hoverPreset":"custom"}},"hoverScale":{"type":"number","default":1.05,"min":0.5,"max":3,"step":0.01,"label":"Custom: scale","group":"Hover","when":{"hover":true,"hoverPreset":"custom"}},"hoverRotate":{"type":"number","default":0,"min":-180,"max":180,"unit":"deg","label":"Custom: rotate","group":"Hover","when":{"hover":true,"hoverPreset":"custom"}},"hoverSkew":{"type":"number","default":0,"min":-60,"max":60,"unit":"deg","label":"Custom: skew","group":"Hover","when":{"hover":true,"hoverPreset":"custom"}},"hoverDuration":{"type":"number","default":300,"min":0,"max":2000,"unit":"ms","label":"Hover duration","group":"Hover","when":{"hover":true}},"proximity":{"type":"boolean","default":false,"label":"Proximity wave","description":"Neighbours of the hovered child follow the hover effect with a falloff.","group":"Hover","when":{"hover":true}},"proximityIntensity":{"type":"number","default":0.5,"min":0,"max":1,"step":0.05,"label":"Proximity intensity","group":"Hover","when":{"hover":true,"proximity":true}}}}</script>
+<script src="../aurora.core.min.js"></script>
+<script src="../aurora.children.min.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

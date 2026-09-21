@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora Gradient (standalone)</title>
+<style>
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
+h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
+.demo-box { width: 100%; min-height: 200px; display: grid; place-items: center; text-align: center; padding: 28px; border-radius: 12px; font-size: 1.6rem; font-weight: 700; color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="demo-box" data-aurora-gradient="linear" data-aurora-gradient-animation="flow">Gradients that move</div>
+
+<script src="../aurora.core.min.js"></script>
+<script src="../aurora.gradient.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install Aurora</title>
+<meta name="description" content="Use Aurora in plain HTML, with a bundler, or through a builder adapter.">
+<link rel="icon" href="./assets/favicon.svg">
+<meta name="theme-color" content="#03040c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="./assets/site.css">
+<script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+</head>
+<body>
+<header class="site"><div class="wrap"><a class="brand" href="./index.html"><img src="./assets/favicon.svg" alt="">Aurora</a><nav><a href="./modules/text.html">Text</a><a href="./modules/children.html">Children</a><a href="./modules/gradient.html">Gradient</a><a href="./modules/cursor.html">Cursor</a><a href="./modules/morph-card.html">Morph Card</a><a href="./install.html" aria-current="page">Install</a><a href="./webflow.html">Webflow</a><a href="./elementor.html">Elementor</a><a href="./text-effects/index.html">Text effects</a><a href="https://github.com/zmdy/aurora">GitHub</a></nav></div></header>
+<main>
+<section class="hero" style="padding-bottom:24px"><div class="wrap"><h1>Install</h1><p class="lead">Aurora is plain JavaScript. Pick the setup that fits your site.</p></div></section>
+<section class="block"><div class="wrap"><h2>Standalone</h2><p class="sub">Paste the scripts before <code>&lt;/body&gt;</code>. The core must come first; modules can follow in any order.</p><h3>Only the modules you use</h3><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
+        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js&quot;
+        integrity=&quot;sha384-PO+jMUkaOFX3F0ynZiocZr1rwpNFNy88D0MQo03DrRAkT2ORoQYBGlswkUnaX2NS&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.gradient.min.js&quot;
+        integrity=&quot;sha384-f3q9dIHI5BcQCXibNZtwxo16q8IE2l0wZrRcDL6RJ2dVVZw/xhinMAH9Th12BJpF&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre></div><h3>Everything in one script (54.5 KB gzipped)</h3><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.min.js&quot;
+        integrity=&quot;sha384-O0YV9LootZToNNz0warbAJUP/YhksbjdkFS0b28FgPjSZyoRU7k7f/phxZTLNmus&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre></div><p>Then mark elements with attributes:</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;h2 data-aurora-text=&quot;float-up&quot;&gt;Hello&lt;/h2&gt;
+&lt;div data-aurora-gradient=&quot;linear&quot; data-aurora-gradient-animation=&quot;flow&quot;&gt;...&lt;/div&gt;</code></pre></div><div class="note">The CDN links point to the tag <code>v1.0.0</code> of the repository. You can also download the files from the <code>dist/</code> folder of a release and host them yourself: they have no other dependencies.</div></div></section>
+<section class="block"><div class="wrap"><h2>Configuration</h2><p class="sub">Define <code>window.AuroraConfig</code> before the scripts.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script&gt;
+  window.AuroraConfig = {
+    autoInit: true,  // scan the page for data-aurora-* on load
+    observe: true,   // also watch the DOM for elements added later (CMS lists, routers)
+    nonce: '',       // CSP nonce for the style tag Aurora injects
+    debug: false
+  };
+&lt;/script&gt;</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>Options, three ways</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!-- 1. Individual attributes --&gt;
+&lt;h2 data-aurora-text=&quot;blur-reveal&quot; data-aurora-text-duration=&quot;1200&quot;&gt;&lt;/h2&gt;
+
+&lt;!-- 2. One JSON attribute --&gt;
+&lt;h2 data-aurora-text=&quot;blur-reveal&quot; data-aurora-text-options='{&quot;duration&quot;:1200,&quot;split&quot;:&quot;words&quot;}'&gt;&lt;/h2&gt;
+
+&lt;!-- 3. JavaScript --&gt;
+&lt;script&gt;
+  Aurora.text(document.querySelector(&quot;h2&quot;), { effect: &quot;blur-reveal&quot;, duration: 1200 });
+&lt;/script&gt;</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>Bundlers</h2><p class="sub"><code>dist/aurora.esm.js</code> is an ES module with every export.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">import { createFullAurora } from './aurora.esm.js';
+
+var aurora = createFullAurora();
+aurora.init();
+window.Aurora = aurora;</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>Builders</h2><div class="grid"><a class="card" href="webflow.html"><h3>Webflow</h3><p>Custom Code plus Custom Attributes.</p></a><a class="card" href="elementor.html"><h3>Elementor</h3><p>Install the plugin zip.</p></a></div></div></section>
+</main>
+<footer class="site"><div class="wrap"><span>Aurora 1.0.0 · MIT License</span><span><a href="https://github.com/zmdy/aurora">Source</a> · <a href="./install.html">Install</a></span></div></footer>
+
+</body>
+</html>

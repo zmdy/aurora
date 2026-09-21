@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora Text</title>
+<meta name="description" content="53 effects that split text into characters, words or lines.">
+<link rel="icon" href="../assets/favicon.svg">
+<meta name="theme-color" content="#03040c">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+</head>
+<body data-module="text">
+<header class="site"><div class="wrap"><a class="brand" href="../index.html"><img src="../assets/favicon.svg" alt="">Aurora</a><nav><a href="../modules/text.html" aria-current="page">Text</a><a href="../modules/children.html">Children</a><a href="../modules/gradient.html">Gradient</a><a href="../modules/cursor.html">Cursor</a><a href="../modules/morph-card.html">Morph Card</a><a href="../install.html">Install</a><a href="../webflow.html">Webflow</a><a href="../elementor.html">Elementor</a><a href="../text-effects/index.html">Text effects</a><a href="https://github.com/zmdy/aurora">GitHub</a></nav></div></header>
+<main>
+<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">Module</span><h1>Text</h1><p class="lead">Split any text into characters, words or lines and animate it on scroll or on load. Built on Anime.js v4.</p></div></section>
+<section class="block"><div class="wrap"><div class="stage"><h2 id="demo" data-aurora-text="float-up">Motion, unleashed.</h2></div>
+<div style="margin-top:12px"><button class="btn" id="replay" type="button">Replay</button> <a class="btn" href="../examples/text.html">Open the standalone example</a></div>
+<div class="playground"><div><h3 style="margin-top:0">Live attributes</h3><div class="codebox"><pre><code id="live-attrs"></code></pre></div><p style="color:var(--muted);font-size:.9rem">Change the controls and copy the attributes onto any element.</p></div><aside class="controls" id="controls" aria-label="Options"></aside></div></div></section>
+<section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 31.6 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Aurora Text (standalone)&lt;/title&gt;
+&lt;style&gt;
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
+h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h2 data-aurora-text=&quot;float-up&quot;&gt;Motion, unleashed.&lt;/h2&gt;
+
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
+        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js&quot;
+        integrity=&quot;sha384-PO+jMUkaOFX3F0ynZiocZr1rwpNFNy88D0MQo03DrRAkT2ORoQYBGlswkUnaX2NS&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.text(document.querySelector('h2'), { effect: 'blur-reveal', split: 'words' });
+fx.replay();               // play again
+fx.update({ duration: 1200 }); // change options
+fx.destroy();              // restore the original markup</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>Options</h2><p class="sub">Set them as <code>data-aurora-text-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-text-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>effect</code></td><td><code>data-aurora-text</code></td><td>enum</td><td><code>float-up</code></td><td>Effect<br><small>53 values</small></td></tr>
+<tr><td><code>split</code></td><td><code>data-aurora-text-split</code></td><td>enum</td><td><code>chars</code></td><td>Unit the effect animates. Effects that build their own markup ignore it.<br><small><code>chars</code> <code>words</code> <code>lines</code></small></td></tr>
+<tr><td><code>duration</code></td><td><code>data-aurora-text-duration</code></td><td>number (ms)</td><td><code>800</code></td><td>Duration</td></tr>
+<tr><td><code>delay</code></td><td><code>data-aurora-text-delay</code></td><td>number (ms)</td><td><code>0</code></td><td>Delay</td></tr>
+<tr><td><code>stagger</code></td><td><code>data-aurora-text-stagger</code></td><td>number (ms)</td><td><code>30</code></td><td>Stagger</td></tr>
+<tr><td><code>trigger</code></td><td><code>data-aurora-text-trigger</code></td><td>enum</td><td><code>scroll</code></td><td>Trigger<br><small><code>scroll</code> <code>load</code></small></td></tr>
+<tr><td><code>threshold</code></td><td><code>data-aurora-text-threshold</code></td><td>number</td><td><code>0.2</code></td><td>Capped at 5% internally so headings above the fold always start.</td></tr>
+<tr><td><code>replay</code></td><td><code>data-aurora-text-replay</code></td><td>boolean</td><td><code>false</code></td><td>Replay on every scroll</td></tr>
+<tr><td><code>target</code></td><td><code>data-aurora-text-target</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.</td></tr>
+<tr><td><code>hoverScatter</code></td><td><code>data-aurora-text-hover-scatter</code></td><td>boolean</td><td><code>false</code></td><td>Units jump to random offsets on hover and settle back with an elastic ease.</td></tr>
+<tr><td><code>hoverIntensity</code></td><td><code>data-aurora-text-hover-intensity</code></td><td>number (px)</td><td><code>24</code></td><td>Scatter intensity</td></tr>
+<tr><td><code>hoverDuration</code></td><td><code>data-aurora-text-hover-duration</code></td><td>number (ms)</td><td><code>350</code></td><td>Scatter duration</td></tr>
+</tbody></table></div></div></section>
+<section class="block"><div class="wrap"><h2>All 53 effects</h2><p class="sub">Use any of them as the value of <code>data-aurora-text</code>.</p><p><code>appear-text</code> <code>blur-reveal</code> <code>bounce-drop</code> <code>cinema-title</code> <code>clip-wrap</code> <code>continuous-wave</code> <code>crt-boot</code> <code>domino-fall</code> <code>drop-down</code> <code>echo-clone</code> <code>elastic-bounce</code> <code>elastic-slide</code> <code>elastic-text</code> <code>explosion</code> <code>flip-board</code> <code>flip-x</code> <code>flip-y</code> <code>float-up</code> <code>glitch</code> <code>heartbeat</code> <code>letter-roll</code> <code>letter-swap</code> <code>liquid-fill</code> <code>matrix-rain</code> <code>mesh-text</code> <code>neon-flicker</code> <code>pendulum-swing</code> <code>perspective-fly</code> <code>rgb-split</code> <code>rotate-in</code> <code>rotating-dial</code> <code>rubber-stamp</code> <code>scale-in</code> <code>scatter-converge</code> <code>scramble</code> <code>scroll-highlight</code> <code>skew-in</code> <code>slide-from-left</code> <code>slide-right</code> <code>slot-machine</code> <code>spin-in</code> <code>spiral-in</code> <code>split-chars</code> <code>stagger-flip-3d</code> <code>stretch-warp</code> <code>text-emerge</code> <code>text-reveal-wall</code> <code>typewriter</code> <code>typewriter-delete</code> <code>unfold-3d</code> <code>vertical-blinds</code> <code>vhs-tracking</code> <code>wave</code></p></div></section>
+</main>
+<footer class="site"><div class="wrap"><span>Aurora 1.0.0 · MIT License</span><span><a href="https://github.com/zmdy/aurora">Source</a> · <a href="../install.html">Install</a></span></div></footer>
+<script type="application/json" id="schema">{"primary":"effect","options":{"effect":{"type":"enum","default":"float-up","values":[{"value":"appear-text","label":"Appear text"},{"value":"blur-reveal","label":"Blur reveal"},{"value":"bounce-drop","label":"Bounce drop"},{"value":"cinema-title","label":"Cinema title"},{"value":"clip-wrap","label":"Clip wrap"},{"value":"continuous-wave","label":"Continuous wave"},{"value":"crt-boot","label":"Crt boot"},{"value":"domino-fall","label":"Domino fall"},{"value":"drop-down","label":"Drop down"},{"value":"echo-clone","label":"Echo clone"},{"value":"elastic-bounce","label":"Elastic bounce"},{"value":"elastic-slide","label":"Elastic slide"},{"value":"elastic-text","label":"Elastic text"},{"value":"explosion","label":"Explosion"},{"value":"flip-board","label":"Flip board"},{"value":"flip-x","label":"Flip x"},{"value":"flip-y","label":"Flip y"},{"value":"float-up","label":"Float up"},{"value":"glitch","label":"Glitch"},{"value":"heartbeat","label":"Heartbeat"},{"value":"letter-roll","label":"Letter roll"},{"value":"letter-swap","label":"Letter swap"},{"value":"liquid-fill","label":"Liquid fill"},{"value":"matrix-rain","label":"Matrix rain"},{"value":"mesh-text","label":"Mesh text"},{"value":"neon-flicker","label":"Neon flicker"},{"value":"pendulum-swing","label":"Pendulum swing"},{"value":"perspective-fly","label":"Perspective fly"},{"value":"rgb-split","label":"Rgb split"},{"value":"rotate-in","label":"Rotate in"},{"value":"rotating-dial","label":"Rotating dial"},{"value":"rubber-stamp","label":"Rubber stamp"},{"value":"scale-in","label":"Scale in"},{"value":"scatter-converge","label":"Scatter converge"},{"value":"scramble","label":"Scramble"},{"value":"scroll-highlight","label":"Scroll highlight"},{"value":"skew-in","label":"Skew in"},{"value":"slide-from-left","label":"Slide from left"},{"value":"slide-right","label":"Slide right"},{"value":"slot-machine","label":"Slot machine"},{"value":"spin-in","label":"Spin in"},{"value":"spiral-in","label":"Spiral in"},{"value":"split-chars","label":"Split chars"},{"value":"stagger-flip-3d","label":"Stagger flip 3d"},{"value":"stretch-warp","label":"Stretch warp"},{"value":"text-emerge","label":"Text emerge"},{"value":"text-reveal-wall","label":"Text reveal wall"},{"value":"typewriter","label":"Typewriter"},{"value":"typewriter-delete","label":"Typewriter delete"},{"value":"unfold-3d","label":"Unfold 3d"},{"value":"vertical-blinds","label":"Vertical blinds"},{"value":"vhs-tracking","label":"Vhs tracking"},{"value":"wave","label":"Wave"}],"label":"Effect","group":"Effect"},"split":{"type":"enum","default":"chars","values":["chars","words","lines"],"label":"Split by","description":"Unit the effect animates. Effects that build their own markup ignore it.","group":"Effect"},"duration":{"type":"number","default":800,"min":50,"max":10000,"unit":"ms","label":"Duration","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Delay","group":"Timing"},"stagger":{"type":"number","default":30,"min":0,"max":1000,"unit":"ms","label":"Stagger","group":"Timing"},"trigger":{"type":"enum","default":"scroll","values":["scroll","load"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally so headings above the fold always start.","group":"Trigger","when":{"trigger":"scroll"}},"replay":{"type":"boolean","default":false,"label":"Replay on every scroll","group":"Trigger","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.","group":"Advanced"},"hoverScatter":{"type":"boolean","default":false,"label":"Hover scatter","description":"Units jump to random offsets on hover and settle back with an elastic ease.","group":"Hover"},"hoverIntensity":{"type":"number","default":24,"min":1,"max":200,"unit":"px","label":"Scatter intensity","group":"Hover","when":{"hoverScatter":true}},"hoverDuration":{"type":"number","default":350,"min":50,"max":3000,"unit":"ms","label":"Scatter duration","group":"Hover","when":{"hoverScatter":true}}}}</script>
+<script src="../aurora.core.min.js"></script>
+<script src="../aurora.text.min.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

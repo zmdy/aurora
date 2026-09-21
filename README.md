@@ -79,7 +79,7 @@ npm install
 npm test            # unit tests (Vitest + jsdom)
 npm run test:php    # Elementor adapter smoke test (needs PHP)
 npm run build       # dist/: one script per module, an all-in-one script, an ES module, SRI hashes
-npm run build:site  # build/site/
+npm run build:site  # docs/ (the GitHub Pages source)
 npm run pack        # build/aurora-for-elementor.zip
 ```
 
