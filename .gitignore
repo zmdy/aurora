@@ -54,5 +54,6 @@ _tests/
 adapters/elementor/includes/generated/
 adapters/elementor/assets/js/aurora/
 
-# Backup of the previous landing page (local only)
+# Backups of the previous, main-branch hand-maintained pages (local only)
 docs/home.html
+docs/text-effects/home.html

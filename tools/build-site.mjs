@@ -394,50 +394,12 @@ function elementorPage() {
     return shell({ file: 'elementor.html', title: 'Aurora for Elementor', description: 'Install the Aurora plugin for Elementor.', body: body });
 }
 
-// ── Text effects gallery ────────────────────────────────────────────────
-
-function effectsPage() {
-    var effects = manifest.schemas.text.options.effect.values;
-    var cards = effects.map(function (v) {
-        return '<div class="fx-card" data-effect="' + v.value + '"><div class="fx-sample" data-fx="' + v.value + '">Aurora</div>' +
-            '<div class="fx-meta"><strong>' + esc(v.label) + '</strong><code>data-aurora-text="' + v.value + '"</code></div></div>';
-    }).join('\n');
-
-    var body =
-        '<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">' + effects.length + ' effects</span><h1>Text effects</h1>' +
-        '<p class="lead">Every text effect, running live with the standalone script. Click a card to replay it.</p></div></section>\n' +
-        '<section class="block"><div class="wrap"><input id="fx-filter" type="search" placeholder="Filter effects" aria-label="Filter effects" class="fx-filter">' +
-        '<div class="fx-grid" id="fx-grid">\n' + cards + '\n</div></div></section>\n' +
-        '<script>\n(function () {\n' +
-        '  var cards = Array.prototype.slice.call(document.querySelectorAll(".fx-card"));\n' +
-        '  function start() {\n' +
-        '    cards.forEach(function (card) {\n' +
-        '      var sample = card.querySelector(".fx-sample");\n' +
-        '      var fx = Aurora.text(sample, { effect: card.dataset.effect, trigger: "scroll" });\n' +
-        '      card.addEventListener("click", function () { fx.replay(); });\n' +
-        '    });\n' +
-        '  }\n' +
-        '  window.addEventListener("load", start);\n' +
-        '  document.getElementById("fx-filter").addEventListener("input", function (e) {\n' +
-        '    var q = e.target.value.trim().toLowerCase();\n' +
-        '    cards.forEach(function (card) { card.hidden = q && card.dataset.effect.indexOf(q) < 0; });\n' +
-        '  });\n' +
-        '})();\n</script>';
-
-    return shell({
-        file: 'text-effects/index.html',
-        title: 'Aurora text effects',
-        description: 'All ' + effects.length + ' Aurora text effects, running live.',
-        body: body,
-        scripts: ['aurora.core.min.js', 'aurora.text.min.js'],
-    });
-}
-
 // ── Build ───────────────────────────────────────────────────────────────
 
-// docs/index.html is hand-maintained (the landing page); everything else in
+// docs/index.html and docs/text-effects/index.html are hand-maintained (the
+// landing page and the text-effects playground/catalog); everything else in
 // docs/ is generated. Only generated files are removed here.
-['modules', 'examples', 'text-effects', 'assets', 'install.html', 'webflow.html', 'elementor.html'].concat(
+['modules', 'examples', 'assets', 'install.html', 'webflow.html', 'elementor.html'].concat(
     manifest.files.map(function (f) { return f.file; })
 ).forEach(function (name) { rmSync(resolve(out, name), { recursive: true, force: true }); });
 mkdirSync(out, { recursive: true });
@@ -456,10 +418,9 @@ writeFileSync(resolve(out, '.nojekyll'), '');
 write('install.html', installPage());
 write('webflow.html', webflowPage());
 write('elementor.html', elementorPage());
-write('text-effects/index.html', effectsPage());
 ORDER.forEach(function (name) {
     write('modules/' + name + '.html', modulePage(name));
     write('examples/' + name + '.html', standalone(name, 'local', false));
 });
 
-console.log('Site built in docs/ (' + (ORDER.length * 2 + 4) + ' pages; index.html is hand-maintained).');
+console.log('Site built in docs/ (' + (ORDER.length * 2 + 3) + ' pages; index.html and text-effects/index.html are hand-maintained).');
