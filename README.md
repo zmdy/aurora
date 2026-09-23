@@ -14,7 +14,7 @@ No GSAP. Text animation uses [Anime.js](https://animejs.com) v4; everything else
 
 | Module | What it does | Script (gzip) |
 | --- | --- | --- |
-| `text` | 53 effects that split text into characters, words or lines | ~32 KB |
+| `text` | 53 effects that split text into characters, words or lines | ~34 KB |
 | `children` | Staggered entrances, hover and proximity effects for children | ~4 KB |
 | `gradient` | Multi-stop gradients for backgrounds, text and icons; WebGL mesh styles | ~8 KB |
 | `cursor` | A dot-and-ring cursor inside an element | ~3 KB |

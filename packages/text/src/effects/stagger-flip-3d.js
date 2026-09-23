@@ -82,6 +82,8 @@ var effect = {
 
         play(true);
 
+        if (!opts.hoverReplay) return;
+
         function onEnter() { play(false); }
         fx.on(textEl, 'mouseenter', onEnter);
     },

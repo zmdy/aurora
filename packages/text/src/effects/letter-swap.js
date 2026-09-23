@@ -90,6 +90,8 @@ var effect = {
         fx.setTimeout(function () { swap(true); }, entranceEndMs + 250);
         fx.setTimeout(function () { swap(false); }, entranceEndMs + 250 + 900);
 
+        if (!opts.hoverReplay) return;
+
         var onEnter = function () { swap(true); };
         var onLeave = function () { swap(false); };
         fx.on(textEl, 'mouseenter', onEnter);

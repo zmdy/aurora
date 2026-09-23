@@ -792,6 +792,12 @@
       border: 1px solid rgba(0, 153, 204, .25);
     }
 
+    .pg-badge--ambient {
+      background: rgba(245, 158, 11, .15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
     .pg-replay-btn {
       display: inline-flex;
       align-items: center;
@@ -879,6 +885,31 @@
       outline: none;
       border-color: rgba(5, 177, 114, .5);
       background: rgba(255, 255, 255, .06);
+    }
+
+    .ctrl-color {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--r-sm);
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .ctrl-color::-webkit-color-swatch-wrapper {
+      padding: 4px;
+    }
+
+    .ctrl-color::-webkit-color-swatch {
+      border: none;
+      border-radius: 4px;
+    }
+
+    .ctrl-color::-moz-color-swatch {
+      border: none;
+      border-radius: 4px;
     }
 
     /* Library toggle tabs */
@@ -1485,7 +1516,7 @@
     }
 
     .effect-card__stage {
-      min-height: 90px;
+      height: 90px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1509,6 +1540,10 @@
       font-weight: 700;
       color: rgba(255, 255, 255, .85);
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
     }
 
     .effect-card__id {
@@ -1543,6 +1578,11 @@
     .lib-chip--split {
       background: rgba(0, 153, 204, .15);
       color: var(--c-teal);
+    }
+
+    .lib-chip--ambient {
+      background: rgba(245, 158, 11, .15);
+      color: #f59e0b;
     }
 
     .cta-section {
@@ -1799,26 +1839,22 @@
             <select class="ctrl-select" id="ctrl-animation" aria-label="Select animation effect">
               <option value="appear-text">Appear text</option>
               <option value="blur-reveal">Blur reveal</option>
-              <option value="bounce-drop">Bounce drop</option>
               <option value="cinema-title">Cinema title</option>
               <option value="clip-wrap">Clip wrap</option>
               <option value="continuous-wave">Continuous wave</option>
               <option value="crt-boot">Crt boot</option>
-              <option value="domino-fall">Domino fall</option>
-              <option value="drop-down">Drop down</option>
+              <option value="dia-text-reveal">Dia text reveal</option>
               <option value="echo-clone">Echo clone</option>
-              <option value="elastic-bounce">Elastic bounce</option>
-              <option value="elastic-slide">Elastic slide</option>
               <option value="elastic-text">Elastic text</option>
               <option value="explosion">Explosion</option>
               <option value="flip-board">Flip board</option>
-              <option value="flip-x">Flip x</option>
-              <option value="flip-y">Flip y</option>
-              <option value="float-up">Float up</option>
+              <option value="flip-in">Flip in</option>
               <option value="glitch">Glitch</option>
+              <option value="gradient-flow-text">Gradient flow text</option>
               <option value="heartbeat">Heartbeat</option>
               <option value="letter-roll">Letter roll</option>
               <option value="letter-swap">Letter swap</option>
+              <option value="line-shadow-text">Line shadow text</option>
               <option value="liquid-fill">Liquid fill</option>
               <option value="matrix-rain">Matrix rain</option>
               <option value="mesh-text">Mesh text</option>
@@ -1833,16 +1869,20 @@
               <option value="scatter-converge">Scatter converge</option>
               <option value="scramble">Scramble</option>
               <option value="scroll-highlight">Scroll highlight</option>
+              <option value="scroll-velocity-marquee">Scroll velocity marquee</option>
+              <option value="shiny-sweep-text">Shiny sweep text</option>
               <option value="skew-in">Skew in</option>
-              <option value="slide-from-left">Slide from left</option>
-              <option value="slide-right">Slide right</option>
+              <option value="slide-in">Slide in</option>
               <option value="slot-machine">Slot machine</option>
+              <option value="sparkles-text">Sparkles text</option>
               <option value="spin-in">Spin in</option>
+              <option value="spinning-circular-text">Spinning circular text</option>
               <option value="spiral-in">Spiral in</option>
               <option value="split-chars">Split chars</option>
               <option value="stagger-flip-3d">Stagger flip 3d</option>
               <option value="stretch-warp">Stretch warp</option>
               <option value="text-emerge">Text emerge</option>
+              <option value="text-highlighter">Text highlighter</option>
               <option value="text-reveal-wall">Text reveal wall</option>
               <option value="typewriter">Typewriter</option>
               <option value="typewriter-delete">Typewriter delete</option>
@@ -1851,6 +1891,41 @@
               <option value="vhs-tracking">Vhs tracking</option>
               <option value="wave">Wave</option>
             </select>
+          </div>
+
+          <div class="ctrl-group" id="group-direction">
+            <span class="ctrl-label">Direction</span>
+            <select class="ctrl-select" id="ctrl-direction" aria-label="Select effect direction">
+              <option value="up">Up</option>
+              <option value="down">Down</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group" id="group-style">
+            <span class="ctrl-label">Style</span>
+            <select class="ctrl-select" id="ctrl-style" aria-label="Select effect style">
+              <option value="smooth">Smooth</option>
+              <option value="bounce">Bounce</option>
+              <option value="elastic">Elastic</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group" id="group-color1">
+            <span class="ctrl-label" id="label-color1">Color</span>
+            <div class="range-row">
+              <input type="color" class="ctrl-color" id="ctrl-color1" aria-label="Select color">
+              <span class="range-val" id="val-color1">#000000</span>
+            </div>
+          </div>
+
+          <div class="ctrl-group" id="group-color2">
+            <span class="ctrl-label" id="label-color2">Color 2</span>
+            <div class="range-row">
+              <input type="color" class="ctrl-color" id="ctrl-color2" aria-label="Select second color">
+              <span class="range-val" id="val-color2">#000000</span>
+            </div>
           </div>
 
           <div class="ctrl-group">
@@ -1926,6 +2001,7 @@
           <button class="effects-tab" data-filter="reveal" role="tab" aria-selected="false">Reveals</button>
           <button class="effects-tab" data-filter="kinetic" role="tab" aria-selected="false">Kinetic</button>
           <button class="effects-tab" data-filter="glitch" role="tab" aria-selected="false">Glitch</button>
+          <button class="effects-tab" data-filter="ambient" role="tab" aria-selected="false">Ambient</button>
         </div>
 
         <div class="catalog-text-box">
@@ -2185,26 +2261,22 @@
     var EFFECT_DATA = [
       { id: 'appear-text', name: 'Appear text', tag: 'kinetic' },
       { id: 'blur-reveal', name: 'Blur reveal', tag: 'reveal' },
-      { id: 'bounce-drop', name: 'Bounce drop', tag: 'kinetic' },
       { id: 'cinema-title', name: 'Cinema title', tag: 'reveal' },
       { id: 'clip-wrap', name: 'Clip wrap', tag: 'reveal' },
       { id: 'continuous-wave', name: 'Continuous wave', tag: 'kinetic' },
       { id: 'crt-boot', name: 'Crt boot', tag: 'glitch' },
-      { id: 'domino-fall', name: 'Domino fall', tag: 'kinetic' },
-      { id: 'drop-down', name: 'Drop down', tag: 'reveal' },
+      { id: 'dia-text-reveal', name: 'Dia text reveal', tag: 'reveal' },
       { id: 'echo-clone', name: 'Echo clone', tag: 'glitch' },
-      { id: 'elastic-bounce', name: 'Elastic bounce', tag: 'kinetic' },
-      { id: 'elastic-slide', name: 'Elastic slide', tag: 'kinetic' },
       { id: 'elastic-text', name: 'Elastic text', tag: 'kinetic' },
       { id: 'explosion', name: 'Explosion', tag: 'kinetic' },
       { id: 'flip-board', name: 'Flip board', tag: 'kinetic' },
-      { id: 'flip-x', name: 'Flip x', tag: 'kinetic' },
-      { id: 'flip-y', name: 'Flip y', tag: 'kinetic' },
-      { id: 'float-up', name: 'Float up', tag: 'reveal' },
+      { id: 'flip-in', name: 'Flip in', tag: 'kinetic' },
       { id: 'glitch', name: 'Glitch', tag: 'glitch' },
+      { id: 'gradient-flow-text', name: 'Gradient flow text', tag: 'ambient' },
       { id: 'heartbeat', name: 'Heartbeat', tag: 'kinetic' },
       { id: 'letter-roll', name: 'Letter roll', tag: 'kinetic' },
       { id: 'letter-swap', name: 'Letter swap', tag: 'kinetic' },
+      { id: 'line-shadow-text', name: 'Line shadow text', tag: 'ambient' },
       { id: 'liquid-fill', name: 'Liquid fill', tag: 'reveal' },
       { id: 'matrix-rain', name: 'Matrix rain', tag: 'glitch' },
       { id: 'mesh-text', name: 'Mesh text', tag: 'kinetic' },
@@ -2219,16 +2291,20 @@
       { id: 'scatter-converge', name: 'Scatter converge', tag: 'kinetic' },
       { id: 'scramble', name: 'Scramble', tag: 'glitch' },
       { id: 'scroll-highlight', name: 'Scroll highlight', tag: 'reveal' },
+      { id: 'scroll-velocity-marquee', name: 'Scroll velocity marquee', tag: 'ambient' },
+      { id: 'shiny-sweep-text', name: 'Shiny sweep text', tag: 'ambient' },
       { id: 'skew-in', name: 'Skew in', tag: 'reveal' },
-      { id: 'slide-from-left', name: 'Slide from left', tag: 'reveal' },
-      { id: 'slide-right', name: 'Slide right', tag: 'reveal' },
+      { id: 'slide-in', name: 'Slide in', tag: 'reveal' },
       { id: 'slot-machine', name: 'Slot machine', tag: 'kinetic' },
+      { id: 'sparkles-text', name: 'Sparkles text', tag: 'ambient' },
       { id: 'spin-in', name: 'Spin in', tag: 'kinetic' },
+      { id: 'spinning-circular-text', name: 'Spinning circular text', tag: 'ambient' },
       { id: 'spiral-in', name: 'Spiral in', tag: 'kinetic' },
       { id: 'split-chars', name: 'Split chars', tag: 'reveal' },
       { id: 'stagger-flip-3d', name: 'Stagger flip 3d', tag: 'kinetic' },
       { id: 'stretch-warp', name: 'Stretch warp', tag: 'kinetic' },
       { id: 'text-emerge', name: 'Text emerge', tag: 'reveal' },
+      { id: 'text-highlighter', name: 'Text highlighter', tag: 'reveal' },
       { id: 'text-reveal-wall', name: 'Text reveal wall', tag: 'glitch' },
       { id: 'typewriter', name: 'Typewriter', tag: 'glitch' },
       { id: 'typewriter-delete', name: 'Typewriter delete', tag: 'glitch' },
@@ -2248,11 +2324,17 @@
     }
 
     function tagBadgeClass(tag) {
-      return tag === 'reveal' ? 'pg-badge--gsap' : tag === 'kinetic' ? 'pg-badge--anime' : 'pg-badge--split';
+      if (tag === 'reveal') return 'pg-badge--gsap';
+      if (tag === 'kinetic') return 'pg-badge--anime';
+      if (tag === 'ambient') return 'pg-badge--ambient';
+      return 'pg-badge--split';
     }
 
     function tagChipClass(tag) {
-      return tag === 'reveal' ? 'lib-chip--gsap' : tag === 'kinetic' ? 'lib-chip--anime' : 'lib-chip--split';
+      if (tag === 'reveal') return 'lib-chip--gsap';
+      if (tag === 'kinetic') return 'lib-chip--anime';
+      if (tag === 'ambient') return 'lib-chip--ambient';
+      return 'lib-chip--split';
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -2262,12 +2344,36 @@
        change is a real, live re-run of the shipped module — no mocks.
        ═══════════════════════════════════════════════════════════════════ */
     var pgState = {
-      effect: 'float-up',
+      effect: 'slide-in',
       split: 'chars',
       duration: 800,
       stagger: 30,
       delay: 0,
-      hover: false
+      hover: false,
+      direction: 'down',
+      style: 'smooth',
+      sparkleColor: '#9E7AFF',
+      sparkleColor2: '#FE8BBB',
+      gradientColor: '#7dd3fc',
+      gradientColor2: '#f0abfc',
+      highlightColor: '#facc15'
+    };
+    var DIRECTION_EFFECTS = ['slide-in', 'flip-in', 'rotate-in', 'skew-in', 'clip-wrap'];
+    var STYLE_EFFECTS = ['slide-in'];
+
+    // Which effects expose color pickers, and which pgState key + label each swatch maps to.
+    var COLOR_CONFIG = {
+      'sparkles-text': {
+        color1: { key: 'sparkleColor', label: 'Sparkle color' },
+        color2: { key: 'sparkleColor2', label: 'Sparkle color 2' }
+      },
+      'gradient-flow-text': {
+        color1: { key: 'gradientColor', label: 'Gradient color' },
+        color2: { key: 'gradientColor2', label: 'Gradient color 2' }
+      },
+      'text-highlighter': {
+        color1: { key: 'highlightColor', label: 'Highlight color' }
+      }
     };
 
     var $pgText = document.getElementById('playground-text');
@@ -2276,6 +2382,37 @@
     var $badgeTag = document.getElementById('badge-tag');
     var $badgeSplit = document.getElementById('badge-split');
     var $badgeAnim = document.getElementById('badge-anim');
+
+    var $ctrlColor1 = document.getElementById('ctrl-color1');
+    var $ctrlColor2 = document.getElementById('ctrl-color2');
+    var $valColor1 = document.getElementById('val-color1');
+    var $valColor2 = document.getElementById('val-color2');
+    var $labelColor1 = document.getElementById('label-color1');
+    var $labelColor2 = document.getElementById('label-color2');
+
+    function updateControlVisibility() {
+      var showDirection = DIRECTION_EFFECTS.indexOf(pgState.effect) !== -1;
+      var showStyle = STYLE_EFFECTS.indexOf(pgState.effect) !== -1;
+      document.getElementById('group-direction').style.display = showDirection ? '' : 'none';
+      document.getElementById('group-style').style.display = showStyle ? '' : 'none';
+
+      var colorCfg = COLOR_CONFIG[pgState.effect];
+      document.getElementById('group-color1').style.display = colorCfg && colorCfg.color1 ? '' : 'none';
+      document.getElementById('group-color2').style.display = colorCfg && colorCfg.color2 ? '' : 'none';
+
+      if (colorCfg && colorCfg.color1) {
+        $labelColor1.textContent = colorCfg.color1.label;
+        var v1 = pgState[colorCfg.color1.key];
+        $ctrlColor1.value = v1;
+        $valColor1.textContent = v1;
+      }
+      if (colorCfg && colorCfg.color2) {
+        $labelColor2.textContent = colorCfg.color2.label;
+        var v2 = pgState[colorCfg.color2.key];
+        $ctrlColor2.value = v2;
+        $valColor2.textContent = v2;
+      }
+    }
 
     function runPlayground() {
       var text = ($ctrlText.value || 'AURORA').trim();
@@ -2288,6 +2425,8 @@
       $badgeSplit.textContent = pgState.split.toUpperCase();
       $badgeAnim.textContent = eff.id;
 
+      updateControlVisibility();
+
       window.Aurora.text($pgText, {
         effect: pgState.effect,
         split: pgState.split,
@@ -2295,7 +2434,14 @@
         stagger: pgState.stagger,
         delay: pgState.delay,
         trigger: 'load',
-        hoverScatter: pgState.hover
+        hoverScatter: pgState.hover,
+        direction: pgState.direction,
+        style: pgState.style,
+        sparkleColor: pgState.sparkleColor,
+        sparkleColor2: pgState.sparkleColor2,
+        gradientColor: pgState.gradientColor,
+        gradientColor2: pgState.gradientColor2,
+        highlightColor: pgState.highlightColor
       });
     }
 
@@ -2303,6 +2449,38 @@
     $ctrlAnim.value = pgState.effect;
     $ctrlAnim.addEventListener('change', function () {
       pgState.effect = this.value;
+      runPlayground();
+    });
+
+    // Direction select
+    var $ctrlDirection = document.getElementById('ctrl-direction');
+    $ctrlDirection.value = pgState.direction;
+    $ctrlDirection.addEventListener('change', function () {
+      pgState.direction = this.value;
+      runPlayground();
+    });
+
+    // Style select
+    var $ctrlStyle = document.getElementById('ctrl-style');
+    $ctrlStyle.value = pgState.style;
+    $ctrlStyle.addEventListener('change', function () {
+      pgState.style = this.value;
+      runPlayground();
+    });
+
+    // Color pickers (target key depends on the current effect, via COLOR_CONFIG)
+    $ctrlColor1.addEventListener('input', function () {
+      var cfg = COLOR_CONFIG[pgState.effect];
+      if (!cfg || !cfg.color1) return;
+      pgState[cfg.color1.key] = this.value;
+      $valColor1.textContent = this.value;
+      runPlayground();
+    });
+    $ctrlColor2.addEventListener('input', function () {
+      var cfg = COLOR_CONFIG[pgState.effect];
+      if (!cfg || !cfg.color2) return;
+      pgState[cfg.color2.key] = this.value;
+      $valColor2.textContent = this.value;
       runPlayground();
     });
 
@@ -2443,12 +2621,25 @@
     var CORE_SRI = 'sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w';
     var TEXT_SRI = 'sha384-PO+jMUkaOFX3F0ynZiocZr1rwpNFNy88D0MQo03DrRAkT2ORoQYBGlswkUnaX2NS';
 
+    var COLOR_ATTR_NAME = {
+      sparkleColor: 'data-aurora-text-sparkle-color',
+      sparkleColor2: 'data-aurora-text-sparkle-color2',
+      gradientColor: 'data-aurora-text-gradient-color',
+      gradientColor2: 'data-aurora-text-gradient-color2',
+      highlightColor: 'data-aurora-text-highlight-color'
+    };
+
     function snippetAttrs() {
       var attrs = 'data-aurora-text="' + pgState.effect + '"' +
         ' data-aurora-text-split="' + pgState.split + '"' +
         ' data-aurora-text-duration="' + pgState.duration + '"' +
         ' data-aurora-text-stagger="' + pgState.stagger + '"' +
         ' data-aurora-text-delay="' + pgState.delay + '"';
+      if (DIRECTION_EFFECTS.indexOf(pgState.effect) !== -1) attrs += ' data-aurora-text-direction="' + pgState.direction + '"';
+      if (STYLE_EFFECTS.indexOf(pgState.effect) !== -1) attrs += ' data-aurora-text-style="' + pgState.style + '"';
+      var colorCfg = COLOR_CONFIG[pgState.effect];
+      if (colorCfg && colorCfg.color1) attrs += ' ' + COLOR_ATTR_NAME[colorCfg.color1.key] + '="' + pgState[colorCfg.color1.key] + '"';
+      if (colorCfg && colorCfg.color2) attrs += ' ' + COLOR_ATTR_NAME[colorCfg.color2.key] + '="' + pgState[colorCfg.color2.key] + '"';
       if (pgState.hover) attrs += ' data-aurora-text-hover-scatter="true"';
       return attrs;
     }

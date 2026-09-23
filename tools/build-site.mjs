@@ -64,10 +64,10 @@ var CARD_STATES = [
 var MODULES = {
     text: {
         title: 'Text',
-        summary: '53 effects that split text into characters, words or lines.',
+        summary: manifest.schemas.text.options.effect.values.length + ' effects that split text into characters, words or lines.',
         lead: 'Split any text into characters, words or lines and animate it on scroll or on load. Built on Anime.js v4.',
         markup: function (id) {
-            return '<h2' + id + ' data-aurora-text="float-up">Motion, unleashed.</h2>';
+            return '<h2' + id + ' data-aurora-text="slide-in">Motion, unleashed.</h2>';
         },
         css: '',
         stage: '',
@@ -338,7 +338,7 @@ function installPage() {
         '<p class="sub">Paste the scripts before <code>&lt;/body&gt;</code>. The core must come first; modules can follow in any order.</p>' +
         '<h3>Only the modules you use</h3>' + codebox(modularTags, 'html') +
         '<h3>Everything in one script (' + kb(all.gzip) + ' gzipped)</h3>' + codebox(allTag, 'html') +
-        '<p>Then mark elements with attributes:</p>' + codebox('<h2 data-aurora-text="float-up">Hello</h2>\n<div data-aurora-gradient="linear" data-aurora-gradient-animation="flow">...</div>', 'html') +
+        '<p>Then mark elements with attributes:</p>' + codebox('<h2 data-aurora-text="slide-in">Hello</h2>\n<div data-aurora-gradient="linear" data-aurora-gradient-animation="flow">...</div>', 'html') +
         '<div class="note">The CDN links point to the tag <code>v' + VERSION + '</code> of the repository. You can also download the files from the <code>dist/</code> folder of a release and host them yourself: they have no other dependencies.</div></div></section>\n' +
         '<section class="block"><div class="wrap"><h2>Configuration</h2><p class="sub">Define <code>window.AuroraConfig</code> before the scripts.</p>' +
         codebox("<script>\n  window.AuroraConfig = {\n    autoInit: true,  // scan the page for data-aurora-* on load\n    observe: true,   // also watch the DOM for elements added later (CMS lists, routers)\n    nonce: '',       // CSP nonce for the style tag Aurora injects\n    debug: false\n  };\n</script>", 'html') + '</div></section>\n' +

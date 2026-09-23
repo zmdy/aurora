@@ -82,14 +82,14 @@ describe('fx', () => {
 describe('text module', () => {
     function withFakeEffect() {
         var run = vi.fn();
-        var original = effects['float-up'].run;
-        effects['float-up'].run = run;
-        return { run: run, restore: function () { effects['float-up'].run = original; } };
+        var original = effects['slide-in'].run;
+        effects['slide-in'].run = run;
+        return { run: run, restore: function () { effects['slide-in'].run = original; } };
     }
 
     it('splits, hides the units and plays on load', () => {
         var fake = withFakeEffect();
-        aurora.text(el(), { trigger: 'load', effect: 'float-up' });
+        aurora.text(el(), { trigger: 'load', effect: 'slide-in' });
         expect(fake.run).toHaveBeenCalledTimes(1);
         var units = fake.run.mock.calls[0][0];
         expect(units.length).toBeGreaterThan(5);

@@ -613,7 +613,7 @@ var WORD_GAP = 24;
 var HORIZONTAL_SHIFT = 80;
 var ZOOM_SCALE = 1.15;
 var HOME_FACTOR = 0.4;
-var EASE = "inOutQuad";
+var EASE$1 = "inOutQuad";
 var VISIBLE = "inset(0% 0% 0% 0%)";
 var effect$Q = {
   id: "appear-text",
@@ -676,8 +676,8 @@ var effect$Q = {
     var total = tReveal + Math.max(200, holdMs * 0.4);
     fx.set(gridWrap, { scale: 1 });
     var tl = fx.createTimeline({ loop: true, delay: opts.delay });
-    tl.add(gridWrap, { scale: ZOOM_SCALE, duration: tIn, ease: EASE }, 0);
-    tl.add(gridWrap, { scale: 1, duration: tWipe - tIn, ease: EASE }, tIn);
+    tl.add(gridWrap, { scale: ZOOM_SCALE, duration: tIn, ease: EASE$1 }, 0);
+    tl.add(gridWrap, { scale: 1, duration: tWipe - tIn, ease: EASE$1 }, tIn);
     var denom = Math.max(1, REPEAT_COUNT - 1);
     var wipeWindow = tWipe - tIn;
     var perWipe = wipeWindow * 0.5;
@@ -686,12 +686,12 @@ var effect$Q = {
     rows.forEach(function(row) {
       fx.set(row.el, { translateX: row.driftHome });
       if (row.isCenterRow) {
-        tl.add(row.el, { translateX: row.driftFull, duration: tIn, ease: EASE }, 0);
-        tl.add(row.el, { translateX: 0, duration: tWipe - tIn, ease: EASE }, tIn);
-        tl.add(row.el, { translateX: row.driftHome, duration: tReveal - tReset, ease: EASE }, tReset);
+        tl.add(row.el, { translateX: row.driftFull, duration: tIn, ease: EASE$1 }, 0);
+        tl.add(row.el, { translateX: 0, duration: tWipe - tIn, ease: EASE$1 }, tIn);
+        tl.add(row.el, { translateX: row.driftHome, duration: tReveal - tReset, ease: EASE$1 }, tReset);
       } else {
-        tl.add(row.el, { translateX: row.driftFull, duration: tIn, ease: EASE }, 0);
-        tl.add(row.el, { translateX: row.driftHome, duration: tReset - tWord, ease: EASE }, tWord);
+        tl.add(row.el, { translateX: row.driftFull, duration: tIn, ease: EASE$1 }, 0);
+        tl.add(row.el, { translateX: row.driftHome, duration: tReset - tWord, ease: EASE$1 }, tWord);
       }
       var hidden = row.wipeLTR ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)";
       row.words.forEach(function(wordEl, wi2) {
@@ -701,8 +701,8 @@ var effect$Q = {
         var wEndOut = wStartOut + perWipe;
         var wStartIn = tReset + sweepT * (revealWindow - perReveal);
         var wEndIn = wStartIn + perReveal;
-        tl.add(wordEl, { clipPath: hidden, duration: wEndOut - wStartOut, ease: EASE }, wStartOut);
-        tl.add(wordEl, { clipPath: VISIBLE, duration: wEndIn - wStartIn, ease: EASE }, wStartIn);
+        tl.add(wordEl, { clipPath: hidden, duration: wEndOut - wStartOut, ease: EASE$1 }, wStartOut);
+        tl.add(wordEl, { clipPath: VISIBLE, duration: wEndIn - wStartIn, ease: EASE$1 }, wStartIn);
       });
     });
     tl.add(gridWrap, { scale: 1, duration: 0 }, total);
@@ -740,20 +740,6 @@ var effect$P = {
   }
 };
 var effect$O = {
-  id: "bounce-drop",
-  run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateY: [-80, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outBounce"
-    });
-  }
-};
-var effect$N = {
   id: "cinema-title",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -769,24 +755,32 @@ var effect$N = {
     });
   }
 };
-var effect$M = {
+var CONFIG$3 = {
+  down: { prop: "translateY", from: "100%" },
+  up: { prop: "translateY", from: "-100%" },
+  left: { prop: "translateX", from: "-100%" },
+  right: { prop: "translateX", from: "100%" }
+};
+var effect$N = {
   id: "clip-wrap",
-  // Words masked with splitText()'s wrap:'clip'; splits the DOM itself.
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
     textEl.style.opacity = "1";
+    var direction = opts.direction || "down";
+    var cfg = CONFIG$3[direction] || CONFIG$3.down;
     var split = fx.resplit(textEl, { words: { wrap: "clip" } });
-    fx.animate(split.words, {
-      translateY: ["100%", "0%"],
+    var props = {
       duration: opts.duration,
       delay: function(el, i) {
         return opts.delay + i * opts.stagger;
       },
       ease: "outExpo"
-    });
+    };
+    props[cfg.prop] = [cfg.from, "0%"];
+    fx.animate(split.words, props);
   }
 };
-var effect$L = {
+var effect$M = {
   id: "continuous-wave",
   // Unlike the other effects this one never settles: each unit bobs up and
   // down forever, staggered by index so the motion ripples across the text.
@@ -811,7 +805,7 @@ var effect$L = {
     });
   }
 };
-var effect$K = {
+var effect$L = {
   id: "crt-boot",
   run: function(units, opts, textEl, fx) {
     textEl.style.transformOrigin = "center center";
@@ -841,38 +835,39 @@ var effect$K = {
     }, opts.delay + 300 + Math.max(300, opts.duration) + units.length * opts.stagger);
   }
 };
+var HIDDEN_CLIP = "polygon(0% 0%, 0% 0%, -20% 100%, -20% 100%)";
+var VISIBLE_CLIP = "polygon(0% 0%, 120% 0%, 100% 100%, -20% 100%)";
+var effect$K = {
+  id: "dia-text-reveal",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    var wrap2 = document.createElement("span");
+    wrap2.style.cssText = "display:inline-block;";
+    wrap2.textContent = original;
+    textEl.appendChild(wrap2);
+    if (fx.reducedMotion) {
+      fx.set(wrap2, { clipPath: "none" });
+      return;
+    }
+    fx.set(wrap2, { clipPath: HIDDEN_CLIP });
+    fx.animate(wrap2, {
+      clipPath: VISIBLE_CLIP,
+      duration: Math.max(500, opts.duration),
+      delay: opts.delay,
+      ease: "inOutQuad",
+      onComplete: function() {
+        wrap2.style.clipPath = "none";
+      }
+    });
+    fx.onCleanup(function() {
+      wrap2.style.clipPath = "";
+    });
+  }
+};
 var effect$J = {
-  id: "domino-fall",
-  run: function(units, opts, textEl, fx) {
-    units.forEach(function(u) {
-      u.style.transformOrigin = "bottom left";
-    });
-    fx.animate(units, {
-      rotate: [-90, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
-  }
-};
-var effect$I = {
-  id: "drop-down",
-  run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateY: [-60, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
-  }
-};
-var effect$H = {
   id: "echo-clone",
   // Each letter is cloned through splitText()'s clone option for an
   // echo/depth effect; splits the DOM itself.
@@ -890,36 +885,8 @@ var effect$H = {
     });
   }
 };
-var effect$G = {
-  id: "elastic-bounce",
-  run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateY: [60, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outElastic(1, 0.4)"
-    });
-  }
-};
-var effect$F = {
-  id: "elastic-slide",
-  run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateX: [-300, 0],
-      opacity: [0, 1],
-      duration: Math.max(600, opts.duration * 1.5),
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outElastic(1, 0.4)"
-    });
-  }
-};
 var CHROMA_COLORS = ["#ff5ea8", "#5ec8ff", "#c9ff5e"];
-var effect$E = {
+var effect$I = {
   id: "elastic-text",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -986,7 +953,7 @@ var effect$E = {
     });
   }
 };
-var effect$D = {
+var effect$H = {
   id: "explosion",
   run: function(units, opts, textEl, fx) {
     fx.animate(units, {
@@ -1000,7 +967,7 @@ var effect$D = {
     });
   }
 };
-var effect$C = {
+var effect$G = {
   id: "flip-board",
   // Airport split-flap display: each unit flips down from the top,
   // faster and tighter than the Flip X effect (which flips from the center
@@ -1021,58 +988,35 @@ var effect$C = {
     });
   }
 };
-var effect$B = {
-  id: "flip-x",
+var CONFIG$2 = {
+  up: { prop: "rotateX", from: -90, origin: "center top" },
+  down: { prop: "rotateX", from: 90, origin: "center bottom" },
+  left: { prop: "rotateY", from: -90, origin: "left center" },
+  right: { prop: "rotateY", from: 90, origin: "right center" }
+};
+var effect$F = {
+  id: "flip-in",
   run: function(units, opts, textEl, fx) {
+    var direction = opts.direction || "up";
+    var cfg = CONFIG$2[direction] || CONFIG$2.up;
     units.forEach(function(u) {
-      u.style.transformOrigin = "center bottom";
+      u.style.transformOrigin = cfg.origin;
       u.style.transformStyle = "preserve-3d";
       u.style.backfaceVisibility = "hidden";
     });
-    fx.animate(units, {
-      rotateX: [90, 0],
+    var props = {
       opacity: [0, 1],
       duration: opts.duration,
+      ease: "outExpo",
       delay: function(el, i) {
         return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
+      }
+    };
+    props[cfg.prop] = [cfg.from, 0];
+    fx.animate(units, props);
   }
 };
-var effect$A = {
-  id: "flip-y",
-  run: function(units, opts, textEl, fx) {
-    units.forEach(function(u) {
-      u.style.transformStyle = "preserve-3d";
-      u.style.backfaceVisibility = "hidden";
-    });
-    fx.animate(units, {
-      rotateY: [90, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
-  }
-};
-var effect$z = {
-  id: "float-up",
-  run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateY: [60, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
-  }
-};
-var effect$y = {
+var effect$E = {
   id: "glitch",
   run: function(units, opts, textEl, fx) {
     var settleAt = opts.delay + units.length * opts.stagger + 40;
@@ -1114,7 +1058,50 @@ var effect$y = {
     }, settleAt + 80);
   }
 };
-var effect$x = {
+var effect$D = {
+  id: "gradient-flow-text",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    var base = getComputedStyle(textEl).color || "#ffffff";
+    var color1 = opts.gradientColor || "#7dd3fc";
+    var color2 = opts.gradientColor2 || "#f0abfc";
+    textEl.innerHTML = "";
+    textEl.textContent = original;
+    textEl.style.opacity = "0";
+    textEl.style.backgroundImage = "linear-gradient(90deg, " + base + ", color-mix(in srgb, " + base + " 25%, " + color1 + "), color-mix(in srgb, " + base + " 25%, " + color2 + "), " + base + ")";
+    textEl.style.backgroundSize = "300% 100%";
+    textEl.style.webkitBackgroundClip = "text";
+    textEl.style.backgroundClip = "text";
+    textEl.style.webkitTextFillColor = "transparent";
+    textEl.style.color = "transparent";
+    fx.animate(textEl, {
+      opacity: [0, 1],
+      duration: Math.max(300, opts.duration),
+      delay: opts.delay,
+      ease: "outQuad"
+    });
+    if (fx.reducedMotion) {
+      fx.set(textEl, { backgroundPositionX: "0%" });
+      return;
+    }
+    fx.animate(textEl, {
+      backgroundPositionX: ["0%", "300%"],
+      duration: Math.max(1800, opts.duration * 3),
+      delay: opts.delay,
+      loop: true,
+      ease: "linear"
+    });
+    fx.onCleanup(function() {
+      textEl.style.backgroundImage = "";
+      textEl.style.backgroundSize = "";
+      textEl.style.webkitBackgroundClip = "";
+      textEl.style.backgroundClip = "";
+      textEl.style.webkitTextFillColor = "";
+    });
+  }
+};
+var effect$C = {
   id: "heartbeat",
   run: function(units, opts, textEl, fx) {
     var fadeIn = Math.max(200, opts.duration * 0.3);
@@ -1139,7 +1126,7 @@ var effect$x = {
     }, t + 320);
   }
 };
-var effect$w = {
+var effect$B = {
   id: "letter-roll",
   run: function(units, opts, textEl, fx) {
     units.forEach(function(u) {
@@ -1155,7 +1142,7 @@ var effect$w = {
       },
       ease: "outQuart"
     });
-    if (!textEl) return;
+    if (!textEl || !opts.hoverReplay) return;
     var busy = false;
     function onEnter() {
       if (busy || !units.length) return;
@@ -1190,7 +1177,7 @@ var effect$w = {
     fx.on(textEl, "mouseenter", onEnter);
   }
 };
-var effect$v = {
+var effect$A = {
   id: "letter-swap",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -1277,6 +1264,7 @@ var effect$v = {
     fx.setTimeout(function() {
       swap(false);
     }, entranceEndMs + 250 + 900);
+    if (!opts.hoverReplay) return;
     var onEnter = function() {
       swap(true);
     };
@@ -1287,7 +1275,48 @@ var effect$v = {
     fx.on(textEl, "mouseleave", onLeave);
   }
 };
-var effect$u = {
+var effect$z = {
+  id: "line-shadow-text",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    var accent = getComputedStyle(textEl).color || "#ffffff";
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    var wrap2 = document.createElement("span");
+    wrap2.style.cssText = "position:relative;display:inline-block;";
+    var shadow = document.createElement("span");
+    shadow.textContent = original;
+    shadow.setAttribute("aria-hidden", "true");
+    shadow.style.cssText = "position:absolute;top:0;left:0;z-index:0;color:transparent;-webkit-text-stroke:1.5px " + accent + ";text-stroke:1.5px " + accent + ";opacity:.55;will-change:transform;";
+    var main = document.createElement("span");
+    main.textContent = original;
+    main.style.cssText = "position:relative;z-index:1;";
+    wrap2.appendChild(shadow);
+    wrap2.appendChild(main);
+    textEl.appendChild(wrap2);
+    fx.animate(wrap2, {
+      opacity: [0, 1],
+      duration: Math.max(300, opts.duration),
+      delay: opts.delay,
+      ease: "outQuad"
+    });
+    if (fx.reducedMotion) {
+      fx.set(shadow, { translateX: 6, translateY: 6 });
+      return;
+    }
+    fx.animate(shadow, {
+      translateX: [7, -7],
+      translateY: [7, -7],
+      duration: Math.max(1200, opts.duration * 2),
+      delay: opts.delay,
+      loop: true,
+      alternate: true,
+      ease: "inOutSine"
+    });
+  }
+};
+var effect$y = {
   id: "liquid-fill",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -1306,7 +1335,7 @@ var effect$u = {
     });
   }
 };
-var effect$t = {
+var effect$x = {
   id: "matrix-rain",
   // Units fall into place in RANDOM order (rather than left-to-right
   // sequential stagger) for a "digital rain" feel.
@@ -1322,7 +1351,7 @@ var effect$t = {
     });
   }
 };
-var effect$s = {
+var effect$w = {
   id: "mesh-text",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -1540,7 +1569,7 @@ var effect$s = {
     });
   }
 };
-var effect$r = {
+var effect$v = {
   id: "neon-flicker",
   run: function(units, opts, textEl, fx) {
     var t = opts.delay;
@@ -1575,7 +1604,7 @@ var effect$r = {
     }, afterStagger + 180);
   }
 };
-var effect$q = {
+var effect$u = {
   id: "pendulum-swing",
   run: function(units, opts, textEl, fx) {
     units.forEach(function(u) {
@@ -1592,7 +1621,7 @@ var effect$q = {
     });
   }
 };
-var effect$p = {
+var effect$t = {
   id: "perspective-fly",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -1612,7 +1641,7 @@ var effect$p = {
     });
   }
 };
-var effect$o = {
+var effect$s = {
   id: "rgb-split",
   // Chromatic-aberration converge: red & cyan channels start wide apart
   // and slide together onto the base text.
@@ -1645,14 +1674,22 @@ var effect$o = {
     });
   }
 };
-var effect$n = {
+var CONFIG$1 = {
+  left: { origin: "left bottom", from: -90 },
+  right: { origin: "right bottom", from: 90 },
+  up: { origin: "left bottom", from: 90 },
+  down: { origin: "left top", from: -90 }
+};
+var effect$r = {
   id: "rotate-in",
   run: function(units, opts, textEl, fx) {
+    var direction = opts.direction || "left";
+    var cfg = CONFIG$1[direction] || CONFIG$1.left;
     units.forEach(function(u) {
-      u.style.transformOrigin = "left bottom";
+      u.style.transformOrigin = cfg.origin;
     });
     fx.animate(units, {
-      rotate: [-90, 0],
+      rotate: [cfg.from, 0],
       opacity: [0, 1],
       duration: opts.duration,
       delay: function(el, i) {
@@ -1662,7 +1699,7 @@ var effect$n = {
     });
   }
 };
-var effect$m = {
+var effect$q = {
   id: "rotating-dial",
   // Arranges each character around a circle via trigonometry, then spins
   // the whole dial forever — recreates the "Rotating Character Dial"
@@ -1694,7 +1731,7 @@ var effect$m = {
     });
   }
 };
-var effect$l = {
+var effect$p = {
   id: "rubber-stamp",
   run: function(units, opts, textEl, fx) {
     var slamDuration = 250;
@@ -1717,7 +1754,7 @@ var effect$l = {
     }, opts.delay + units.length * opts.stagger + slamDuration);
   }
 };
-var effect$k = {
+var effect$o = {
   id: "scale-in",
   run: function(units, opts, textEl, fx) {
     fx.animate(units, {
@@ -1731,7 +1768,7 @@ var effect$k = {
     });
   }
 };
-var effect$j = {
+var effect$n = {
   id: "scatter-converge",
   // Each unit starts scattered at a random offset/rotation and converges
   // into place — the entrance-side counterpart to the hover scatter
@@ -1757,7 +1794,7 @@ var effect$j = {
     });
   }
 };
-var effect$i = {
+var effect$m = {
   id: "scramble",
   // Uses Anime.js scrambleText(); works on the whole element.
   selfManaged: true,
@@ -1769,7 +1806,7 @@ var effect$i = {
     });
   }
 };
-var effect$h = {
+var effect$l = {
   id: "scroll-highlight",
   run: function(units, opts, textEl, fx) {
     if (!units.length) return;
@@ -1809,49 +1846,183 @@ var effect$h = {
     fx.on(window, "resize", onScrollOrResize);
   }
 };
-var effect$g = {
+var effect$k = {
+  id: "scroll-velocity-marquee",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    if (!original) return;
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    textEl.style.overflow = "hidden";
+    textEl.style.display = "block";
+    if (fx.reducedMotion) {
+      textEl.textContent = original;
+      textEl.style.overflow = "";
+      textEl.style.display = "";
+      return;
+    }
+    var track = document.createElement("div");
+    track.style.cssText = "display:flex;white-space:nowrap;will-change:transform;";
+    var seg1 = document.createElement("span");
+    seg1.textContent = " • " + original;
+    seg1.style.cssText = "display:inline-block;";
+    var seg2 = seg1.cloneNode(true);
+    seg2.setAttribute("aria-hidden", "true");
+    track.appendChild(seg1);
+    track.appendChild(seg2);
+    textEl.appendChild(track);
+    var BASE_SPEED = 0.028;
+    var FRICTION = 0.06;
+    var state2 = { pos: 0, boost: 0, lastTs: null, rafId: null, running: false, lastScrollY: window.scrollY || 0 };
+    var loopDistance = 0;
+    function measure() {
+      loopDistance = seg1.getBoundingClientRect().width || seg1.offsetWidth || 1;
+    }
+    measure();
+    var resizeTimer = null;
+    function onResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = fx.setTimeout(measure, 150);
+    }
+    function onScroll() {
+      var y = window.scrollY || 0;
+      var dy = y - state2.lastScrollY;
+      state2.lastScrollY = y;
+      state2.boost += dy * 0.9;
+      var MAX_BOOST = 4;
+      if (state2.boost > MAX_BOOST) state2.boost = MAX_BOOST;
+      if (state2.boost < -MAX_BOOST) state2.boost = -MAX_BOOST;
+    }
+    function tick2(ts) {
+      if (state2.lastTs == null) state2.lastTs = ts;
+      var dt = Math.min(48, ts - state2.lastTs);
+      state2.lastTs = ts;
+      state2.boost *= 1 - FRICTION;
+      var speed = BASE_SPEED + state2.boost;
+      state2.pos += speed * dt;
+      if (loopDistance > 0) {
+        state2.pos = (state2.pos % loopDistance + loopDistance) % loopDistance;
+      }
+      fx.set(track, { translateX: -state2.pos });
+      state2.rafId = requestAnimationFrame(tick2);
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !state2.running) {
+          state2.running = true;
+          state2.lastTs = null;
+          state2.rafId = requestAnimationFrame(tick2);
+        } else if (!entry.isIntersecting && state2.running) {
+          state2.running = false;
+          if (state2.rafId) cancelAnimationFrame(state2.rafId);
+          state2.rafId = null;
+        }
+      });
+    }, { threshold: 0.01 });
+    io.observe(textEl);
+    fx.on(window, "scroll", onScroll, { passive: true });
+    fx.on(window, "resize", onResize);
+    fx.onCleanup(function() {
+      io.disconnect();
+      clearTimeout(resizeTimer);
+      if (state2.rafId) cancelAnimationFrame(state2.rafId);
+      state2.running = false;
+      textEl.style.overflow = "";
+      textEl.style.display = "";
+    });
+  }
+};
+var effect$j = {
+  id: "shiny-sweep-text",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    var base = getComputedStyle(textEl).color || "#ffffff";
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    var wrap2 = document.createElement("span");
+    wrap2.style.cssText = "position:relative;display:inline-block;color:" + base + ";";
+    var main = document.createElement("span");
+    main.textContent = original;
+    main.style.cssText = "position:relative;";
+    var shine = document.createElement("span");
+    shine.textContent = original;
+    shine.setAttribute("aria-hidden", "true");
+    shine.style.cssText = "position:absolute;top:0;left:0;background-image:linear-gradient(100deg, transparent 40%, rgba(255,255,255,.9) 50%, transparent 60%);background-size:220% 100%;background-position:150% 0;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;";
+    wrap2.appendChild(main);
+    wrap2.appendChild(shine);
+    textEl.appendChild(wrap2);
+    fx.animate(wrap2, {
+      opacity: [0, 1],
+      duration: Math.max(300, opts.duration),
+      delay: opts.delay,
+      ease: "outQuad"
+    });
+    if (fx.reducedMotion) return;
+    fx.animate(shine, {
+      backgroundPositionX: ["150%", "-80%"],
+      duration: Math.max(1600, opts.duration * 2.5),
+      delay: opts.delay,
+      loop: true,
+      ease: "inOutSine"
+    });
+  }
+};
+var CONFIG = {
+  left: { prop: "skewX", from: -35 },
+  right: { prop: "skewX", from: 35 },
+  up: { prop: "skewY", from: -20 },
+  down: { prop: "skewY", from: 20 }
+};
+var effect$i = {
   id: "skew-in",
   run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      skewX: [-35, 0],
+    var direction = opts.direction || "left";
+    var cfg = CONFIG[direction] || CONFIG.left;
+    var props = {
       opacity: [0, 1],
       duration: opts.duration,
       delay: function(el, i) {
         return opts.delay + i * opts.stagger;
       },
       ease: "outExpo"
-    });
+    };
+    props[cfg.prop] = [cfg.from, 0];
+    fx.animate(units, props);
   }
 };
-var effect$f = {
-  id: "slide-from-left",
+var AXIS = { up: "Y", down: "Y", left: "X", right: "X" };
+var SIGN = { up: -1, down: 1, left: -1, right: 1 };
+var DISTANCE = {
+  smooth: { Y: 60, X: 80 },
+  bounce: { Y: 80, X: 80 },
+  elastic: { Y: 100, X: 300 }
+};
+var EASE = { smooth: "outExpo", bounce: "outBounce", elastic: "outElastic(1, 0.4)" };
+var effect$h = {
+  id: "slide-in",
   run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateX: [-80, 0],
+    var direction = opts.direction || "down";
+    var style = opts.style || "smooth";
+    var axis = AXIS[direction] || "Y";
+    var sign2 = SIGN[direction] || 1;
+    var table = DISTANCE[style] || DISTANCE.smooth;
+    var distance = table[axis] * sign2;
+    var duration = style === "elastic" ? Math.max(600, opts.duration * 1.5) : opts.duration;
+    var props = {
       opacity: [0, 1],
-      duration: opts.duration,
+      duration,
+      ease: EASE[style] || EASE.smooth,
       delay: function(el, i) {
         return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
+      }
+    };
+    props["translate" + axis] = [distance, 0];
+    fx.animate(units, props);
   }
 };
-var effect$e = {
-  id: "slide-right",
-  run: function(units, opts, textEl, fx) {
-    fx.animate(units, {
-      translateX: [80, 0],
-      opacity: [0, 1],
-      duration: opts.duration,
-      delay: function(el, i) {
-        return opts.delay + i * opts.stagger;
-      },
-      ease: "outExpo"
-    });
-  }
-};
-var effect$d = {
+var effect$g = {
   id: "slot-machine",
   run: function(units, opts, textEl, fx) {
     fx.animate(units, {
@@ -1865,7 +2036,60 @@ var effect$d = {
     });
   }
 };
-var effect$c = {
+var SPARKLE_COUNT = 10;
+var SPARKLE_PATH = "M9.82531 0.843845C10.0553 0.215178 10.9446 0.215178 11.1746 0.843845L11.8618 2.72026C12.4006 4.19229 12.3916 6.39157 13.5 7.5C14.6084 8.60843 16.8077 8.59935 18.2797 9.13822L20.1561 9.82534C20.7858 10.0553 20.7858 10.9447 20.1561 11.1747L18.2797 11.8618C16.8077 12.4007 14.6084 12.3916 13.5 13.5C12.3916 14.6084 12.4006 16.8077 11.8618 18.2798L11.1746 20.1562C10.9446 20.7858 10.0553 20.7858 9.82531 20.1562L9.13819 18.2798C8.59932 16.8077 8.60843 14.6084 7.5 13.5C6.39157 12.3916 4.19225 12.4007 2.72023 11.8618L0.843814 11.1747C0.215148 10.9447 0.215148 10.0553 0.843814 9.82534L2.72023 9.13822C4.19225 8.59935 6.39157 8.60843 7.5 7.5C8.60843 6.39157 8.59932 4.19229 9.13819 2.72026L9.82531 0.843845Z";
+var SVG_NS$1 = "http://www.w3.org/2000/svg";
+function sparkleSvg(fx, wrap2, color1, color2) {
+  var size = fx.utils.random(12, 22);
+  var svg = document.createElementNS(SVG_NS$1, "svg");
+  svg.setAttribute("viewBox", "0 0 21 21");
+  svg.setAttribute("aria-hidden", "true");
+  svg.style.cssText = "position:absolute;pointer-events:none;width:" + size + "px;height:" + size + "px;left:" + fx.utils.random(-6, 100) + "%;top:" + fx.utils.random(-25, 100) + "%;transform:translate(-50%,-50%) scale(0);opacity:0;will-change:transform,opacity;";
+  var path = document.createElementNS(SVG_NS$1, "path");
+  path.setAttribute("d", SPARKLE_PATH);
+  path.setAttribute("fill", Math.random() < 0.5 ? color1 : color2);
+  svg.appendChild(path);
+  wrap2.appendChild(svg);
+  return svg;
+}
+var effect$f = {
+  id: "sparkles-text",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    var color1 = opts.sparkleColor || "#9E7AFF";
+    var color2 = opts.sparkleColor2 || "#FE8BBB";
+    var wrap2 = document.createElement("span");
+    wrap2.style.cssText = "position:relative;display:inline-block;";
+    var label = document.createElement("span");
+    label.textContent = original;
+    label.style.cssText = "position:relative;";
+    wrap2.appendChild(label);
+    textEl.appendChild(wrap2);
+    fx.animate(label, {
+      opacity: [0, 1],
+      duration: Math.max(300, opts.duration),
+      delay: opts.delay,
+      ease: "outQuad"
+    });
+    if (fx.reducedMotion) return;
+    for (var i = 0; i < SPARKLE_COUNT; i++) {
+      var sparkle = sparkleSvg(fx, wrap2, color1, color2);
+      fx.animate(sparkle, {
+        opacity: [0, 1, 1, 0],
+        scale: [0, 1, 1, 0],
+        rotate: [0, fx.utils.random(-40, 40)],
+        duration: fx.utils.random(900, 1700),
+        delay: opts.delay + fx.utils.random(0, 1800),
+        loop: true,
+        ease: "inOutSine"
+      });
+    }
+  }
+};
+var effect$e = {
   id: "spin-in",
   run: function(units, opts, textEl, fx) {
     fx.animate(units, {
@@ -1880,7 +2104,63 @@ var effect$c = {
     });
   }
 };
-var effect$b = {
+var effect$d = {
+  id: "spinning-circular-text",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    if (!original) return;
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    var fontSize = parseFloat(getComputedStyle(textEl).fontSize) || 24;
+    var radius = Math.max(26, fontSize * 1.3);
+    var size = radius * 2 + fontSize;
+    var wrap2 = document.createElement("span");
+    wrap2.style.cssText = "position:relative;display:inline-block;width:" + size + "px;height:" + size + "px;vertical-align:middle;";
+    var ring2 = document.createElement("span");
+    ring2.style.cssText = "position:absolute;inset:0;will-change:transform;";
+    wrap2.appendChild(ring2);
+    textEl.appendChild(wrap2);
+    if (fx.reducedMotion) {
+      textEl.innerHTML = "";
+      textEl.textContent = original;
+      return;
+    }
+    var unit = (original + " • ").split(" ").join(" ");
+    var circumference = 2 * Math.PI * radius;
+    var avgCharWidth = fontSize * 0.78;
+    var slotCount = Math.max(unit.length, Math.round(circumference / avgCharWidth));
+    var repeated = "";
+    while (repeated.length < slotCount) repeated += unit;
+    var chars = repeated.slice(0, slotCount).split("");
+    var step = 360 / chars.length;
+    chars.forEach(function(ch, i) {
+      var slot = document.createElement("span");
+      var angle = i * step;
+      slot.style.cssText = "position:absolute;left:50%;top:50%;transform-origin:0 0;transform:rotate(" + angle + "deg) translateY(-" + radius + "px);";
+      var glyph = document.createElement("span");
+      glyph.textContent = ch;
+      glyph.style.cssText = "position:absolute;left:0;top:0;transform:translate(-50%,-50%);white-space:nowrap;";
+      slot.appendChild(glyph);
+      ring2.appendChild(slot);
+    });
+    fx.set(wrap2, { opacity: 0 });
+    fx.animate(wrap2, {
+      opacity: [0, 1],
+      duration: Math.max(300, opts.duration),
+      delay: opts.delay,
+      ease: "outQuad"
+    });
+    fx.animate(ring2, {
+      rotate: [0, 360],
+      duration: Math.max(4e3, opts.duration * 6),
+      delay: opts.delay,
+      loop: true,
+      ease: "linear"
+    });
+  }
+};
+var effect$c = {
   id: "spiral-in",
   run: function(units, opts, textEl, fx) {
     fx.animate(units, {
@@ -1901,7 +2181,7 @@ var effect$b = {
     });
   }
 };
-var effect$a = {
+var effect$b = {
   id: "split-chars",
   // Uses Anime.js splitText() instead of the generic pre-split units.
   selfManaged: true,
@@ -1919,7 +2199,7 @@ var effect$a = {
     });
   }
 };
-var effect$9 = {
+var effect$a = {
   id: "stagger-flip-3d",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
@@ -1976,13 +2256,14 @@ var effect$9 = {
       });
     }
     play2(true);
+    if (!opts.hoverReplay) return;
     function onEnter() {
       play2(false);
     }
     fx.on(textEl, "mouseenter", onEnter);
   }
 };
-var effect$8 = {
+var effect$9 = {
   id: "stretch-warp",
   run: function(units, opts, textEl, fx) {
     fx.animate(units, {
@@ -1997,7 +2278,7 @@ var effect$8 = {
     });
   }
 };
-var effect$7 = {
+var effect$8 = {
   id: "text-emerge",
   run: function(units, opts, textEl, fx) {
     var center2 = (units.length - 1) / 2;
@@ -2011,6 +2292,37 @@ var effect$7 = {
         delay: opts.delay + distance * opts.stagger,
         ease: "outBack"
       });
+    });
+  }
+};
+var effect$7 = {
+  id: "text-highlighter",
+  selfManaged: true,
+  run: function(units, opts, textEl, fx) {
+    var original = fx.original || textEl.textContent || "";
+    textEl.innerHTML = "";
+    textEl.style.opacity = "1";
+    var wrap2 = document.createElement("span");
+    wrap2.style.cssText = "position:relative;display:inline-block;padding:0 .1em;";
+    var color = opts.highlightColor || "#facc15";
+    var mark = document.createElement("span");
+    mark.setAttribute("aria-hidden", "true");
+    mark.style.cssText = "position:absolute;left:-2%;right:-2%;top:12%;bottom:8%;z-index:0;background:color-mix(in srgb, " + color + " 55%, transparent);border-radius:2px 9px 3px 8px;transform:scaleX(0) rotate(-1deg);transform-origin:0% 50%;";
+    var label = document.createElement("span");
+    label.textContent = original;
+    label.style.cssText = "position:relative;z-index:1;";
+    wrap2.appendChild(mark);
+    wrap2.appendChild(label);
+    textEl.appendChild(wrap2);
+    if (fx.reducedMotion) {
+      fx.set(mark, { scaleX: 1, rotate: "-1deg" });
+      return;
+    }
+    fx.animate(mark, {
+      scaleX: [0, 1],
+      duration: Math.max(400, opts.duration),
+      delay: opts.delay,
+      ease: "inOutQuad"
     });
   }
 };
@@ -2521,7 +2833,7 @@ var schema$4 = {
   options: {
     effect: {
       type: "enum",
-      default: "float-up",
+      default: "slide-in",
       values: EFFECT_IDS.map(function(id) {
         return { value: id, label: labelFor(id) };
       }),
@@ -2565,6 +2877,63 @@ var schema$4 = {
       description: "CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.",
       group: "Advanced"
     },
+    direction: {
+      type: "enum",
+      default: "down",
+      values: ["up", "down", "left", "right"],
+      label: "Direction",
+      description: "Side the effect enters from. Used by slide-in, flip-in, rotate-in, skew-in and clip-wrap.",
+      group: "Effect"
+    },
+    style: {
+      type: "enum",
+      default: "smooth",
+      values: ["smooth", "bounce", "elastic"],
+      label: "Style",
+      description: "Easing character of the slide-in effect.",
+      group: "Effect",
+      when: { effect: "slide-in" }
+    },
+    sparkleColor: {
+      type: "color",
+      default: "#9E7AFF",
+      label: "Sparkle color",
+      description: 'First of the two colors "sparkles-text" alternates between.',
+      group: "Effect",
+      when: { effect: "sparkles-text" }
+    },
+    sparkleColor2: {
+      type: "color",
+      default: "#FE8BBB",
+      label: "Sparkle color 2",
+      description: 'Second of the two colors "sparkles-text" alternates between. Set it equal to Sparkle color for a single solid color.',
+      group: "Effect",
+      when: { effect: "sparkles-text" }
+    },
+    gradientColor: {
+      type: "color",
+      default: "#7dd3fc",
+      label: "Gradient color",
+      description: 'First accent color "gradient-flow-text" blends into the base text color as it sweeps.',
+      group: "Effect",
+      when: { effect: "gradient-flow-text" }
+    },
+    gradientColor2: {
+      type: "color",
+      default: "#f0abfc",
+      label: "Gradient color 2",
+      description: 'Second accent color "gradient-flow-text" blends into the base text color as it sweeps.',
+      group: "Effect",
+      when: { effect: "gradient-flow-text" }
+    },
+    highlightColor: {
+      type: "color",
+      default: "#facc15",
+      label: "Highlight color",
+      description: 'Color of the marker stroke "text-highlighter" draws behind the text.',
+      group: "Effect",
+      when: { effect: "text-highlighter" }
+    },
     hoverScatter: {
       type: "boolean",
       default: false,
@@ -2573,7 +2942,14 @@ var schema$4 = {
       group: "Hover"
     },
     hoverIntensity: { type: "number", default: 24, min: 1, max: 200, unit: "px", label: "Scatter intensity", group: "Hover", when: { hoverScatter: true } },
-    hoverDuration: { type: "number", default: 350, min: 50, max: 3e3, unit: "ms", label: "Scatter duration", group: "Hover", when: { hoverScatter: true } }
+    hoverDuration: { type: "number", default: 350, min: 50, max: 3e3, unit: "ms", label: "Scatter duration", group: "Hover", when: { hoverScatter: true } },
+    hoverReplay: {
+      type: "boolean",
+      default: false,
+      label: "Replay on hover",
+      description: "Effects with a built-in hover gesture (letter roll, letter swap, stagger flip 3d) only replay it when this is on. Off by default so hover is never a hidden requirement to see the effect.",
+      group: "Hover"
+    }
   }
 };
 var CHAR_STYLE = "display:inline-block;will-change:transform,opacity;text-transform:none;";

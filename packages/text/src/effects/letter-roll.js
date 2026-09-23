@@ -12,8 +12,7 @@ var effect = {
             ease: 'outQuart',
         });
 
-        if (!textEl) return;
-
+        if (!textEl || !opts.hoverReplay) return;
 
         var busy = false;
         function onEnter() {
