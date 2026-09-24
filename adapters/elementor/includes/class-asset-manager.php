@@ -41,15 +41,29 @@ final class Asset_Manager {
 		return AURORA_URL . 'assets/js/aurora/' . $file;
 	}
 
+	/**
+	 * Cache-busting version for an asset: the plugin version plus the file's
+	 * modification time. This makes browsers (and the Elementor editor preview)
+	 * re-fetch a changed script even when the plugin version itself is
+	 * unchanged — otherwise `?ver=1.0.0` stays identical and the old, cached
+	 * file keeps running after an update.
+	 *
+	 * @param string $relative_path Path under the plugin root.
+	 */
+	private static function ver( string $relative_path ): string {
+		$mtime = @filemtime( AURORA_PATH . $relative_path );
+		return $mtime ? AURORA_VERSION . '.' . $mtime : AURORA_VERSION;
+	}
+
 	public function register_scripts(): void {
-		wp_register_script( 'aurora-core', $this->file_url( 'aurora.core.min.js' ), [], AURORA_VERSION, true );
+		wp_register_script( 'aurora-core', $this->file_url( 'aurora.core.min.js' ), [], self::ver( 'assets/js/aurora/aurora.core.min.js' ), true );
 
 		foreach ( [ 'text', 'children', 'cursor', 'gradient', 'morph-card' ] as $module ) {
 			wp_register_script(
 				self::handle( $module ),
 				$this->file_url( 'aurora.' . $module . '.min.js' ),
 				[ 'aurora-core' ],
-				AURORA_VERSION,
+				self::ver( 'assets/js/aurora/aurora.' . $module . '.min.js' ),
 				true
 			);
 		}
@@ -64,8 +78,8 @@ final class Asset_Manager {
 	public static function need( string $module ): void {
 		self::instance();
 		if ( ! wp_script_is( 'aurora-core', 'registered' ) ) {
-			wp_register_script( 'aurora-core', AURORA_URL . 'assets/js/aurora/aurora.core.min.js', [], AURORA_VERSION, true );
-			wp_register_script( self::handle( $module ), AURORA_URL . 'assets/js/aurora/aurora.' . $module . '.min.js', [ 'aurora-core' ], AURORA_VERSION, true );
+			wp_register_script( 'aurora-core', AURORA_URL . 'assets/js/aurora/aurora.core.min.js', [], self::ver( 'assets/js/aurora/aurora.core.min.js' ), true );
+			wp_register_script( self::handle( $module ), AURORA_URL . 'assets/js/aurora/aurora.' . $module . '.min.js', [ 'aurora-core' ], self::ver( 'assets/js/aurora/aurora.' . $module . '.min.js' ), true );
 		}
 		wp_enqueue_script( self::handle( $module ) );
 	}
@@ -87,7 +101,7 @@ final class Asset_Manager {
 			$handles[] = self::handle( 'morph-card' );
 		}
 
-		wp_register_script( 'aurora-elementor-adapter', AURORA_URL . 'assets/js/elementor-adapter.js', $handles, AURORA_VERSION, true );
+		wp_register_script( 'aurora-elementor-adapter', AURORA_URL . 'assets/js/elementor-adapter.js', $handles, self::ver( 'assets/js/elementor-adapter.js' ), true );
 		wp_localize_script(
 			'aurora-elementor-adapter',
 			'AuroraElementor',
