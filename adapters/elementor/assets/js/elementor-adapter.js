@@ -13,7 +13,7 @@
     'use strict';
 
     var data = window.AuroraElementor;
-    if (!data || !window.elementorFrontend) return;
+    if (!data) return;
 
     var MODULES = ['text', 'children', 'cursor', 'gradient'];
 
@@ -103,28 +103,25 @@
         return options;
     }
 
-    function settingsOf($scope) {
-        var id = $scope.data('model-cid');
-        var models = window.elementorFrontend.config.elements && window.elementorFrontend.config.elements.data;
-        var model = models && models[id];
-        return model && model.attributes ? model.attributes : {};
+    function elementNameOf($el) {
+        var name = $el.data('element_type') || '';
+        var widgetType = $el.data('widget_type');
+        if (widgetType) name = String(widgetType).split('.')[0];
+        return name;
     }
 
-    function sync($scope) {
+    /** Applies (or tears down) every module on one element from its settings. */
+    function applyAll(node, elementName, settings) {
         var Aurora = window.Aurora;
-        if (!Aurora) return;
-
-        var settings = settingsOf($scope);
-        var elementName = $scope.data('element_type') || '';
-        var widgetType = $scope.data('widget_type');
-        if (widgetType) elementName = String(widgetType).split('.')[0];
+        if (!Aurora || !node) return;
 
         MODULES.forEach(function (module) {
-            var options = buildOptions(module, elementName, settings);
             var api = Aurora[camel(module)];
             if (!api) return;
-            var node = $scope[0];
+            var options = buildOptions(module, elementName, settings);
             if (options) {
+                // mount() already destroys any previous instance, so calling
+                // the API again just re-applies with the new options.
                 api(node, options);
             } else {
                 var existing = Aurora.get && Aurora.get(node, module);
@@ -133,5 +130,59 @@
         });
     }
 
-    window.elementorFrontend.hooks.addAction('frontend/element_ready/global', sync);
+    /**
+     * Register a real Elementor frontend handler instead of a one-shot
+     * `element_ready` callback. The editor re-renders elements in the browser
+     * without going through PHP, so the `data-aurora-*` attributes are never
+     * (re)written there — the effect has to be driven from the live control
+     * settings. `onInit` shows it on first render and `onElementChange` re-runs
+     * it every time an Aurora control changes, which is what makes the preview
+     * update live as you edit (the frontend page keeps using the PHP-written
+     * attributes and the standalone scripts, untouched).
+     */
+    function registerHandler() {
+        if (!window.elementorModules || !window.elementorModules.frontend || !window.elementorModules.frontend.handlers) {
+            return false;
+        }
+        if (!window.elementorFrontend || !window.elementorFrontend.hooks || !window.elementorFrontend.elementsHandler) {
+            return false;
+        }
+
+        var Base = window.elementorModules.frontend.handlers.Base;
+
+        function AuroraHandler() { Base.apply(this, arguments); }
+        AuroraHandler.prototype = Object.create(Base.prototype);
+        AuroraHandler.prototype.constructor = AuroraHandler;
+
+        AuroraHandler.prototype.syncAurora = function () {
+            var node = this.$element && this.$element[0];
+            if (!node) return;
+            applyAll(node, elementNameOf(this.$element), this.getElementSettings());
+        };
+
+        AuroraHandler.prototype.onInit = function () {
+            Base.prototype.onInit.apply(this, arguments);
+            this.syncAurora();
+        };
+
+        AuroraHandler.prototype.onElementChange = function (propertyName) {
+            if (propertyName && propertyName.indexOf('aurora_') === 0) {
+                this.syncAurora();
+            }
+        };
+
+        window.elementorFrontend.hooks.addAction('frontend/element_ready/global', function ($element) {
+            window.elementorFrontend.elementsHandler.addHandler(AuroraHandler, { $element: $element });
+        });
+
+        return true;
+    }
+
+    if (!registerHandler()) {
+        // elementorFrontend not ready yet — retry once it initializes.
+        if (window.jQuery) {
+            window.jQuery(window).on('elementor/frontend/init', registerHandler);
+        }
+        window.addEventListener('load', registerHandler);
+    }
 })();
