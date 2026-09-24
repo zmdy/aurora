@@ -90,12 +90,47 @@ class Schema_Module extends Animation_Module {
 		return in_array( $element->get_name(), $this->config['elements'], true );
 	}
 
+	/**
+	 * Each targeted WIDGET is reached through its own last control section,
+	 * because Elementor has no per-widget hook that fires after the shared
+	 * common Advanced sections: `{widget}/_section_responsive` never fires
+	 * (the responsive section lives on the shared `common` stack and fires
+	 * only as `common/_section_responsive`, with the pseudo-name "common").
+	 * Hooking `common` would place the panel on EVERY widget and its callback
+	 * can't tell which widget it is, so applies_to_element() could never scope
+	 * it to this module's targets. A widget's own section instead fires with
+	 * the real widget name, which applies_to_element() matches — so the panel
+	 * shows up only on the module's targeted widgets.
+	 *
+	 * Structural elements (section, column, container) are absent here and fall
+	 * back to `_section_responsive`, keeping their panel at the bottom of the
+	 * Advanced tab. Widget panels land after the widget's own controls (above
+	 * the common sections) — the only placement Elementor allows for a
+	 * widget-scoped hook.
+	 *
+	 * @var array<string, string> Widget name => its last own control section.
+	 */
+	const WIDGET_ANCHORS = [
+		'heading'       => 'section_title_style',
+		'text-editor'   => 'section_style',
+		'button'        => 'section_style',
+		'icon'          => 'section_style_icon',
+		'icon-box'      => 'section_style_content',
+		'image-box'     => 'section_style_content',
+		'image'         => 'section_style_image',
+		'testimonial'   => 'section_style_testimonial_job',
+		'icon-list'     => 'section_text_style',
+		'alert'         => 'section_dismiss_icon',
+		'image-gallery' => 'section_caption',
+	];
+
 	protected function get_controls_hooks(): array {
 		$priority = $this->config['priority'] ?? 10;
 		$hooks    = [];
-		foreach ( [ 'common', 'common-optimized', 'section', 'column', 'container' ] as $name ) {
+		foreach ( $this->config['elements'] as $element ) {
+			$section = self::WIDGET_ANCHORS[ $element ] ?? '_section_responsive';
 			$hooks[] = [
-				'hook'     => 'elementor/element/' . $name . '/_section_responsive/after_section_end',
+				'hook'     => 'elementor/element/' . $element . '/' . $section . '/after_section_end',
 				'priority' => $priority,
 			];
 		}
