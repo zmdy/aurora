@@ -53,6 +53,7 @@ final class Gradient_Module extends Schema_Module {
 					'options'     => $options,
 					'condition'   => [ $this->enable_id() => 'yes' ],
 					'render_type' => 'template',
+					'frontend_available' => true,
 				]
 			);
 		}
@@ -91,6 +92,7 @@ final class Gradient_Module extends Schema_Module {
 				'title_field' => '{{{ color }}}',
 				'condition'   => [ $this->enable_id() => 'yes' ],
 				'render_type' => 'template',
+				'frontend_available' => true,
 			]
 		);
 	}

@@ -178,11 +178,19 @@
         return true;
     }
 
-    if (!registerHandler()) {
-        // elementorFrontend not ready yet — retry once it initializes.
+    // Register once. In the editor preview `elementorFrontend.hooks` attaches
+    // after this script runs, so the first call usually fails — retry on
+    // `elementor/frontend/init` and on window load until it succeeds.
+    var registered = false;
+    function tryRegister() {
+        if (registered) return true;
+        registered = registerHandler();
+        return registered;
+    }
+    if (!tryRegister()) {
         if (window.jQuery) {
-            window.jQuery(window).on('elementor/frontend/init', registerHandler);
+            window.jQuery(window).on('elementor/frontend/init', tryRegister);
         }
-        window.addEventListener('load', registerHandler);
+        window.addEventListener('load', tryRegister);
     }
 })();

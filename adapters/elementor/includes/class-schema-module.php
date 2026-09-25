@@ -192,13 +192,18 @@ class Schema_Module extends Animation_Module {
 		$element->add_control(
 			$this->enable_id(),
 			[
-				'label'        => esc_html( $this->config['label'] ),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'On', 'aurora-for-elementor' ),
-				'label_off'    => esc_html__( 'Off', 'aurora-for-elementor' ),
-				'return_value' => 'yes',
-				'default'      => '',
-				'render_type'  => 'template',
+				'label'              => esc_html( $this->config['label'] ),
+				'type'               => Controls_Manager::SWITCHER,
+				'label_on'           => esc_html__( 'On', 'aurora-for-elementor' ),
+				'label_off'          => esc_html__( 'Off', 'aurora-for-elementor' ),
+				'return_value'       => 'yes',
+				'default'            => '',
+				'render_type'        => 'template',
+				// The editor adapter reads settings through the frontend handler's
+				// getElementSettings(), which only exposes frontend_available
+				// controls — without this every Aurora option is undefined there
+				// and the live preview never runs.
+				'frontend_available' => true,
 			]
 		);
 
@@ -242,10 +247,13 @@ class Schema_Module extends Animation_Module {
 	protected function control_args( string $name, array $spec ): ?array {
 
 		$args = [
-			'label'       => esc_html( $spec['label'] ?? $name ),
-			'description' => isset( $spec['description'] ) ? esc_html( $spec['description'] ) : '',
-			'condition'   => $this->conditions( $spec ),
-			'render_type' => 'template',
+			'label'              => esc_html( $spec['label'] ?? $name ),
+			'description'        => isset( $spec['description'] ) ? esc_html( $spec['description'] ) : '',
+			'condition'          => $this->conditions( $spec ),
+			'render_type'        => 'template',
+			// Exposed to the editor adapter via getElementSettings() (see the
+			// enable control above for why this is required).
+			'frontend_available' => true,
 		];
 
 		switch ( $spec['type'] ) {

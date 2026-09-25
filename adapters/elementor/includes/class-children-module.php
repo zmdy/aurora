@@ -50,6 +50,7 @@ final class Children_Module extends Schema_Module {
 				],
 				'condition'   => [ $this->enable_id() => 'yes' ],
 				'render_type' => 'template',
+				'frontend_available' => true,
 			]
 		);
 
@@ -64,6 +65,7 @@ final class Children_Module extends Schema_Module {
 					$this->control_id( 'choice' ) => 'custom',
 				],
 				'render_type' => 'template',
+				'frontend_available' => true,
 			]
 		);
 	}
