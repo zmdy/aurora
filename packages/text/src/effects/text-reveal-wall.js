@@ -54,30 +54,22 @@ function distributeWordsAcrossLines(words, numLines) {
 }
 
 function generateLineDataForWords(wordsForLine, totalChars) {
+    if (!wordsForLine.length) return [];
+
+    // Lay the line's words out as one block, a single space between them, and
+    // center that block within the row so the revealed phrase reads centered
+    // instead of scattered at random columns.
+    var lengths = wordsForLine.map(function (w) { return w.length; });
+    var blockLen = lengths.reduce(function (sum, l) { return sum + l; }, 0) + (wordsForLine.length - 1);
+    if (blockLen > totalChars) blockLen = totalChars;
+
+    var cursor = Math.max(0, Math.floor((totalChars - blockLen) / 2));
     var wordPositions = [];
-    var usedRanges = [];
     wordsForLine.forEach(function (word) {
-        var wordLen = word.length;
-        if (wordLen >= totalChars) return;
-        var placed = false;
-        var attempts = 0;
-        while (!placed && attempts < 50) {
-            var maxStart = totalChars - wordLen;
-            if (maxStart < 0) break;
-            var start = Math.floor(Math.random() * (maxStart + 1));
-            var end = start + wordLen;
-            var overlaps = usedRanges.some(function (u) {
-                return (start >= u.start && start < u.end) || (end > u.start && end <= u.end) || (start <= u.start && end >= u.end);
-            });
-            if (!overlaps) {
-                wordPositions.push({ word: word, start: start, end: end });
-                usedRanges.push({ start: start, end: end });
-                placed = true;
-            }
-            attempts++;
-        }
+        if (cursor + word.length > totalChars) return;
+        wordPositions.push({ word: word, start: cursor, end: cursor + word.length });
+        cursor += word.length + 1; // +1 keeps a blank column between words
     });
-    wordPositions.sort(function (a, b) { return a.start - b.start; });
     return wordPositions;
 }
 
@@ -129,6 +121,7 @@ var effect = {
 
         var reducedMotion = fx.reducedMotion;
         var reverseLine = true;
+        var loop = opts.wallLoop !== false;
 
         var wordsColor = getComputedStyle(textEl).color || 'rgb(255, 255, 255)';
         var cm = wordsColor.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/);
@@ -161,7 +154,9 @@ var effect = {
             var COLS = Math.max(20, Math.min(160, Math.floor(containerWidth / charWidth)));
             var cellWidth = containerWidth / COLS;
 
-            var ROWS = Math.max(8, Math.min(28, words.length + 8));
+            var ROWS = opts.wallLines
+                ? Math.max(4, Math.min(40, Math.round(opts.wallLines)))
+                : Math.max(8, Math.min(28, words.length + 8));
 
             textEl.innerHTML = '';
             textEl.style.opacity = '1';
@@ -236,6 +231,13 @@ var effect = {
                         onUpdate: function () { updateLine(index); },
                     }, lineDelay + phaseOffset);
                 });
+
+                // Loop off: reveal once and hold — skip the un-reveal phase and
+                // never reschedule, so the settled text stays on screen.
+                if (!loop) {
+                    anims.push(tl);
+                    return;
+                }
 
                 linesData.forEach(function (_, index) {
                     var lineDelay = index * stagger;
