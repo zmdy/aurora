@@ -34,6 +34,19 @@ export function guardGlyphBox(el, painter, padding) {
  */
 export function paintText(textEl, trackEl, options, stops, painter, animated) {
     guardGlyphBox(textEl, painter, '0.1em');
+
+    // Self-managed text effects (appear-text, text-reveal-wall, clip-wrap, …)
+    // throw away textEl's markup and rebuild it as their own nested spans,
+    // each with its own `color`. Those spans then hide the gradient (and,
+    // because they read getComputedStyle(textEl).color while the gradient has
+    // set it to transparent, they render invisibly). Forcing every descendant
+    // of a gradient-painted text element to a transparent text-fill — through a
+    // class + CSS rule rather than inline styles the effect would overwrite —
+    // lets the gradient (clipped to text on textEl) show through whatever
+    // structure the effect builds, now and after every rebuild, with no
+    // per-frame repainting.
+    painter.addClass(textEl, 'aurora-gradient-text-fill');
+
     var leaves = Array.prototype.slice.call(textEl.querySelectorAll(LEAF_SELECTOR));
 
     if (options.followMouse) {

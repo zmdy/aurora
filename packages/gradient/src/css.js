@@ -116,6 +116,9 @@ export var STYLESHEET =
     'filter:blur(var(--aurora-gradient-blur,40px));' +
     'animation:aurora-gradient-flow var(--aurora-gradient-speed,8s) ease-in-out infinite}' +
     '.aurora-gradient-text{background-repeat:no-repeat}' +
+    // Makes the gradient (clipped to text on the host) show through the spans
+    // that self-managed effects rebuild inside it — see paintText().
+    '.aurora-gradient-text-fill *{-webkit-text-fill-color:transparent}' +
     '.aurora-gradient-icon{background-repeat:no-repeat;display:inline-block}' +
     ANIMATED_TEXT +
     '.aurora-gradient-icon-hue svg,.aurora-gradient-icon-hue i{animation:aurora-gradient-hue var(--aurora-gradient-speed,8s) linear infinite}' +
