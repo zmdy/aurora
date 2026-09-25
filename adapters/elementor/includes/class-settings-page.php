@@ -27,9 +27,14 @@ final class Settings_Page {
 		add_action( 'admin_init', [ $this, 'register_setting' ] );
 	}
 
-	/** URL of the brand mark that ships inside the plugin. */
-	private function logo_url(): string {
-		return AURORA_URL . 'assets/branding/aurora-dashboard-logo.svg';
+	/** White single-color mark, sized for the dark wp-admin menu. */
+	private function menu_icon_url(): string {
+		return AURORA_URL . 'assets/branding/aurora-menu-icon.svg';
+	}
+
+	/** Full colored wordmark, for the dashboard header. */
+	private function header_logo_url(): string {
+		return AURORA_URL . 'assets/branding/logo_aurora_animated.svg';
 	}
 
 	public function add_menu(): void {
@@ -39,7 +44,7 @@ final class Settings_Page {
 			'manage_options',
 			self::SLUG,
 			[ $this, 'render' ],
-			$this->logo_url(),
+			$this->menu_icon_url(),
 			59
 		);
 	}
@@ -86,12 +91,13 @@ final class Settings_Page {
 			<?php $this->styles(); ?>
 
 			<div class="aurora-dash__header">
-				<img class="aurora-dash__logo" src="<?php echo esc_url( $this->logo_url() ); ?>" alt="Aurora" />
 				<div class="aurora-dash__head-text">
-					<h1>
-						<?php esc_html_e( 'Aurora for Elementor', 'aurora-for-elementor' ); ?>
+					<h1 class="screen-reader-text"><?php esc_html_e( 'Aurora for Elementor', 'aurora-for-elementor' ); ?></h1>
+					<div class="aurora-dash__brand">
+						<img class="aurora-dash__logo" src="<?php echo esc_url( $this->header_logo_url() ); ?>" alt="Aurora" />
+						<span class="aurora-dash__for"><?php esc_html_e( 'for Elementor', 'aurora-for-elementor' ); ?></span>
 						<span class="aurora-dash__version">v<?php echo esc_html( AURORA_VERSION ); ?></span>
-					</h1>
+					</div>
 					<p><?php esc_html_e( 'The open-source Swiss Army knife for animated web design — text animations, animated children, gradients, a cursor follower and a morphing card, no code required.', 'aurora-for-elementor' ); ?></p>
 					<div class="aurora-dash__actions">
 						<a class="button button-primary" href="<?php echo esc_url( admin_url( 'edit.php?post_type=page' ) ); ?>"><?php esc_html_e( 'Edit a page with Elementor', 'aurora-for-elementor' ); ?></a>
@@ -180,9 +186,10 @@ final class Settings_Page {
 		?>
 		<style>
 			.aurora-dash { --aurora-accent:#7c6cff; --aurora-accent-2:#2af598; max-width:1180px; }
-			.aurora-dash__header { display:flex; gap:20px; align-items:center; background:#fff; border:1px solid #e2e4e7; border-radius:12px; padding:22px 24px; margin:16px 0 20px; }
-			.aurora-dash__logo { width:52px; height:60px; flex:0 0 auto; }
-			.aurora-dash__head-text h1 { margin:0 0 4px; font-size:22px; display:flex; align-items:center; gap:10px; }
+			.aurora-dash__header { background:#fff; border:1px solid #e2e4e7; border-radius:12px; padding:22px 24px; margin:16px 0 20px; }
+			.aurora-dash__brand { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+			.aurora-dash__logo { height:40px; width:auto; display:block; }
+			.aurora-dash__for { font-size:18px; font-weight:600; color:#1d2327; }
 			.aurora-dash__version { font-size:12px; font-weight:600; color:#fff; background:linear-gradient(135deg,var(--aurora-accent),var(--aurora-accent-2)); padding:2px 8px; border-radius:999px; }
 			.aurora-dash__head-text p { margin:0 0 12px; color:#50575e; max-width:70ch; }
 			.aurora-dash__actions .button { margin-right:8px; }
