@@ -25,9 +25,10 @@ final class Settings_Page {
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu' ] );
 		add_action( 'admin_init', [ $this, 'register_setting' ] );
+		add_action( 'admin_head', [ $this, 'menu_icon_css' ] );
 	}
 
-	/** White single-color mark, sized for the dark wp-admin menu. */
+	/** Single-color mark used as the menu icon mask. */
 	private function menu_icon_url(): string {
 		return AURORA_URL . 'assets/branding/aurora-menu-icon.svg';
 	}
@@ -37,6 +38,16 @@ final class Settings_Page {
 		return AURORA_URL . 'assets/branding/logo_aurora_animated.svg';
 	}
 
+	/**
+	 * A base64 SVG data URI is registered as the icon so WordPress builds the
+	 * `.wp-menu-image.svg` node (and shows the mark as a graceful fallback if
+	 * the CSS below is ever stripped). menu_icon_css() then masks it.
+	 */
+	private function menu_icon(): string {
+		$svg = @file_get_contents( AURORA_PATH . 'assets/branding/aurora-menu-icon.svg' );
+		return $svg ? 'data:image/svg+xml;base64,' . base64_encode( $svg ) : 'dashicons-art';
+	}
+
 	public function add_menu(): void {
 		add_menu_page(
 			esc_html__( 'Aurora', 'aurora-for-elementor' ),
@@ -44,9 +55,33 @@ final class Settings_Page {
 			'manage_options',
 			self::SLUG,
 			[ $this, 'render' ],
-			$this->menu_icon_url(),
+			$this->menu_icon(),
 			59
 		);
+	}
+
+	/**
+	 * Makes the menu icon follow the admin color scheme (light or dark) and its
+	 * hover/current states, exactly like a Dashicon.
+	 *
+	 * A fixed-color SVG can't do that on its own — WordPress only recolors icon
+	 * fonts. So the SVG is used as a CSS mask (shape only) and painted with
+	 * `background-color: currentColor`, which inherits the menu link's color —
+	 * the very color WordPress already themes per scheme and per state.
+	 */
+	public function menu_icon_css(): void {
+		$icon = esc_url( $this->menu_icon_url() );
+		?>
+		<style id="aurora-menu-icon">
+			#toplevel_page_<?php echo esc_attr( self::SLUG ); ?> .wp-menu-image { background-image:none !important; }
+			#toplevel_page_<?php echo esc_attr( self::SLUG ); ?> .wp-menu-image::before {
+				content:""; display:block; width:20px; height:22px; margin:6px auto 0;
+				background-color:currentColor;
+				-webkit-mask:url("<?php echo $icon; // phpcs:ignore ?>") no-repeat center; -webkit-mask-size:contain;
+				mask:url("<?php echo $icon; // phpcs:ignore ?>") no-repeat center; mask-size:contain;
+			}
+		</style>
+		<?php
 	}
 
 	public function register_setting(): void {
