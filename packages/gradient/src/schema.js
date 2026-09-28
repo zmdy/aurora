@@ -21,17 +21,25 @@ export var schema = {
         target: {
             type: 'enum',
             default: 'background',
-            values: ['background', 'text', 'icon'],
+            values: ['background', 'text', 'icon', 'icon-text'],
             label: 'Paint',
-            description: 'Where the gradient is drawn: the element background, the text fill, or an icon (font or SVG).',
+            description: 'Where the gradient is drawn: the element background, the text fill, an icon (font or SVG), or both the icon and the text.',
             group: 'Gradient',
         },
         selector: {
             type: 'selector',
             default: '',
             label: 'Target selector',
-            description: 'For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon).',
+            description: 'For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon). With "icon-text" it is the icon selector.',
             group: 'Gradient',
+        },
+        textSelector: {
+            type: 'selector',
+            default: '',
+            label: 'Text selector',
+            description: 'Only used by "icon-text": the text elements to paint, relative to this element. The Target selector then paints the icons.',
+            group: 'Gradient',
+            when: { target: 'icon-text' },
         },
         stops: {
             type: 'string',

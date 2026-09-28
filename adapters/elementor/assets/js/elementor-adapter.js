@@ -63,7 +63,7 @@
 
         Object.keys(schema.options).forEach(function (name) {
             if (module === 'children' && (name === 'root' || name === 'selector')) return;
-            if (module === 'gradient' && (name === 'target' || name === 'selector' || name === 'stops')) return;
+            if (module === 'gradient' && (name === 'target' || name === 'selector' || name === 'textSelector' || name === 'stops')) return;
             var spec = schema.options[name];
             var value = readOption(module, name, spec, settings);
             if (value === undefined) return;
@@ -96,6 +96,7 @@
             var entry = targets.gradient[elementName][paint];
             options.target = entry[0];
             if (entry[1]) options.selector = entry[1];
+            if (entry[2]) options.textSelector = entry[2];
             var stops = stopsString(settings[controlId('gradient', 'stops')]);
             if (stops) options.stops = stops;
         }

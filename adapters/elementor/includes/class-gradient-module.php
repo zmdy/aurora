@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Gradient_Module extends Schema_Module {
 
 	protected function managed_options(): array {
-		return [ 'target', 'selector', 'stops' ];
+		return [ 'target', 'selector', 'textSelector', 'stops' ];
 	}
 
 	protected function paints( Element_Base $element ): array {
@@ -38,6 +38,7 @@ final class Gradient_Module extends Schema_Module {
 				'background' => esc_html__( 'Background', 'aurora-for-elementor' ),
 				'text'       => esc_html__( 'Text', 'aurora-for-elementor' ),
 				'icon'       => esc_html__( 'Icon', 'aurora-for-elementor' ),
+				'icon-text'  => esc_html__( 'Icon + Text', 'aurora-for-elementor' ),
 			];
 			$options = [];
 			foreach ( $paints as $paint ) {
@@ -121,6 +122,9 @@ final class Gradient_Module extends Schema_Module {
 			$options['target'] = $target['target'];
 			if ( '' !== $target['selector'] ) {
 				$options['selector'] = $target['selector'];
+			}
+			if ( isset( $target['textSelector'] ) && '' !== $target['textSelector'] ) {
+				$options['textSelector'] = $target['textSelector'];
 			}
 		}
 

@@ -30,10 +30,14 @@ export var gradient = defineModule({
             mesh = null;
         }
 
-        function targets() {
-            if (options.selector) return Array.prototype.slice.call(el.querySelectorAll(options.selector));
-            if (options.target === 'icon') return Array.prototype.slice.call(el.querySelectorAll('svg, i'));
+        function nodesFor(selector, iconFallback) {
+            if (selector) return Array.prototype.slice.call(el.querySelectorAll(selector));
+            if (iconFallback) return Array.prototype.slice.call(el.querySelectorAll('svg, i'));
             return [el];
+        }
+
+        function targets() {
+            return nodesFor(options.selector, options.target === 'icon' || options.target === 'icon-text');
         }
 
         function paint() {
@@ -73,6 +77,9 @@ export var gradient = defineModule({
                 targets().forEach(function (node) { paintText(node, el, view, stops, painter, animated); });
             } else if (options.target === 'icon') {
                 targets().forEach(function (node) { paintIcon(node, el, view, stops, painter, animated); });
+            } else if (options.target === 'icon-text') {
+                nodesFor(options.selector, true).forEach(function (node) { paintIcon(node, el, view, stops, painter, animated); });
+                nodesFor(options.textSelector, false).forEach(function (node) { paintText(node, el, view, stops, painter, animated); });
             } else {
                 paintBackground(el, view, stops, painter, animated);
             }
@@ -82,7 +89,7 @@ export var gradient = defineModule({
 
         // The Text module rebuilds the markup when it splits or replays, which
         // discards the paint on the units. Repaint them.
-        if (options.target === 'text') {
+        if (options.target === 'text' || options.target === 'icon-text') {
             ctx.listen('split', function () { requestAnimationFrame(paint); }, { module: 'text' });
         }
 

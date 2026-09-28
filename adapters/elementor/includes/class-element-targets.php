@@ -55,9 +55,11 @@ final class Element_Targets {
 	];
 
 	/**
-	 * Gradient targets per element: target => [ paint, selector ].
+	 * Gradient targets per element: target => [ paint, selector, text_selector? ].
 	 * `paint` is the module's `target` option; an empty selector paints the
-	 * element itself.
+	 * element itself. The optional third selector is used only by the
+	 * "icon-text" paint, which paints the icons (selector) and the text
+	 * (text_selector) at once.
 	 */
 	const GRADIENT = [
 		'section'     => [ 'background' => [ 'background', '' ] ],
@@ -68,11 +70,14 @@ final class Element_Targets {
 		'icon'        => [ 'icon' => [ 'icon', '.elementor-icon svg, .elementor-icon i' ] ],
 		'icon-box'    => [
 			'background' => [ 'background', '' ],
+			'text'       => [ 'text', '.elementor-icon-box-title' ],
 			'icon'       => [ 'icon', '.elementor-icon-box-icon svg, .elementor-icon-box-icon i' ],
+			'icon-text'  => [ 'icon-text', '.elementor-icon-box-icon svg, .elementor-icon-box-icon i', '.elementor-icon-box-title' ],
 		],
 		'icon-list'   => [
-			'text' => [ 'text', '.elementor-icon-list-text' ],
-			'icon' => [ 'icon', '.elementor-icon-list-icon svg, .elementor-icon-list-icon i' ],
+			'text'      => [ 'text', '.elementor-icon-list-text' ],
+			'icon'      => [ 'icon', '.elementor-icon-list-icon svg, .elementor-icon-list-icon i' ],
+			'icon-text' => [ 'icon-text', '.elementor-icon-list-icon svg, .elementor-icon-list-icon i', '.elementor-icon-list-text' ],
 		],
 	];
 
@@ -109,12 +114,19 @@ final class Element_Targets {
 
 	/**
 	 * @param string $element Element name.
-	 * @param string $paint   "background", "text" or "icon".
-	 * @return array{target: string, selector: string}|null
+	 * @param string $paint   "background", "text", "icon" or "icon-text".
+	 * @return array{target: string, selector: string, textSelector?: string}|null
 	 */
 	public static function gradient( string $element, string $paint ): ?array {
 		$entry = self::GRADIENT[ $element ][ $paint ] ?? null;
-		return $entry ? [ 'target' => $entry[0], 'selector' => $entry[1] ] : null;
+		if ( ! $entry ) {
+			return null;
+		}
+		$out = [ 'target' => $entry[0], 'selector' => $entry[1] ];
+		if ( isset( $entry[2] ) ) {
+			$out['textSelector'] = $entry[2];
+		}
+		return $out;
 	}
 
 	/**
