@@ -30,6 +30,7 @@ final class Asset_Manager {
 	private function __construct() {
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ], 5 );
 		add_action( 'elementor/preview/enqueue_scripts', [ $this, 'enqueue_preview' ] );
+		add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'enqueue_editor' ] );
 	}
 
 	/** Script handle of a module ("text" => "aurora-text"). */
@@ -111,5 +112,20 @@ final class Asset_Manager {
 			]
 		);
 		wp_enqueue_script( 'aurora-elementor-adapter' );
+	}
+
+	/**
+	 * Editor panel (top window): a small script that places the custom "Aurora"
+	 * tab after "Advanced" on widgets, where Elementor would otherwise render it
+	 * before Advanced. Runs in the editor chrome, not the preview iframe.
+	 */
+	public function enqueue_editor(): void {
+		wp_enqueue_script(
+			'aurora-elementor-editor',
+			AURORA_URL . 'assets/js/elementor-editor.js',
+			[ 'elementor-editor' ],
+			self::ver( 'assets/js/elementor-editor.js' ),
+			true
+		);
 	}
 }

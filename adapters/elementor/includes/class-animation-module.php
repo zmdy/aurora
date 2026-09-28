@@ -13,7 +13,6 @@
 
 namespace Aurora;
 
-use Elementor\Controls_Manager;
 use Elementor\Element_Base;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,6 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 abstract class Animation_Module {
+
+	/**
+	 * Slug of the custom Elementor tab the Aurora sections live in. The tab
+	 * is registered once by Plugin_Core (see register_tab()); Elementor
+	 * appends custom tabs after its own, so it lands right after "Advanced".
+	 */
+	const TAB = 'aurora';
 
 	/**
 	 * Prevents double-processing before_render() for the same element
@@ -156,7 +162,7 @@ abstract class Animation_Module {
 			$this->get_section_id(),
 			[
 				'label' => esc_html( $this->get_section_label() ),
-				'tab'   => Controls_Manager::TAB_ADVANCED,
+				'tab'   => self::TAB,
 			]
 		);
 
