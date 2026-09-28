@@ -1,25 +1,334 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aurora Text</title>
-<meta name="description" content="53 effects that split text into characters, words or lines.">
-<link rel="icon" href="../assets/favicon.svg">
-<meta name="theme-color" content="#03040c">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap">
-<link rel="stylesheet" href="../assets/site.css">
-<script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="All 53 Aurora text effects, running live with the real module. Try any of them in the interactive playground, then browse the full animation catalog.">
+  <title>Text | Aurora</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Hides animated text until Aurora runs (no flash); 4s failsafe. -->
+  <script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+
+  <link rel="stylesheet" href="../assets/modules.css?v=3">
+  <link rel="stylesheet" href="../assets/interactive-demo.css?v=3">
+<link rel="stylesheet" href="../assets/module-documentation.css?v=3">
 </head>
-<body data-module="text">
-<header class="site"><div class="wrap"><a class="brand" href="../index.html"><img src="../assets/favicon.svg" alt="">Aurora</a><nav><a href="../modules/text.html" aria-current="page">Text</a><a href="../modules/children.html">Children</a><a href="../modules/gradient.html">Gradient</a><a href="../modules/cursor.html">Cursor</a><a href="../modules/morph-card.html">Morph Card</a><a href="../install.html">Install</a><a href="../webflow.html">Webflow</a><a href="../elementor.html">Elementor</a><a href="../text-effects/index.html">Text effects</a><a href="https://github.com/zmdy/aurora">GitHub</a></nav></div></header>
-<main>
-<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">Module</span><h1>Text</h1><p class="lead">Split any text into characters, words or lines and animate it on scroll or on load. Built on Anime.js v4.</p></div></section>
-<section class="block"><div class="wrap"><div class="stage"><h2 id="demo" data-aurora-text="slide-in">Motion, unleashed.</h2></div>
-<div style="margin-top:12px"><button class="btn" id="replay" type="button">Replay</button> <a class="btn" href="../examples/text.html">Open the standalone example</a></div>
-<div class="playground"><div><h3 style="margin-top:0">Live attributes</h3><div class="codebox"><pre><code id="live-attrs"></code></pre></div><p style="color:var(--muted);font-size:.9rem">Change the controls and copy the attributes onto any element.</p></div><aside class="controls" id="controls" aria-label="Options"></aside></div></div></section>
-<section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 34.6 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+
+<body>
+  <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
+  <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
+
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="../index.html#top" aria-label="Aurora home">
+          <img src="../assets/logo_aurora_animated.svg" class="nav__logo" alt="Aurora">
+        </a>
+
+        <ul class="nav__links" role="list">
+          <li><a href="../modules/text.html" aria-current="page">Text Effects</a></li>
+          <li class="nav__dropdown" id="nav-modules-dropdown">
+            <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
+              Modules
+              <svg class="nav__dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="nav__dropdown-menu" role="menu" aria-label="Aurora modules">
+              <a href="../modules/text.html" role="menuitem" aria-current="page">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">✨</span>
+                <span><span class="nav__dropdown-title">Text</span><span class="nav__dropdown-desc">53 scroll &amp; load effects</span></span>
+              </a>
+              <a href="../modules/children.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🎬</span>
+                <span><span class="nav__dropdown-title">Animate Children</span><span class="nav__dropdown-desc">Stagger, hover, proximity</span></span>
+              </a>
+              <a href="../modules/gradient.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🌈</span>
+                <span><span class="nav__dropdown-title">Gradient</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
+              </a>
+              <a href="../modules/cursor.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
+                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Dot + ring zones</span></span>
+              </a>
+              <a href="../modules/morph-card.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🪪</span>
+                <span><span class="nav__dropdown-title">Morph Card</span><span class="nav__dropdown-desc">Post, profile, polaroid</span></span>
+              </a>
+            </div>
+          </li>
+          <li><a href="../index.html#install">Install</a></li>
+          <li><a href="../index.html#how-it-works">How It Works</a></li>
+        </ul>
+
+        <div class="nav__actions">
+          <a href="../index.html#install" class="nav__docs-btn">
+            Docs
+          </a>
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     LIVE PLAYGROUND
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="playground" class="playground section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Interactive Demo</div>
+        <h1 class="display-2" style="margin-top:1rem">Live Text Playground</h1>
+        <p>All 53 animations. Real plugin code. No mocks — change any option and watch it run instantly.</p>
+      </div>
+
+      <div class="pg-layout">
+        <!-- Preview Panel -->
+        <div class="pg-preview">
+          <div class="pg-preview__chrome" aria-hidden="true">
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__title">Aurora.text() · live</div>
+          </div>
+
+          <div class="pg-preview__stage" id="pg-stage">
+            <div id="playground-text" aria-label="Animation preview text">AURORA</div>
+          </div>
+
+          <div class="pg-preview__footer">
+            <div class="pg-badge-row">
+              <span class="pg-badge pg-badge--gsap" id="badge-tag">REVEAL</span>
+              <span class="pg-badge pg-badge--split" id="badge-split">CHARS</span>
+              <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
+            </div>
+            <div style="display:flex;gap:.5rem">
+              <button class="pg-replay-btn" id="btn-snippet" aria-label="Copy HTML+JS snippet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy Snippet
+              </button>
+              <button class="pg-replay-btn" id="btn-replay" aria-label="Replay animation">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                  <path d="M1 4v6h6M23 20v-6h-6" />
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
+                </svg>
+                Replay
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="pg-controls">
+          <div class="ctrl-group">
+            <span class="ctrl-label">Custom Text</span>
+            <input class="ctrl-input" id="ctrl-text" type="text" value="AURORA" maxlength="30" autocomplete="off"
+              spellcheck="false" aria-label="Animation text">
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Animation</span>
+            <select class="ctrl-select" id="ctrl-animation" aria-label="Select animation effect">
+              <option value="appear-text">Appear text</option>
+              <option value="blur-reveal">Blur reveal</option>
+              <option value="cinema-title">Cinema title</option>
+              <option value="clip-wrap">Clip wrap</option>
+              <option value="continuous-wave">Continuous wave</option>
+              <option value="crt-boot">Crt boot</option>
+              <option value="dia-text-reveal">Dia text reveal</option>
+              <option value="echo-clone">Echo clone</option>
+              <option value="elastic-text">Elastic text</option>
+              <option value="explosion">Explosion</option>
+              <option value="flip-board">Flip board</option>
+              <option value="flip-in">Flip in</option>
+              <option value="glitch">Glitch</option>
+              <option value="gradient-flow-text">Gradient flow text</option>
+              <option value="heartbeat">Heartbeat</option>
+              <option value="letter-roll">Letter roll</option>
+              <option value="letter-swap">Letter swap</option>
+              <option value="line-shadow-text">Line shadow text</option>
+              <option value="liquid-fill">Liquid fill</option>
+              <option value="matrix-rain">Matrix rain</option>
+              <option value="mesh-text">Mesh text</option>
+              <option value="neon-flicker">Neon flicker</option>
+              <option value="pendulum-swing">Pendulum swing</option>
+              <option value="perspective-fly">Perspective fly</option>
+              <option value="rgb-split">Rgb split</option>
+              <option value="rotate-in">Rotate in</option>
+              <option value="rotating-dial">Rotating dial</option>
+              <option value="rubber-stamp">Rubber stamp</option>
+              <option value="scale-in">Scale in</option>
+              <option value="scatter-converge">Scatter converge</option>
+              <option value="scramble">Scramble</option>
+              <option value="scroll-highlight">Scroll highlight</option>
+              <option value="scroll-velocity-marquee">Scroll velocity marquee</option>
+              <option value="shiny-sweep-text">Shiny sweep text</option>
+              <option value="skew-in">Skew in</option>
+              <option value="slide-in">Slide in</option>
+              <option value="slot-machine">Slot machine</option>
+              <option value="sparkles-text">Sparkles text</option>
+              <option value="spin-in">Spin in</option>
+              <option value="spinning-circular-text">Spinning circular text</option>
+              <option value="spiral-in">Spiral in</option>
+              <option value="split-chars">Split chars</option>
+              <option value="stagger-flip-3d">Stagger flip 3d</option>
+              <option value="stretch-warp">Stretch warp</option>
+              <option value="text-emerge">Text emerge</option>
+              <option value="text-highlighter">Text highlighter</option>
+              <option value="text-reveal-wall">Text reveal wall</option>
+              <option value="typewriter">Typewriter</option>
+              <option value="typewriter-delete">Typewriter delete</option>
+              <option value="unfold-3d">Unfold 3d</option>
+              <option value="vertical-blinds">Vertical blinds</option>
+              <option value="vhs-tracking">Vhs tracking</option>
+              <option value="wave">Wave</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group" id="group-direction">
+            <span class="ctrl-label">Direction</span>
+            <select class="ctrl-select" id="ctrl-direction" aria-label="Select effect direction">
+              <option value="up">Up</option>
+              <option value="down">Down</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group" id="group-style">
+            <span class="ctrl-label">Style</span>
+            <select class="ctrl-select" id="ctrl-style" aria-label="Select effect style">
+              <option value="smooth">Smooth</option>
+              <option value="bounce">Bounce</option>
+              <option value="elastic">Elastic</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group" id="group-color1">
+            <span class="ctrl-label" id="label-color1">Color</span>
+            <div class="range-row">
+              <input type="color" class="ctrl-color" id="ctrl-color1" aria-label="Select color">
+              <span class="range-val" id="val-color1">#000000</span>
+            </div>
+          </div>
+
+          <div class="ctrl-group" id="group-color2">
+            <span class="ctrl-label" id="label-color2">Color 2</span>
+            <div class="range-row">
+              <input type="color" class="ctrl-color" id="ctrl-color2" aria-label="Select second color">
+              <span class="range-val" id="val-color2">#000000</span>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Split By</span>
+            <div class="split-tabs" role="group" aria-label="Text split mode">
+              <button class="split-tab active" id="split-chars" aria-pressed="true">Chars</button>
+              <button class="split-tab" id="split-words" aria-pressed="false">Words</button>
+              <button class="split-tab" id="split-lines" aria-pressed="false">Lines</button>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Duration</span>
+            <div class="range-row">
+              <input type="range" class="ctrl-range" id="ctrl-duration" min="50" max="3000" step="50" value="800"
+                aria-label="Animation duration in milliseconds">
+              <span class="range-val" id="val-duration">800ms</span>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Stagger</span>
+            <div class="range-row">
+              <input type="range" class="ctrl-range" id="ctrl-stagger" min="0" max="300" step="5" value="30"
+                aria-label="Stagger delay in milliseconds">
+              <span class="range-val" id="val-stagger">30ms</span>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Delay</span>
+            <div class="range-row">
+              <input type="range" class="ctrl-range" id="ctrl-delay" min="0" max="2000" step="50" value="0"
+                aria-label="Initial delay in milliseconds">
+              <span class="range-val" id="val-delay">0ms</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <span class="toggle-label-text">Hover Scatter</span>
+            <label class="toggle-switch" aria-label="Enable hover scatter effect">
+              <input type="checkbox" id="ctrl-hover">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+
+          <button class="btn-snippet" id="btn-snippet-2" aria-label="Generate and copy HTML snippet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            Copy HTML + JS Snippet
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     EFFECT GRID — ALL 53 ANIMATIONS
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="effects" class="effects-catalog section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Animation Catalog</div>
+        <h2 class="display-2" style="margin-top:1rem">All 53 Effects, Live</h2>
+        <p>Scroll into view to trigger. Each card runs the real plugin code — nothing is faked.</p>
+      </div>
+
+      <div class="effects-toolbar">
+        <div class="effects-tabs" role="tablist" aria-label="Filter animations by category">
+          <button class="effects-tab active" data-filter="all" role="tab" aria-selected="true">All 53</button>
+          <button class="effects-tab" data-filter="reveal" role="tab" aria-selected="false">Reveals</button>
+          <button class="effects-tab" data-filter="kinetic" role="tab" aria-selected="false">Kinetic</button>
+          <button class="effects-tab" data-filter="glitch" role="tab" aria-selected="false">Glitch</button>
+          <button class="effects-tab" data-filter="ambient" role="tab" aria-selected="false">Ambient</button>
+        </div>
+
+        <div class="catalog-text-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          <input type="text" id="catalog-text-input" placeholder="Type custom text for all cards..."
+            aria-label="Custom text for catalog cards">
+        </div>
+      </div>
+
+      <div class="effects-grid" id="effects-grid">
+        <!-- Cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/text.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 34.7 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -38,7 +347,7 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
         integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js&quot;
-        integrity=&quot;sha384-KGRR1y5u3WvhF8JTFBdhAJ5KzR4KlAzL+cDxUy+svWnn8akKALRcku2GdmORc2W5&quot;
+        integrity=&quot;sha384-yeorS2+LEljyAG6UUDLxF5AJz2JA2ZwUoYJu2m1bmLNvvfp5QmA9BjllfRK/eDrj&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -47,7 +356,7 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 fx.replay();               // play again
 fx.update({ duration: 1200 }); // change options
 fx.destroy();              // restore the original markup</code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2>Options</h2><p class="sub">Set them as <code>data-aurora-text-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-text-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-text-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-text-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>effect</code></td><td><code>data-aurora-text</code></td><td>enum</td><td><code>slide-in</code></td><td>Effect<br><small>53 values</small></td></tr>
 <tr><td><code>split</code></td><td><code>data-aurora-text-split</code></td><td>enum</td><td><code>chars</code></td><td>Unit the effect animates. Effects that build their own markup ignore it.<br><small><code>chars</code> <code>words</code> <code>lines</code></small></td></tr>
 <tr><td><code>duration</code></td><td><code>data-aurora-text-duration</code></td><td>number (ms)</td><td><code>800</code></td><td>Duration</td></tr>
@@ -64,17 +373,754 @@ fx.destroy();              // restore the original markup</code></pre></div></di
 <tr><td><code>gradientColor</code></td><td><code>data-aurora-text-gradient-color</code></td><td>color</td><td><code>#7dd3fc</code></td><td>First accent color &quot;gradient-flow-text&quot; blends into the base text color as it sweeps.</td></tr>
 <tr><td><code>gradientColor2</code></td><td><code>data-aurora-text-gradient-color2</code></td><td>color</td><td><code>#f0abfc</code></td><td>Second accent color &quot;gradient-flow-text&quot; blends into the base text color as it sweeps.</td></tr>
 <tr><td><code>highlightColor</code></td><td><code>data-aurora-text-highlight-color</code></td><td>color</td><td><code>#facc15</code></td><td>Color of the marker stroke &quot;text-highlighter&quot; draws behind the text.</td></tr>
+<tr><td><code>wallLoop</code></td><td><code>data-aurora-text-wall-loop</code></td><td>boolean</td><td><code>true</code></td><td>Repeat the reveal continuously. Turn off to play &quot;text-reveal-wall&quot; once and hold.</td></tr>
+<tr><td><code>wallLines</code></td><td><code>data-aurora-text-wall-lines</code></td><td>number</td><td><code>14</code></td><td>Number of repeated rows in the &quot;text-reveal-wall&quot;.</td></tr>
 <tr><td><code>hoverScatter</code></td><td><code>data-aurora-text-hover-scatter</code></td><td>boolean</td><td><code>false</code></td><td>Units jump to random offsets on hover and settle back with an elastic ease.</td></tr>
 <tr><td><code>hoverIntensity</code></td><td><code>data-aurora-text-hover-intensity</code></td><td>number (px)</td><td><code>24</code></td><td>Scatter intensity</td></tr>
 <tr><td><code>hoverDuration</code></td><td><code>data-aurora-text-hover-duration</code></td><td>number (ms)</td><td><code>350</code></td><td>Scatter duration</td></tr>
 <tr><td><code>hoverReplay</code></td><td><code>data-aurora-text-hover-replay</code></td><td>boolean</td><td><code>false</code></td><td>Effects with a built-in hover gesture (letter roll, letter swap, stagger flip 3d) only replay it when this is on. Off by default so hover is never a hidden requirement to see the effect.</td></tr>
 </tbody></table></div></div></section>
-<section class="block"><div class="wrap"><h2>All 53 effects</h2><p class="sub">Use any of them as the value of <code>data-aurora-text</code>.</p><p><code>appear-text</code> <code>blur-reveal</code> <code>cinema-title</code> <code>clip-wrap</code> <code>continuous-wave</code> <code>crt-boot</code> <code>dia-text-reveal</code> <code>echo-clone</code> <code>elastic-text</code> <code>explosion</code> <code>flip-board</code> <code>flip-in</code> <code>glitch</code> <code>gradient-flow-text</code> <code>heartbeat</code> <code>letter-roll</code> <code>letter-swap</code> <code>line-shadow-text</code> <code>liquid-fill</code> <code>matrix-rain</code> <code>mesh-text</code> <code>neon-flicker</code> <code>pendulum-swing</code> <code>perspective-fly</code> <code>rgb-split</code> <code>rotate-in</code> <code>rotating-dial</code> <code>rubber-stamp</code> <code>scale-in</code> <code>scatter-converge</code> <code>scramble</code> <code>scroll-highlight</code> <code>scroll-velocity-marquee</code> <code>shiny-sweep-text</code> <code>skew-in</code> <code>slide-in</code> <code>slot-machine</code> <code>sparkles-text</code> <code>spin-in</code> <code>spinning-circular-text</code> <code>spiral-in</code> <code>split-chars</code> <code>stagger-flip-3d</code> <code>stretch-warp</code> <code>text-emerge</code> <code>text-highlighter</code> <code>text-reveal-wall</code> <code>typewriter</code> <code>typewriter-delete</code> <code>unfold-3d</code> <code>vertical-blinds</code> <code>vhs-tracking</code> <code>wave</code></p></div></section>
-</main>
-<footer class="site"><div class="wrap"><span>Aurora 1.0.0 · MIT License</span><span><a href="https://github.com/zmdy/aurora">Source</a> · <a href="../install.html">Install</a></span></div></footer>
-<script type="application/json" id="schema">{"primary":"effect","options":{"effect":{"type":"enum","default":"slide-in","values":[{"value":"appear-text","label":"Appear text"},{"value":"blur-reveal","label":"Blur reveal"},{"value":"cinema-title","label":"Cinema title"},{"value":"clip-wrap","label":"Clip wrap"},{"value":"continuous-wave","label":"Continuous wave"},{"value":"crt-boot","label":"Crt boot"},{"value":"dia-text-reveal","label":"Dia text reveal"},{"value":"echo-clone","label":"Echo clone"},{"value":"elastic-text","label":"Elastic text"},{"value":"explosion","label":"Explosion"},{"value":"flip-board","label":"Flip board"},{"value":"flip-in","label":"Flip in"},{"value":"glitch","label":"Glitch"},{"value":"gradient-flow-text","label":"Gradient flow text"},{"value":"heartbeat","label":"Heartbeat"},{"value":"letter-roll","label":"Letter roll"},{"value":"letter-swap","label":"Letter swap"},{"value":"line-shadow-text","label":"Line shadow text"},{"value":"liquid-fill","label":"Liquid fill"},{"value":"matrix-rain","label":"Matrix rain"},{"value":"mesh-text","label":"Mesh text"},{"value":"neon-flicker","label":"Neon flicker"},{"value":"pendulum-swing","label":"Pendulum swing"},{"value":"perspective-fly","label":"Perspective fly"},{"value":"rgb-split","label":"Rgb split"},{"value":"rotate-in","label":"Rotate in"},{"value":"rotating-dial","label":"Rotating dial"},{"value":"rubber-stamp","label":"Rubber stamp"},{"value":"scale-in","label":"Scale in"},{"value":"scatter-converge","label":"Scatter converge"},{"value":"scramble","label":"Scramble"},{"value":"scroll-highlight","label":"Scroll highlight"},{"value":"scroll-velocity-marquee","label":"Scroll velocity marquee"},{"value":"shiny-sweep-text","label":"Shiny sweep text"},{"value":"skew-in","label":"Skew in"},{"value":"slide-in","label":"Slide in"},{"value":"slot-machine","label":"Slot machine"},{"value":"sparkles-text","label":"Sparkles text"},{"value":"spin-in","label":"Spin in"},{"value":"spinning-circular-text","label":"Spinning circular text"},{"value":"spiral-in","label":"Spiral in"},{"value":"split-chars","label":"Split chars"},{"value":"stagger-flip-3d","label":"Stagger flip 3d"},{"value":"stretch-warp","label":"Stretch warp"},{"value":"text-emerge","label":"Text emerge"},{"value":"text-highlighter","label":"Text highlighter"},{"value":"text-reveal-wall","label":"Text reveal wall"},{"value":"typewriter","label":"Typewriter"},{"value":"typewriter-delete","label":"Typewriter delete"},{"value":"unfold-3d","label":"Unfold 3d"},{"value":"vertical-blinds","label":"Vertical blinds"},{"value":"vhs-tracking","label":"Vhs tracking"},{"value":"wave","label":"Wave"}],"label":"Effect","group":"Effect"},"split":{"type":"enum","default":"chars","values":["chars","words","lines"],"label":"Split by","description":"Unit the effect animates. Effects that build their own markup ignore it.","group":"Effect"},"duration":{"type":"number","default":800,"min":50,"max":10000,"unit":"ms","label":"Duration","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Delay","group":"Timing"},"stagger":{"type":"number","default":30,"min":0,"max":1000,"unit":"ms","label":"Stagger","group":"Timing"},"trigger":{"type":"enum","default":"scroll","values":["scroll","load"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally so headings above the fold always start.","group":"Trigger","when":{"trigger":"scroll"}},"replay":{"type":"boolean","default":false,"label":"Replay on every scroll","group":"Trigger","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.","group":"Advanced"},"direction":{"type":"enum","default":"down","values":["up","down","left","right"],"label":"Direction","description":"Side the effect enters from. Used by slide-in, flip-in, rotate-in, skew-in and clip-wrap.","group":"Effect"},"style":{"type":"enum","default":"smooth","values":["smooth","bounce","elastic"],"label":"Style","description":"Easing character of the slide-in effect.","group":"Effect","when":{"effect":"slide-in"}},"sparkleColor":{"type":"color","default":"#9E7AFF","label":"Sparkle color","description":"First of the two colors \"sparkles-text\" alternates between.","group":"Effect","when":{"effect":"sparkles-text"}},"sparkleColor2":{"type":"color","default":"#FE8BBB","label":"Sparkle color 2","description":"Second of the two colors \"sparkles-text\" alternates between. Set it equal to Sparkle color for a single solid color.","group":"Effect","when":{"effect":"sparkles-text"}},"gradientColor":{"type":"color","default":"#7dd3fc","label":"Gradient color","description":"First accent color \"gradient-flow-text\" blends into the base text color as it sweeps.","group":"Effect","when":{"effect":"gradient-flow-text"}},"gradientColor2":{"type":"color","default":"#f0abfc","label":"Gradient color 2","description":"Second accent color \"gradient-flow-text\" blends into the base text color as it sweeps.","group":"Effect","when":{"effect":"gradient-flow-text"}},"highlightColor":{"type":"color","default":"#facc15","label":"Highlight color","description":"Color of the marker stroke \"text-highlighter\" draws behind the text.","group":"Effect","when":{"effect":"text-highlighter"}},"hoverScatter":{"type":"boolean","default":false,"label":"Hover scatter","description":"Units jump to random offsets on hover and settle back with an elastic ease.","group":"Hover"},"hoverIntensity":{"type":"number","default":24,"min":1,"max":200,"unit":"px","label":"Scatter intensity","group":"Hover","when":{"hoverScatter":true}},"hoverDuration":{"type":"number","default":350,"min":50,"max":3000,"unit":"ms","label":"Scatter duration","group":"Hover","when":{"hoverScatter":true}},"hoverReplay":{"type":"boolean","default":false,"label":"Replay on hover","description":"Effects with a built-in hover gesture (letter roll, letter swap, stagger flip 3d) only replay it when this is on. Off by default so hover is never a hidden requirement to see the effect.","group":"Hover"}}}</script>
-<script src="../aurora.core.min.js"></script>
-<script src="../aurora.text.min.js"></script>
-<script src="../assets/site.js"></script>
+</div>
+<section class="cta-section section-gap-lg">
+    <div class="container">
+      <div class="cta-box">
+        <div class="eyebrow" style="margin-bottom:1.5rem">Get Started</div>
+        <h2 class="display-2">Ready to <span class="text-gradient">animate?</span></h2>
+        <p>Aurora is the open-source Swiss Army knife for animated web design. Add it to your site in minutes:
+          paste two script tags, drop in the Webflow snippet, or install the Elementor plugin. Free, with no strings attached.</p>
+        <div class="cta-actions">
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Aurora Free
+          </a>
+          <a href="../index.html#install" class="btn-ghost">
+            Read the Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <img src="../assets/logo_aurora_animated.svg" class="footer__logo" alt="Aurora">
+          <p class="footer__tagline">The open-source Swiss Army knife for animated web design. Color and motion, unleashed.
+          </p>
+        </div>
+        <div>
+          <p class="footer__col-title">Toolkit</p>
+          <ul class="footer__links">
+            <li><a href="../modules/text.html">Text Effects</a></li>
+            <li><a href="../index.html#install">Install</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">Resources</p>
+          <ul class="footer__links">
+            <li><a href="../index.html#install">Documentation</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a></li>
+            <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/README.md#contributing" target="_blank"
+                rel="noopener">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Aurora. Open source, forever.</p>
+        <span class="footer__badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+          </svg>
+          MIT · Made in Brazil
+        </span>
+      </div>
+    </div>
+  </footer>
+
+
+  <div class="snippet-overlay" id="snippet-overlay" role="dialog" aria-modal="true" aria-label="Copy animation snippet">
+    <div class="snippet-modal">
+      <div class="snippet-modal__header">
+        <div class="snippet-modal__title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          HTML + JS Snippet
+        </div>
+        <button class="snippet-close" id="snippet-close" aria-label="Close snippet modal">×</button>
+      </div>
+
+      <div class="snippet-modal__body">
+        <pre class="snippet-code" id="snippet-raw"></pre>
+      </div>
+
+      <div class="snippet-modal__footer">
+        <p class="snippet-info">Preview shows full readable HTML.<br>The button copies only the <strong
+            style="color:rgba(255,255,255,.55)">element + CDN tags + minified init script</strong> — ready to paste.</p>
+        <button class="btn-copy-snippet" id="btn-copy-final" aria-label="Copy lean snippet to clipboard">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          Copy Snippet
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ══════════════════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════════════════ -->
+  <script src="../aurora.core.min.js"></script>
+  <script src="../aurora.text.min.js"></script>
+  <script>
+    /* ═══════════════════════════════════════════════════════════════════
+       NAV — sticky background on scroll
+       ═══════════════════════════════════════════════════════════════════ */
+    var nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', function () {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ═══════════════════════════════════════════════════════════════════
+       MODULES DROPDOWN — desktop hover is pure CSS (:hover on
+       .nav__dropdown); this just adds click/keyboard support so touch and
+       keyboard users can open it too, and closes it on outside click,
+       Escape, or picking a link.
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      var dropdown = document.getElementById('nav-modules-dropdown');
+      var trigger = document.getElementById('nav-modules-trigger');
+      if (!dropdown || !trigger) return;
+
+      function close() {
+        dropdown.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      function toggle() {
+        var willOpen = !dropdown.classList.contains('open');
+        dropdown.classList.toggle('open', willOpen);
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      }
+
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggle();
+      });
+      document.addEventListener('click', function (e) {
+        if (!dropdown.contains(e.target)) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+      });
+      dropdown.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', close);
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════════
+       SCROLL REVEAL — the CTA box fades/slides in, like the rest of the site
+       ═══════════════════════════════════════════════════════════════════ */
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .1 });
+
+    document.querySelectorAll('.cta-box').forEach(function (el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1)';
+      revealObs.observe(el);
+    });
+
+    /* ═══════════════════════════════════════════════════════════════════
+       GLOBAL CURSOR FOLLOWER
+       ═══════════════════════════════════════════════════════════════════ */
+    (function () {
+      /* Skip on touch devices */
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+
+      var dot = document.getElementById('gcursor-dot');
+      var ring = document.getElementById('gcursor-ring');
+      if (!dot || !ring) return;
+
+      var dx = 0, dy = 0;   /* dot real pos */
+      var rx = 0, ry = 0;   /* ring real pos */
+      var mx = -200, my = -200; /* mouse pos, starts off-screen */
+      var ready = false;
+
+      document.addEventListener('mousemove', function (e) {
+        mx = e.clientX;
+        my = e.clientY;
+        if (!ready) {
+          ready = true;
+          dx = mx; dy = my;
+          rx = mx; ry = my;
+          document.body.classList.add('cursor-ready');
+        }
+      }, { passive: true });
+
+      document.addEventListener('mousedown', function () {
+        document.body.classList.add('cursor-click');
+      });
+      document.addEventListener('mouseup', function () {
+        document.body.classList.remove('cursor-click');
+      });
+
+      /* Hover detection for interactive elements */
+      var hoverSel = 'a, button, [role="button"], input, select, textarea, label, .effect-card';
+      document.addEventListener('mouseover', function (e) {
+        if (e.target.closest(hoverSel)) document.body.classList.add('cursor-hover');
+      });
+      document.addEventListener('mouseout', function (e) {
+        if (e.target.closest(hoverSel)) document.body.classList.remove('cursor-hover');
+      });
+
+      /* Hide native cursor globally */
+      var style = document.createElement('style');
+      style.textContent = '* { cursor: none !important; }';
+      document.head.appendChild(style);
+
+      function loop() {
+        /* Dot tracks instantly */
+        dx += (mx - dx) * .55;
+        dy += (my - dy) * .55;
+        /* Ring lags behind */
+        rx += (mx - rx) * .11;
+        ry += (my - ry) * .11;
+
+        dot.style.transform = 'translate3d(' + dx + 'px,' + dy + 'px,0) translate(-50%,-50%)';
+        ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) translate(-50%,-50%)';
+
+        requestAnimationFrame(loop);
+      }
+
+      loop();
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════════
+       EFFECT CATALOG DATA — the 53 Anime.js text effects Aurora ships.
+       `tag` groups effects for the catalog filter tabs and reuses the
+       badge/chip color classes below (reveal=green, kinetic=violet,
+       glitch=teal).
+       ═══════════════════════════════════════════════════════════════════ */
+    var EFFECT_DATA = [
+      { id: 'appear-text', name: 'Appear text', tag: 'kinetic' },
+      { id: 'blur-reveal', name: 'Blur reveal', tag: 'reveal' },
+      { id: 'cinema-title', name: 'Cinema title', tag: 'reveal' },
+      { id: 'clip-wrap', name: 'Clip wrap', tag: 'reveal' },
+      { id: 'continuous-wave', name: 'Continuous wave', tag: 'kinetic' },
+      { id: 'crt-boot', name: 'Crt boot', tag: 'glitch' },
+      { id: 'dia-text-reveal', name: 'Dia text reveal', tag: 'reveal' },
+      { id: 'echo-clone', name: 'Echo clone', tag: 'glitch' },
+      { id: 'elastic-text', name: 'Elastic text', tag: 'kinetic' },
+      { id: 'explosion', name: 'Explosion', tag: 'kinetic' },
+      { id: 'flip-board', name: 'Flip board', tag: 'kinetic' },
+      { id: 'flip-in', name: 'Flip in', tag: 'kinetic' },
+      { id: 'glitch', name: 'Glitch', tag: 'glitch' },
+      { id: 'gradient-flow-text', name: 'Gradient flow text', tag: 'ambient' },
+      { id: 'heartbeat', name: 'Heartbeat', tag: 'kinetic' },
+      { id: 'letter-roll', name: 'Letter roll', tag: 'kinetic' },
+      { id: 'letter-swap', name: 'Letter swap', tag: 'kinetic' },
+      { id: 'line-shadow-text', name: 'Line shadow text', tag: 'ambient' },
+      { id: 'liquid-fill', name: 'Liquid fill', tag: 'reveal' },
+      { id: 'matrix-rain', name: 'Matrix rain', tag: 'glitch' },
+      { id: 'mesh-text', name: 'Mesh text', tag: 'kinetic' },
+      { id: 'neon-flicker', name: 'Neon flicker', tag: 'glitch' },
+      { id: 'pendulum-swing', name: 'Pendulum swing', tag: 'kinetic' },
+      { id: 'perspective-fly', name: 'Perspective fly', tag: 'kinetic' },
+      { id: 'rgb-split', name: 'Rgb split', tag: 'glitch' },
+      { id: 'rotate-in', name: 'Rotate in', tag: 'kinetic' },
+      { id: 'rotating-dial', name: 'Rotating dial', tag: 'kinetic' },
+      { id: 'rubber-stamp', name: 'Rubber stamp', tag: 'kinetic' },
+      { id: 'scale-in', name: 'Scale in', tag: 'reveal' },
+      { id: 'scatter-converge', name: 'Scatter converge', tag: 'kinetic' },
+      { id: 'scramble', name: 'Scramble', tag: 'glitch' },
+      { id: 'scroll-highlight', name: 'Scroll highlight', tag: 'reveal' },
+      { id: 'scroll-velocity-marquee', name: 'Scroll velocity marquee', tag: 'ambient' },
+      { id: 'shiny-sweep-text', name: 'Shiny sweep text', tag: 'ambient' },
+      { id: 'skew-in', name: 'Skew in', tag: 'reveal' },
+      { id: 'slide-in', name: 'Slide in', tag: 'reveal' },
+      { id: 'slot-machine', name: 'Slot machine', tag: 'kinetic' },
+      { id: 'sparkles-text', name: 'Sparkles text', tag: 'ambient' },
+      { id: 'spin-in', name: 'Spin in', tag: 'kinetic' },
+      { id: 'spinning-circular-text', name: 'Spinning circular text', tag: 'ambient' },
+      { id: 'spiral-in', name: 'Spiral in', tag: 'kinetic' },
+      { id: 'split-chars', name: 'Split chars', tag: 'reveal' },
+      { id: 'stagger-flip-3d', name: 'Stagger flip 3d', tag: 'kinetic' },
+      { id: 'stretch-warp', name: 'Stretch warp', tag: 'kinetic' },
+      { id: 'text-emerge', name: 'Text emerge', tag: 'reveal' },
+      { id: 'text-highlighter', name: 'Text highlighter', tag: 'reveal' },
+      { id: 'text-reveal-wall', name: 'Text reveal wall', tag: 'glitch' },
+      { id: 'typewriter', name: 'Typewriter', tag: 'glitch' },
+      { id: 'typewriter-delete', name: 'Typewriter delete', tag: 'glitch' },
+      { id: 'unfold-3d', name: 'Unfold 3d', tag: 'kinetic' },
+      { id: 'vertical-blinds', name: 'Vertical blinds', tag: 'reveal' },
+      { id: 'vhs-tracking', name: 'Vhs tracking', tag: 'glitch' },
+      { id: 'wave', name: 'Wave', tag: 'kinetic' },
+    ];
+
+    var DEMO_WORDS = ['Aurora', 'Motion', 'Design', 'Shine', 'Spark', 'Borealis', 'Canvas', 'Studio', 'Pixel', 'Create'];
+
+    function effectById(id) {
+      for (var i = 0; i < EFFECT_DATA.length; i++) {
+        if (EFFECT_DATA[i].id === id) return EFFECT_DATA[i];
+      }
+      return EFFECT_DATA[0];
+    }
+
+    function tagBadgeClass(tag) {
+      if (tag === 'reveal') return 'pg-badge--gsap';
+      if (tag === 'kinetic') return 'pg-badge--anime';
+      if (tag === 'ambient') return 'pg-badge--ambient';
+      return 'pg-badge--split';
+    }
+
+    function tagChipClass(tag) {
+      if (tag === 'reveal') return 'lib-chip--gsap';
+      if (tag === 'kinetic') return 'lib-chip--anime';
+      if (tag === 'ambient') return 'lib-chip--ambient';
+      return 'lib-chip--split';
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PLAYGROUND — calls the real public API, Aurora.text(el, options).
+       Re-running it just calls Aurora.text() again: the runtime tears down
+       the previous instance and mounts a fresh one, so every control
+       change is a real, live re-run of the shipped module — no mocks.
+       ═══════════════════════════════════════════════════════════════════ */
+    var pgState = {
+      effect: 'slide-in',
+      split: 'chars',
+      duration: 800,
+      stagger: 30,
+      delay: 0,
+      hover: false,
+      direction: 'down',
+      style: 'smooth',
+      sparkleColor: '#9E7AFF',
+      sparkleColor2: '#FE8BBB',
+      gradientColor: '#7dd3fc',
+      gradientColor2: '#f0abfc',
+      highlightColor: '#facc15'
+    };
+    var DIRECTION_EFFECTS = ['slide-in', 'flip-in', 'rotate-in', 'skew-in', 'clip-wrap'];
+    var STYLE_EFFECTS = ['slide-in'];
+
+    // Which effects expose color pickers, and which pgState key + label each swatch maps to.
+    var COLOR_CONFIG = {
+      'sparkles-text': {
+        color1: { key: 'sparkleColor', label: 'Sparkle color' },
+        color2: { key: 'sparkleColor2', label: 'Sparkle color 2' }
+      },
+      'gradient-flow-text': {
+        color1: { key: 'gradientColor', label: 'Gradient color' },
+        color2: { key: 'gradientColor2', label: 'Gradient color 2' }
+      },
+      'text-highlighter': {
+        color1: { key: 'highlightColor', label: 'Highlight color' }
+      }
+    };
+
+    var $pgText = document.getElementById('playground-text');
+    var $ctrlText = document.getElementById('ctrl-text');
+    var $ctrlAnim = document.getElementById('ctrl-animation');
+    var $badgeTag = document.getElementById('badge-tag');
+    var $badgeSplit = document.getElementById('badge-split');
+    var $badgeAnim = document.getElementById('badge-anim');
+
+    var $ctrlColor1 = document.getElementById('ctrl-color1');
+    var $ctrlColor2 = document.getElementById('ctrl-color2');
+    var $valColor1 = document.getElementById('val-color1');
+    var $valColor2 = document.getElementById('val-color2');
+    var $labelColor1 = document.getElementById('label-color1');
+    var $labelColor2 = document.getElementById('label-color2');
+
+    function updateControlVisibility() {
+      var showDirection = DIRECTION_EFFECTS.indexOf(pgState.effect) !== -1;
+      var showStyle = STYLE_EFFECTS.indexOf(pgState.effect) !== -1;
+      document.getElementById('group-direction').style.display = showDirection ? '' : 'none';
+      document.getElementById('group-style').style.display = showStyle ? '' : 'none';
+
+      var colorCfg = COLOR_CONFIG[pgState.effect];
+      document.getElementById('group-color1').style.display = colorCfg && colorCfg.color1 ? '' : 'none';
+      document.getElementById('group-color2').style.display = colorCfg && colorCfg.color2 ? '' : 'none';
+
+      if (colorCfg && colorCfg.color1) {
+        $labelColor1.textContent = colorCfg.color1.label;
+        var v1 = pgState[colorCfg.color1.key];
+        $ctrlColor1.value = v1;
+        $valColor1.textContent = v1;
+      }
+      if (colorCfg && colorCfg.color2) {
+        $labelColor2.textContent = colorCfg.color2.label;
+        var v2 = pgState[colorCfg.color2.key];
+        $ctrlColor2.value = v2;
+        $valColor2.textContent = v2;
+      }
+    }
+
+    function runPlayground() {
+      var text = ($ctrlText.value || 'AURORA').trim();
+      var eff = effectById(pgState.effect);
+
+      $pgText.textContent = text;
+
+      $badgeTag.textContent = eff.tag.toUpperCase();
+      $badgeTag.className = 'pg-badge ' + tagBadgeClass(eff.tag);
+      $badgeSplit.textContent = pgState.split.toUpperCase();
+      $badgeAnim.textContent = eff.id;
+
+      updateControlVisibility();
+
+      window.Aurora.text($pgText, {
+        effect: pgState.effect,
+        split: pgState.split,
+        duration: pgState.duration,
+        stagger: pgState.stagger,
+        delay: pgState.delay,
+        trigger: 'load',
+        hoverScatter: pgState.hover,
+        direction: pgState.direction,
+        style: pgState.style,
+        sparkleColor: pgState.sparkleColor,
+        sparkleColor2: pgState.sparkleColor2,
+        gradientColor: pgState.gradientColor,
+        gradientColor2: pgState.gradientColor2,
+        highlightColor: pgState.highlightColor
+      });
+    }
+
+    // Animation select
+    $ctrlAnim.value = pgState.effect;
+    $ctrlAnim.addEventListener('change', function () {
+      pgState.effect = this.value;
+      runPlayground();
+    });
+
+    // Direction select
+    var $ctrlDirection = document.getElementById('ctrl-direction');
+    $ctrlDirection.value = pgState.direction;
+    $ctrlDirection.addEventListener('change', function () {
+      pgState.direction = this.value;
+      runPlayground();
+    });
+
+    // Style select
+    var $ctrlStyle = document.getElementById('ctrl-style');
+    $ctrlStyle.value = pgState.style;
+    $ctrlStyle.addEventListener('change', function () {
+      pgState.style = this.value;
+      runPlayground();
+    });
+
+    // Color pickers (target key depends on the current effect, via COLOR_CONFIG)
+    $ctrlColor1.addEventListener('input', function () {
+      var cfg = COLOR_CONFIG[pgState.effect];
+      if (!cfg || !cfg.color1) return;
+      pgState[cfg.color1.key] = this.value;
+      $valColor1.textContent = this.value;
+      runPlayground();
+    });
+    $ctrlColor2.addEventListener('input', function () {
+      var cfg = COLOR_CONFIG[pgState.effect];
+      if (!cfg || !cfg.color2) return;
+      pgState[cfg.color2.key] = this.value;
+      $valColor2.textContent = this.value;
+      runPlayground();
+    });
+
+    // Split tabs
+    ['chars', 'words', 'lines'].forEach(function (s) {
+      document.getElementById('split-' + s).addEventListener('click', function () {
+        pgState.split = s;
+        ['chars', 'words', 'lines'].forEach(function (x) {
+          document.getElementById('split-' + x).classList.toggle('active', x === s);
+          document.getElementById('split-' + x).setAttribute('aria-pressed', x === s);
+        });
+        runPlayground();
+      });
+    });
+
+    // Sliders
+    [['ctrl-duration', 'val-duration', 'duration', 'ms'],
+    ['ctrl-stagger', 'val-stagger', 'stagger', 'ms'],
+    ['ctrl-delay', 'val-delay', 'delay', 'ms']].forEach(function (cfg) {
+      var el = document.getElementById(cfg[0]);
+      var out = document.getElementById(cfg[1]);
+      el.addEventListener('input', function () {
+        pgState[cfg[2]] = parseInt(this.value, 10);
+        out.textContent = this.value + cfg[3];
+        runPlayground();
+      });
+    });
+
+    // Hover toggle
+    document.getElementById('ctrl-hover').addEventListener('change', function () {
+      pgState.hover = this.checked;
+      runPlayground();
+    });
+
+    // Text input
+    var textTimer;
+    $ctrlText.addEventListener('input', function () {
+      clearTimeout(textTimer);
+      textTimer = setTimeout(runPlayground, 300);
+    });
+
+    // Replay button
+    document.getElementById('btn-replay').addEventListener('click', runPlayground);
+
+    // Init
+    setTimeout(runPlayground, 800);
+
+    /* ═══════════════════════════════════════════════════════════════════
+       EFFECTS GRID — each card is a real Aurora.text() instance: it plays
+       on scroll like any other module, and hovering just calls its
+       replay() to re-run the same effect.
+       ═══════════════════════════════════════════════════════════════════ */
+    var activeFilter = 'all';
+    var catalogCustomText = '';
+
+    function buildGrid(filter) {
+      var grid = document.getElementById('effects-grid');
+      grid.innerHTML = '';
+
+      var filtered = EFFECT_DATA.filter(function (e) {
+        return filter === 'all' || e.tag === filter;
+      });
+
+      filtered.forEach(function (eff, idx) {
+        var defaultWord = DEMO_WORDS[idx % DEMO_WORDS.length];
+        var displayWord = catalogCustomText || defaultWord;
+        var card = document.createElement('div');
+        card.className = 'effect-card';
+        card.dataset.id = eff.id;
+
+        card.innerHTML =
+          '<div class="effect-card__stage">' + displayWord + '</div>' +
+          '<div class="effect-card__info">' +
+          '<div>' +
+          '<div class="effect-card__name">' + eff.name + '</div>' +
+          '<div class="effect-card__id">' + eff.id + '</div>' +
+          '</div>' +
+          '<span class="lib-chip ' + tagChipClass(eff.tag) + '">' + eff.tag.charAt(0).toUpperCase() + eff.tag.slice(1) + '</span>' +
+          '</div>';
+
+        grid.appendChild(card);
+
+        var stage = card.querySelector('.effect-card__stage');
+        var instance = window.Aurora.text(stage, {
+          effect: eff.id,
+          trigger: 'scroll',
+          replay: true,
+          duration: 800,
+          stagger: 35
+        });
+
+        // Hover re-runs the same effect
+        card.addEventListener('mouseenter', function () { instance.replay(); });
+
+        // Click loads it into the playground
+        card.addEventListener('click', function () {
+          $ctrlText.value = displayWord;
+          pgState.effect = eff.id;
+          $ctrlAnim.value = eff.id;
+          runPlayground();
+          document.getElementById('playground').scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+    }
+
+    // Custom text input listener for catalog cards
+    var $catalogInput = document.getElementById('catalog-text-input');
+    if ($catalogInput) {
+      $catalogInput.addEventListener('input', function () {
+        catalogCustomText = this.value.trim();
+        buildGrid(activeFilter);
+      });
+    }
+
+    // Filter tabs
+    document.querySelectorAll('.effects-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.effects-tab').forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        this.classList.add('active');
+        this.setAttribute('aria-selected', 'true');
+        activeFilter = this.dataset.filter;
+        buildGrid(activeFilter);
+      });
+    });
+
+    buildGrid('all');
+
+    /* ═══════════════════════════════════════════════════════════════════
+       SNIPPET GENERATOR — real CDN + SRI, real data-aurora-text attributes.
+       Aurora auto-inits on load, so no init script is needed at all.
+       ═══════════════════════════════════════════════════════════════════ */
+    var AURORA_VERSION = '1.0.0';
+    var CORE_CDN = 'https://cdn.jsdelivr.net/gh/zmdy/aurora@v' + AURORA_VERSION + '/dist/aurora.core.min.js';
+    var TEXT_CDN = 'https://cdn.jsdelivr.net/gh/zmdy/aurora@v' + AURORA_VERSION + '/dist/aurora.text.min.js';
+    var CORE_SRI = 'sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w';
+    var TEXT_SRI = 'sha384-PO+jMUkaOFX3F0ynZiocZr1rwpNFNy88D0MQo03DrRAkT2ORoQYBGlswkUnaX2NS';
+
+    var COLOR_ATTR_NAME = {
+      sparkleColor: 'data-aurora-text-sparkle-color',
+      sparkleColor2: 'data-aurora-text-sparkle-color2',
+      gradientColor: 'data-aurora-text-gradient-color',
+      gradientColor2: 'data-aurora-text-gradient-color2',
+      highlightColor: 'data-aurora-text-highlight-color'
+    };
+
+    function snippetAttrs() {
+      var attrs = 'data-aurora-text="' + pgState.effect + '"' +
+        ' data-aurora-text-split="' + pgState.split + '"' +
+        ' data-aurora-text-duration="' + pgState.duration + '"' +
+        ' data-aurora-text-stagger="' + pgState.stagger + '"' +
+        ' data-aurora-text-delay="' + pgState.delay + '"';
+      if (DIRECTION_EFFECTS.indexOf(pgState.effect) !== -1) attrs += ' data-aurora-text-direction="' + pgState.direction + '"';
+      if (STYLE_EFFECTS.indexOf(pgState.effect) !== -1) attrs += ' data-aurora-text-style="' + pgState.style + '"';
+      var colorCfg = COLOR_CONFIG[pgState.effect];
+      if (colorCfg && colorCfg.color1) attrs += ' ' + COLOR_ATTR_NAME[colorCfg.color1.key] + '="' + pgState[colorCfg.color1.key] + '"';
+      if (colorCfg && colorCfg.color2) attrs += ' ' + COLOR_ATTR_NAME[colorCfg.color2.key] + '="' + pgState[colorCfg.color2.key] + '"';
+      if (pgState.hover) attrs += ' data-aurora-text-hover-scatter="true"';
+      return attrs;
+    }
+
+    function generateSnippet() {
+      var text = ($ctrlText.value || 'AURORA').trim();
+
+      var snippet = [
+        '<!DOCTYPE html>',
+        '<html lang="en">',
+        '<head>',
+        '  <meta charset="UTF-8">',
+        '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        '  <title>Aurora Animation — ' + pgState.effect + '</title>',
+        '',
+        '  <style>',
+        '    * { box-sizing: border-box; margin: 0; padding: 0; }',
+        '    body {',
+        '      min-height: 100vh;',
+        '      display: flex;',
+        '      align-items: center;',
+        '      justify-content: center;',
+        '      background: #03040c;',
+        '      font-family: system-ui, sans-serif;',
+        '    }',
+        '    #aurora-text {',
+        '      font-size: clamp(3rem, 10vw, 8rem);',
+        '      font-weight: 900;',
+        '      color: #fff;',
+        '      letter-spacing: -.04em;',
+        '      text-align: center;',
+        '      cursor: default;',
+        '    }',
+        '  </style>',
+        '</head>',
+        '<body>',
+        '',
+        '  <div id="aurora-text" ' + snippetAttrs() + '>' + text + '</div>',
+        '',
+        '  <!-- Aurora core + text module (auto-inits on load: no init script needed) -->',
+        '  <script src="' + CORE_CDN + '"',
+        '          integrity="' + CORE_SRI + '"',
+        '          crossorigin="anonymous"><\/script>',
+        '  <script src="' + TEXT_CDN + '"',
+        '          integrity="' + TEXT_SRI + '"',
+        '          crossorigin="anonymous"><\/script>',
+        '',
+        '</body>',
+        '</html>'
+      ].join('\n');
+
+      return snippet;
+    }
+
+    /* Lean snippet — element + CDN tags only. Aurora auto-inits, so this
+       is what the "Copy" button puts into the clipboard: paste-ready, no
+       extra script. */
+    function generateLeanSnippet() {
+      var text = ($ctrlText.value || 'AURORA').trim();
+
+      return [
+        '<!-- Aurora: ' + pgState.effect + ' | split=' + pgState.split + ' duration=' + pgState.duration + 'ms stagger=' + pgState.stagger + 'ms delay=' + pgState.delay + 'ms -->',
+        '<div ' + snippetAttrs() + '>' + text + '<\/div>',
+        '',
+        '<script src="' + CORE_CDN + '" integrity="' + CORE_SRI + '" crossorigin="anonymous"><\/script>',
+        '<script src="' + TEXT_CDN + '" integrity="' + TEXT_SRI + '" crossorigin="anonymous"><\/script>'
+      ].join('\n');
+    }
+
+    function openSnippetModal() {
+      var overlay = document.getElementById('snippet-overlay');
+      if (!overlay) return;
+      var code = generateSnippet();
+      var el = document.getElementById('snippet-raw');
+      if (el) el.textContent = code;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSnippetModal() {
+      var overlay = document.getElementById('snippet-overlay');
+      if (!overlay) return;
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function copySnippet(btnEl) {
+      var code = generateLeanSnippet();
+      navigator.clipboard.writeText(code).then(function () {
+        var orig = btnEl.innerHTML;
+        btnEl.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/><\/svg> Copied!';
+        btnEl.classList.add('copied');
+        setTimeout(function () {
+          btnEl.innerHTML = orig;
+          btnEl.classList.remove('copied');
+        }, 2200);
+      }).catch(function () {
+        openSnippetModal();
+      });
+    }
+
+    document.getElementById('btn-snippet').addEventListener('click', function () { openSnippetModal(); });
+    document.getElementById('btn-snippet-2').addEventListener('click', function () { openSnippetModal(); });
+
+    /* Init snippet modal interactions */
+    document.getElementById('snippet-close').addEventListener('click', closeSnippetModal);
+
+    document.getElementById('snippet-overlay').addEventListener('click', function (e) {
+      if (e.target === this) closeSnippetModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeSnippetModal();
+    });
+
+    document.getElementById('btn-copy-final').addEventListener('click', function () {
+      copySnippet(this);
+    });
+  </script>
+
+<script src="../assets/site.js?v=3"></script>
 </body>
 </html>

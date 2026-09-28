@@ -1,0 +1,17 @@
+/* Documentation styles stay outside the shared Text Effects demo. */
+.module-documentation { padding: 48px 0; }
+.module-documentation .wrap { max-width: 1200px; padding: 0 24px; margin: auto; min-width: 0; }
+.module-documentation .block { padding: 32px 0; }
+.module-documentation h2 { font: 700 clamp(1.5rem, 4vw, 2rem) var(--f-heading); margin: 0 0 16px; }
+.module-documentation p { color: #9aa0c0; margin: 0 0 20px; }
+.module-documentation code { font-family: var(--f-mono); font-size: .85em; }
+.module-documentation .codebox { position: relative; background: #07091a; border: 1px solid #202238; border-radius: 16px; overflow: hidden; margin: 16px 0; }
+.module-documentation pre { padding: 52px 20px 20px; max-height: 480px; overflow: auto; white-space: pre; }
+.module-documentation .copy { position: absolute; top: 12px; right: 12px; border: 1px solid #34364c; border-radius: 8px; color: #fff; padding: 8px 14px; background: #141627; }
+.module-documentation .table-scroll { overflow: auto; border: 1px solid #202238; border-radius: 16px; }
+.module-documentation table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.module-documentation th, .module-documentation td { padding: 14px; text-align: left; vertical-align: top; border-bottom: 1px solid #202238; }
+.module-documentation th { color: #05b172; }
+.module-documentation td { color: #adb0c6; }
+.module-documentation a { color: #05b172; }
+.module-documentation .module-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }

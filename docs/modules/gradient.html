@@ -1,25 +1,153 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aurora Gradient</title>
-<meta name="description" content="Multi-stop gradients for backgrounds, text and icons, plus WebGL mesh styles.">
-<link rel="icon" href="../assets/favicon.svg">
-<meta name="theme-color" content="#03040c">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap">
-<link rel="stylesheet" href="../assets/site.css">
-<script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Paint backgrounds, text or icons with animated gradients, a cursor spotlight or a WebGL mesh (with a CSS fallback).">
+  <title>Gradient | Aurora</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Hides animated text until Aurora runs (no flash); 4s failsafe. -->
+  <script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+
+  <link rel="stylesheet" href="../assets/modules.css?v=3">
+  <link rel="stylesheet" href="../assets/interactive-demo.css?v=3">
+<link rel="stylesheet" href="../assets/module-documentation.css?v=3">
 </head>
+
 <body data-module="gradient">
-<header class="site"><div class="wrap"><a class="brand" href="../index.html"><img src="../assets/favicon.svg" alt="">Aurora</a><nav><a href="../modules/text.html">Text</a><a href="../modules/children.html">Children</a><a href="../modules/gradient.html" aria-current="page">Gradient</a><a href="../modules/cursor.html">Cursor</a><a href="../modules/morph-card.html">Morph Card</a><a href="../install.html">Install</a><a href="../webflow.html">Webflow</a><a href="../elementor.html">Elementor</a><a href="../text-effects/index.html">Text effects</a><a href="https://github.com/zmdy/aurora">GitHub</a></nav></div></header>
-<main>
-<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">Module</span><h1>Gradient</h1><p class="lead">Paint backgrounds, text or icons with animated gradients, a cursor spotlight or a WebGL mesh (with a CSS fallback).</p></div></section>
-<section class="block"><div class="wrap"><div class="stage"><div id="demo" class="demo-box" data-aurora-gradient="linear" data-aurora-gradient-animation="flow">Gradients that move</div></div>
-<div style="margin-top:12px"> <a class="btn" href="../examples/gradient.html">Open the standalone example</a></div>
-<div class="playground"><div><h3 style="margin-top:0">Live attributes</h3><div class="codebox"><pre><code id="live-attrs"></code></pre></div><p style="color:var(--muted);font-size:.9rem">Change the controls and copy the attributes onto any element.</p></div><aside class="controls" id="controls" aria-label="Options"></aside></div></div></section>
-<section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 8.1 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
+  <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
+
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="../index.html#top" aria-label="Aurora home">
+          <img src="../assets/logo_aurora_animated.svg" class="nav__logo" alt="Aurora">
+        </a>
+
+        <ul class="nav__links" role="list">
+          <li><a href="../modules/text.html" aria-current="page">Text Effects</a></li>
+          <li class="nav__dropdown" id="nav-modules-dropdown">
+            <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
+              Modules
+              <svg class="nav__dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="nav__dropdown-menu" role="menu" aria-label="Aurora modules">
+              <a href="../modules/text.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">✨</span>
+                <span><span class="nav__dropdown-title">Text</span><span class="nav__dropdown-desc">53 scroll &amp; load effects</span></span>
+              </a>
+              <a href="../modules/children.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🎬</span>
+                <span><span class="nav__dropdown-title">Animate Children</span><span class="nav__dropdown-desc">Stagger, hover, proximity</span></span>
+              </a>
+              <a href="../modules/gradient.html" role="menuitem" aria-current="page">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🌈</span>
+                <span><span class="nav__dropdown-title">Gradient</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
+              </a>
+              <a href="../modules/cursor.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
+                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Dot + ring zones</span></span>
+              </a>
+              <a href="../modules/morph-card.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🪪</span>
+                <span><span class="nav__dropdown-title">Morph Card</span><span class="nav__dropdown-desc">Post, profile, polaroid</span></span>
+              </a>
+            </div>
+          </li>
+          <li><a href="../index.html#install">Install</a></li>
+          <li><a href="../index.html#how-it-works">How It Works</a></li>
+        </ul>
+
+        <div class="nav__actions">
+          <a href="../index.html#install" class="nav__docs-btn">
+            Docs
+          </a>
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     LIVE PLAYGROUND
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="playground" class="playground section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Interactive Demo</div>
+        <h1 class="display-2" style="margin-top:1rem">Live Gradient Playground</h1>
+        <p>Paint backgrounds, text or icons with animated gradients, a cursor spotlight or a WebGL mesh (with a CSS fallback).</p>
+      </div>
+
+      <div class="pg-layout">
+        <!-- Preview Panel -->
+        <div class="pg-preview">
+          <div class="pg-preview__chrome" aria-hidden="true">
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__title">Aurora.gradient() · live</div>
+          </div>
+
+          <div class="pg-preview__stage" id="pg-stage">
+            <div id="demo" class="demo-box" data-aurora-gradient="linear" data-aurora-gradient-animation="flow">Gradients that move</div>
+          </div>
+
+          <div class="pg-preview__footer">
+            <div class="pg-badge-row">
+              <span class="pg-badge pg-badge--gsap" id="badge-tag">LIVE</span>
+              <span class="pg-badge pg-badge--split" id="badge-split">gradient</span>
+              <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
+            </div>
+            <div style="display:flex;gap:.5rem">
+              <button class="pg-replay-btn" id="btn-snippet" aria-label="Copy HTML+JS snippet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy Snippet
+              </button>
+              <button class="pg-replay-btn" id="btn-replay" aria-label="Replay animation">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                  <path d="M1 4v6h6M23 20v-6h-6" />
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
+                </svg>
+                Replay
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="pg-controls" id="controls" aria-label="Demo options"><button class="btn-snippet" id="btn-snippet-2" aria-label="Generate and copy HTML snippet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            Copy HTML + JS Snippet
+          </button></div></div></div></section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     EFFECT GRID — ALL 53 ANIMATIONS
+     ═══════════════════════════════════════════════════════════════════ -->
+  
+
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/gradient.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 8.2 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -39,7 +167,7 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
         integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.gradient.min.js&quot;
-        integrity=&quot;sha384-f3q9dIHI5BcQCXibNZtwxo16q8IE2l0wZrRcDL6RJ2dVVZw/xhinMAH9Th12BJpF&quot;
+        integrity=&quot;sha384-LgENekgTRviccsDYVKcaA3rleugln8EIaHOLQ0nOgY89d44HJJBdGTd+dY+bS59T&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -50,10 +178,11 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
   followMouse: true
 });
 fx.destroy();          // removes every style it added</code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2>Options</h2><p class="sub">Set them as <code>data-aurora-gradient-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-gradient-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-gradient-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-gradient-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>type</code></td><td><code>data-aurora-gradient</code></td><td>enum</td><td><code>linear</code></td><td>&quot;mesh&quot; renders an animated WebGL gradient and only applies to backgrounds.<br><small><code>linear</code> <code>radial</code> <code>conic</code> <code>mesh</code></small></td></tr>
-<tr><td><code>target</code></td><td><code>data-aurora-gradient-target</code></td><td>enum</td><td><code>background</code></td><td>Where the gradient is drawn: the element background, the text fill, or an icon (font or SVG).<br><small><code>background</code> <code>text</code> <code>icon</code></small></td></tr>
-<tr><td><code>selector</code></td><td><code>data-aurora-gradient-selector</code></td><td>selector</td><td><code></code></td><td>For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon).</td></tr>
+<tr><td><code>target</code></td><td><code>data-aurora-gradient-target</code></td><td>enum</td><td><code>background</code></td><td>Where the gradient is drawn: the element background, the text fill, an icon (font or SVG), or both the icon and the text.<br><small><code>background</code> <code>text</code> <code>icon</code> <code>icon-text</code></small></td></tr>
+<tr><td><code>selector</code></td><td><code>data-aurora-gradient-selector</code></td><td>selector</td><td><code></code></td><td>For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon). With &quot;icon-text&quot; it is the icon selector.</td></tr>
+<tr><td><code>textSelector</code></td><td><code>data-aurora-gradient-text-selector</code></td><td>selector</td><td><code></code></td><td>Only used by &quot;icon-text&quot;: the text elements to paint, relative to this element. The Target selector then paints the icons.</td></tr>
 <tr><td><code>stops</code></td><td><code>data-aurora-gradient-stops</code></td><td>string</td><td><code>#7c6cff;#ff7a2f;#2af598</code></td><td>Colors separated by &quot;;&quot;, each with an optional position: &quot;#ff0080;#7928ca 60;#2af598&quot;. A JSON array of {color, offset} is also accepted.</td></tr>
 <tr><td><code>angle</code></td><td><code>data-aurora-gradient-angle</code></td><td>number (deg)</td><td><code>135</code></td><td>Angle</td></tr>
 <tr><td><code>animation</code></td><td><code>data-aurora-gradient-animation</code></td><td>enum</td><td><code>none</code></td><td>&quot;flow&quot; moves color blobs (backgrounds) or pans the gradient (text, icons); &quot;hue&quot; rotates the hue.<br><small><code>none</code> <code>flow</code> <code>hue</code></small></td></tr>
@@ -70,12 +199,112 @@ fx.destroy();          // removes every style it added</code></pre></div></div><
 <tr><td><code>liquidCursor</code></td><td><code>data-aurora-gradient-liquid-cursor</code></td><td>boolean</td><td><code>false</code></td><td>Liquid cursor</td></tr>
 <tr><td><code>cursorRadius</code></td><td><code>data-aurora-gradient-cursor-radius</code></td><td>number (px)</td><td><code>250</code></td><td>Cursor radius</td></tr>
 </tbody></table></div></div></section>
+</div>
+<section class="cta-section section-gap-lg">
+    <div class="container">
+      <div class="cta-box">
+        <div class="eyebrow" style="margin-bottom:1.5rem">Get Started</div>
+        <h2 class="display-2">Ready to <span class="text-gradient">animate?</span></h2>
+        <p>Aurora is the open-source Swiss Army knife for animated web design. Add it to your site in minutes:
+          paste two script tags, drop in the Webflow snippet, or install the Elementor plugin. Free, with no strings attached.</p>
+        <div class="cta-actions">
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Aurora Free
+          </a>
+          <a href="../index.html#install" class="btn-ghost">
+            Read the Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-</main>
-<footer class="site"><div class="wrap"><span>Aurora 1.0.0 · MIT License</span><span><a href="https://github.com/zmdy/aurora">Source</a> · <a href="../install.html">Install</a></span></div></footer>
-<script type="application/json" id="schema">{"primary":"type","options":{"type":{"type":"enum","default":"linear","values":["linear","radial","conic","mesh"],"label":"Type","description":"\"mesh\" renders an animated WebGL gradient and only applies to backgrounds.","group":"Gradient"},"target":{"type":"enum","default":"background","values":["background","text","icon"],"label":"Paint","description":"Where the gradient is drawn: the element background, the text fill, or an icon (font or SVG).","group":"Gradient"},"selector":{"type":"selector","default":"","label":"Target selector","description":"For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon).","group":"Gradient"},"stops":{"type":"string","default":"#7c6cff;#ff7a2f;#2af598","ui":"stops","label":"Color stops","description":"Colors separated by \";\", each with an optional position: \"#ff0080;#7928ca 60;#2af598\". A JSON array of {color, offset} is also accepted.","group":"Gradient"},"angle":{"type":"number","default":135,"min":0,"max":360,"unit":"deg","label":"Angle","group":"Gradient","when":{"type":["linear","conic"]}},"animation":{"type":"enum","default":"none","values":["none","flow","hue"],"label":"Animation","description":"\"flow\" moves color blobs (backgrounds) or pans the gradient (text, icons); \"hue\" rotates the hue.","group":"Animation"},"speed":{"type":"number","default":8,"min":1,"max":120,"unit":"s","label":"Cycle duration","group":"Animation","when":{"animation":["flow","hue"]}},"followMouse":{"type":"boolean","default":false,"label":"Cursor spotlight","description":"A radial gradient that follows the pointer over the element.","group":"Cursor"},"spotlightRadius":{"type":"number","default":600,"min":50,"max":2000,"unit":"px","label":"Spotlight radius","group":"Cursor","when":{"followMouse":true}},"textMode":{"type":"enum","default":"phrase","values":["phrase","letter"],"label":"Text gradient mode","description":"For text split by the Text module: one gradient across the whole phrase, or a full gradient on every unit.","group":"Text"},"meshStyle":{"type":"enum","default":"paper","values":["paper","liquid","wave","silk","stripe","aurora","curtains"],"label":"Mesh style","group":"Mesh","when":{"type":"mesh"}},"distortion":{"type":"number","default":40,"min":0,"max":100,"label":"Distortion","group":"Mesh","when":{"type":"mesh"}},"swirl":{"type":"number","default":25,"min":0,"max":100,"label":"Swirl","group":"Mesh","when":{"type":"mesh"}},"scale":{"type":"number","default":1.25,"min":0.1,"max":5,"step":0.05,"label":"Scale","group":"Mesh","when":{"type":"mesh"}},"grain":{"type":"boolean","default":false,"label":"Film grain","group":"Mesh","when":{"type":"mesh"}},"grainIntensity":{"type":"number","default":35,"min":0,"max":100,"label":"Grain intensity","group":"Mesh","when":{"type":"mesh","grain":true}},"liquidCursor":{"type":"boolean","default":false,"label":"Liquid cursor","group":"Mesh","when":{"type":"mesh"}},"cursorRadius":{"type":"number","default":250,"min":20,"max":1000,"unit":"px","label":"Cursor radius","group":"Mesh","when":{"type":"mesh","liquidCursor":true}}}}</script>
-<script src="../aurora.core.min.js"></script>
-<script src="../aurora.gradient.min.js"></script>
-<script src="../assets/site.js"></script>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <img src="../assets/logo_aurora_animated.svg" class="footer__logo" alt="Aurora">
+          <p class="footer__tagline">The open-source Swiss Army knife for animated web design. Color and motion, unleashed.
+          </p>
+        </div>
+        <div>
+          <p class="footer__col-title">Toolkit</p>
+          <ul class="footer__links">
+            <li><a href="../modules/text.html">Text Effects</a></li>
+            <li><a href="../index.html#install">Install</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">Resources</p>
+          <ul class="footer__links">
+            <li><a href="../index.html#install">Documentation</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a></li>
+            <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/README.md#contributing" target="_blank"
+                rel="noopener">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Aurora. Open source, forever.</p>
+        <span class="footer__badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+          </svg>
+          MIT · Made in Brazil
+        </span>
+      </div>
+    </div>
+  </footer>
+
+
+  <div class="snippet-overlay" id="snippet-overlay" role="dialog" aria-modal="true" aria-label="Copy animation snippet">
+    <div class="snippet-modal">
+      <div class="snippet-modal__header">
+        <div class="snippet-modal__title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          HTML + JS Snippet
+        </div>
+        <button class="snippet-close" id="snippet-close" aria-label="Close snippet modal">×</button>
+      </div>
+
+      <div class="snippet-modal__body">
+        <pre class="snippet-code" id="snippet-raw"></pre>
+      </div>
+
+      <div class="snippet-modal__footer">
+        <p class="snippet-info">Preview shows full readable HTML.<br>The button copies only the <strong
+            style="color:rgba(255,255,255,.55)">element + CDN tags + minified init script</strong> — ready to paste.</p>
+        <button class="btn-copy-snippet" id="btn-copy-final" aria-label="Copy lean snippet to clipboard">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          Copy Snippet
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ══════════════════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════════════════ -->
+  <script type="application/json" id="schema">{"primary":"type","options":{"type":{"type":"enum","default":"linear","values":["linear","radial","conic","mesh"],"label":"Type","description":"\"mesh\" renders an animated WebGL gradient and only applies to backgrounds.","group":"Gradient"},"target":{"type":"enum","default":"background","values":["background","text","icon","icon-text"],"label":"Paint","description":"Where the gradient is drawn: the element background, the text fill, an icon (font or SVG), or both the icon and the text.","group":"Gradient"},"selector":{"type":"selector","default":"","label":"Target selector","description":"For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon). With \"icon-text\" it is the icon selector.","group":"Gradient"},"textSelector":{"type":"selector","default":"","label":"Text selector","description":"Only used by \"icon-text\": the text elements to paint, relative to this element. The Target selector then paints the icons.","group":"Gradient","when":{"target":"icon-text"}},"stops":{"type":"string","default":"#7c6cff;#ff7a2f;#2af598","ui":"stops","label":"Color stops","description":"Colors separated by \";\", each with an optional position: \"#ff0080;#7928ca 60;#2af598\". A JSON array of {color, offset} is also accepted.","group":"Gradient"},"angle":{"type":"number","default":135,"min":0,"max":360,"unit":"deg","label":"Angle","group":"Gradient","when":{"type":["linear","conic"]}},"animation":{"type":"enum","default":"none","values":["none","flow","hue"],"label":"Animation","description":"\"flow\" moves color blobs (backgrounds) or pans the gradient (text, icons); \"hue\" rotates the hue.","group":"Animation"},"speed":{"type":"number","default":8,"min":1,"max":120,"unit":"s","label":"Cycle duration","group":"Animation","when":{"animation":["flow","hue"]}},"followMouse":{"type":"boolean","default":false,"label":"Cursor spotlight","description":"A radial gradient that follows the pointer over the element.","group":"Cursor"},"spotlightRadius":{"type":"number","default":600,"min":50,"max":2000,"unit":"px","label":"Spotlight radius","group":"Cursor","when":{"followMouse":true}},"textMode":{"type":"enum","default":"phrase","values":["phrase","letter"],"label":"Text gradient mode","description":"For text split by the Text module: one gradient across the whole phrase, or a full gradient on every unit.","group":"Text"},"meshStyle":{"type":"enum","default":"paper","values":["paper","liquid","wave","silk","stripe","aurora","curtains"],"label":"Mesh style","group":"Mesh","when":{"type":"mesh"}},"distortion":{"type":"number","default":40,"min":0,"max":100,"label":"Distortion","group":"Mesh","when":{"type":"mesh"}},"swirl":{"type":"number","default":25,"min":0,"max":100,"label":"Swirl","group":"Mesh","when":{"type":"mesh"}},"scale":{"type":"number","default":1.25,"min":0.1,"max":5,"step":0.05,"label":"Scale","group":"Mesh","when":{"type":"mesh"}},"grain":{"type":"boolean","default":false,"label":"Film grain","group":"Mesh","when":{"type":"mesh"}},"grainIntensity":{"type":"number","default":35,"min":0,"max":100,"label":"Grain intensity","group":"Mesh","when":{"type":"mesh","grain":true}},"liquidCursor":{"type":"boolean","default":false,"label":"Liquid cursor","group":"Mesh","when":{"type":"mesh"}},"cursorRadius":{"type":"number","default":250,"min":20,"max":1000,"unit":"px","label":"Cursor radius","group":"Mesh","when":{"type":"mesh","liquidCursor":true}}}}</script>
+<script type="application/json" id="demo-config">{"css":".demo-box { width: 100%; min-height: 200px; display: grid; place-items: center; text-align: center; padding: 28px; border-radius: 12px; font-size: 1.6rem; font-weight: 700; color: #fff; }","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.gradient.min.js","integrity":"sha384-LgENekgTRviccsDYVKcaA3rleugln8EIaHOLQ0nOgY89d44HJJBdGTd+dY+bS59T"}]}</script>
+<script src="../aurora.core.min.js?v=3"></script>
+<script src="../aurora.gradient.min.js?v=3"></script>
+<script src="../assets/site.js?v=3"></script>
 </body>
+
 </html>

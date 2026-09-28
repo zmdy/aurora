@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { moduleDemoPage } from './module-demo.mjs';
 
 var root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 var dist = resolve(root, 'dist');
@@ -164,10 +165,9 @@ var NAV = [
     ['modules/gradient.html', 'Gradient'],
     ['modules/cursor.html', 'Cursor'],
     ['modules/morph-card.html', 'Morph Card'],
-    ['install.html', 'Install'],
+    ['index.html#install', 'Install'],
     ['webflow.html', 'Webflow'],
     ['elementor.html', 'Elementor'],
-    ['text-effects/index.html', 'Text effects'],
 ];
 
 /**
@@ -252,40 +252,19 @@ function modulePage(name) {
     var schema = manifest.schemas[name];
     var file = 'aurora.' + name + '.min.js';
     var info = sri[file];
-
-    var effects = '';
-    if (name === 'text') {
-        var list = schema.options.effect.values.map(function (v) { return '<code>' + esc(v.value) + '</code>'; }).join(' ');
-        effects = '<section class="block"><div class="wrap"><h2>All ' + schema.options.effect.values.length + ' effects</h2>' +
-            '<p class="sub">Use any of them as the value of <code>data-aurora-text</code>.</p><p>' + list + '</p></div></section>';
-    }
-
-    var replay = mod.replay ? '<button class="btn" id="replay" type="button">Replay</button>' : '';
-    var stageClass = name === 'cursor' ? ' cursor-stage' : '';
-
     var body =
-        '<section class="hero" style="padding-bottom:24px"><div class="wrap"><span class="tag">Module</span><h1>' + mod.title + '</h1><p class="lead">' + esc(mod.lead) + '</p></div></section>\n' +
-        '<section class="block"><div class="wrap">' +
-        '<div class="stage' + stageClass + '">' + mod.markup(' id="demo"') + '</div>\n' +
-        '<div style="margin-top:12px">' + replay + ' <a class="btn" href="../examples/' + name + '.html">Open the standalone example</a></div>\n' +
-        '<div class="playground"><div><h3 style="margin-top:0">Live attributes</h3><div class="codebox"><pre><code id="live-attrs"></code></pre></div>' +
-        '<p style="color:var(--muted);font-size:.9rem">Change the controls and copy the attributes onto any element.</p></div>' +
-        '<aside class="controls" id="controls" aria-label="Options"></aside></div>' +
-        '</div></section>\n' +
         '<section class="block"><div class="wrap"><h2>Copy and paste</h2>' +
         '<p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh ' + kb(sri['aurora.core.min.js'].gzip) + ' + ' + kb(info.gzip) + ' gzipped.</p>' +
         codebox(standalone(name, 'cdn', true), 'html') + '</div></section>\n' +
         '<section class="block"><div class="wrap"><h2>JavaScript API</h2>' + codebox(API_SNIPPETS[name], 'js') + '</div></section>\n' +
-        '<section class="block"><div class="wrap"><h2>Options</h2><p class="sub">Set them as <code>data-aurora-' + name + '-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-' + name + '-options</code>) or as an object in JavaScript.</p>' +
-        optionsTable(name) + '</div></section>\n' + effects;
+        '<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-' + name + '-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-' + name + '-options</code>) or as an object in JavaScript.</p>' +
+        optionsTable(name) + '</div></section>\n';
 
-    return shell({
-        file: 'modules/' + name + '.html',
-        title: 'Aurora ' + mod.title,
-        description: mod.summary,
-        body: body,
-        module: name,
-        scripts: ['aurora.core.min.js', file],
+    return moduleDemoPage(readFileSync(resolve(root, 'site/templates/module.html'), 'utf8'), {
+        name, title: mod.title, lead: mod.lead, markup: mod.markup(' id="demo"'),
+        documentation: '<div class="wrap"><div class="module-links"><a href="../examples/' + name + '.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div>' + body,
+        schema,
+        config: { css: mod.css, scripts: ['aurora.core.min.js', file].map(function (f) { return { src: CDN + f, integrity: sri[f].integrity }; }) }
     });
 }
 
@@ -300,10 +279,10 @@ function homePage() {
         '<section class="hero hero-image"><div class="wrap">' +
         '<h1 data-aurora-text="blur-reveal" data-aurora-text-split="words">Animated web design, for any builder.</h1>' +
         '<p class="lead">Aurora is an open-source toolkit of animation modules. Paste a script into plain HTML, drop it into Webflow, or install the Elementor plugin. Same modules, same attributes.</p>' +
-        '<div class="cta"><a class="btn primary" href="install.html">Get started</a><a class="btn" href="' + REPO + '">View on GitHub</a></div></div></section>\n' +
+        '<div class="cta"><a class="btn primary" href="index.html#install">Get started</a><a class="btn" href="' + REPO + '">View on GitHub</a></div></div></section>\n' +
         '<section class="block"><div class="wrap"><h2>Five modules</h2><p class="sub">Use one or all of them. Each is a separate script that loads after the small core.</p><div class="grid">\n' + cards + '\n</div></div></section>\n' +
         '<section class="block"><div class="wrap"><h2>Three ways to use it</h2><div class="grid">' +
-        '<a class="card" href="install.html"><h3>Standalone</h3><p>Copy two script tags into any HTML page. No build step.</p></a>' +
+        '<a class="card" href="index.html#install"><h3>Standalone</h3><p>Copy two script tags into any HTML page. No build step.</p></a>' +
         '<a class="card" href="webflow.html"><h3>Webflow</h3><p>Add the script in Custom Code, then use Custom Attributes in the Designer.</p></a>' +
         '<a class="card" href="elementor.html"><h3>Elementor</h3><p>A plugin with a control for every option, generated from the same schemas.</p></a>' +
         '</div></div></section>\n' +
@@ -312,7 +291,7 @@ function homePage() {
         manifest.files.filter(function (f) { return /min\.js$/.test(f.file); }).map(function (f) {
             return '<tr><td><code>' + f.file + '</code></td><td>' + kb(f.bytes) + '</td><td>' + kb(f.gzip) + '</td></tr>';
         }).join('') + '</tbody></table></div>' +
-        '<div class="cta-band"><h2>Ready to animate?</h2><p class="sub">Two script tags and one attribute.</p><div class="cta"><a class="btn primary" href="install.html">Install</a><a class="btn" href="text-effects/index.html">Browse the text effects</a></div></div></div></section>';
+        '<div class="cta-band"><h2>Ready to animate?</h2><p class="sub">Two script tags and one attribute.</p><div class="cta"><a class="btn primary" href="index.html#install">Install</a><a class="btn" href="modules/text.html">Browse the text effects</a></div></div></div></section>';
 
     return shell({
         file: 'index.html',
@@ -325,7 +304,7 @@ function homePage() {
 
 // ── Install, Webflow, Elementor ─────────────────────────────────────────
 
-function installPage() {
+function installSection() {
     var all = sri['aurora.min.js'];
     var allTag = '<script src="' + CDN + 'aurora.min.js"\n        integrity="' + all.integrity + '"\n        crossorigin="anonymous"></script>';
     var modularTags = ['aurora.core.min.js', 'aurora.text.min.js', 'aurora.gradient.min.js'].map(function (f) {
@@ -350,7 +329,11 @@ function installPage() {
         '<a class="card" href="webflow.html"><h3>Webflow</h3><p>Custom Code plus Custom Attributes.</p></a>' +
         '<a class="card" href="elementor.html"><h3>Elementor</h3><p>Install the plugin zip.</p></a></div></div></section>';
 
-    return shell({ file: 'install.html', title: 'Install Aurora', description: 'Use Aurora in plain HTML, with a bundler, or through a builder adapter.', body: body });
+    body = body.replace(/<section class="hero"[\s\S]*?<\/section>/, '')
+        .replaceAll('<h3>', '<h4>').replaceAll('</h3>', '</h4>')
+        .replaceAll('<h2>', '<h3>').replaceAll('</h2>', '</h3>');
+    return '<section id="install" class="module-documentation installation-section section-gap-lg" aria-labelledby="install-title">' +
+        '<div class="container"><div class="section-header"><div class="eyebrow">Get started</div><h2 id="install-title" class="display-2">Install Aurora</h2><p>Aurora is plain JavaScript. Pick the setup that fits your site.</p></div></div>' + body + '</section>';
 }
 
 function webflowPage() {
@@ -396,9 +379,8 @@ function elementorPage() {
 
 // ── Build ───────────────────────────────────────────────────────────────
 
-// docs/index.html and docs/text-effects/index.html are hand-maintained (the
-// landing page and the text-effects playground/catalog); everything else in
-// docs/ is generated. Only generated files are removed here.
+// The home is hand-maintained except its marked installation section.
+// Module pages use site/templates/module.html. Only generated files are removed.
 ['modules', 'examples', 'assets', 'install.html', 'webflow.html', 'elementor.html'].concat(
     manifest.files.map(function (f) { return f.file; })
 ).forEach(function (name) { rmSync(resolve(out, name), { recursive: true, force: true }); });
@@ -408,6 +390,7 @@ manifest.files.forEach(function (f) { copyFileSync(resolve(dist, f.file), resolv
 mkdirSync(resolve(out, 'assets'), { recursive: true });
 copyFileSync(resolve(root, 'site/assets/site.css'), resolve(out, 'assets/site.css'));
 copyFileSync(resolve(root, 'site/assets/site.js'), resolve(out, 'assets/site.js'));
+['modules.css', 'interactive-demo.css', 'module-documentation.css'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
 copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, 'assets/favicon.svg'));
 
 ['aurora-hero.webp', 'aurora-cta.webp', 'logo_aurora_animated.svg'].forEach(function (name) {
@@ -415,7 +398,12 @@ copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, '
 });
 writeFileSync(resolve(out, '.nojekyll'), '');
 
-write('install.html', installPage());
+var home = readFileSync(resolve(out, 'index.html'), 'utf8');
+var installStart = '<!-- INSTALLATION:START -->';
+var installEnd = '<!-- INSTALLATION:END -->';
+if (!home.includes(installStart) || !home.includes(installEnd)) throw new Error('Home installation markers are missing');
+home = home.slice(0, home.indexOf(installStart) + installStart.length) + '\n' + installSection() + '\n' + home.slice(home.indexOf(installEnd));
+write('index.html', home);
 write('webflow.html', webflowPage());
 write('elementor.html', elementorPage());
 ORDER.forEach(function (name) {
@@ -423,4 +411,4 @@ ORDER.forEach(function (name) {
     write('examples/' + name + '.html', standalone(name, 'local', false));
 });
 
-console.log('Site built in docs/ (' + (ORDER.length * 2 + 3) + ' pages; index.html and text-effects/index.html are hand-maintained).');
+console.log('Site built in docs/ (home installation section, 5 module pages, 5 examples and 2 adapter guides).');

@@ -2697,6 +2697,7 @@
     }
     .aurora-js:not(.aurora-ready) [data-aurora-text] { visibility: hidden; }
   </style>
+<link rel="stylesheet" href="assets/module-documentation.css?v=4">
 </head>
 
 <body>
@@ -2717,7 +2718,7 @@
         </a>
 
         <ul class="nav__links" role="list">
-          <li><a href="text-effects/">Text Effects</a></li>
+          <li><a href="modules/text.html">Text Effects</a></li>
           <li class="nav__dropdown" id="nav-modules-dropdown">
             <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
               Modules
@@ -2746,12 +2747,12 @@
               </a>
             </div>
           </li>
-          <li><a href="install.html">Install</a></li>
+          <li><a href="#install">Install</a></li>
           <li><a href="#how-it-works">How It Works</a></li>
         </ul>
 
         <div class="nav__actions">
-          <a href="install.html" class="nav__docs-btn">
+          <a href="#install" class="nav__docs-btn">
             Docs
           </a>
           <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
@@ -2792,7 +2793,7 @@
         </p>
 
         <div class="hero__actions fade-in-up fade-in-up--4">
-          <a href="install.html" class="btn-primary"
+          <a href="#install" class="btn-primary"
             aria-label="Get started with Aurora">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -2801,7 +2802,7 @@
             </svg>
             Get Started Free
           </a>
-          <a href="text-effects/" class="btn-ghost" aria-label="See the animations in action">
+          <a href="modules/text.html" class="btn-ghost" aria-label="See the animations in action">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5,3 19,12 5,21" />
             </svg>
@@ -2935,7 +2936,7 @@
 </div>
 
       <div class="hero__actions" style="margin-top:var(--s-8);justify-content:center">
-        <a href="install.html" class="btn-primary">Read the install guide</a>
+        <a href="#install" class="btn-primary">Read the install guide</a>
         <a href="modules/text.html" class="btn-ghost">Play with the options</a>
       </div>
     </div>
@@ -2944,6 +2945,46 @@
   <!-- ═══════════════════════════════════════════════════════════════════
      ANYWHERE
      ═══════════════════════════════════════════════════════════════════ -->
+  <!-- INSTALLATION:START -->
+<section id="install" class="module-documentation installation-section section-gap-lg" aria-labelledby="install-title"><div class="container"><div class="section-header"><div class="eyebrow">Get started</div><h2 id="install-title" class="display-2">Install Aurora</h2><p>Aurora is plain JavaScript. Pick the setup that fits your site.</p></div></div>
+<section class="block"><div class="wrap"><h3>Standalone</h3><p class="sub">Paste the scripts before <code>&lt;/body&gt;</code>. The core must come first; modules can follow in any order.</p><h4>Only the modules you use</h4><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
+        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js&quot;
+        integrity=&quot;sha384-yeorS2+LEljyAG6UUDLxF5AJz2JA2ZwUoYJu2m1bmLNvvfp5QmA9BjllfRK/eDrj&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.gradient.min.js&quot;
+        integrity=&quot;sha384-LgENekgTRviccsDYVKcaA3rleugln8EIaHOLQ0nOgY89d44HJJBdGTd+dY+bS59T&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre></div><h4>Everything in one script (57.7 KB gzipped)</h4><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.min.js&quot;
+        integrity=&quot;sha384-pkrN9RY8ZtxhCYyOv3rBYNoxLiaTCbOBfCmsxuu0KWhm3suGONgQ9KSsriLMyFAV&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre></div><p>Then mark elements with attributes:</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;h2 data-aurora-text=&quot;slide-in&quot;&gt;Hello&lt;/h2&gt;
+&lt;div data-aurora-gradient=&quot;linear&quot; data-aurora-gradient-animation=&quot;flow&quot;&gt;...&lt;/div&gt;</code></pre></div><div class="note">The CDN links point to the tag <code>v1.0.0</code> of the repository. You can also download the files from the <code>dist/</code> folder of a release and host them yourself: they have no other dependencies.</div></div></section>
+<section class="block"><div class="wrap"><h3>Configuration</h3><p class="sub">Define <code>window.AuroraConfig</code> before the scripts.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script&gt;
+  window.AuroraConfig = {
+    autoInit: true,  // scan the page for data-aurora-* on load
+    observe: true,   // also watch the DOM for elements added later (CMS lists, routers)
+    nonce: '',       // CSP nonce for the style tag Aurora injects
+    debug: false
+  };
+&lt;/script&gt;</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h3>Options, three ways</h3><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!-- 1. Individual attributes --&gt;
+&lt;h2 data-aurora-text=&quot;blur-reveal&quot; data-aurora-text-duration=&quot;1200&quot;&gt;&lt;/h2&gt;
+
+&lt;!-- 2. One JSON attribute --&gt;
+&lt;h2 data-aurora-text=&quot;blur-reveal&quot; data-aurora-text-options='{&quot;duration&quot;:1200,&quot;split&quot;:&quot;words&quot;}'&gt;&lt;/h2&gt;
+
+&lt;!-- 3. JavaScript --&gt;
+&lt;script&gt;
+  Aurora.text(document.querySelector(&quot;h2&quot;), { effect: &quot;blur-reveal&quot;, duration: 1200 });
+&lt;/script&gt;</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h3>Bundlers</h3><p class="sub"><code>dist/aurora.esm.js</code> is an ES module with every export.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">import { createFullAurora } from './aurora.esm.js';
+
+var aurora = createFullAurora();
+aurora.init();
+window.Aurora = aurora;</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h3>Builders</h3><div class="grid"><a class="card" href="webflow.html"><h4>Webflow</h4><p>Custom Code plus Custom Attributes.</p></a><a class="card" href="elementor.html"><h4>Elementor</h4><p>Install the plugin zip.</p></a></div></div></section></section>
+<!-- INSTALLATION:END -->
+
   <section id="anywhere" class="section-gap-lg">
     <div class="container">
       <div class="section-header">
@@ -2958,7 +2999,7 @@
           <div class="module-card__num">Plain HTML</div>
           <h3 class="module-card__title">Any Website</h3>
           <p class="module-card__desc">Drop the scripts next to your page or load them from a CDN. Works with any stack, or none at all.</p>
-          <p class="module-card__desc" style="margin-top:12px"><a href="install.html" style="color:var(--c-teal)">Get the install guide →</a></p>
+          <p class="module-card__desc" style="margin-top:12px"><a href="#install" style="color:var(--c-teal)">Get the install guide →</a></p>
         </div>
         <div class="module-card">
           <div class="module-card__icon module-card__icon--teal">🌊</div>
@@ -3047,7 +3088,7 @@
             </svg>
             Download Aurora Free
           </a>
-          <a href="install.html" class="btn-ghost">
+          <a href="#install" class="btn-ghost">
             Read the Docs
           </a>
         </div>
@@ -3068,8 +3109,8 @@
         <div>
           <p class="footer__col-title">Toolkit</p>
           <ul class="footer__links">
-            <li><a href="text-effects/">Text Effects</a></li>
-            <li><a href="install.html">Install</a></li>
+            <li><a href="modules/text.html">Text Effects</a></li>
+            <li><a href="#install">Install</a></li>
             <li><a href="#modules">Modules</a></li>
             <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
           </ul>
@@ -3077,7 +3118,7 @@
         <div>
           <p class="footer__col-title">Resources</p>
           <ul class="footer__links">
-            <li><a href="install.html">Documentation</a></li>
+            <li><a href="#install">Documentation</a></li>
             <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a></li>
             <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
             <li><a href="https://github.com/zmdy/aurora/blob/main/README.md#contributing" target="_blank"
@@ -3570,6 +3611,6 @@
     })();
   </script>
 
+<script src="assets/site.js?v=4"></script>
 </body>
-
 </html>

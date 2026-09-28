@@ -2373,31 +2373,20 @@ function distributeWordsAcrossLines(words, numLines) {
   return wordsPerLine;
 }
 function generateLineDataForWords(wordsForLine, totalChars) {
-  var wordPositions = [];
-  var usedRanges = [];
-  wordsForLine.forEach(function(word) {
-    var wordLen = word.length;
-    if (wordLen >= totalChars) return;
-    var placed = false;
-    var attempts = 0;
-    while (!placed && attempts < 50) {
-      var maxStart = totalChars - wordLen;
-      if (maxStart < 0) break;
-      var start = Math.floor(Math.random() * (maxStart + 1));
-      var end = start + wordLen;
-      var overlaps = usedRanges.some(function(u) {
-        return start >= u.start && start < u.end || end > u.start && end <= u.end || start <= u.start && end >= u.end;
-      });
-      if (!overlaps) {
-        wordPositions.push({ word, start, end });
-        usedRanges.push({ start, end });
-        placed = true;
-      }
-      attempts++;
-    }
+  if (!wordsForLine.length) return [];
+  var lengths = wordsForLine.map(function(w) {
+    return w.length;
   });
-  wordPositions.sort(function(a, b) {
-    return a.start - b.start;
+  var blockLen = lengths.reduce(function(sum, l) {
+    return sum + l;
+  }, 0) + (wordsForLine.length - 1);
+  if (blockLen > totalChars) blockLen = totalChars;
+  var cursor2 = Math.max(0, Math.floor((totalChars - blockLen) / 2));
+  var wordPositions = [];
+  wordsForLine.forEach(function(word) {
+    if (cursor2 + word.length > totalChars) return;
+    wordPositions.push({ word, start: cursor2, end: cursor2 + word.length });
+    cursor2 += word.length + 1;
   });
   return wordPositions;
 }
@@ -2452,6 +2441,7 @@ var effect$6 = {
     if (!words.length) return;
     var reducedMotion = fx.reducedMotion;
     var reverseLine = true;
+    var loop = opts.wallLoop !== false;
     var wordsColor = getComputedStyle(textEl).color || "rgb(255, 255, 255)";
     var cm = wordsColor.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/);
     var textColor = cm ? "rgba(" + cm[1] + ", " + cm[2] + ", " + cm[3] + ", 0.55)" : "rgba(255,255,255,0.55)";
@@ -2480,7 +2470,7 @@ var effect$6 = {
       var charWidth = measureCharWidth(cs);
       var COLS = Math.max(20, Math.min(160, Math.floor(containerWidth / charWidth)));
       var cellWidth = containerWidth / COLS;
-      var ROWS = Math.max(8, Math.min(28, words.length + 8));
+      var ROWS = opts.wallLines ? Math.max(4, Math.min(40, Math.round(opts.wallLines))) : Math.max(8, Math.min(28, words.length + 8));
       textEl.innerHTML = "";
       textEl.style.opacity = "1";
       textEl.style.fontVariantNumeric = "tabular-nums";
@@ -2548,6 +2538,10 @@ var effect$6 = {
             }
           }, lineDelay + phaseOffset);
         });
+        if (!loop) {
+          anims.push(tl);
+          return;
+        }
         linesData.forEach(function(_, index) {
           var lineDelay = index * stagger2;
           tl.add(lineStates[index], {
@@ -2933,6 +2927,24 @@ var schema$4 = {
       description: 'Color of the marker stroke "text-highlighter" draws behind the text.',
       group: "Effect",
       when: { effect: "text-highlighter" }
+    },
+    wallLoop: {
+      type: "boolean",
+      default: true,
+      label: "Loop the wall",
+      description: 'Repeat the reveal continuously. Turn off to play "text-reveal-wall" once and hold.',
+      group: "Effect",
+      when: { effect: "text-reveal-wall" }
+    },
+    wallLines: {
+      type: "number",
+      default: 14,
+      min: 4,
+      max: 40,
+      label: "Wall lines",
+      description: 'Number of repeated rows in the "text-reveal-wall".',
+      group: "Effect",
+      when: { effect: "text-reveal-wall" }
     },
     hoverScatter: {
       type: "boolean",
@@ -8724,17 +8736,25 @@ var schema$1 = {
     target: {
       type: "enum",
       default: "background",
-      values: ["background", "text", "icon"],
+      values: ["background", "text", "icon", "icon-text"],
       label: "Paint",
-      description: "Where the gradient is drawn: the element background, the text fill, or an icon (font or SVG).",
+      description: "Where the gradient is drawn: the element background, the text fill, an icon (font or SVG), or both the icon and the text.",
       group: "Gradient"
     },
     selector: {
       type: "selector",
       default: "",
       label: "Target selector",
-      description: "For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon).",
+      description: 'For text and icon: the elements to paint, relative to this element. Empty paints the element itself (text) or its icons (icon). With "icon-text" it is the icon selector.',
       group: "Gradient"
+    },
+    textSelector: {
+      type: "selector",
+      default: "",
+      label: "Text selector",
+      description: 'Only used by "icon-text": the text elements to paint, relative to this element. The Target selector then paints the icons.',
+      group: "Gradient",
+      when: { target: "icon-text" }
     },
     stops: {
       type: "string",
@@ -8889,7 +8909,7 @@ var ANIMATED_TEXT = ["pan", "hue"].map(function(kind) {
   var timing = kind === "pan" ? "ease-in-out" : "linear";
   return selector + "{animation:aurora-gradient-" + kind + " var(--aurora-gradient-speed,8s) " + timing + " infinite}";
 }).join("");
-var STYLESHEET$1 = '.aurora-gradient-host{position:relative;overflow:hidden;isolation:isolate}.aurora-gradient-bg-hue::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:var(--aurora-gradient-image);background-size:200% 200%;animation:aurora-gradient-hue var(--aurora-gradient-speed,8s) linear infinite}.aurora-gradient-bg-flow::before{content:"";position:absolute;inset:-25%;z-index:-1;pointer-events:none;background-image:var(--aurora-gradient-image);background-repeat:no-repeat;filter:blur(var(--aurora-gradient-blur,40px));animation:aurora-gradient-flow var(--aurora-gradient-speed,8s) ease-in-out infinite}.aurora-gradient-text{background-repeat:no-repeat}.aurora-gradient-icon{background-repeat:no-repeat;display:inline-block}' + ANIMATED_TEXT + ".aurora-gradient-icon-hue svg,.aurora-gradient-icon-hue i{animation:aurora-gradient-hue var(--aurora-gradient-speed,8s) linear infinite}.aurora-gradient-icon-pan i{animation:aurora-gradient-pan var(--aurora-gradient-speed,8s) ease-in-out infinite}.aurora-gradient-mesh-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}@keyframes aurora-gradient-hue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}@keyframes aurora-gradient-flow{0%,100%{background-position:var(--aurora-gradient-pos-a)}50%{background-position:var(--aurora-gradient-pos-b)}}@keyframes aurora-gradient-pan{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}@media (prefers-reduced-motion:reduce){.aurora-gradient-bg-hue::before,.aurora-gradient-bg-flow::before,.aurora-gradient-text-pan,.aurora-gradient-text-pan *,.aurora-gradient-text-hue,.aurora-gradient-text-hue *,.aurora-gradient-icon-hue svg,.aurora-gradient-icon-hue i,.aurora-gradient-icon-pan i{animation:none!important}}";
+var STYLESHEET$1 = '.aurora-gradient-host{position:relative;overflow:hidden;isolation:isolate}.aurora-gradient-bg-hue::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:var(--aurora-gradient-image);background-size:200% 200%;animation:aurora-gradient-hue var(--aurora-gradient-speed,8s) linear infinite}.aurora-gradient-bg-flow::before{content:"";position:absolute;inset:-25%;z-index:-1;pointer-events:none;background-image:var(--aurora-gradient-image);background-repeat:no-repeat;filter:blur(var(--aurora-gradient-blur,40px));animation:aurora-gradient-flow var(--aurora-gradient-speed,8s) ease-in-out infinite}.aurora-gradient-text{background-repeat:no-repeat}.aurora-gradient-text-fill *{-webkit-text-fill-color:transparent}.aurora-gradient-icon{background-repeat:no-repeat;display:inline-block}' + ANIMATED_TEXT + ".aurora-gradient-icon-hue svg,.aurora-gradient-icon-hue i{animation:aurora-gradient-hue var(--aurora-gradient-speed,8s) linear infinite}.aurora-gradient-icon-pan i{animation:aurora-gradient-pan var(--aurora-gradient-speed,8s) ease-in-out infinite}.aurora-gradient-mesh-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}@keyframes aurora-gradient-hue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}@keyframes aurora-gradient-flow{0%,100%{background-position:var(--aurora-gradient-pos-a)}50%{background-position:var(--aurora-gradient-pos-b)}}@keyframes aurora-gradient-pan{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}@media (prefers-reduced-motion:reduce){.aurora-gradient-bg-hue::before,.aurora-gradient-bg-flow::before,.aurora-gradient-text-pan,.aurora-gradient-text-pan *,.aurora-gradient-text-hue,.aurora-gradient-text-hue *,.aurora-gradient-icon-hue svg,.aurora-gradient-icon-hue i,.aurora-gradient-icon-pan i{animation:none!important}}";
 function createPainter() {
   var undo = [];
   return {
@@ -9001,6 +9021,7 @@ function guardGlyphBox(el, painter, padding) {
 }
 function paintText(textEl, trackEl, options, stops, painter, animated) {
   guardGlyphBox(textEl, painter, "0.1em");
+  painter.addClass(textEl, "aurora-gradient-text-fill");
   var leaves = Array.prototype.slice.call(textEl.querySelectorAll(LEAF_SELECTOR));
   if (options.followMouse) {
     painter.style(textEl, "-webkit-background-clip", "text");
@@ -9322,10 +9343,13 @@ var gradient = defineModule({
       if (mesh) mesh.destroy();
       mesh = null;
     }
-    function targets() {
-      if (options.selector) return Array.prototype.slice.call(el.querySelectorAll(options.selector));
-      if (options.target === "icon") return Array.prototype.slice.call(el.querySelectorAll("svg, i"));
+    function nodesFor(selector, iconFallback) {
+      if (selector) return Array.prototype.slice.call(el.querySelectorAll(selector));
+      if (iconFallback) return Array.prototype.slice.call(el.querySelectorAll("svg, i"));
       return [el];
+    }
+    function targets() {
+      return nodesFor(options.selector, options.target === "icon" || options.target === "icon-text");
     }
     function paint() {
       painter.revert();
@@ -9361,12 +9385,19 @@ var gradient = defineModule({
         targets().forEach(function(node) {
           paintIcon(node, el, view, stops, painter, animated);
         });
+      } else if (options.target === "icon-text") {
+        nodesFor(options.selector, true).forEach(function(node) {
+          paintIcon(node, el, view, stops, painter, animated);
+        });
+        nodesFor(options.textSelector, false).forEach(function(node) {
+          paintText(node, el, view, stops, painter, animated);
+        });
       } else {
         paintBackground(el, view, stops, painter, animated);
       }
     }
     paint();
-    if (options.target === "text") {
+    if (options.target === "text" || options.target === "icon-text") {
       ctx.listen("split", function() {
         requestAnimationFrame(paint);
       }, { module: "text" });
