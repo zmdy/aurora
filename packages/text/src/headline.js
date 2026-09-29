@@ -1,13 +1,14 @@
 /* Original Aurora compositions; no Elementor code or assets are used here. */
+import { LETTER_EFFECTS, ROTATION_CSS, rotateLetters } from './headline-rotation.js';
 var nextId = 0;
 var NS = 'http://www.w3.org/2000/svg';
 var SHAPES = {
-    underline: ['M3 42 Q48 36 97 42'],
-    'double-underline': ['M3 39 Q48 34 97 39', 'M8 47 Q52 41 93 46'],
-    circle: ['M50 3 C112 1 111 48 50 47 C-12 46 -10 2 50 3'],
-    'aurora-orbit': ['M4 34 C-9 5 70 -8 96 13 C112 38 30 59 4 34', 'M9 43 C44 57 90 30 94 7'],
-    'aurora-wave': ['M2 40 C14 25 25 55 38 40 S62 25 74 40 S90 51 98 38', 'M4 46 C18 35 26 57 40 46 S65 33 80 45 S92 51 98 44'],
-    'aurora-spark': ['M3 43 Q50 34 95 41', 'M86 11 L90 1 L94 11 L99 15 L94 19 L90 29 L86 19 L81 15 Z'],
+    underline: ['M8 85 C112 79 258 80 391 84'],
+    'double-underline': ['M8 82 C118 77 267 79 392 82', 'M26 92 C135 88 260 88 376 90'],
+    circle: ['M204 7 C89 2 5 19 6 49 C7 80 105 95 207 93 C322 91 395 76 394 47 C393 22 310 6 204 7'],
+    'aurora-orbit': ['M26 73 C-8 52 24 19 153 10 C277 1 380 14 393 42 C403 68 313 91 187 93 C95 94 42 84 26 73', 'M61 89 C154 106 296 90 359 66'],
+    'aurora-wave': ['M8 85 C38 79 62 79 88 85 S138 91 164 85 S214 79 240 85 S290 91 316 85 S365 79 392 85', 'M33 94 C131 90 263 91 368 93'],
+    'aurora-spark': ['M8 86 C112 80 259 81 390 85', 'M397 7 Q398 16 407 17 Q398 18 397 27 Q396 18 387 17 Q396 16 397 7Z'],
 };
 var ENTRANCES = {
     'prism-rise': [{ opacity: 0, transform: 'translateY(.55em) skewX(-12deg)', filter: 'blur(6px)' }, { opacity: 1, transform: 'translateY(0) skewX(0)', filter: 'blur(0)' }],
@@ -40,7 +41,7 @@ export function initHeadline(el, options, ctx) {
     var inView = options.trigger === 'load' && rect.bottom >= 0 && rect.top < (window.innerHeight || 800);
     var animations = new Set();
     var paths = [];
-    ctx.style('text-headline', CSS);
+    ctx.style('text-headline', CSS + ROTATION_CSS);
     function span(cls, text) {
         var node = document.createElement('span'); node.className = cls;
         if (text !== undefined) node.textContent = text;
@@ -65,13 +66,14 @@ export function initHeadline(el, options, ctx) {
     }
     if (options.animationStyle === 'highlighted') {
         var id = 'aurora-headline-gradient-' + (++nextId);
-        var svg = svgNode('svg', { viewBox: '0 0 100 50', preserveAspectRatio: 'none', class: 'aurora-headline__shape', 'aria-hidden': 'true', focusable: 'false' });
+        var svg = svgNode('svg', { viewBox: '0 0 400 100', preserveAspectRatio: 'none', class: 'aurora-headline__shape', 'aria-hidden': 'true', focusable: 'false' });
         var defs = svgNode('defs', {}), gradient = svgNode('linearGradient', { id: id, x1: '0%', y1: '0%', x2: '100%', y2: '60%' });
         gradient.appendChild(svgNode('stop', { offset: '0%', 'stop-color': options.headlineColor }));
         gradient.appendChild(svgNode('stop', { offset: '100%', 'stop-color': options.headlineColor2 }));
         defs.appendChild(gradient); svg.appendChild(defs);
-        SHAPES[options.animationShape].forEach(function (d) {
-            var path = svgNode('path', { d: d, fill: 'none', stroke: 'url(#' + id + ')', 'stroke-width': options.strokeWidth, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke', pathLength: '1' });
+        SHAPES[options.animationShape].forEach(function (d, i) {
+            var path = svgNode('path', { d: d, fill: 'none', stroke: 'url(#' + id + ')', 'stroke-width': options.strokeWidth, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke', pathLength: '100' });
+            if (i) { path.setAttribute('stroke-width', String(options.strokeWidth * .7)); path.setAttribute('opacity', '.65'); }
             paths.push(path); svg.appendChild(path);
         });
         center.appendChild(svg);
@@ -82,18 +84,45 @@ export function initHeadline(el, options, ctx) {
         root.dataset.headlineIndex = String(index);
     }
     function clearTimer() { clearTimeout(timer); timer = null; }
-    function stopAnimations() { animations.forEach(function (a) { a.cancel(); }); animations.clear(); }
-    function animate(node, frames, delay) {
-        if (ctx.reducedMotion || typeof node.animate !== 'function') return;
-        var a = node.animate(frames, { duration: options.duration, delay: delay || 0, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'none' });
+    function stopAnimations() {
+        animations.forEach(function (a) { a.cancel(); }); animations.clear();
+        wordNodes.forEach(function (node, i) { node.textContent = words[i]; });
+        paths.forEach(function (path) { path.style.opacity = ''; });
+    }
+    function animate(node, frames, delay, settings, finish) {
+        if (ctx.reducedMotion || typeof node.animate !== 'function') { if (finish) finish(); return; }
+        var a = node.animate(frames, Object.assign({ duration: options.duration, delay: delay || 0, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }, settings));
         animations.add(a);
-        a.onfinish = function () { animations.delete(a); a.cancel(); };
+        a.onfinish = function () { if (finish) finish(); animations.delete(a); a.cancel(); };
+    }
+    function cycleDuration() {
+        if (options.animationStyle === 'highlighted') return options.duration * (paths.length > 1 ? 1.35 : 1) + options.holdDuration + (options.headlineLoop ? 220 : 0);
+        var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * .8 : options.rotationEffect === 'text-highlighter' ? Math.max(0, 400 - options.duration) : options.duration * .12;
+        return options.duration + extra + options.holdDuration;
     }
     function motion() {
         stopAnimations(); show();
+        if (ctx.reducedMotion) return;
         if (options.animationStyle === 'highlighted') {
-            paths.forEach(function (path, i) { animate(path, [{ strokeDasharray: '1', strokeDashoffset: '1', opacity: .2 }, { strokeDasharray: '1', strokeDashoffset: '0', opacity: 1 }], i * options.duration * .12); });
-        } else animate(wordNodes[index], ENTRANCES[options.rotationEffect]);
+            paths.forEach(function (path, i) {
+                var delay = i * options.duration * .8;
+                var drawDuration = options.duration * (i ? .55 : 1);
+                var duration = options.headlineLoop ? cycleDuration() - delay : drawDuration;
+                var drawn = options.headlineLoop ? drawDuration / duration : 1;
+                var alpha = i ? .65 : 1;
+                var frames = [
+                    { strokeDasharray: '100 100', strokeDashoffset: '100', opacity: 0, offset: 0 },
+                    { strokeDasharray: '100 100', strokeDashoffset: '98', opacity: alpha, offset: drawn * .08 },
+                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: alpha, offset: drawn }
+                ];
+                if (options.headlineLoop) frames.push(
+                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: alpha, offset: 1 - 220 / duration },
+                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: 0, offset: 1 }
+                );
+                animate(path, frames, delay, { duration: duration, easing: 'linear' }, options.headlineLoop ? function () { path.style.opacity = '0'; } : undefined);
+            });
+        } else if (ENTRANCES[options.rotationEffect]) animate(wordNodes[index], ENTRANCES[options.rotationEffect]);
+        else rotateLetters(wordNodes[index], words[index], options, animate);
         ctx.emit('headline-change', { index: index, text: words[index], style: options.animationStyle });
     }
     function canPlay() { return !destroyed && !paused && !hovering && !focused && !document.hidden && inView && !ctx.reducedMotion; }
@@ -107,7 +136,7 @@ export function initHeadline(el, options, ctx) {
             if (!canPlay()) return;
             if (options.animationStyle === 'rotating') index = (index + 1) % words.length;
             motion(); schedule();
-        }, delay === undefined ? options.duration * 1.12 + options.holdDuration : delay);
+        }, delay === undefined ? cycleDuration() : delay);
     }
     function sync() {
         if (!canPlay()) { clearTimer(); animations.forEach(function (a) { a.pause(); }); }

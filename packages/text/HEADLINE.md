@@ -17,7 +17,14 @@ to the element's original text. All strings are rendered as text, never HTML.
   with a two-color stroke (`headlineColor`, `headlineColor2`, `strokeWidth`).
 - `animationStyle: 'rotating'`: starts with the highlighted phrase, then cycles
   through `rotatingText` (one phrase per line; blank and duplicate lines removed).
-  `rotationEffect` is `prism-rise`, `comet-slide`, `split-flap` or `soft-focus`.
+  `rotationEffect` supports `prism-rise`, `comet-slide`, `split-flap`, `soft-focus`,
+  `text-highlighter`, `airport-flip`, `scramble`, `sparkles-text`,
+  `text-reveal-wall`, `letter-swap` and `echo-clone`. The highlighter shares its
+  marker renderer with the original Text Highlighter effect. The six letter
+  effects are compact headline adaptations: Reveal Wall resolves three rows into
+  each letter without expanding the heading into a full-screen wall.
+  Unicode graphemes remain intact. `letterStagger` is capped at 65% of the
+  duration for long phrases; `rotationColor` and `rotationColor2` set accents.
   All phrases share a grid cell, reserving the largest width/height to avoid
   moving the surrounding text. Long phrases wrap within the available width.
 - `duration`, `delay` and `trigger` reuse Text's existing option names.
@@ -74,5 +81,6 @@ The SVG shapes, transition definitions, lifecycle and integration are Aurora's
 own implementation. Preview the feature at `docs/modules/text.html#headline`.
 
 Build with `npm run build`, `npm run build:elementor`, and `npm run build:site`.
-`npm run pack` creates the installable ZIP. The Text gzip budget is 40 KB (raised
-from 37 KB to include the composition runtime and its shared schema).
+`npm run pack` creates the installable ZIP. The Text gzip budget is 41 KB, including the composition runtime, letter
+transitions and shared schema. Highlight strokes draw sequentially, hold, then
+fade before the next loop; one-shot highlights remain visible.

@@ -6,7 +6,7 @@
     var panel = document.getElementById('headline-controls');
     var state = { mode: 'headline', trigger: 'load', beforeText: 'Create', highlightedText: 'extraordinary', afterText: 'experiences.', rotatingText: 'memorable\noriginal' };
     var instance, timer, groups = {}, snippet;
-    var keys = ['beforeText', 'highlightedText', 'afterText', 'animationStyle', 'animationShape', 'rotatingText', 'rotationEffect', 'headlineColor', 'headlineColor2', 'strokeWidth', 'duration', 'holdDuration', 'headlineLoop'];
+    var keys = ['beforeText', 'highlightedText', 'afterText', 'animationStyle', 'animationShape', 'rotatingText', 'rotationEffect', 'letterStagger', 'rotationColor', 'rotationColor2', 'headlineColor', 'headlineColor2', 'strokeWidth', 'duration', 'holdDuration', 'headlineLoop'];
     function make(tag, cls, value) { var el = document.createElement(tag); el.className = cls; if (value !== undefined) el.textContent = value; return el; }
     function run() {
         instance = window.Aurora.text(node, state);

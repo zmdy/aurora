@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createAurora } from '@aurora/core';
 import { text } from '../src/index.js';
 import { initHeadline } from '../src/headline.js';
+import { graphemes } from '../src/headline-rotation.js';
 
 var aurora, el;
 beforeEach(() => {
@@ -16,6 +17,46 @@ function mount(options = {}) {
 }
 
 describe('headline composition and lifecycle', () => {
+    it.each(['text-highlighter', 'airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone'])('rotates with %s and cleans up its animations and decorations', effect => {
+        const handles = [];
+        const originalAnimate = Element.prototype.animate;
+        Element.prototype.animate = vi.fn((frames, timing) => {
+            const handle = { pause: vi.fn(), play: vi.fn(), cancel: vi.fn(), frames, timing };
+            handles.push(handle); return handle;
+        });
+        try {
+            const instance = mount({ animationStyle: 'rotating', rotationEffect: effect, rotatingText: 'Tomorrow', highlightedText: 'Olá 👩‍🚀', headlineLoop: false });
+            vi.advanceTimersByTime(0);
+            expect(handles.length).toBeGreaterThan(0);
+            if (effect !== 'text-highlighter') expect(el.querySelectorAll('.aurora-headline__char')).toHaveLength(4);
+            instance.api.pause(); handles.forEach(h => expect(h.pause).toHaveBeenCalled());
+            instance.api.play();
+            handles.forEach(h => h.onfinish());
+            expect(el.querySelectorAll('.aurora-headline__tape, .aurora-headline__echo, .aurora-headline__spark')).toHaveLength(0);
+            instance.api.next();
+            expect(instance.api.index).toBe(1);
+            instance.destroy();
+            expect(el.innerHTML).toBe('<em>Original</em> title');
+            expect(vi.getTimerCount()).toBe(0);
+        } finally { Element.prototype.animate = originalAnimate; }
+    });
+    it('keeps combining marks and emoji sequences in a single letter slot', () => {
+        expect(graphemes('a\u0301👩‍🚀')).toEqual(['a\u0301', '👩‍🚀']);
+    });
+    it('draws and fades highlights with ordered keyframes and prevents delayed-path flashes', () => {
+        const originalAnimate = Element.prototype.animate;
+        const timings = [];
+        Element.prototype.animate = vi.fn((frames, timing) => {
+            expect(frames.map(f => f.offset)).toEqual(frames.map(f => f.offset).sort((a,b) => a-b));
+            timings.push(timing); return { pause() {}, play() {}, cancel() {} };
+        });
+        try {
+            mount(); vi.advanceTimersByTime(0);
+            expect(timings).toHaveLength(2);
+            expect(timings[1].delay).toBeGreaterThan(0);
+            expect(timings.every(t => t.fill === 'backwards')).toBe(true);
+        } finally { Element.prototype.animate = originalAnimate; }
+    });
     it('only animates the center, escapes text and has a stable accessible sentence', () => {
         mount({ highlightedText: '<img src=x onerror=alert(1)>', animationStyle: 'rotating', rotatingText: 'Create\nCreate\n\nGrow' });
         expect(el.querySelector('img')).toBeNull();

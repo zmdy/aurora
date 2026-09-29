@@ -18,7 +18,7 @@ class Animated_Headline_Widget extends Widget_Base {
 	public function get_script_depends(): array { return [ Asset_Manager::handle( 'text' ) ]; }
 
 	public static function option_names(): array {
-		return [ 'beforeText', 'highlightedText', 'afterText', 'animationStyle', 'animationShape', 'rotatingText', 'rotationEffect', 'headlineColor', 'headlineColor2', 'strokeWidth', 'duration', 'delay', 'holdDuration', 'headlineLoop', 'headlineAutoplay', 'pauseOnHover' ];
+		return [ 'beforeText', 'highlightedText', 'afterText', 'animationStyle', 'animationShape', 'rotatingText', 'rotationEffect', 'letterStagger', 'rotationColor', 'rotationColor2', 'headlineColor', 'headlineColor2', 'strokeWidth', 'duration', 'delay', 'holdDuration', 'headlineLoop', 'headlineAutoplay', 'pauseOnHover' ];
 	}
 
 	private static function defaults(): array {

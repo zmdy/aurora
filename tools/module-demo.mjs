@@ -36,7 +36,7 @@ export function moduleDemoPage(reference, { name, title, lead, markup, documenta
             .replace('<section id="effects"', headlineDemo + '\n<section id="effects"')
             .replace('</head>', '<link rel="stylesheet" href="../assets/headline-demo.css?v=1">\n</head>')
             .replace('<script src="../aurora.text.min.js"></script>', '<script src="../aurora.text.min.js?v=' + config.revision + '"></script>')
-            .replace(/<\/body>\s*<\/html>\s*$/, '<script type="application/json" id="headline-schema">' + json(schema) + '</script>\n<script type="application/json" id="headline-config">' + json(config) + '</script>\n<script src="../assets/headline-demo.js?v=1"></script>\n<script src="../assets/site.js?v=3"></script>\n</body>\n</html>');
+            .replace(/<\/body>\s*<\/html>\s*$/, '<script type="application/json" id="headline-schema">' + json(schema) + '</script>\n<script type="application/json" id="headline-config">' + json(config) + '</script>\n<script src="../assets/headline-demo.js?v=2"></script>\n<script src="../assets/site.js?v=3"></script>\n</body>\n</html>');
     }
     page = page.replace('<section class="cta-section', '<div class="module-documentation">' + documentation + '</div>\n<section class="cta-section');
     return page;

@@ -651,11 +651,11 @@ var effect$Q = {
       gridWrap.appendChild(rowEl);
       var wordEls = [];
       for (var wi = 0; wi < REPEAT_COUNT; wi++) {
-        var span = document.createElement("span");
-        span.textContent = original;
-        span.style.cssText = "display:inline-block;line-height:1;color:" + color + ";clip-path:" + VISIBLE + ";";
-        rowEl.appendChild(span);
-        wordEls.push(span);
+        var span2 = document.createElement("span");
+        span2.textContent = original;
+        span2.style.cssText = "display:inline-block;line-height:1;color:" + color + ";clip-path:" + VISIBLE + ";";
+        rowEl.appendChild(span2);
+        wordEls.push(span2);
       }
       rows.push({
         el: rowEl,
@@ -1322,12 +1322,12 @@ var effect$y = {
   run: function(units, opts, textEl, fx) {
     var original = fx.original;
     textEl.innerHTML = "";
-    var span = document.createElement("span");
-    span.textContent = original;
-    span.style.display = "block";
-    textEl.appendChild(span);
+    var span2 = document.createElement("span");
+    span2.textContent = original;
+    span2.style.display = "block";
+    textEl.appendChild(span2);
     textEl.style.opacity = "1";
-    fx.animate(span, {
+    fx.animate(span2, {
       clipPath: ["inset(100% 0 0 0)", "inset(0% 0 0 0)"],
       duration: opts.duration,
       delay: opts.delay,
@@ -1716,11 +1716,11 @@ var effect$q = {
     var dial = document.createElement("div");
     dial.style.cssText = "position:relative;display:inline-block;width:" + radius * 2 + "px;height:" + radius * 2 + "px;";
     chars.forEach(function(ch, i) {
-      var span = document.createElement("span");
-      span.textContent = ch === " " ? " " : ch;
+      var span2 = document.createElement("span");
+      span2.textContent = ch === " " ? " " : ch;
       var deg = 360 / chars.length * i;
-      span.style.cssText = "position:absolute;left:50%;top:0;transform:rotate(" + deg + "deg) translateY(-" + radius + "px);transform-origin:0 " + radius + "px;margin-left:-0.5ch;";
-      dial.appendChild(span);
+      span2.style.cssText = "position:absolute;left:50%;top:0;transform:rotate(" + deg + "deg) translateY(-" + radius + "px);transform-origin:0 " + radius + "px;margin-left:-0.5ch;";
+      dial.appendChild(span2);
     });
     textEl.appendChild(dial);
     fx.animate(dial, {
@@ -2295,25 +2295,28 @@ var effect$8 = {
     });
   }
 };
+function createHighlighter(textEl, original, color) {
+  textEl.textContent = "";
+  var wrap2 = document.createElement("span");
+  wrap2.style.cssText = "position:relative;display:inline-block;padding:0 .1em;";
+  var mark = document.createElement("span");
+  mark.setAttribute("aria-hidden", "true");
+  mark.style.cssText = "position:absolute;left:-2%;right:-2%;top:12%;bottom:8%;z-index:0;background:color-mix(in srgb, " + (color || "#facc15") + " 55%, transparent);border-radius:2px 9px 3px 8px;transform:scaleX(0) rotate(-1deg);transform-origin:0% 50%;";
+  var label = document.createElement("span");
+  label.textContent = original;
+  label.style.cssText = "position:relative;z-index:1;";
+  wrap2.appendChild(mark);
+  wrap2.appendChild(label);
+  textEl.appendChild(wrap2);
+  return mark;
+}
 var effect$7 = {
   id: "text-highlighter",
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
     var original = fx.original || textEl.textContent || "";
-    textEl.innerHTML = "";
     textEl.style.opacity = "1";
-    var wrap2 = document.createElement("span");
-    wrap2.style.cssText = "position:relative;display:inline-block;padding:0 .1em;";
-    var color = opts.highlightColor || "#facc15";
-    var mark = document.createElement("span");
-    mark.setAttribute("aria-hidden", "true");
-    mark.style.cssText = "position:absolute;left:-2%;right:-2%;top:12%;bottom:8%;z-index:0;background:color-mix(in srgb, " + color + " 55%, transparent);border-radius:2px 9px 3px 8px;transform:scaleX(0) rotate(-1deg);transform-origin:0% 50%;";
-    var label = document.createElement("span");
-    label.textContent = original;
-    label.style.cssText = "position:relative;z-index:1;";
-    wrap2.appendChild(mark);
-    wrap2.appendChild(label);
-    textEl.appendChild(wrap2);
+    var mark = createHighlighter(textEl, original, opts.highlightColor);
     if (fx.reducedMotion) {
       fx.set(mark, { scaleX: 1, rotate: "-1deg" });
       return;
@@ -2830,10 +2833,13 @@ var headlineOptions = {
   animationStyle: { type: "enum", default: "highlighted", values: ["highlighted", "rotating"], label: "Animation style", group: "Headline", when: { mode: "headline" } },
   animationShape: { type: "enum", default: "aurora-orbit", values: ["underline", "double-underline", "circle", "aurora-orbit", "aurora-wave", "aurora-spark"], label: "Animation shape", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
   rotatingText: { type: "string", default: "", ui: "textarea", label: "Rotating text", description: "One phrase per line. The highlighted text is the first phrase.", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
-  rotationEffect: { type: "enum", default: "prism-rise", values: ["prism-rise", "comet-slide", "split-flap", "soft-focus"], label: "Rotation effect", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
+  rotationEffect: { type: "enum", default: "prism-rise", values: ["prism-rise", "comet-slide", "split-flap", "soft-focus", "text-highlighter", "airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone"], label: "Rotation effect", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
+  letterStagger: { type: "number", default: 28, min: 0, max: 150, unit: "ms", label: "Letter stagger", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
+  rotationColor: { type: "color", default: "#facc15", label: "Rotation accent", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
+  rotationColor2: { type: "color", default: "#a78bfa", label: "Rotation accent 2", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   headlineColor: { type: "color", default: "#05b172", label: "Shape color", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
   headlineColor2: { type: "color", default: "#7c5cff", label: "Shape accent", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
-  strokeWidth: { type: "number", default: 3, min: 1, max: 12, unit: "px", label: "Stroke width", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
+  strokeWidth: { type: "number", default: 2.5, min: 1, max: 12, step: 0.5, unit: "px", label: "Stroke width", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
   holdDuration: { type: "number", default: 1800, min: 300, max: 3e4, unit: "ms", label: "Hold duration", group: "Headline playback", when: { mode: "headline" } },
   headlineLoop: { type: "boolean", default: true, label: "Loop headline", group: "Headline playback", when: { mode: "headline" } },
   headlineAutoplay: { type: "boolean", default: true, label: "Autoplay headline", group: "Headline playback", when: { mode: "headline" } },
@@ -3012,12 +3018,12 @@ function splitIntoChars(el) {
     wrap2.style.cssText = "display:inline-block;white-space:nowrap;text-transform:none;";
     wrap2.setAttribute("aria-hidden", "true");
     Array.from(word).forEach(function(char) {
-      var span = document.createElement("span");
-      span.className = "aurora-char";
-      span.style.cssText = CHAR_STYLE;
-      span.textContent = char;
-      wrap2.appendChild(span);
-      chars.push(span);
+      var span2 = document.createElement("span");
+      span2.className = "aurora-char";
+      span2.style.cssText = CHAR_STYLE;
+      span2.textContent = char;
+      wrap2.appendChild(span2);
+      chars.push(span2);
     });
     el.appendChild(wrap2);
     if (index < words.length - 1) {
@@ -3034,13 +3040,13 @@ function splitIntoWords(el) {
   el.setAttribute("aria-label", text2);
   el.textContent = "";
   return text2.split(/\s+/).filter(Boolean).map(function(word, i, all) {
-    var span = document.createElement("span");
-    span.className = "aurora-word";
-    span.style.cssText = "display:inline-block;will-change:transform,opacity;";
-    span.setAttribute("aria-hidden", "true");
-    span.textContent = word + (i < all.length - 1 ? " " : "");
-    el.appendChild(span);
-    return span;
+    var span2 = document.createElement("span");
+    span2.className = "aurora-word";
+    span2.style.cssText = "display:inline-block;will-change:transform,opacity;";
+    span2.setAttribute("aria-hidden", "true");
+    span2.textContent = word + (i < all.length - 1 ? " " : "");
+    el.appendChild(span2);
+    return span2;
   });
 }
 function splitIntoLines(el) {
@@ -3048,21 +3054,21 @@ function splitIntoLines(el) {
   el.setAttribute("aria-label", text2);
   el.textContent = "";
   var spans = text2.split(/\s+/).filter(Boolean).map(function(word, i, all) {
-    var span = document.createElement("span");
-    span.style.cssText = "display:inline-block;";
-    span.textContent = word + (i < all.length - 1 ? " " : "");
-    el.appendChild(span);
-    return span;
+    var span2 = document.createElement("span");
+    span2.style.cssText = "display:inline-block;";
+    span2.textContent = word + (i < all.length - 1 ? " " : "");
+    el.appendChild(span2);
+    return span2;
   });
   var order = [];
   var rows = {};
-  spans.forEach(function(span) {
-    var top2 = span.offsetTop;
+  spans.forEach(function(span2) {
+    var top2 = span2.offsetTop;
     if (!rows[top2]) {
       rows[top2] = [];
       order.push(top2);
     }
-    rows[top2].push(span);
+    rows[top2].push(span2);
   });
   order.sort(function(a, b) {
     return a - b;
@@ -3076,8 +3082,8 @@ function splitIntoLines(el) {
     line.className = "aurora-line";
     line.style.cssText = "display:inline-block;will-change:transform,opacity;";
     line.setAttribute("aria-hidden", "true");
-    rows[top2].forEach(function(span) {
-      line.appendChild(span);
+    rows[top2].forEach(function(span2) {
+      line.appendChild(span2);
     });
     wrap2.appendChild(line);
     el.appendChild(wrap2);
@@ -7466,15 +7472,126 @@ function createFx(textEl, original) {
   };
   return fx;
 }
+var LETTER_EFFECTS = ["airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone"];
+var ROTATION_CSS = `
+.aurora-headline__char{display:inline-grid;position:relative;vertical-align:baseline;white-space:pre;line-height:inherit}
+.aurora-headline__glyph{grid-area:1/1;display:block;line-height:inherit}
+.aurora-headline__slot{overflow:hidden}
+.aurora-headline__tape{position:absolute;inset:0 0 auto;line-height:inherit;pointer-events:none}
+.aurora-headline__tape>span{display:block;line-height:inherit}
+.aurora-headline__echo{position:absolute;inset:0;pointer-events:none}
+.aurora-headline__spark{position:absolute;width:.28em;height:.28em;right:-.1em;top:0;pointer-events:none;opacity:0}
+`;
+function span(className, value) {
+  var node = document.createElement("span");
+  node.className = className;
+  if (value !== void 0) node.textContent = value;
+  return node;
+}
+function graphemes(value) {
+  return typeof Intl !== "undefined" && Intl.Segmenter ? Array.from(new Intl.Segmenter(void 0, { granularity: "grapheme" }).segment(value), function(s) {
+    return s.segment;
+  }) : Array.from(value);
+}
+function rotateLetters(node, value, options, animate2) {
+  var effect2 = options.rotationEffect;
+  if (effect2 === "text-highlighter") {
+    var mark = createHighlighter(node, value, options.rotationColor);
+    mark.style.transform = "scaleX(1) rotate(-1deg)";
+    animate2(
+      mark,
+      [{ transform: "scaleX(0) rotate(-1deg)" }, { transform: "scaleX(1) rotate(-1deg)" }],
+      0,
+      { duration: Math.max(400, options.duration), easing: "cubic-bezier(.455,.03,.515,.955)" }
+    );
+    return;
+  }
+  var chars = graphemes(value);
+  var stagger2 = Math.min(options.letterStagger, options.duration * 0.65 / Math.max(1, chars.length - 1));
+  node.textContent = "";
+  chars.forEach(function(char, i) {
+    if (/\s/.test(char)) {
+      node.appendChild(document.createTextNode(char));
+      return;
+    }
+    var slot = span("aurora-headline__char");
+    var glyph = span("aurora-headline__glyph", char);
+    slot.appendChild(glyph);
+    node.appendChild(slot);
+    var delay = i * stagger2;
+    if (effect2 === "airport-flip") {
+      glyph.style.transformOrigin = "50% 50%";
+      animate2(glyph, [
+        { transform: "perspective(350px) rotateX(-90deg)", opacity: 0 },
+        { transform: "perspective(350px) rotateX(14deg)", opacity: 1, offset: 0.7 },
+        { transform: "perspective(350px) rotateX(0)", opacity: 1 }
+      ], delay);
+    } else if (effect2 === "scramble" || effect2 === "letter-swap") {
+      slot.classList.add("aurora-headline__slot");
+      var tape = span("aurora-headline__tape");
+      var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      var count = effect2 === "scramble" ? 8 : 3;
+      for (var j = 0; j < count; j++) {
+        tape.appendChild(span("", j === count - 1 || effect2 === "letter-swap" ? char : alphabet[Math.floor(Math.random() * alphabet.length)]));
+      }
+      glyph.style.visibility = "hidden";
+      slot.appendChild(tape);
+      animate2(
+        tape,
+        [{ transform: "translateY(0)" }, { transform: "translateY(-" + 100 * (count - 1) / count + "%)" }],
+        delay,
+        { easing: effect2 === "scramble" ? "steps(" + (count - 1) + ", end)" : "cubic-bezier(.22,1,.36,1)" },
+        function() {
+          tape.remove();
+          glyph.style.visibility = "";
+        }
+      );
+    } else if (effect2 === "echo-clone") {
+      [2, 1].forEach(function(layer) {
+        var echo = span("aurora-headline__echo", char);
+        echo.style.color = layer === 1 ? options.rotationColor : options.rotationColor2;
+        slot.appendChild(echo);
+        animate2(echo, [{ transform: "translateY(" + -layer * 0.38 + "em)", opacity: 0.35 / layer }, { transform: "translateY(0)", opacity: 0 }], delay + layer * 35, {}, function() {
+          echo.remove();
+        });
+      });
+      animate2(glyph, [{ transform: "translateY(-.7em)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }], delay);
+    } else if (effect2 === "text-reveal-wall") {
+      [-1, 1].forEach(function(row) {
+        var echo = span("aurora-headline__echo", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[(i * 7 + (row + 1) * 3) % 26]);
+        echo.style.color = options.rotationColor;
+        slot.appendChild(echo);
+        animate2(echo, [{ opacity: 0, transform: "translateY(" + row * 0.7 + "em) scale(.65)" }, { opacity: 0.45, offset: 0.25 }, { opacity: 0, transform: "translateY(0) scale(.65)" }], (chars.length - 1 - i) * stagger2, {}, function() {
+          echo.remove();
+        });
+      });
+      animate2(glyph, [{ opacity: 0, clipPath: "inset(0 100% 0 0)" }, { opacity: 1, clipPath: "inset(0 0% 0 0)" }], (chars.length - 1 - i) * stagger2);
+    } else if (effect2 === "sparkles-text") {
+      animate2(glyph, [{ opacity: 0, transform: "translateY(.16em)" }, { opacity: 1, transform: "translateY(0)" }], delay);
+      var star = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      star.setAttribute("class", "aurora-headline__spark");
+      star.setAttribute("viewBox", "0 0 20 20");
+      star.setAttribute("aria-hidden", "true");
+      var path = document.createElementNS(star.namespaceURI, "path");
+      path.setAttribute("d", "M10 0Q11 9 20 10Q11 11 10 20Q9 11 0 10Q9 9 10 0Z");
+      path.setAttribute("fill", i % 2 ? options.rotationColor : options.rotationColor2);
+      star.appendChild(path);
+      slot.appendChild(star);
+      animate2(star, [{ opacity: 0, transform: "scale(0) rotate(-30deg)" }, { opacity: 1, transform: "scale(1) rotate(0)", offset: 0.45 }, { opacity: 0, transform: "scale(.2) rotate(35deg)" }], delay + options.duration * 0.15, {}, function() {
+        star.remove();
+      });
+    }
+  });
+}
 var nextId = 0;
 var NS = "http://www.w3.org/2000/svg";
 var SHAPES$1 = {
-  underline: ["M3 42 Q48 36 97 42"],
-  "double-underline": ["M3 39 Q48 34 97 39", "M8 47 Q52 41 93 46"],
-  circle: ["M50 3 C112 1 111 48 50 47 C-12 46 -10 2 50 3"],
-  "aurora-orbit": ["M4 34 C-9 5 70 -8 96 13 C112 38 30 59 4 34", "M9 43 C44 57 90 30 94 7"],
-  "aurora-wave": ["M2 40 C14 25 25 55 38 40 S62 25 74 40 S90 51 98 38", "M4 46 C18 35 26 57 40 46 S65 33 80 45 S92 51 98 44"],
-  "aurora-spark": ["M3 43 Q50 34 95 41", "M86 11 L90 1 L94 11 L99 15 L94 19 L90 29 L86 19 L81 15 Z"]
+  underline: ["M8 85 C112 79 258 80 391 84"],
+  "double-underline": ["M8 82 C118 77 267 79 392 82", "M26 92 C135 88 260 88 376 90"],
+  circle: ["M204 7 C89 2 5 19 6 49 C7 80 105 95 207 93 C322 91 395 76 394 47 C393 22 310 6 204 7"],
+  "aurora-orbit": ["M26 73 C-8 52 24 19 153 10 C277 1 380 14 393 42 C403 68 313 91 187 93 C95 94 42 84 26 73", "M61 89 C154 106 296 90 359 66"],
+  "aurora-wave": ["M8 85 C38 79 62 79 88 85 S138 91 164 85 S214 79 240 85 S290 91 316 85 S365 79 392 85", "M33 94 C131 90 263 91 368 93"],
+  "aurora-spark": ["M8 86 C112 80 259 81 390 85", "M397 7 Q398 16 407 17 Q398 18 397 27 Q396 18 387 17 Q396 16 397 7Z"]
 };
 var ENTRANCES = {
   "prism-rise": [{ opacity: 0, transform: "translateY(.55em) skewX(-12deg)", filter: "blur(6px)" }, { opacity: 1, transform: "translateY(0) skewX(0)", filter: "blur(0)" }],
@@ -7509,27 +7626,27 @@ function initHeadline(el, options, ctx) {
   var inView = options.trigger === "load" && rect.bottom >= 0 && rect.top < (window.innerHeight || 800);
   var animations = /* @__PURE__ */ new Set();
   var paths = [];
-  ctx.style("text-headline", CSS);
-  function span(cls, text2) {
+  ctx.style("text-headline", CSS + ROTATION_CSS);
+  function span2(cls, text2) {
     var node = document.createElement("span");
     node.className = cls;
     if (text2 !== void 0) node.textContent = text2;
     return node;
   }
-  var root = span("aurora-headline");
-  var visual = span("aurora-headline__visual");
+  var root = span2("aurora-headline");
+  var visual = span2("aurora-headline__visual");
   visual.setAttribute("aria-hidden", "true");
-  var center2 = span("aurora-headline__center");
-  visual.appendChild(span("aurora-headline__before", options.beforeText.trim() ? options.beforeText.trim() + " " : ""));
+  var center2 = span2("aurora-headline__center");
+  visual.appendChild(span2("aurora-headline__before", options.beforeText.trim() ? options.beforeText.trim() + " " : ""));
   visual.appendChild(center2);
-  visual.appendChild(span("aurora-headline__after", options.afterText.trim() ? " " + options.afterText.trim() : ""));
+  visual.appendChild(span2("aurora-headline__after", options.afterText.trim() ? " " + options.afterText.trim() : ""));
   var wordNodes = words.map(function(word) {
-    var node = span("aurora-headline__word", word);
+    var node = span2("aurora-headline__word", word);
     center2.appendChild(node);
     return node;
   });
   var accessible = [options.beforeText.trim(), words.join(", "), options.afterText.trim()].filter(Boolean).join(" ");
-  root.appendChild(span("aurora-headline__sr", accessible));
+  root.appendChild(span2("aurora-headline__sr", accessible));
   root.appendChild(visual);
   while (target.firstChild) target.removeChild(target.firstChild);
   target.appendChild(root);
@@ -7542,14 +7659,18 @@ function initHeadline(el, options, ctx) {
   }
   if (options.animationStyle === "highlighted") {
     var id = "aurora-headline-gradient-" + ++nextId;
-    var svg = svgNode("svg", { viewBox: "0 0 100 50", preserveAspectRatio: "none", class: "aurora-headline__shape", "aria-hidden": "true", focusable: "false" });
+    var svg = svgNode("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", class: "aurora-headline__shape", "aria-hidden": "true", focusable: "false" });
     var defs = svgNode("defs", {}), gradient2 = svgNode("linearGradient", { id, x1: "0%", y1: "0%", x2: "100%", y2: "60%" });
     gradient2.appendChild(svgNode("stop", { offset: "0%", "stop-color": options.headlineColor }));
     gradient2.appendChild(svgNode("stop", { offset: "100%", "stop-color": options.headlineColor2 }));
     defs.appendChild(gradient2);
     svg.appendChild(defs);
-    SHAPES$1[options.animationShape].forEach(function(d) {
-      var path = svgNode("path", { d, fill: "none", stroke: "url(#" + id + ")", "stroke-width": options.strokeWidth, "stroke-linecap": "round", "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke", pathLength: "1" });
+    SHAPES$1[options.animationShape].forEach(function(d, i) {
+      var path = svgNode("path", { d, fill: "none", stroke: "url(#" + id + ")", "stroke-width": options.strokeWidth, "stroke-linecap": "round", "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke", pathLength: "100" });
+      if (i) {
+        path.setAttribute("stroke-width", String(options.strokeWidth * 0.7));
+        path.setAttribute("opacity", ".65");
+      }
       paths.push(path);
       svg.appendChild(path);
     });
@@ -7571,24 +7692,57 @@ function initHeadline(el, options, ctx) {
       a.cancel();
     });
     animations.clear();
+    wordNodes.forEach(function(node, i) {
+      node.textContent = words[i];
+    });
+    paths.forEach(function(path) {
+      path.style.opacity = "";
+    });
   }
-  function animate2(node, frames, delay) {
-    if (ctx.reducedMotion || typeof node.animate !== "function") return;
-    var a = node.animate(frames, { duration: options.duration, delay: delay || 0, easing: "cubic-bezier(.22,1,.36,1)", fill: "none" });
+  function animate2(node, frames, delay, settings, finish) {
+    if (ctx.reducedMotion || typeof node.animate !== "function") {
+      if (finish) finish();
+      return;
+    }
+    var a = node.animate(frames, Object.assign({ duration: options.duration, delay: delay || 0, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }, settings));
     animations.add(a);
     a.onfinish = function() {
+      if (finish) finish();
       animations.delete(a);
       a.cancel();
     };
   }
+  function cycleDuration() {
+    if (options.animationStyle === "highlighted") return options.duration * (paths.length > 1 ? 1.35 : 1) + options.holdDuration + (options.headlineLoop ? 220 : 0);
+    var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * 0.8 : options.rotationEffect === "text-highlighter" ? Math.max(0, 400 - options.duration) : options.duration * 0.12;
+    return options.duration + extra + options.holdDuration;
+  }
   function motion() {
     stopAnimations();
     show();
+    if (ctx.reducedMotion) return;
     if (options.animationStyle === "highlighted") {
       paths.forEach(function(path, i) {
-        animate2(path, [{ strokeDasharray: "1", strokeDashoffset: "1", opacity: 0.2 }, { strokeDasharray: "1", strokeDashoffset: "0", opacity: 1 }], i * options.duration * 0.12);
+        var delay = i * options.duration * 0.8;
+        var drawDuration = options.duration * (i ? 0.55 : 1);
+        var duration = options.headlineLoop ? cycleDuration() - delay : drawDuration;
+        var drawn = options.headlineLoop ? drawDuration / duration : 1;
+        var alpha = i ? 0.65 : 1;
+        var frames = [
+          { strokeDasharray: "100 100", strokeDashoffset: "100", opacity: 0, offset: 0 },
+          { strokeDasharray: "100 100", strokeDashoffset: "98", opacity: alpha, offset: drawn * 0.08 },
+          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: drawn }
+        ];
+        if (options.headlineLoop) frames.push(
+          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: 1 - 220 / duration },
+          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: 0, offset: 1 }
+        );
+        animate2(path, frames, delay, { duration, easing: "linear" }, options.headlineLoop ? function() {
+          path.style.opacity = "0";
+        } : void 0);
       });
-    } else animate2(wordNodes[index], ENTRANCES[options.rotationEffect]);
+    } else if (ENTRANCES[options.rotationEffect]) animate2(wordNodes[index], ENTRANCES[options.rotationEffect]);
+    else rotateLetters(wordNodes[index], words[index], options, animate2);
     ctx.emit("headline-change", { index, text: words[index], style: options.animationStyle });
   }
   function canPlay() {
@@ -7608,7 +7762,7 @@ function initHeadline(el, options, ctx) {
       if (options.animationStyle === "rotating") index = (index + 1) % words.length;
       motion();
       schedule();
-    }, options.duration * 1.12 + options.holdDuration);
+    }, cycleDuration());
   }
   function sync2() {
     if (!canPlay()) {
