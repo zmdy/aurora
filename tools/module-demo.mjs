@@ -1,5 +1,5 @@
 /** Module pages use the actual Text Effects document, not a parallel demo shell. */
-export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config }) {
+export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config, headlineDemo = '' }) {
     const escape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
     const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
     let page = reference
@@ -31,7 +31,12 @@ export function moduleDemoPage(reference, { name, title, lead, markup, documenta
                 '<script src="../assets/site.js?v=3"></script>\n</body>');
     } else {
         // Keep the original text demo, catalog, modal and runtime completely intact.
-        page = page.replace(/<\/body>\s*<\/html>\s*$/, '<script src="../assets/site.js?v=3"></script>\n</body>\n</html>');
+        page = page.replace(/var CORE_SRI = '[^']*';/, 'var CORE_SRI = ' + JSON.stringify(config.scripts[0].integrity) + ';')
+            .replace(/var TEXT_SRI = '[^']*';/, 'var TEXT_SRI = ' + JSON.stringify(config.scripts[1].integrity) + ';')
+            .replace('<section id="effects"', headlineDemo + '\n<section id="effects"')
+            .replace('</head>', '<link rel="stylesheet" href="../assets/headline-demo.css?v=1">\n</head>')
+            .replace('<script src="../aurora.text.min.js"></script>', '<script src="../aurora.text.min.js?v=' + config.revision + '"></script>')
+            .replace(/<\/body>\s*<\/html>\s*$/, '<script type="application/json" id="headline-schema">' + json(schema) + '</script>\n<script type="application/json" id="headline-config">' + json(config) + '</script>\n<script src="../assets/headline-demo.js?v=1"></script>\n<script src="../assets/site.js?v=3"></script>\n</body>\n</html>');
     }
     page = page.replace('<section class="cta-section', '<div class="module-documentation">' + documentation + '</div>\n<section class="cta-section');
     return page;

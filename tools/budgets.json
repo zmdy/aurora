@@ -1,7 +1,7 @@
 {
     "aurora.min.js": 64000,
     "aurora.core.min.js": 5200,
-    "aurora.text.min.js": 37000,
+    "aurora.text.min.js": 40000,
     "aurora.children.min.js": 4500,
     "aurora.cursor.min.js": 3200,
     "aurora.gradient.min.js": 9500,

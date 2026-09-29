@@ -6,7 +6,7 @@
  * It does not replace testing inside a real WordPress + Elementor install.
  */
 namespace Elementor {
-	class Controls_Manager { const TAB_ADVANCED='advanced'; const NUMBER='number'; const SWITCHER='switcher'; const SELECT='select'; const COLOR='color'; const TEXT='text'; const TEXTAREA='textarea'; const HEADING='heading'; const RAW_HTML='raw'; const REPEATER='repeater'; const MEDIA='media'; const SLIDER='slider'; const HIDDEN='hidden'; const DIVIDER='divider'; const SELECT2='select2'; }
+	class Controls_Manager { const TAB_ADVANCED='advanced'; const TAB_STYLE='style'; const NUMBER='number'; const SWITCHER='switcher'; const SELECT='select'; const COLOR='color'; const TEXT='text'; const TEXTAREA='textarea'; const HEADING='heading'; const RAW_HTML='raw'; const REPEATER='repeater'; const MEDIA='media'; const SLIDER='slider'; const HIDDEN='hidden'; const DIVIDER='divider'; const SELECT2='select2'; }
 	class Repeater { public $c=[]; function add_control($k,$a){$this->c[$k]=$a;} function get_controls(){return $this->c;} }
 	class Utils { static function get_placeholder_image_src(){return 'ph.png';} }
 	class Element_Base { public $name; public $controls=[]; public $settings=[]; public $attrs=[];
@@ -17,7 +17,8 @@ namespace Elementor {
 		function get_settings_for_display(){return $this->settings;}
 		function add_render_attribute($k,$v=null){ if(is_array($k)){foreach($k as $a=>$b)$this->attrs[$a]=$b;} else {$this->attrs[$k]=$v;} }
 		function get_render_attribute_string($k){$o='';foreach($this->attrs as $a=>$v)$o.=$a.'="'.htmlspecialchars((string)$v).'" ';return $o;} }
-	class Widget_Base extends Element_Base { function __construct(){} }
+	class Widget_Base extends Element_Base { function __construct(){} function add_group_control($k,$a){$this->controls[$a['name']]=$a;} }
+	class Group_Control_Typography { static function get_type(){return 'typography';} }
 }
 namespace {
 	define('ABSPATH','/'); define('AURORA_PATH',dirname(__DIR__).'/'); define('AURORA_URL','/p/'); define('AURORA_VERSION','1');
@@ -65,5 +66,21 @@ namespace {
 	echo json_encode($o)."\n";
 	check($o['loop']===false && $o['states'][0]['photo']==='a.jpg' && $o['labels']['follow']==='Seguir','morph-card options');
 	$rw=new ReflectionMethod($w,'register_controls'); $rw->setAccessible(true); $rw->invoke($w);
+
+    $headline = new Aurora\Animated_Headline_Widget();
+    $rh = new ReflectionMethod($headline, 'register_controls'); $rh->setAccessible(true); $rh->invoke($headline);
+    check(isset($headline->controls['beforeText'], $headline->controls['highlightedText'], $headline->controls['afterText']), 'headline content controls');
+    check(($headline->controls['animationShape']['condition']['animationStyle'] ?? '') === 'highlighted', 'headline shape condition');
+    check(($headline->controls['rotatingText']['type'] ?? '') === 'textarea', 'headline multiline rotating phrases');
+    $ho = Aurora\Animated_Headline_Widget::options_from_settings(['animationStyle'=>'rotating','beforeText'=>'Build','highlightedText'=>'better','afterText'=>'sites','rotatingText'=>"brighter\noriginal",'headlineLoop'=>'','duration'=>-4]);
+    check($ho['mode']==='headline' && $ho['headlineLoop']===false && $ho['duration']===50 && $ho['trigger']==='load', 'headline shared options and bounds');
+    check($headline->get_script_depends()===['aurora-text'], 'headline reuses text module');
+    $headline->settings=['html_tag'=>'script', 'beforeText'=>'Build', 'highlightedText'=>'better', 'afterText'=>'sites'];
+    $render = new ReflectionMethod($headline,'render'); $render->setAccessible(true);
+    ob_start(); $render->invoke($headline); $markup=ob_get_clean();
+    check(strpos($markup,'<h2 ')===0 && strpos($markup,'Build better sites')!==false && strpos($markup,'data-aurora-text-mode="headline"')!==false, 'headline semantic fallback and safe tag');
+    $manager = new class { public $widgets=[]; function register($w){$this->widgets[]=$w->get_name();} };
+    Aurora\Plugin_Core::instance()->register_widgets($manager);
+    check(in_array('aurora-animated-headline',$manager->widgets,true), 'headline widget registered');
 	exit(empty($GLOBALS['fail'])?0:1);
 }

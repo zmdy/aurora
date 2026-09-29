@@ -1,0 +1,11 @@
+.headline-playground { scroll-margin-top: 80px; }
+.headline-playground #headline-preview { font-family: var(--f-heading); font-size: clamp(2rem,4vw,3.5rem); font-weight: 600; line-height: 1.4; text-align: center; margin: 0; }
+.headline-playground .pg-preview__stage { min-height: 340px; }
+.headline-playground .pg-controls [hidden] { display: none!important; }
+.headline-playground textarea { min-height: 96px; resize: vertical; }
+.headline-playground .headline-help { color: #9aa0b5; font-size: .9rem; margin-top: 24px; }
+.headline-code { border: 1px solid #ffffff15; border-radius: 16px; padding: 20px; margin-top: 24px; min-width: 0; }
+.headline-code summary { cursor: pointer; color: #a78bfa; }
+.headline-code pre { overflow: auto; max-height: 320px; padding: 20px 0; font: 12px/1.7 var(--f-mono); }
+.headline-code #headline-copy-status { color: #9aa0b5; }
+@media(max-width:699px){.headline-playground .pg-preview__stage { min-height: 260px; }}

@@ -3,6 +3,7 @@ import { schema } from './schema.js';
 import { effects, EFFECT_IDS } from './effects/index.js';
 import { splitText } from './split.js';
 import { createFx } from './fx.js';
+import { initHeadline } from './headline.js';
 
 export { schema } from './schema.js';
 export { effects, EFFECT_IDS } from './effects/index.js';
@@ -19,6 +20,7 @@ export var text = defineModule({
     schema: schema,
 
     init: function (el, options, ctx) {
+        if (options.mode === 'headline') return initHeadline(el, options, ctx);
         var effect = effects[options.effect];
         if (!effect) {
             ctx.warn('Unknown effect "' + options.effect + '".');

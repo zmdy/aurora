@@ -309,6 +309,10 @@ class Schema_Module extends Animation_Module {
 			default:
 				$args['type']    = Controls_Manager::TEXT;
 				$args['default'] = is_array( $spec['default'] ) ? implode( ';', $spec['default'] ) : (string) $spec['default'];
+				if ( 'textarea' === ( $spec['ui'] ?? '' ) ) {
+					$args['type'] = Controls_Manager::TEXTAREA;
+					$args['rows'] = 4;
+				}
 				break;
 		}
 

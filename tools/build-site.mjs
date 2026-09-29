@@ -264,7 +264,8 @@ function modulePage(name) {
         name, title: mod.title, lead: mod.lead, markup: mod.markup(' id="demo"'),
         documentation: '<div class="wrap"><div class="module-links"><a href="../examples/' + name + '.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div>' + body,
         schema,
-        config: { css: mod.css, scripts: ['aurora.core.min.js', file].map(function (f) { return { src: CDN + f, integrity: sri[f].integrity }; }) }
+        headlineDemo: name === 'text' ? readFileSync(resolve(root, 'site/templates/headline.html'), 'utf8') : '',
+        config: { css: mod.css, revision: info.bytes + '-' + info.gzip, scripts: ['aurora.core.min.js', file].map(function (f) { return { src: CDN + f, integrity: sri[f].integrity }; }) }
     });
 }
 
@@ -390,7 +391,7 @@ manifest.files.forEach(function (f) { copyFileSync(resolve(dist, f.file), resolv
 mkdirSync(resolve(out, 'assets'), { recursive: true });
 copyFileSync(resolve(root, 'site/assets/site.css'), resolve(out, 'assets/site.css'));
 copyFileSync(resolve(root, 'site/assets/site.js'), resolve(out, 'assets/site.js'));
-['modules.css', 'interactive-demo.css', 'module-documentation.css'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
+['modules.css', 'interactive-demo.css', 'module-documentation.css', 'headline-demo.css', 'headline-demo.js'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
 copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, 'assets/favicon.svg'));
 
 ['aurora-hero.webp', 'aurora-cta.webp', 'logo_aurora_animated.svg'].forEach(function (name) {

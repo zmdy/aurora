@@ -51,6 +51,9 @@ final class Plugin_Core {
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
 	 */
 	public function register_widgets( $widgets_manager ): void {
+		if ( Module_Manager::is_active( 'text' ) ) {
+			$widgets_manager->register( new Animated_Headline_Widget() );
+		}
 		if ( Module_Manager::is_active( 'morph-card' ) ) {
 			$widgets_manager->register( new Morph_Card_Widget() );
 		}

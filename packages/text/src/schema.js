@@ -1,4 +1,5 @@
 import { EFFECT_IDS, labelFor } from './effects/index.js';
+import { headlineOptions } from './headline-schema.js';
 
 /**
  * Options of the Text module.
@@ -9,12 +10,14 @@ import { EFFECT_IDS, labelFor } from './effects/index.js';
 export var schema = {
     primary: 'effect',
     options: {
+        ...headlineOptions,
         effect: {
             type: 'enum',
             default: 'slide-in',
             values: EFFECT_IDS.map(function (id) { return { value: id, label: labelFor(id) }; }),
             label: 'Effect',
             group: 'Effect',
+            when: { mode: 'effects' },
         },
         split: {
             type: 'enum',
@@ -146,3 +149,10 @@ export var schema = {
         },
     },
 };
+
+// Headline composition and split-text effects share timing and targeting, but
+// expose separate visual controls in schema-driven adapters.
+Object.keys(schema.options).forEach(function (key) {
+    if (key in headlineOptions || ['duration', 'delay', 'trigger', 'threshold', 'replay', 'target'].indexOf(key) >= 0) return;
+    schema.options[key].when = Object.assign({}, schema.options[key].when, { mode: 'effects' });
+});

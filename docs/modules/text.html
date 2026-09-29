@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="../assets/modules.css?v=3">
   <link rel="stylesheet" href="../assets/interactive-demo.css?v=3">
 <link rel="stylesheet" href="../assets/module-documentation.css?v=3">
+<link rel="stylesheet" href="../assets/headline-demo.css?v=1">
 </head>
 
 <body>
@@ -295,7 +296,30 @@
   <!-- ═══════════════════════════════════════════════════════════════════
      EFFECT GRID — ALL 53 ANIMATIONS
      ═══════════════════════════════════════════════════════════════════ -->
-  <section id="effects" class="effects-catalog section-gap-lg">
+  <section id="headline" class="playground section-gap-lg headline-playground" aria-labelledby="headline-title">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Aurora Animated Headline</div>
+      <h2 id="headline-title" class="display-2">A few words. A lasting impression.</h2>
+      <p>Frame a phrase with an animated shape or rotate through your ideas. The same Text module, in HTML, Webflow and Elementor.</p>
+    </div>
+    <div class="pg-layout">
+      <div class="pg-preview">
+        <div class="pg-preview__chrome" aria-hidden="true"><div class="pg-preview__dot"></div><div class="pg-preview__dot"></div><div class="pg-preview__dot"></div><div class="pg-preview__title">Aurora.text() · headline</div></div>
+        <div class="pg-preview__stage"><h2 id="headline-preview">Create extraordinary experiences.</h2></div>
+        <div class="pg-preview__footer">
+          <div class="pg-badge-row"><span class="pg-badge pg-badge--gsap" id="headline-badge">Highlighted</span><span class="pg-badge pg-badge--split">Aurora original</span></div>
+          <div><button type="button" class="pg-replay-btn" id="headline-pause" aria-pressed="false">Pause</button><button type="button" class="pg-replay-btn" id="headline-replay">Replay</button></div>
+        </div>
+      </div>
+      <div id="headline-controls" class="pg-controls" aria-label="Animated Headline options"></div>
+    </div>
+    <details class="headline-code"><summary>Use this headline on your site</summary><pre><code id="headline-code"></code></pre><button type="button" class="btn-snippet" id="headline-copy">Copy headline + scripts</button><p id="headline-copy-status" role="status"></p></details>
+    <p class="headline-help">In Elementor, add <strong>Aurora Animated Headline</strong>. Set Before Text, Highlighted Text and After Text, then choose Highlighted or Rotating. Shape choices include Orbit, Wave and Spark; rotating phrases use Prism Rise, Comet Slide, Split Flap or Soft Focus.</p>
+  </div>
+</section>
+
+<section id="effects" class="effects-catalog section-gap-lg">
     <div class="container">
       <div class="section-header">
         <div class="eyebrow">Animation Catalog</div>
@@ -328,7 +352,7 @@
     </div>
   </section>
 
-  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/text.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 34.7 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/text.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 37.5 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -347,7 +371,7 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
         integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js&quot;
-        integrity=&quot;sha384-yeorS2+LEljyAG6UUDLxF5AJz2JA2ZwUoYJu2m1bmLNvvfp5QmA9BjllfRK/eDrj&quot;
+        integrity=&quot;sha384-gBe6DySjXjsw9bqnAoo6cgA5iLXt4nFbY3/HZ5u+rnuoD6iQReUZFB+o5vwZ0B6O&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -357,6 +381,21 @@ fx.replay();               // play again
 fx.update({ duration: 1200 }); // change options
 fx.destroy();              // restore the original markup</code></pre></div></div></section>
 <section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-text-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-text-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>mode</code></td><td><code>data-aurora-text-mode</code></td><td>enum</td><td><code>effects</code></td><td>Text mode<br><small><code>effects</code> <code>headline</code></small></td></tr>
+<tr><td><code>beforeText</code></td><td><code>data-aurora-text-before-text</code></td><td>string</td><td><code></code></td><td>Before text</td></tr>
+<tr><td><code>highlightedText</code></td><td><code>data-aurora-text-highlighted-text</code></td><td>string</td><td><code></code></td><td>Empty uses the original element text.</td></tr>
+<tr><td><code>afterText</code></td><td><code>data-aurora-text-after-text</code></td><td>string</td><td><code></code></td><td>After text</td></tr>
+<tr><td><code>animationStyle</code></td><td><code>data-aurora-text-animation-style</code></td><td>enum</td><td><code>highlighted</code></td><td>Animation style<br><small><code>highlighted</code> <code>rotating</code></small></td></tr>
+<tr><td><code>animationShape</code></td><td><code>data-aurora-text-animation-shape</code></td><td>enum</td><td><code>aurora-orbit</code></td><td>Animation shape<br><small><code>underline</code> <code>double-underline</code> <code>circle</code> <code>aurora-orbit</code> <code>aurora-wave</code> <code>aurora-spark</code></small></td></tr>
+<tr><td><code>rotatingText</code></td><td><code>data-aurora-text-rotating-text</code></td><td>string</td><td><code></code></td><td>One phrase per line. The highlighted text is the first phrase.</td></tr>
+<tr><td><code>rotationEffect</code></td><td><code>data-aurora-text-rotation-effect</code></td><td>enum</td><td><code>prism-rise</code></td><td>Rotation effect<br><small><code>prism-rise</code> <code>comet-slide</code> <code>split-flap</code> <code>soft-focus</code></small></td></tr>
+<tr><td><code>headlineColor</code></td><td><code>data-aurora-text-headline-color</code></td><td>color</td><td><code>#05b172</code></td><td>Shape color</td></tr>
+<tr><td><code>headlineColor2</code></td><td><code>data-aurora-text-headline-color2</code></td><td>color</td><td><code>#7c5cff</code></td><td>Shape accent</td></tr>
+<tr><td><code>strokeWidth</code></td><td><code>data-aurora-text-stroke-width</code></td><td>number (px)</td><td><code>3</code></td><td>Stroke width</td></tr>
+<tr><td><code>holdDuration</code></td><td><code>data-aurora-text-hold-duration</code></td><td>number (ms)</td><td><code>1800</code></td><td>Hold duration</td></tr>
+<tr><td><code>headlineLoop</code></td><td><code>data-aurora-text-headline-loop</code></td><td>boolean</td><td><code>true</code></td><td>Loop headline</td></tr>
+<tr><td><code>headlineAutoplay</code></td><td><code>data-aurora-text-headline-autoplay</code></td><td>boolean</td><td><code>true</code></td><td>Autoplay headline</td></tr>
+<tr><td><code>pauseOnHover</code></td><td><code>data-aurora-text-pause-on-hover</code></td><td>boolean</td><td><code>true</code></td><td>Pause on hover / focus</td></tr>
 <tr><td><code>effect</code></td><td><code>data-aurora-text</code></td><td>enum</td><td><code>slide-in</code></td><td>Effect<br><small>53 values</small></td></tr>
 <tr><td><code>split</code></td><td><code>data-aurora-text-split</code></td><td>enum</td><td><code>chars</code></td><td>Unit the effect animates. Effects that build their own markup ignore it.<br><small><code>chars</code> <code>words</code> <code>lines</code></small></td></tr>
 <tr><td><code>duration</code></td><td><code>data-aurora-text-duration</code></td><td>number (ms)</td><td><code>800</code></td><td>Duration</td></tr>
@@ -482,7 +521,7 @@ fx.destroy();              // restore the original markup</code></pre></div></di
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
   <script src="../aurora.core.min.js"></script>
-  <script src="../aurora.text.min.js"></script>
+  <script src="../aurora.text.min.js?v=113728-38433"></script>
   <script>
     /* ═══════════════════════════════════════════════════════════════════
        NAV — sticky background on scroll
@@ -979,8 +1018,8 @@ fx.destroy();              // restore the original markup</code></pre></div></di
     var AURORA_VERSION = '1.0.0';
     var CORE_CDN = 'https://cdn.jsdelivr.net/gh/zmdy/aurora@v' + AURORA_VERSION + '/dist/aurora.core.min.js';
     var TEXT_CDN = 'https://cdn.jsdelivr.net/gh/zmdy/aurora@v' + AURORA_VERSION + '/dist/aurora.text.min.js';
-    var CORE_SRI = 'sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w';
-    var TEXT_SRI = 'sha384-PO+jMUkaOFX3F0ynZiocZr1rwpNFNy88D0MQo03DrRAkT2ORoQYBGlswkUnaX2NS';
+    var CORE_SRI = "sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w";
+    var TEXT_SRI = "sha384-gBe6DySjXjsw9bqnAoo6cgA5iLXt4nFbY3/HZ5u+rnuoD6iQReUZFB+o5vwZ0B6O";
 
     var COLOR_ATTR_NAME = {
       sparkleColor: 'data-aurora-text-sparkle-color',
@@ -1121,6 +1160,9 @@ fx.destroy();              // restore the original markup</code></pre></div></di
     });
   </script>
 
+<script type="application/json" id="headline-schema">{"primary":"effect","options":{"mode":{"type":"enum","default":"effects","values":["effects","headline"],"label":"Text mode","group":"Mode"},"beforeText":{"type":"string","default":"","label":"Before text","group":"Headline","when":{"mode":"headline"}},"highlightedText":{"type":"string","default":"","label":"Highlighted text","description":"Empty uses the original element text.","group":"Headline","when":{"mode":"headline"}},"afterText":{"type":"string","default":"","label":"After text","group":"Headline","when":{"mode":"headline"}},"animationStyle":{"type":"enum","default":"highlighted","values":["highlighted","rotating"],"label":"Animation style","group":"Headline","when":{"mode":"headline"}},"animationShape":{"type":"enum","default":"aurora-orbit","values":["underline","double-underline","circle","aurora-orbit","aurora-wave","aurora-spark"],"label":"Animation shape","group":"Headline","when":{"mode":"headline","animationStyle":"highlighted"}},"rotatingText":{"type":"string","default":"","ui":"textarea","label":"Rotating text","description":"One phrase per line. The highlighted text is the first phrase.","group":"Headline","when":{"mode":"headline","animationStyle":"rotating"}},"rotationEffect":{"type":"enum","default":"prism-rise","values":["prism-rise","comet-slide","split-flap","soft-focus"],"label":"Rotation effect","group":"Headline","when":{"mode":"headline","animationStyle":"rotating"}},"headlineColor":{"type":"color","default":"#05b172","label":"Shape color","group":"Headline","when":{"mode":"headline","animationStyle":"highlighted"}},"headlineColor2":{"type":"color","default":"#7c5cff","label":"Shape accent","group":"Headline","when":{"mode":"headline","animationStyle":"highlighted"}},"strokeWidth":{"type":"number","default":3,"min":1,"max":12,"unit":"px","label":"Stroke width","group":"Headline","when":{"mode":"headline","animationStyle":"highlighted"}},"holdDuration":{"type":"number","default":1800,"min":300,"max":30000,"unit":"ms","label":"Hold duration","group":"Headline playback","when":{"mode":"headline"}},"headlineLoop":{"type":"boolean","default":true,"label":"Loop headline","group":"Headline playback","when":{"mode":"headline"}},"headlineAutoplay":{"type":"boolean","default":true,"label":"Autoplay headline","group":"Headline playback","when":{"mode":"headline"}},"pauseOnHover":{"type":"boolean","default":true,"label":"Pause on hover / focus","group":"Headline playback","when":{"mode":"headline"}},"effect":{"type":"enum","default":"slide-in","values":[{"value":"appear-text","label":"Appear text"},{"value":"blur-reveal","label":"Blur reveal"},{"value":"cinema-title","label":"Cinema title"},{"value":"clip-wrap","label":"Clip wrap"},{"value":"continuous-wave","label":"Continuous wave"},{"value":"crt-boot","label":"Crt boot"},{"value":"dia-text-reveal","label":"Dia text reveal"},{"value":"echo-clone","label":"Echo clone"},{"value":"elastic-text","label":"Elastic text"},{"value":"explosion","label":"Explosion"},{"value":"flip-board","label":"Flip board"},{"value":"flip-in","label":"Flip in"},{"value":"glitch","label":"Glitch"},{"value":"gradient-flow-text","label":"Gradient flow text"},{"value":"heartbeat","label":"Heartbeat"},{"value":"letter-roll","label":"Letter roll"},{"value":"letter-swap","label":"Letter swap"},{"value":"line-shadow-text","label":"Line shadow text"},{"value":"liquid-fill","label":"Liquid fill"},{"value":"matrix-rain","label":"Matrix rain"},{"value":"mesh-text","label":"Mesh text"},{"value":"neon-flicker","label":"Neon flicker"},{"value":"pendulum-swing","label":"Pendulum swing"},{"value":"perspective-fly","label":"Perspective fly"},{"value":"rgb-split","label":"Rgb split"},{"value":"rotate-in","label":"Rotate in"},{"value":"rotating-dial","label":"Rotating dial"},{"value":"rubber-stamp","label":"Rubber stamp"},{"value":"scale-in","label":"Scale in"},{"value":"scatter-converge","label":"Scatter converge"},{"value":"scramble","label":"Scramble"},{"value":"scroll-highlight","label":"Scroll highlight"},{"value":"scroll-velocity-marquee","label":"Scroll velocity marquee"},{"value":"shiny-sweep-text","label":"Shiny sweep text"},{"value":"skew-in","label":"Skew in"},{"value":"slide-in","label":"Slide in"},{"value":"slot-machine","label":"Slot machine"},{"value":"sparkles-text","label":"Sparkles text"},{"value":"spin-in","label":"Spin in"},{"value":"spinning-circular-text","label":"Spinning circular text"},{"value":"spiral-in","label":"Spiral in"},{"value":"split-chars","label":"Split chars"},{"value":"stagger-flip-3d","label":"Stagger flip 3d"},{"value":"stretch-warp","label":"Stretch warp"},{"value":"text-emerge","label":"Text emerge"},{"value":"text-highlighter","label":"Text highlighter"},{"value":"text-reveal-wall","label":"Text reveal wall"},{"value":"typewriter","label":"Typewriter"},{"value":"typewriter-delete","label":"Typewriter delete"},{"value":"unfold-3d","label":"Unfold 3d"},{"value":"vertical-blinds","label":"Vertical blinds"},{"value":"vhs-tracking","label":"Vhs tracking"},{"value":"wave","label":"Wave"}],"label":"Effect","group":"Effect","when":{"mode":"effects"}},"split":{"type":"enum","default":"chars","values":["chars","words","lines"],"label":"Split by","description":"Unit the effect animates. Effects that build their own markup ignore it.","group":"Effect","when":{"mode":"effects"}},"duration":{"type":"number","default":800,"min":50,"max":10000,"unit":"ms","label":"Duration","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Delay","group":"Timing"},"stagger":{"type":"number","default":30,"min":0,"max":1000,"unit":"ms","label":"Stagger","group":"Timing","when":{"mode":"effects"}},"trigger":{"type":"enum","default":"scroll","values":["scroll","load"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally so headings above the fold always start.","group":"Trigger","when":{"trigger":"scroll"}},"replay":{"type":"boolean","default":false,"label":"Replay on every scroll","group":"Trigger","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.","group":"Advanced"},"direction":{"type":"enum","default":"down","values":["up","down","left","right"],"label":"Direction","description":"Side the effect enters from. Used by slide-in, flip-in, rotate-in, skew-in and clip-wrap.","group":"Effect","when":{"mode":"effects"}},"style":{"type":"enum","default":"smooth","values":["smooth","bounce","elastic"],"label":"Style","description":"Easing character of the slide-in effect.","group":"Effect","when":{"effect":"slide-in","mode":"effects"}},"sparkleColor":{"type":"color","default":"#9E7AFF","label":"Sparkle color","description":"First of the two colors \"sparkles-text\" alternates between.","group":"Effect","when":{"effect":"sparkles-text","mode":"effects"}},"sparkleColor2":{"type":"color","default":"#FE8BBB","label":"Sparkle color 2","description":"Second of the two colors \"sparkles-text\" alternates between. Set it equal to Sparkle color for a single solid color.","group":"Effect","when":{"effect":"sparkles-text","mode":"effects"}},"gradientColor":{"type":"color","default":"#7dd3fc","label":"Gradient color","description":"First accent color \"gradient-flow-text\" blends into the base text color as it sweeps.","group":"Effect","when":{"effect":"gradient-flow-text","mode":"effects"}},"gradientColor2":{"type":"color","default":"#f0abfc","label":"Gradient color 2","description":"Second accent color \"gradient-flow-text\" blends into the base text color as it sweeps.","group":"Effect","when":{"effect":"gradient-flow-text","mode":"effects"}},"highlightColor":{"type":"color","default":"#facc15","label":"Highlight color","description":"Color of the marker stroke \"text-highlighter\" draws behind the text.","group":"Effect","when":{"effect":"text-highlighter","mode":"effects"}},"wallLoop":{"type":"boolean","default":true,"label":"Loop the wall","description":"Repeat the reveal continuously. Turn off to play \"text-reveal-wall\" once and hold.","group":"Effect","when":{"effect":"text-reveal-wall","mode":"effects"}},"wallLines":{"type":"number","default":14,"min":4,"max":40,"label":"Wall lines","description":"Number of repeated rows in the \"text-reveal-wall\".","group":"Effect","when":{"effect":"text-reveal-wall","mode":"effects"}},"hoverScatter":{"type":"boolean","default":false,"label":"Hover scatter","description":"Units jump to random offsets on hover and settle back with an elastic ease.","group":"Hover","when":{"mode":"effects"}},"hoverIntensity":{"type":"number","default":24,"min":1,"max":200,"unit":"px","label":"Scatter intensity","group":"Hover","when":{"hoverScatter":true,"mode":"effects"}},"hoverDuration":{"type":"number","default":350,"min":50,"max":3000,"unit":"ms","label":"Scatter duration","group":"Hover","when":{"hoverScatter":true,"mode":"effects"}},"hoverReplay":{"type":"boolean","default":false,"label":"Replay on hover","description":"Effects with a built-in hover gesture (letter roll, letter swap, stagger flip 3d) only replay it when this is on. Off by default so hover is never a hidden requirement to see the effect.","group":"Hover","when":{"mode":"effects"}}}}</script>
+<script type="application/json" id="headline-config">{"css":"","revision":"113728-38433","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js","integrity":"sha384-gBe6DySjXjsw9bqnAoo6cgA5iLXt4nFbY3/HZ5u+rnuoD6iQReUZFB+o5vwZ0B6O"}]}</script>
+<script src="../assets/headline-demo.js?v=1"></script>
 <script src="../assets/site.js?v=3"></script>
 </body>
 </html>
