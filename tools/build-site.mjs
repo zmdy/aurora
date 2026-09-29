@@ -203,7 +203,7 @@ function shell(page) {
         '<a class="brand" href="' + base + 'index.html"><img src="' + base + 'assets/favicon.svg" alt="">Aurora</a>' +
         '<nav>' + nav + '<a href="' + REPO + '">GitHub</a></nav></div></header>\n<main>\n' + page.body + '\n</main>\n' +
         '<footer class="site"><div class="wrap"><span>Aurora ' + VERSION + ' · MIT License</span>' +
-        '<span><a href="' + REPO + '">Source</a> · <a href="' + base + 'install.html">Install</a></span></div></footer>\n' +
+        '<span><a href="' + REPO + '">Source</a> · <a href="' + base + 'index.html#install">Install</a></span></div></footer>\n' +
         schemaTag + scripts + '\n' + (page.module ? '<script src="' + base + 'assets/site.js"></script>\n' : '') + '</body>\n</html>\n';
 }
 

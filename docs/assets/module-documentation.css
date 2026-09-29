@@ -15,3 +15,16 @@
 .module-documentation td { color: #adb0c6; }
 .module-documentation a { color: #05b172; }
 .module-documentation .module-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+.installation-section { scroll-margin-top: 88px; background: var(--c-surface); }
+.installation-section .section-header { margin-bottom: 32px; }
+.installation-section #install-title { font: 800 clamp(2rem, 5vw, 3.5rem) var(--f-display); margin: 16px 0; }
+.installation-section .block { padding: 24px 0; }
+.installation-section h3 { font: 600 1.5rem var(--f-heading); margin: 0 0 16px; }
+.installation-section h4 { font: 500 1rem var(--f-heading); margin: 24px 0 12px; }
+.installation-section .note { border-left: 3px solid var(--c-green); background: #ffffff05; border-radius: 0 12px 12px 0; padding: 20px; color: #9aa0c0; }
+.installation-section .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 20px; }
+.installation-section .card { display: block; padding: 24px; border: 1px solid #ffffff15; border-radius: 16px; background: #ffffff03; }
+.installation-section .card:hover { border-color: var(--c-green); }
+.installation-section .card p { margin: 0; }
+.installation-section .copy { min-height: 44px; }
+.installation-section pre { font: 13px/1.7 var(--f-mono); margin: 0; }
