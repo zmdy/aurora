@@ -17,7 +17,39 @@ function mount(options = {}) {
 }
 
 describe('headline composition and lifecycle', () => {
-    it.each(['text-highlighter', 'airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone'])('rotates with %s and cleans up its animations and decorations', effect => {
+    it('offers Text Highlighter as a shape, holds a fixed phrase and restores markup', () => {
+        const instance = mount({ animationShape: 'text-highlighter', headlineLoop: false });
+        const marker = el.querySelector('.aurora-headline__marker');
+        expect(marker).not.toBeNull();
+        expect(marker.getAttribute('aria-hidden')).toBe('true');
+        expect(el.querySelector('svg')).toBeNull();
+        vi.advanceTimersByTime(5000);
+        expect(instance.api.index).toBe(0);
+        expect(el.querySelector('.aurora-headline__word').textContent).toBe('Build');
+        expect(marker.style.transform).toBe('scaleX(1) rotate(-1deg)');
+        instance.replay(); vi.advanceTimersByTime(0);
+        expect(el.querySelectorAll('.aurora-headline__marker')).toHaveLength(1);
+        instance.update({ animationStyle: 'rotating', rotationEffect: 'scramble' });
+        expect(el.querySelector('.aurora-headline__marker')).toBeNull();
+        instance.destroy(); expect(el.innerHTML).toBe('<em>Original</em> title');
+    });
+    it('animates the marker through draw, hold and fade and pauses its native animation', () => {
+        const originalAnimate = Element.prototype.animate;
+        const handle = { pause: vi.fn(), play: vi.fn(), cancel: vi.fn() };
+        Element.prototype.animate = vi.fn((frames) => {
+            expect(frames.map(f => f.offset)).toEqual(frames.map(f => f.offset).sort((a,b) => a-b));
+            return handle;
+        });
+        try {
+            const instance = mount({ animationShape: 'text-highlighter' });
+            vi.advanceTimersByTime(0);
+            instance.api.pause(); expect(handle.pause).toHaveBeenCalled();
+            instance.api.play(); expect(handle.play).toHaveBeenCalled();
+            handle.onfinish(); expect(el.querySelector('.aurora-headline__marker').style.opacity).toBe('0');
+            instance.replay(); expect(el.querySelector('.aurora-headline__marker').style.opacity).toBe('');
+        } finally { Element.prototype.animate = originalAnimate; }
+    });
+    it.each(['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone'])('rotates with %s and cleans up its animations and decorations', effect => {
         const handles = [];
         const originalAnimate = Element.prototype.animate;
         Element.prototype.animate = vi.fn((frames, timing) => {
@@ -28,7 +60,7 @@ describe('headline composition and lifecycle', () => {
             const instance = mount({ animationStyle: 'rotating', rotationEffect: effect, rotatingText: 'Tomorrow', highlightedText: 'Olá 👩‍🚀', headlineLoop: false });
             vi.advanceTimersByTime(0);
             expect(handles.length).toBeGreaterThan(0);
-            if (effect !== 'text-highlighter') expect(el.querySelectorAll('.aurora-headline__char')).toHaveLength(4);
+            expect(el.querySelectorAll('.aurora-headline__char')).toHaveLength(4);
             instance.api.pause(); handles.forEach(h => expect(h.pause).toHaveBeenCalled());
             instance.api.play();
             handles.forEach(h => h.onfinish());

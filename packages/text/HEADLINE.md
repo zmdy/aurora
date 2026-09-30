@@ -13,14 +13,15 @@ to the element's original text. All strings are rendered as text, never HTML.
 
 - `animationStyle: 'highlighted'`: draws `animationShape` around the phrase.
   Shapes: `underline`, `double-underline`, `circle`, `aurora-orbit`,
-  `aurora-wave`, `aurora-spark`. Aurora shapes combine two original SVG paths
+  `aurora-wave`, `aurora-spark`, `text-highlighter`. The highlighter sweeps a translucent
+  marker behind the fixed phrase, using the existing Text Highlighter renderer
+  and the two shape colors; stroke width applies only to SVG outlines. Aurora shapes combine two original SVG paths
   with a two-color stroke (`headlineColor`, `headlineColor2`, `strokeWidth`).
 - `animationStyle: 'rotating'`: starts with the highlighted phrase, then cycles
   through `rotatingText` (one phrase per line; blank and duplicate lines removed).
   `rotationEffect` supports `prism-rise`, `comet-slide`, `split-flap`, `soft-focus`,
-  `text-highlighter`, `airport-flip`, `scramble`, `sparkles-text`,
-  `text-reveal-wall`, `letter-swap` and `echo-clone`. The highlighter shares its
-  marker renderer with the original Text Highlighter effect. The six letter
+  `airport-flip`, `scramble`, `sparkles-text`,
+  `text-reveal-wall`, `letter-swap` and `echo-clone`. The six letter
   effects are compact headline adaptations: Reveal Wall resolves three rows into
   each letter without expanding the heading into a full-screen wall.
   Unicode graphemes remain intact. `letterStagger` is capped at 65% of the

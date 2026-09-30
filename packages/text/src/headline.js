@@ -1,4 +1,5 @@
 /* Original Aurora compositions; no Elementor code or assets are used here. */
+import { createHighlighter } from './effects/text-highlighter.js';
 import { LETTER_EFFECTS, ROTATION_CSS, rotateLetters } from './headline-rotation.js';
 var nextId = 0;
 var NS = 'http://www.w3.org/2000/svg';
@@ -40,7 +41,7 @@ export function initHeadline(el, options, ctx) {
     var rect = el.getBoundingClientRect();
     var inView = options.trigger === 'load' && rect.bottom >= 0 && rect.top < (window.innerHeight || 800);
     var animations = new Set();
-    var paths = [];
+    var paths = [], marker = null;
     ctx.style('text-headline', CSS + ROTATION_CSS);
     function span(cls, text) {
         var node = document.createElement('span'); node.className = cls;
@@ -64,7 +65,14 @@ export function initHeadline(el, options, ctx) {
         Object.keys(attributes).forEach(function (key) { node.setAttribute(key, String(attributes[key])); });
         return node;
     }
-    if (options.animationStyle === 'highlighted') {
+    if (options.animationStyle === 'highlighted' && options.animationShape === 'text-highlighter') {
+        marker = createHighlighter(wordNodes[0], words[0], options.headlineColor);
+        marker.className = 'aurora-headline__marker';
+        marker.style.transform = 'scaleX(1) rotate(-1deg)';
+        marker.style.background = 'linear-gradient(100deg, color-mix(in srgb, ' + options.headlineColor + ' 55%, transparent), color-mix(in srgb, ' + options.headlineColor2 + ' 55%, transparent))';
+        center.appendChild(marker);
+        wordNodes[0].textContent = words[0];
+    } else if (options.animationStyle === 'highlighted') {
         var id = 'aurora-headline-gradient-' + (++nextId);
         var svg = svgNode('svg', { viewBox: '0 0 400 100', preserveAspectRatio: 'none', class: 'aurora-headline__shape', 'aria-hidden': 'true', focusable: 'false' });
         var defs = svgNode('defs', {}), gradient = svgNode('linearGradient', { id: id, x1: '0%', y1: '0%', x2: '100%', y2: '60%' });
@@ -88,6 +96,7 @@ export function initHeadline(el, options, ctx) {
         animations.forEach(function (a) { a.cancel(); }); animations.clear();
         wordNodes.forEach(function (node, i) { node.textContent = words[i]; });
         paths.forEach(function (path) { path.style.opacity = ''; });
+        if (marker) marker.style.opacity = '';
     }
     function animate(node, frames, delay, settings, finish) {
         if (ctx.reducedMotion || typeof node.animate !== 'function') { if (finish) finish(); return; }
@@ -97,13 +106,25 @@ export function initHeadline(el, options, ctx) {
     }
     function cycleDuration() {
         if (options.animationStyle === 'highlighted') return options.duration * (paths.length > 1 ? 1.35 : 1) + options.holdDuration + (options.headlineLoop ? 220 : 0);
-        var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * .8 : options.rotationEffect === 'text-highlighter' ? Math.max(0, 400 - options.duration) : options.duration * .12;
+        var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * .8 : options.duration * .12;
         return options.duration + extra + options.holdDuration;
     }
     function motion() {
         stopAnimations(); show();
         if (ctx.reducedMotion) return;
-        if (options.animationStyle === 'highlighted') {
+        if (marker) {
+            var duration = options.headlineLoop ? cycleDuration() : options.duration;
+            var drawn = options.duration / duration;
+            var frames = [
+                { transform: 'scaleX(0) rotate(-1deg)', opacity: 1, offset: 0, easing: 'cubic-bezier(.455,.03,.515,.955)' },
+                { transform: 'scaleX(1) rotate(-1deg)', opacity: 1, offset: drawn }
+            ];
+            if (options.headlineLoop) frames.push(
+                { transform: 'scaleX(1) rotate(-1deg)', opacity: 1, offset: 1 - 220 / duration },
+                { transform: 'scaleX(1) rotate(-1deg)', opacity: 0, offset: 1 }
+            );
+            animate(marker, frames, 0, { duration: duration, easing: 'linear' }, options.headlineLoop ? function () { marker.style.opacity = '0'; } : undefined);
+        } else if (options.animationStyle === 'highlighted') {
             paths.forEach(function (path, i) {
                 var delay = i * options.duration * .8;
                 var drawDuration = options.duration * (i ? .55 : 1);

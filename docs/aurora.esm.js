@@ -2831,9 +2831,9 @@ var headlineOptions = {
   highlightedText: { type: "string", default: "", label: "Highlighted text", description: "Empty uses the original element text.", group: "Headline", when: { mode: "headline" } },
   afterText: { type: "string", default: "", label: "After text", group: "Headline", when: { mode: "headline" } },
   animationStyle: { type: "enum", default: "highlighted", values: ["highlighted", "rotating"], label: "Animation style", group: "Headline", when: { mode: "headline" } },
-  animationShape: { type: "enum", default: "aurora-orbit", values: ["underline", "double-underline", "circle", "aurora-orbit", "aurora-wave", "aurora-spark"], label: "Animation shape", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
+  animationShape: { type: "enum", default: "aurora-orbit", values: ["underline", "double-underline", "circle", "aurora-orbit", "aurora-wave", "aurora-spark", "text-highlighter"], label: "Animation shape", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
   rotatingText: { type: "string", default: "", ui: "textarea", label: "Rotating text", description: "One phrase per line. The highlighted text is the first phrase.", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
-  rotationEffect: { type: "enum", default: "prism-rise", values: ["prism-rise", "comet-slide", "split-flap", "soft-focus", "text-highlighter", "airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone"], label: "Rotation effect", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
+  rotationEffect: { type: "enum", default: "prism-rise", values: ["prism-rise", "comet-slide", "split-flap", "soft-focus", "airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone"], label: "Rotation effect", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   letterStagger: { type: "number", default: 28, min: 0, max: 150, unit: "ms", label: "Letter stagger", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   rotationColor: { type: "color", default: "#facc15", label: "Rotation accent", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   rotationColor2: { type: "color", default: "#a78bfa", label: "Rotation accent 2", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
@@ -7495,17 +7495,6 @@ function graphemes(value) {
 }
 function rotateLetters(node, value, options, animate2) {
   var effect2 = options.rotationEffect;
-  if (effect2 === "text-highlighter") {
-    var mark = createHighlighter(node, value, options.rotationColor);
-    mark.style.transform = "scaleX(1) rotate(-1deg)";
-    animate2(
-      mark,
-      [{ transform: "scaleX(0) rotate(-1deg)" }, { transform: "scaleX(1) rotate(-1deg)" }],
-      0,
-      { duration: Math.max(400, options.duration), easing: "cubic-bezier(.455,.03,.515,.955)" }
-    );
-    return;
-  }
   var chars = graphemes(value);
   var stagger2 = Math.min(options.letterStagger, options.duration * 0.65 / Math.max(1, chars.length - 1));
   node.textContent = "";
@@ -7625,7 +7614,7 @@ function initHeadline(el, options, ctx) {
   var rect = el.getBoundingClientRect();
   var inView = options.trigger === "load" && rect.bottom >= 0 && rect.top < (window.innerHeight || 800);
   var animations = /* @__PURE__ */ new Set();
-  var paths = [];
+  var paths = [], marker = null;
   ctx.style("text-headline", CSS + ROTATION_CSS);
   function span2(cls, text2) {
     var node = document.createElement("span");
@@ -7657,7 +7646,14 @@ function initHeadline(el, options, ctx) {
     });
     return node;
   }
-  if (options.animationStyle === "highlighted") {
+  if (options.animationStyle === "highlighted" && options.animationShape === "text-highlighter") {
+    marker = createHighlighter(wordNodes[0], words[0], options.headlineColor);
+    marker.className = "aurora-headline__marker";
+    marker.style.transform = "scaleX(1) rotate(-1deg)";
+    marker.style.background = "linear-gradient(100deg, color-mix(in srgb, " + options.headlineColor + " 55%, transparent), color-mix(in srgb, " + options.headlineColor2 + " 55%, transparent))";
+    center2.appendChild(marker);
+    wordNodes[0].textContent = words[0];
+  } else if (options.animationStyle === "highlighted") {
     var id = "aurora-headline-gradient-" + ++nextId;
     var svg = svgNode("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", class: "aurora-headline__shape", "aria-hidden": "true", focusable: "false" });
     var defs = svgNode("defs", {}), gradient2 = svgNode("linearGradient", { id, x1: "0%", y1: "0%", x2: "100%", y2: "60%" });
@@ -7698,6 +7694,7 @@ function initHeadline(el, options, ctx) {
     paths.forEach(function(path) {
       path.style.opacity = "";
     });
+    if (marker) marker.style.opacity = "";
   }
   function animate2(node, frames, delay, settings, finish) {
     if (ctx.reducedMotion || typeof node.animate !== "function") {
@@ -7714,30 +7711,44 @@ function initHeadline(el, options, ctx) {
   }
   function cycleDuration() {
     if (options.animationStyle === "highlighted") return options.duration * (paths.length > 1 ? 1.35 : 1) + options.holdDuration + (options.headlineLoop ? 220 : 0);
-    var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * 0.8 : options.rotationEffect === "text-highlighter" ? Math.max(0, 400 - options.duration) : options.duration * 0.12;
+    var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * 0.8 : options.duration * 0.12;
     return options.duration + extra + options.holdDuration;
   }
   function motion() {
     stopAnimations();
     show();
     if (ctx.reducedMotion) return;
-    if (options.animationStyle === "highlighted") {
+    if (marker) {
+      var duration = options.headlineLoop ? cycleDuration() : options.duration;
+      var drawn = options.duration / duration;
+      var frames = [
+        { transform: "scaleX(0) rotate(-1deg)", opacity: 1, offset: 0, easing: "cubic-bezier(.455,.03,.515,.955)" },
+        { transform: "scaleX(1) rotate(-1deg)", opacity: 1, offset: drawn }
+      ];
+      if (options.headlineLoop) frames.push(
+        { transform: "scaleX(1) rotate(-1deg)", opacity: 1, offset: 1 - 220 / duration },
+        { transform: "scaleX(1) rotate(-1deg)", opacity: 0, offset: 1 }
+      );
+      animate2(marker, frames, 0, { duration, easing: "linear" }, options.headlineLoop ? function() {
+        marker.style.opacity = "0";
+      } : void 0);
+    } else if (options.animationStyle === "highlighted") {
       paths.forEach(function(path, i) {
         var delay = i * options.duration * 0.8;
         var drawDuration = options.duration * (i ? 0.55 : 1);
-        var duration = options.headlineLoop ? cycleDuration() - delay : drawDuration;
-        var drawn = options.headlineLoop ? drawDuration / duration : 1;
+        var duration2 = options.headlineLoop ? cycleDuration() - delay : drawDuration;
+        var drawn2 = options.headlineLoop ? drawDuration / duration2 : 1;
         var alpha = i ? 0.65 : 1;
-        var frames = [
+        var frames2 = [
           { strokeDasharray: "100 100", strokeDashoffset: "100", opacity: 0, offset: 0 },
-          { strokeDasharray: "100 100", strokeDashoffset: "98", opacity: alpha, offset: drawn * 0.08 },
-          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: drawn }
+          { strokeDasharray: "100 100", strokeDashoffset: "98", opacity: alpha, offset: drawn2 * 0.08 },
+          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: drawn2 }
         ];
-        if (options.headlineLoop) frames.push(
-          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: 1 - 220 / duration },
+        if (options.headlineLoop) frames2.push(
+          { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: 1 - 220 / duration2 },
           { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: 0, offset: 1 }
         );
-        animate2(path, frames, delay, { duration, easing: "linear" }, options.headlineLoop ? function() {
+        animate2(path, frames2, delay, { duration: duration2, easing: "linear" }, options.headlineLoop ? function() {
           path.style.opacity = "0";
         } : void 0);
       });

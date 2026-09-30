@@ -1,4 +1,3 @@
-import { createHighlighter } from './effects/text-highlighter.js';
 
 export var LETTER_EFFECTS = ['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone'];
 export var ROTATION_CSS = `
@@ -25,13 +24,6 @@ export function graphemes(value) {
 /** Compact, single-line adaptations: only the current phrase owns decorations. */
 export function rotateLetters(node, value, options, animate) {
     var effect = options.rotationEffect;
-    if (effect === 'text-highlighter') {
-        var mark = createHighlighter(node, value, options.rotationColor);
-        mark.style.transform = 'scaleX(1) rotate(-1deg)';
-        animate(mark, [{ transform: 'scaleX(0) rotate(-1deg)' }, { transform: 'scaleX(1) rotate(-1deg)' }], 0,
-            { duration: Math.max(400, options.duration), easing: 'cubic-bezier(.455,.03,.515,.955)' });
-        return;
-    }
     var chars = graphemes(value);
     // Cap the stagger budget so long headlines remain responsive.
     var stagger = Math.min(options.letterStagger, options.duration * .65 / Math.max(1, chars.length - 1));
