@@ -87,6 +87,39 @@ Gzip size budgets per script are enforced by `npm run build` (`tools/budgets.jso
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org).
 
+## Releasing to `main`
+
+`main` ships only the built output — the website and the Elementor plugin — not the monorepo source. To promote the current state of `dev` to `main`:
+
+```bash
+# 1. Build the release artifacts
+npm run pack         # build/aurora-for-elementor/ + .zip
+npm run build:site   # docs/
+
+# 2. Check out main in a separate worktree, without leaving this checkout on dev
+git worktree add .worktree-main main
+cd .worktree-main
+
+# 3. Replace the curated paths with the freshly built ones
+rm -rf plugin docs assets
+cp -r ../build/aurora-for-elementor plugin
+cp -r ../docs .
+cp -r ../assets .
+cp ../LICENSE .
+
+# 4. Review the diff, then commit
+git status
+git add -A
+git commit -m "release: promote dev@$(cd .. && git rev-parse --short dev) to main"
+
+# 5. Clean up and push
+cd ..
+git worktree remove .worktree-main
+git push origin main
+```
+
+`main` keeps its own `README.md`, scoped to installing and using the built output — it is not copied from this one, and does not carry a `Repository` or `Development` section, since `packages/`, `tools/` and `site/` never ship there. Update it by hand when the "Use it" instructions below change.
+
 ## Status
 
 The modules are covered by unit tests and were checked in Chromium. The Elementor adapter is linted and smoke-tested against stubs; it has not been run inside a live WordPress and Elementor install yet. The Webflow instructions have not been tested in a live Webflow project.
