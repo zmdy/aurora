@@ -1,3 +1,4 @@
+import { textEffectGuide } from './text-effect-guide.mjs';
 /** Module pages use the actual Text Effects document, not a parallel demo shell. */
 export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config, headlineDemo = '' }) {
     const escape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -30,6 +31,11 @@ export function moduleDemoPage(reference, { name, title, lead, markup, documenta
                 '<script src="../aurora.core.min.js?v=3"></script>\n<script src="../aurora.' + name + '.min.js?v=3"></script>\n' +
                 '<script src="../assets/site.js?v=3"></script>\n</body>');
     } else {
+        const guide = textEffectGuide(schema);
+        page = page.replace('<div class="pg-preview__footer">', guide.panel + '\n<div class="pg-preview__footer">')
+            .replace('</head>', '<link rel="stylesheet" href="../assets/effect-guide.css?v=1"><link rel="alternate" type="application/json" href="../data/text-effects.json" title="Text effect selection guide">\n</head>')
+            .replace(/<\/body>\s*<\/html>\s*$/, guide.data + '\n<script src="../assets/effect-guide.js?v=1"></script>\n</body>\n</html>');
+        documentation = guide.catalog + documentation;
         // Keep the original text demo, catalog, modal and runtime completely intact.
         page = page.replace(/var CORE_SRI = '[^']*';/, 'var CORE_SRI = ' + JSON.stringify(config.scripts[0].integrity) + ';')
             .replace(/var TEXT_SRI = '[^']*';/, 'var TEXT_SRI = ' + JSON.stringify(config.scripts[1].integrity) + ';')

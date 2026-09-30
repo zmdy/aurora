@@ -391,7 +391,8 @@ manifest.files.forEach(function (f) { copyFileSync(resolve(dist, f.file), resolv
 mkdirSync(resolve(out, 'assets'), { recursive: true });
 copyFileSync(resolve(root, 'site/assets/site.css'), resolve(out, 'assets/site.css'));
 copyFileSync(resolve(root, 'site/assets/site.js'), resolve(out, 'assets/site.js'));
-['modules.css', 'interactive-demo.css', 'module-documentation.css', 'headline-demo.css', 'headline-demo.js'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
+['modules.css', 'interactive-demo.css', 'module-documentation.css', 'headline-demo.css', 'headline-demo.js', 'effect-guide.css', 'effect-guide.js'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
+write('data/text-effects.json', readFileSync(resolve(root, 'site/data/text-effects.json'), 'utf8'));
 copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, 'assets/favicon.svg'));
 
 ['aurora-hero.webp', 'aurora-cta.webp', 'logo_aurora_animated.svg'].forEach(function (name) {

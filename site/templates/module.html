@@ -725,6 +725,9 @@
       var text = ($ctrlText.value || 'AURORA').trim();
       var eff = effectById(pgState.effect);
 
+      // Teardown restores the previous markup, so it must precede text edits.
+      var previous = window.Aurora.get($pgText, 'text');
+      if (previous) previous.destroy();
       $pgText.textContent = text;
 
       $badgeTag.textContent = eff.tag.toUpperCase();

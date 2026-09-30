@@ -1,0 +1,16 @@
+.effect-guide { padding: 20px 24px; border-top: 1px solid #ffffff12; background: #10111c; color: #c4c6d5; font-size: 13px; line-height: 1.65; }
+.effect-guide__heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.effect-guide h3 { color: #f1efff; font-size: 15px; margin: 0; }
+.effect-guide a, #text-effect-guide a { color: #bba4ff; text-underline-offset: 3px; }
+.effect-guide a { font-size: 12px; }
+.effect-guide p { margin: 8px 0 12px; }
+.effect-guide dl, .effect-guide__catalog dl { margin: 0; }
+.effect-guide dl>div, .effect-guide__catalog dl>div { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 12px; margin-top: 7px; }
+.effect-guide dt, .effect-guide__catalog dt { font-weight: 600; color: #e3dff1; }
+.effect-guide dd, .effect-guide__catalog dd { margin: 0; }
+#text-effect-guide { scroll-margin-top: 90px; }
+.effect-guide__catalog { border: 1px solid #ffffff20; border-radius: 14px; padding: 20px; }
+.effect-guide__catalog summary { cursor: pointer; color: #e3dff1; }
+.effect-guide__catalog article { padding: 24px 0; border-top: 1px solid #ffffff15; margin-top: 20px; scroll-margin-top: 90px; }
+.effect-guide__catalog h3 code { display: inline-block; font-size: 12px; font-weight: 400; margin-left: 8px; }
+@media(max-width:599px){ .effect-guide{padding:16px;} .effect-guide dl>div,.effect-guide__catalog dl>div{grid-template-columns:1fr;gap:1px;margin-top:10px;} }
