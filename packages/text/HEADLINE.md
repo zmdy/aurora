@@ -12,18 +12,29 @@ The runtime owns three plain-text segments: `beforeText`, `highlightedText`, and
 to the element's original text. All strings are rendered as text, never HTML.
 
 - `animationStyle: 'highlighted'`: draws `animationShape` around the phrase.
-  Shapes: `underline`, `double-underline`, `circle`, `aurora-orbit`,
-  `aurora-wave`, `aurora-spark`, `text-highlighter`. The highlighter sweeps a translucent
-  marker behind the fixed phrase, using the existing Text Highlighter renderer
-  and the two shape colors; stroke width applies only to SVG outlines. Aurora shapes combine two original SVG paths
-  with a two-color stroke (`headlineColor`, `headlineColor2`, `strokeWidth`).
+  Shapes: `underline`, `double-underline`, `circle`, `zigzag`, `strike`,
+  `aurora-orbit`, `aurora-wave`, `aurora-spark`, `aurora-frame`, `text-highlighter`.
+  The highlighter sweeps a translucent marker behind the fixed phrase, using the
+  existing Text Highlighter renderer and the two shape colors; stroke width
+  applies only to SVG outlines. `zigzag` and `strike` are plain single-stroke
+  lines; `aurora-orbit`/`aurora-wave`/`aurora-frame` combine multiple original
+  SVG subpaths with a two-color stroke (`headlineColor`, `headlineColor2`,
+  `strokeWidth`) — `aurora-frame` draws four corner brackets, like a focus
+  reticle, as one continuous multi-subpath stroke.
 - `animationStyle: 'rotating'`: starts with the highlighted phrase, then cycles
   through `rotatingText` (one phrase per line; blank and duplicate lines removed).
-  `rotationEffect` supports `prism-rise`, `comet-slide`, `split-flap`, `soft-focus`,
-  `airport-flip`, `scramble`, `sparkles-text`,
-  `text-reveal-wall`, `letter-swap` and `echo-clone`. The six letter
-  effects are compact headline adaptations: Reveal Wall resolves three rows into
-  each letter without expanding the heading into a full-screen wall.
+  `rotationEffect` supports two families. Whole-word entrances swap the entire
+  phrase at once: `prism-rise`, `comet-slide`, `split-flap`, `soft-focus`,
+  `curtain-wipe` (a hard-edge clip-path wipe) and `drop-bounce` (an overshoot
+  drop with a settle). Letter effects animate each grapheme with its own
+  stagger: `airport-flip`, `scramble`, `sparkles-text`, `text-reveal-wall`,
+  `letter-swap`, `echo-clone`, `typewriter` (a near-instant per-letter strike
+  plus a blinking caret once the phrase is fully typed) and `wave-pop` (each
+  letter crests at a different moment, reading as one traveling wave). These
+  are compact headline adaptations: Reveal Wall resolves three rows into
+  each letter without expanding the heading into a full-screen wall, and
+  Letter Swap shows a genuine swap from an accent-colored placeholder glyph
+  to the real letter rather than repeating the same glyph.
   Unicode graphemes remain intact. `letterStagger` is capped at 65% of the
   duration for long phrases; `rotationColor` and `rotationColor2` set accents.
   All phrases share a grid cell, reserving the largest width/height to avoid

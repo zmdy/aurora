@@ -49,7 +49,7 @@ describe('headline composition and lifecycle', () => {
             instance.replay(); expect(el.querySelector('.aurora-headline__marker').style.opacity).toBe('');
         } finally { Element.prototype.animate = originalAnimate; }
     });
-    it.each(['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone'])('rotates with %s and cleans up its animations and decorations', effect => {
+    it.each(['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone', 'typewriter', 'wave-pop'])('rotates with %s and cleans up its animations and decorations', effect => {
         const handles = [];
         const originalAnimate = Element.prototype.animate;
         Element.prototype.animate = vi.fn((frames, timing) => {
@@ -70,6 +70,21 @@ describe('headline composition and lifecycle', () => {
             instance.destroy();
             expect(el.innerHTML).toBe('<em>Original</em> title');
             expect(vi.getTimerCount()).toBe(0);
+        } finally { Element.prototype.animate = originalAnimate; }
+    });
+    it.each(['prism-rise', 'comet-slide', 'split-flap', 'soft-focus', 'curtain-wipe', 'drop-bounce'])('rotates the whole word with the %s entrance', effect => {
+        const originalAnimate = Element.prototype.animate;
+        const handle = { pause: vi.fn(), play: vi.fn(), cancel: vi.fn() };
+        let frames;
+        Element.prototype.animate = vi.fn((f) => { frames = f; return handle; });
+        try {
+            const instance = mount({ animationStyle: 'rotating', rotationEffect: effect, rotatingText: 'Tomorrow', headlineLoop: false });
+            vi.advanceTimersByTime(0);
+            expect(frames).toBeDefined();
+            expect(frames.length).toBeGreaterThanOrEqual(2);
+            expect(el.querySelectorAll('.aurora-headline__char')).toHaveLength(0);
+            instance.destroy();
+            expect(el.innerHTML).toBe('<em>Original</em> title');
         } finally { Element.prototype.animate = originalAnimate; }
     });
     it('keeps combining marks and emoji sequences in a single letter slot', () => {
@@ -145,7 +160,7 @@ describe('headline composition and lifecycle', () => {
         document.dispatchEvent(new Event('visibilitychange')); vi.advanceTimersByTime(2000); expect(instance.api.index).toBe(1);
         hidden.mockReturnValue(false); document.dispatchEvent(new Event('visibilitychange')); vi.advanceTimersByTime(450); expect(instance.api.index).toBe(0);
     });
-    it.each(['underline', 'double-underline', 'circle', 'aurora-orbit', 'aurora-wave', 'aurora-spark'])('renders %s as an original SVG shape', shape => {
+    it.each(['underline', 'double-underline', 'circle', 'zigzag', 'strike', 'aurora-orbit', 'aurora-wave', 'aurora-spark', 'aurora-frame'])('renders %s as an original SVG shape', shape => {
         mount({ animationShape: shape });
         expect(el.querySelector('svg')).not.toBeNull(); expect(el.querySelectorAll('path').length).toBeGreaterThan(0);
         expect(el.querySelector('svg').getAttribute('aria-hidden')).toBe('true');

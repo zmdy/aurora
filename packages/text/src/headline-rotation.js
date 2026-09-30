@@ -1,5 +1,5 @@
 
-export var LETTER_EFFECTS = ['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone'];
+export var LETTER_EFFECTS = ['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone', 'typewriter', 'wave-pop'];
 export var ROTATION_CSS = `
 .aurora-headline__char{display:inline-grid;position:relative;vertical-align:baseline;white-space:pre;line-height:inherit}
 .aurora-headline__glyph{grid-area:1/1;display:block;line-height:inherit}
@@ -8,6 +8,7 @@ export var ROTATION_CSS = `
 .aurora-headline__tape>span{display:block;line-height:inherit}
 .aurora-headline__echo{position:absolute;inset:0;pointer-events:none}
 .aurora-headline__spark{position:absolute;width:.28em;height:.28em;right:-.1em;top:0;pointer-events:none;opacity:0}
+.aurora-headline__cursor{display:inline-block;width:.07em;height:.92em;background:currentColor;vertical-align:-.08em;margin-left:.03em;opacity:0}
 `;
 
 function span(className, value) {
@@ -42,12 +43,21 @@ export function rotateLetters(node, value, options, animate) {
                 { transform: 'perspective(350px) rotateX(0)', opacity: 1 }
             ], delay);
         } else if (effect === 'scramble' || effect === 'letter-swap') {
+            // Scramble: a fast multi-step cycle through random glyphs before landing.
+            // Letter swap: a single clean swap from a colored placeholder to the
+            // real letter — previously this built a "tape" of the *same* final
+            // character repeated, so the slide revealed nothing new and the
+            // effect looked like a no-op. Now the first frame is a genuinely
+            // different, accent-colored glyph that gets swapped out.
             slot.classList.add('aurora-headline__slot');
             var tape = span('aurora-headline__tape');
             var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            var count = effect === 'scramble' ? 8 : 3;
+            var count = effect === 'scramble' ? 8 : 2;
             for (var j = 0; j < count; j++) {
-                tape.appendChild(span('', j === count - 1 || effect === 'letter-swap' ? char : alphabet[Math.floor(Math.random() * alphabet.length)]));
+                var isFinal = j === count - 1;
+                var cell = span('', isFinal ? char : alphabet[Math.floor(Math.random() * alphabet.length)]);
+                if (effect === 'letter-swap' && !isFinal) cell.style.color = i % 2 ? options.rotationColor : options.rotationColor2;
+                tape.appendChild(cell);
             }
             glyph.style.visibility = 'hidden'; slot.appendChild(tape);
             animate(tape, [{ transform: 'translateY(0)' }, { transform: 'translateY(-' + (100 * (count - 1) / count) + '%)' }], delay,
@@ -75,6 +85,27 @@ export function rotateLetters(node, value, options, animate) {
             path.setAttribute('d', 'M10 0Q11 9 20 10Q11 11 10 20Q9 11 0 10Q9 9 10 0Z'); path.setAttribute('fill', i % 2 ? options.rotationColor : options.rotationColor2);
             star.appendChild(path); slot.appendChild(star);
             animate(star, [{ opacity: 0, transform: 'scale(0) rotate(-30deg)' }, { opacity: 1, transform: 'scale(1) rotate(0)', offset: .45 }, { opacity: 0, transform: 'scale(.2) rotate(35deg)' }], delay + options.duration * .15, {}, function () { star.remove(); });
+        } else if (effect === 'wave-pop') {
+            // Each letter crests at a different moment, so the phrase reads as
+            // one traveling wave rather than a flat stagger-fade.
+            animate(glyph, [
+                { opacity: 0, transform: 'translateY(.55em)' },
+                { opacity: 1, transform: 'translateY(-.26em)', offset: .55 },
+                { opacity: 1, transform: 'translateY(0)' }
+            ], delay);
+        } else if (effect === 'typewriter') {
+            // A crisp, near-instant strike per letter (no easing glide — real
+            // typing doesn't fade in) plus a blinking caret once the phrase
+            // is fully typed.
+            animate(glyph, [{ opacity: 0 }, { opacity: 0, offset: .01 }, { opacity: 1, offset: .011 }, { opacity: 1 }], delay,
+                { duration: Math.max(60, Math.min(140, options.duration * .2)), easing: 'linear' });
+            if (i === chars.length - 1) {
+                var cursor = span('aurora-headline__cursor');
+                node.appendChild(cursor);
+                var caretDelay = delay + Math.max(60, Math.min(140, options.duration * .2)) + 60;
+                animate(cursor, [{ opacity: 1, offset: 0 }, { opacity: 1, offset: .5 }, { opacity: 0, offset: .5 }, { opacity: 0, offset: 1 }], caretDelay,
+                    { duration: 420, iterations: 2, easing: 'linear' }, function () { cursor.remove(); });
+            }
         }
     });
 }

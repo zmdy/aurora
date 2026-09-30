@@ -10,12 +10,21 @@ var SHAPES = {
     'aurora-orbit': ['M26 73 C-8 52 24 19 153 10 C277 1 380 14 393 42 C403 68 313 91 187 93 C95 94 42 84 26 73', 'M61 89 C154 106 296 90 359 66'],
     'aurora-wave': ['M8 85 C38 79 62 79 88 85 S138 91 164 85 S214 79 240 85 S290 91 316 85 S365 79 392 85', 'M33 94 C131 90 263 91 368 93'],
     'aurora-spark': ['M8 86 C112 80 259 81 390 85', 'M397 7 Q398 16 407 17 Q398 18 397 27 Q396 18 387 17 Q396 16 397 7Z'],
+    zigzag: ['M8 88 L38 70 L68 88 L98 70 L128 88 L158 70 L188 88 L218 70 L248 88 L278 70 L308 88 L338 70 L368 88 L392 78'],
+    strike: ['M8 49 C140 46 260 46 392 49'],
+    'aurora-frame': ['M6 26 L6 6 L26 6 M374 6 L394 6 L394 26 M394 74 L394 94 L374 94 M26 94 L6 94 L6 74'],
 };
 var ENTRANCES = {
     'prism-rise': [{ opacity: 0, transform: 'translateY(.55em) skewX(-12deg)', filter: 'blur(6px)' }, { opacity: 1, transform: 'translateY(0) skewX(0)', filter: 'blur(0)' }],
     'comet-slide': [{ opacity: 0, transform: 'translateX(-.6em) scaleX(1.2)', filter: 'blur(5px)' }, { opacity: 1, transform: 'translateX(0) scaleX(1)', filter: 'blur(0)' }],
     'split-flap': [{ opacity: 0, transform: 'perspective(500px) rotateX(-80deg)', transformOrigin: '50% 100%' }, { opacity: 1, transform: 'perspective(500px) rotateX(0deg)', transformOrigin: '50% 100%' }],
     'soft-focus': [{ opacity: 0, filter: 'blur(12px)', transform: 'scale(.94)' }, { opacity: 1, filter: 'blur(0)', transform: 'scale(1)' }],
+    'curtain-wipe': [{ opacity: 1, clipPath: 'inset(0 0% 0 100%)' }, { opacity: 1, clipPath: 'inset(0 0% 0 0%)' }],
+    'drop-bounce': [
+        { opacity: 0, transform: 'translateY(-1.1em) scale(.9)' },
+        { opacity: 1, transform: 'translateY(.12em) scale(1.03)', offset: .65 },
+        { opacity: 1, transform: 'translateY(0) scale(1)' }
+    ],
 };
 var CSS = `
 .aurora-headline{overflow-wrap:anywhere;white-space:normal}

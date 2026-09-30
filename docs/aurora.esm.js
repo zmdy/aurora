@@ -2831,9 +2831,9 @@ var headlineOptions = {
   highlightedText: { type: "string", default: "", label: "Highlighted text", description: "Empty uses the original element text.", group: "Headline", when: { mode: "headline" } },
   afterText: { type: "string", default: "", label: "After text", group: "Headline", when: { mode: "headline" } },
   animationStyle: { type: "enum", default: "highlighted", values: ["highlighted", "rotating"], label: "Animation style", group: "Headline", when: { mode: "headline" } },
-  animationShape: { type: "enum", default: "aurora-orbit", values: ["underline", "double-underline", "circle", "aurora-orbit", "aurora-wave", "aurora-spark", "text-highlighter"], label: "Animation shape", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
+  animationShape: { type: "enum", default: "aurora-orbit", values: ["underline", "double-underline", "circle", "zigzag", "strike", "aurora-orbit", "aurora-wave", "aurora-spark", "aurora-frame", "text-highlighter"], label: "Animation shape", group: "Headline", when: { mode: "headline", animationStyle: "highlighted" } },
   rotatingText: { type: "string", default: "", ui: "textarea", label: "Rotating text", description: "One phrase per line. The highlighted text is the first phrase.", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
-  rotationEffect: { type: "enum", default: "prism-rise", values: ["prism-rise", "comet-slide", "split-flap", "soft-focus", "airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone"], label: "Rotation effect", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
+  rotationEffect: { type: "enum", default: "prism-rise", values: ["prism-rise", "comet-slide", "split-flap", "soft-focus", "curtain-wipe", "drop-bounce", "airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone", "typewriter", "wave-pop"], label: "Rotation effect", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   letterStagger: { type: "number", default: 28, min: 0, max: 150, unit: "ms", label: "Letter stagger", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   rotationColor: { type: "color", default: "#facc15", label: "Rotation accent", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
   rotationColor2: { type: "color", default: "#a78bfa", label: "Rotation accent 2", group: "Headline", when: { mode: "headline", animationStyle: "rotating" } },
@@ -7472,7 +7472,7 @@ function createFx(textEl, original) {
   };
   return fx;
 }
-var LETTER_EFFECTS = ["airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone"];
+var LETTER_EFFECTS = ["airport-flip", "scramble", "sparkles-text", "text-reveal-wall", "letter-swap", "echo-clone", "typewriter", "wave-pop"];
 var ROTATION_CSS = `
 .aurora-headline__char{display:inline-grid;position:relative;vertical-align:baseline;white-space:pre;line-height:inherit}
 .aurora-headline__glyph{grid-area:1/1;display:block;line-height:inherit}
@@ -7481,6 +7481,7 @@ var ROTATION_CSS = `
 .aurora-headline__tape>span{display:block;line-height:inherit}
 .aurora-headline__echo{position:absolute;inset:0;pointer-events:none}
 .aurora-headline__spark{position:absolute;width:.28em;height:.28em;right:-.1em;top:0;pointer-events:none;opacity:0}
+.aurora-headline__cursor{display:inline-block;width:.07em;height:.92em;background:currentColor;vertical-align:-.08em;margin-left:.03em;opacity:0}
 `;
 function span(className, value) {
   var node = document.createElement("span");
@@ -7519,9 +7520,12 @@ function rotateLetters(node, value, options, animate2) {
       slot.classList.add("aurora-headline__slot");
       var tape = span("aurora-headline__tape");
       var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      var count = effect2 === "scramble" ? 8 : 3;
+      var count = effect2 === "scramble" ? 8 : 2;
       for (var j = 0; j < count; j++) {
-        tape.appendChild(span("", j === count - 1 || effect2 === "letter-swap" ? char : alphabet[Math.floor(Math.random() * alphabet.length)]));
+        var isFinal = j === count - 1;
+        var cell = span("", isFinal ? char : alphabet[Math.floor(Math.random() * alphabet.length)]);
+        if (effect2 === "letter-swap" && !isFinal) cell.style.color = i % 2 ? options.rotationColor : options.rotationColor2;
+        tape.appendChild(cell);
       }
       glyph.style.visibility = "hidden";
       slot.appendChild(tape);
@@ -7569,6 +7573,33 @@ function rotateLetters(node, value, options, animate2) {
       animate2(star, [{ opacity: 0, transform: "scale(0) rotate(-30deg)" }, { opacity: 1, transform: "scale(1) rotate(0)", offset: 0.45 }, { opacity: 0, transform: "scale(.2) rotate(35deg)" }], delay + options.duration * 0.15, {}, function() {
         star.remove();
       });
+    } else if (effect2 === "wave-pop") {
+      animate2(glyph, [
+        { opacity: 0, transform: "translateY(.55em)" },
+        { opacity: 1, transform: "translateY(-.26em)", offset: 0.55 },
+        { opacity: 1, transform: "translateY(0)" }
+      ], delay);
+    } else if (effect2 === "typewriter") {
+      animate2(
+        glyph,
+        [{ opacity: 0 }, { opacity: 0, offset: 0.01 }, { opacity: 1, offset: 0.011 }, { opacity: 1 }],
+        delay,
+        { duration: Math.max(60, Math.min(140, options.duration * 0.2)), easing: "linear" }
+      );
+      if (i === chars.length - 1) {
+        var cursor2 = span("aurora-headline__cursor");
+        node.appendChild(cursor2);
+        var caretDelay = delay + Math.max(60, Math.min(140, options.duration * 0.2)) + 60;
+        animate2(
+          cursor2,
+          [{ opacity: 1, offset: 0 }, { opacity: 1, offset: 0.5 }, { opacity: 0, offset: 0.5 }, { opacity: 0, offset: 1 }],
+          caretDelay,
+          { duration: 420, iterations: 2, easing: "linear" },
+          function() {
+            cursor2.remove();
+          }
+        );
+      }
     }
   });
 }
@@ -7580,13 +7611,22 @@ var SHAPES$1 = {
   circle: ["M204 7 C89 2 5 19 6 49 C7 80 105 95 207 93 C322 91 395 76 394 47 C393 22 310 6 204 7"],
   "aurora-orbit": ["M26 73 C-8 52 24 19 153 10 C277 1 380 14 393 42 C403 68 313 91 187 93 C95 94 42 84 26 73", "M61 89 C154 106 296 90 359 66"],
   "aurora-wave": ["M8 85 C38 79 62 79 88 85 S138 91 164 85 S214 79 240 85 S290 91 316 85 S365 79 392 85", "M33 94 C131 90 263 91 368 93"],
-  "aurora-spark": ["M8 86 C112 80 259 81 390 85", "M397 7 Q398 16 407 17 Q398 18 397 27 Q396 18 387 17 Q396 16 397 7Z"]
+  "aurora-spark": ["M8 86 C112 80 259 81 390 85", "M397 7 Q398 16 407 17 Q398 18 397 27 Q396 18 387 17 Q396 16 397 7Z"],
+  zigzag: ["M8 88 L38 70 L68 88 L98 70 L128 88 L158 70 L188 88 L218 70 L248 88 L278 70 L308 88 L338 70 L368 88 L392 78"],
+  strike: ["M8 49 C140 46 260 46 392 49"],
+  "aurora-frame": ["M6 26 L6 6 L26 6 M374 6 L394 6 L394 26 M394 74 L394 94 L374 94 M26 94 L6 94 L6 74"]
 };
 var ENTRANCES = {
   "prism-rise": [{ opacity: 0, transform: "translateY(.55em) skewX(-12deg)", filter: "blur(6px)" }, { opacity: 1, transform: "translateY(0) skewX(0)", filter: "blur(0)" }],
   "comet-slide": [{ opacity: 0, transform: "translateX(-.6em) scaleX(1.2)", filter: "blur(5px)" }, { opacity: 1, transform: "translateX(0) scaleX(1)", filter: "blur(0)" }],
   "split-flap": [{ opacity: 0, transform: "perspective(500px) rotateX(-80deg)", transformOrigin: "50% 100%" }, { opacity: 1, transform: "perspective(500px) rotateX(0deg)", transformOrigin: "50% 100%" }],
-  "soft-focus": [{ opacity: 0, filter: "blur(12px)", transform: "scale(.94)" }, { opacity: 1, filter: "blur(0)", transform: "scale(1)" }]
+  "soft-focus": [{ opacity: 0, filter: "blur(12px)", transform: "scale(.94)" }, { opacity: 1, filter: "blur(0)", transform: "scale(1)" }],
+  "curtain-wipe": [{ opacity: 1, clipPath: "inset(0 0% 0 100%)" }, { opacity: 1, clipPath: "inset(0 0% 0 0%)" }],
+  "drop-bounce": [
+    { opacity: 0, transform: "translateY(-1.1em) scale(.9)" },
+    { opacity: 1, transform: "translateY(.12em) scale(1.03)", offset: 0.65 },
+    { opacity: 1, transform: "translateY(0) scale(1)" }
+  ]
 };
 var CSS = `
 .aurora-headline{overflow-wrap:anywhere;white-space:normal}
