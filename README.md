@@ -122,7 +122,7 @@ git push origin main
 
 ## Status
 
-The modules are covered by unit tests and were checked in Chromium. The Elementor adapter is linted and smoke-tested against stubs; it has not been run inside a live WordPress and Elementor install yet. The Webflow instructions have not been tested in a live Webflow project.
+The modules are covered by unit tests and were checked in Chromium. The Elementor adapter has been tested in a live WordPress install with the Hello Elementor theme, in three configurations: Elementor (free), Elementor Pro, and ProElements — no bugs or performance issues found in any of them. The Webflow instructions have not been tested in a live Webflow project yet.
 
 ## License
 
