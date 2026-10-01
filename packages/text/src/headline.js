@@ -26,11 +26,27 @@ var ENTRANCES = {
         { opacity: 1, transform: 'translateY(0) scale(1)' }
     ],
 };
+// Matched exits so the outgoing word animates out while the next one enters —
+// the overlap (and the wrapper-width tween) is what makes Elementor Pro's
+// rotator read as a single, deliberate motion instead of a hard cut. Letter
+// effects (and anything without a bespoke exit) fall back to DEFAULT_EXIT.
+var EXITS = {
+    'prism-rise': [{ opacity: 1, transform: 'translateY(0) skewX(0)', filter: 'blur(0)' }, { opacity: 0, transform: 'translateY(-.5em) skewX(10deg)', filter: 'blur(6px)' }],
+    'comet-slide': [{ opacity: 1, transform: 'translateX(0) scaleX(1)', filter: 'blur(0)' }, { opacity: 0, transform: 'translateX(.6em) scaleX(1.25)', filter: 'blur(5px)' }],
+    'split-flap': [{ opacity: 1, transform: 'perspective(500px) rotateX(0deg)', transformOrigin: '50% 0%' }, { opacity: 0, transform: 'perspective(500px) rotateX(80deg)', transformOrigin: '50% 0%' }],
+    'soft-focus': [{ opacity: 1, filter: 'blur(0)', transform: 'scale(1)' }, { opacity: 0, filter: 'blur(12px)', transform: 'scale(1.06)' }],
+    'curtain-wipe': [{ opacity: 1, clipPath: 'inset(0 0% 0 0)' }, { opacity: 1, clipPath: 'inset(0 100% 0 0)' }],
+    'drop-bounce': [{ opacity: 1, transform: 'translateY(0) scale(1)' }, { opacity: 0, transform: 'translateY(.8em) scale(.92)' }],
+};
+var DEFAULT_EXIT = [{ opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' }, { opacity: 0, transform: 'translateY(-.32em)', filter: 'blur(4px)' }];
 var CSS = `
 .aurora-headline{overflow-wrap:anywhere;white-space:normal}
 .aurora-headline__visual{white-space:pre-wrap}
 .aurora-headline__center{display:inline-grid;position:relative;max-width:100%;vertical-align:baseline;isolation:isolate;line-height:inherit}
 .aurora-headline__word{grid-area:1/1;min-width:0;max-width:100%;overflow-wrap:anywhere;position:relative;z-index:1;line-height:inherit}
+.aurora-headline__center--rotate{display:inline-block;max-width:none;overflow:visible;transition:width .42s cubic-bezier(.22,1,.36,1);will-change:width}
+.aurora-headline__center--rotate .aurora-headline__word{position:absolute;left:0;top:0;width:max-content;max-width:none;overflow-wrap:normal;white-space:nowrap}
+.aurora-headline__center--rotate .aurora-headline__word--active{position:relative}
 .aurora-headline__shape{position:absolute;inset:-.13em -.06em;width:calc(100% + .12em);height:calc(100% + .26em);overflow:visible;pointer-events:none;z-index:0}
 .aurora-headline__sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 `;
@@ -60,6 +76,7 @@ export function initHeadline(el, options, ctx) {
     var root = span('aurora-headline');
     var visual = span('aurora-headline__visual'); visual.setAttribute('aria-hidden', 'true');
     var center = span('aurora-headline__center');
+    if (options.animationStyle === 'rotating') center.classList.add('aurora-headline__center--rotate');
     visual.appendChild(span('aurora-headline__before', options.beforeText.trim() ? options.beforeText.trim() + ' ' : ''));
     visual.appendChild(center);
     visual.appendChild(span('aurora-headline__after', options.afterText.trim() ? ' ' + options.afterText.trim() : ''));
@@ -96,7 +113,42 @@ export function initHeadline(el, options, ctx) {
         center.appendChild(svg);
     }
 
+    var widthArmed = false;
+    // Pin the center to the live width of the active phrase so the CSS width
+    // transition can tween between phrases of different lengths (this is what
+    // keeps the before/after text and the shape hugging the current word,
+    // exactly like Elementor Pro's dynamic wrapper). The first set is made
+    // transition-less so the headline doesn't grow from zero on load.
+    function setRotWidth(i) {
+        if (options.animationStyle !== 'rotating') return;
+        var node = wordNodes[i];
+        if (!node || typeof node.getBoundingClientRect !== 'function') return;
+        var width = node.getBoundingClientRect().width;
+        if (!width) return;
+        if (!widthArmed) {
+            center.style.transition = 'none';
+            center.style.width = width + 'px';
+            void center.offsetWidth;
+            center.style.transition = '';
+            widthArmed = true;
+        } else {
+            center.style.width = width + 'px';
+        }
+    }
+    function revealRotate(fromIndex) {
+        if (fromIndex === undefined) fromIndex = index;
+        wordNodes.forEach(function (node, i) {
+            var active = i === index;
+            node.classList.toggle('aurora-headline__word--active', active);
+            if (active) { node.style.visibility = 'visible'; node.style.opacity = '1'; }
+            else if (i === fromIndex) { node.style.visibility = 'visible'; }
+            else { node.style.visibility = 'hidden'; node.style.opacity = '0'; }
+        });
+        root.dataset.headlineIndex = String(index);
+        setRotWidth(index);
+    }
     function show() {
+        if (options.animationStyle === 'rotating') { revealRotate(index); return; }
         wordNodes.forEach(function (node, i) { node.style.visibility = i === index ? 'visible' : 'hidden'; node.style.opacity = i === index ? '1' : '0'; });
         root.dataset.headlineIndex = String(index);
     }
@@ -118,8 +170,10 @@ export function initHeadline(el, options, ctx) {
         var extra = LETTER_EFFECTS.indexOf(options.rotationEffect) >= 0 ? options.duration * .8 : options.duration * .12;
         return options.duration + extra + options.holdDuration;
     }
-    function motion() {
-        stopAnimations(); show();
+    function motion(fromIndex) {
+        if (fromIndex === undefined) fromIndex = index;
+        stopAnimations();
+        if (options.animationStyle === 'rotating') revealRotate(fromIndex); else show();
         if (ctx.reducedMotion) return;
         if (marker) {
             var duration = options.headlineLoop ? cycleDuration() : options.duration;
@@ -129,8 +183,8 @@ export function initHeadline(el, options, ctx) {
                 { transform: 'scaleX(1) rotate(-1deg)', opacity: 1, offset: drawn }
             ];
             if (options.headlineLoop) frames.push(
-                { transform: 'scaleX(1) rotate(-1deg)', opacity: 1, offset: 1 - 220 / duration },
-                { transform: 'scaleX(1) rotate(-1deg)', opacity: 0, offset: 1 }
+                { transform: 'scaleX(1) rotate(-1deg)', opacity: 1, offset: 1 - 220 / duration, filter: 'blur(0)' },
+                { transform: 'scaleX(1) rotate(-1deg)', opacity: 0, offset: 1, filter: 'blur(4px)' }
             );
             animate(marker, frames, 0, { duration: duration, easing: 'linear' }, options.headlineLoop ? function () { marker.style.opacity = '0'; } : undefined);
         } else if (options.animationStyle === 'highlighted') {
@@ -146,13 +200,22 @@ export function initHeadline(el, options, ctx) {
                     { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: alpha, offset: drawn }
                 ];
                 if (options.headlineLoop) frames.push(
-                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: alpha, offset: 1 - 220 / duration },
-                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: 0, offset: 1 }
+                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: alpha, offset: 1 - 220 / duration, filter: 'blur(0)' },
+                    { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: 0, offset: 1, filter: 'blur(3px)' }
                 );
                 animate(path, frames, delay, { duration: duration, easing: 'linear' }, options.headlineLoop ? function () { path.style.opacity = '0'; } : undefined);
             });
-        } else if (ENTRANCES[options.rotationEffect]) animate(wordNodes[index], ENTRANCES[options.rotationEffect]);
-        else rotateLetters(wordNodes[index], words[index], options, animate);
+        } else {
+            if (fromIndex !== index) {
+                var outgoing = wordNodes[fromIndex];
+                outgoing.style.visibility = 'visible';
+                animate(outgoing, EXITS[options.rotationEffect] || DEFAULT_EXIT, 0, { fill: 'both', easing: 'cubic-bezier(.4,0,1,1)' }, (function (node) {
+                    return function () { node.style.visibility = 'hidden'; node.style.opacity = '0'; node.style.filter = ''; node.style.clipPath = ''; };
+                })(outgoing));
+            }
+            if (ENTRANCES[options.rotationEffect]) animate(wordNodes[index], ENTRANCES[options.rotationEffect]);
+            else rotateLetters(wordNodes[index], words[index], options, animate);
+        }
         ctx.emit('headline-change', { index: index, text: words[index], style: options.animationStyle });
     }
     function canPlay() { return !destroyed && !paused && !hovering && !focused && !document.hidden && inView && !ctx.reducedMotion; }
@@ -164,8 +227,9 @@ export function initHeadline(el, options, ctx) {
         timer = setTimeout(function () {
             timer = null;
             if (!canPlay()) return;
+            var from = index;
             if (options.animationStyle === 'rotating') index = (index + 1) % words.length;
-            motion(); schedule();
+            motion(from); schedule();
         }, delay === undefined ? cycleDuration() : delay);
     }
     function sync() {
@@ -184,6 +248,19 @@ export function initHeadline(el, options, ctx) {
         savedNodes.forEach(function (node) { target.appendChild(node); });
     });
     ctx.on(document, 'visibilitychange', sync);
+    // Keep the pinned wrapper width correct across viewport/font changes,
+    // without animating the correction.
+    ctx.on(window, 'resize', function () {
+        if (destroyed || options.animationStyle !== 'rotating') return;
+        var node = wordNodes[index];
+        if (!node || typeof node.getBoundingClientRect !== 'function') return;
+        var width = node.getBoundingClientRect().width;
+        if (!width) return;
+        center.style.transition = 'none';
+        center.style.width = width + 'px';
+        void center.offsetWidth;
+        center.style.transition = '';
+    });
     if (options.pauseOnHover) {
         ctx.on(el, 'pointerenter', function () { hovering = true; sync(); });
         ctx.on(el, 'pointerleave', function () { hovering = false; sync(); });
@@ -205,7 +282,7 @@ export function initHeadline(el, options, ctx) {
         api: {
             pause: function () { paused = true; sync(); },
             play: function () { paused = false; if (completed) replay(); else sync(); },
-            next: function () { if (destroyed || options.animationStyle !== 'rotating') return; index = (index + 1) % words.length; completed = false; motion(); schedule(); },
+            next: function () { if (destroyed || options.animationStyle !== 'rotating') return; var from = index; index = (index + 1) % words.length; completed = false; motion(from); schedule(); },
             get index() { return index; },
         },
     };
