@@ -1,10 +1,11 @@
 {
-    "aurora.min.js": 64000,
+    "aurora.min.js": 66500,
     "aurora.core.min.js": 5200,
     "aurora.text.min.js": 41000,
     "aurora.children.min.js": 4500,
     "aurora.cursor.min.js": 3200,
     "aurora.gradient.min.js": 9500,
     "aurora.morph-card.min.js": 9500,
-    "aurora.esm.js": 90000
+    "aurora.esm.js": 91500,
+    "aurora.accent.min.js": 3200
 }

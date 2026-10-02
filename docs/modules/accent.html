@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Draws an SVG accent around a target without touching its content — any markup already inside (a nested span, an icon, a manual highlight) survives untouched.">
+  <title>Accent | Aurora</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Hides animated text until Aurora runs (no flash); 4s failsafe. -->
+  <script>document.documentElement.classList.add("aurora-js");setTimeout(function(){document.documentElement.classList.add("aurora-ready")},4000)</script>
+
+  <link rel="stylesheet" href="../assets/modules.css?v=3">
+  <link rel="stylesheet" href="../assets/interactive-demo.css?v=3">
+<link rel="stylesheet" href="../assets/module-documentation.css?v=3">
+</head>
+
+<body data-module="accent">
+  <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
+  <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
+
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="../index.html#top" aria-label="Aurora home">
+          <img src="../assets/logo_aurora_animated.svg" class="nav__logo" alt="Aurora">
+        </a>
+
+        <ul class="nav__links" role="list">
+          <li><a href="../modules/text.html" aria-current="page">Text Effects</a></li>
+          <li class="nav__dropdown" id="nav-modules-dropdown">
+            <button type="button" class="nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="nav-modules-trigger">
+              Modules
+              <svg class="nav__dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="nav__dropdown-menu" role="menu" aria-label="Aurora modules">
+              <a href="../modules/text.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">✨</span>
+                <span><span class="nav__dropdown-title">Text</span><span class="nav__dropdown-desc">53 scroll &amp; load effects</span></span>
+              </a>
+              <a href="../modules/children.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🎬</span>
+                <span><span class="nav__dropdown-title">Animate Children</span><span class="nav__dropdown-desc">Stagger, hover, proximity</span></span>
+              </a>
+              <a href="../modules/gradient.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--violet">🌈</span>
+                <span><span class="nav__dropdown-title">Gradient</span><span class="nav__dropdown-desc">Multi-stop, mesh, follow mouse</span></span>
+              </a>
+              <a href="../modules/cursor.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
+                <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Dot + ring zones</span></span>
+              </a>
+              <a href="../modules/morph-card.html" role="menuitem">
+                <span class="nav__dropdown-icon nav__dropdown-icon--teal">🪪</span>
+                <span><span class="nav__dropdown-title">Morph Card</span><span class="nav__dropdown-desc">Post, profile, polaroid</span></span>
+              </a>
+            </div>
+          </li>
+          <li><a href="../index.html#install">Install</a></li>
+          <li><a href="../index.html#how-it-works">How It Works</a></li>
+        </ul>
+
+        <div class="nav__actions">
+          <a href="../index.html#install" class="nav__docs-btn">
+            Docs
+          </a>
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="nav__icon-link" aria-label="View Aurora on GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     LIVE PLAYGROUND
+     ═══════════════════════════════════════════════════════════════════ -->
+  <section id="playground" class="playground section-gap-lg">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">Interactive Demo</div>
+        <h1 class="display-2" style="margin-top:1rem">Live Accent Playground</h1>
+        <p>Draws an SVG accent around a target without touching its content — any markup already inside (a nested span, an icon, a manual highlight) survives untouched.</p>
+      </div>
+
+      <div class="pg-layout">
+        <!-- Preview Panel -->
+        <div class="pg-preview">
+          <div class="pg-preview__chrome" aria-hidden="true">
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__dot"></div>
+            <div class="pg-preview__title">Aurora.accent() · live</div>
+          </div>
+
+          <div class="pg-preview__stage" id="pg-stage">
+            <h2 id="demo" data-aurora-accent="underline" data-aurora-accent-trigger="load">Ship <em>beautiful</em> motion.</h2>
+          </div>
+
+          <div class="pg-preview__footer">
+            <div class="pg-badge-row">
+              <span class="pg-badge pg-badge--gsap" id="badge-tag">LIVE</span>
+              <span class="pg-badge pg-badge--split" id="badge-split">accent</span>
+              <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
+            </div>
+            <div style="display:flex;gap:.5rem">
+              <button class="pg-replay-btn" id="btn-snippet" aria-label="Copy HTML+JS snippet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy Snippet
+              </button>
+              <button class="pg-replay-btn" id="btn-replay" aria-label="Replay animation">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                  <path d="M1 4v6h6M23 20v-6h-6" />
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
+                </svg>
+                Replay
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="pg-controls" id="controls" aria-label="Demo options"><button class="btn-snippet" id="btn-snippet-2" aria-label="Generate and copy HTML snippet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            Copy HTML + JS Snippet
+          </button></div></div></div></section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     EFFECT GRID — ALL 53 ANIMATIONS
+     ═══════════════════════════════════════════════════════════════════ -->
+  
+
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/accent.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 2.6 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Aurora Accent (standalone)&lt;/title&gt;
+&lt;style&gt;
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
+h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h2 data-aurora-accent=&quot;underline&quot; data-aurora-accent-trigger=&quot;load&quot;&gt;Ship &lt;em&gt;beautiful&lt;/em&gt; motion.&lt;/h2&gt;
+
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
+        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js&quot;
+        integrity=&quot;sha384-KkzhElFooK1A0i5tfSF9DJbMd6K1A7irTX7rMgIDdzqYsjqNmdZCNJ4X97WFRLJz&quot;
+        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.accent(document.querySelector('h2'), { shape: 'circle', color: '#ff7a2f', trigger: 'load' });
+fx.update({ shape: 'zigzag' }); // change options, including shape
+fx.destroy();          // removes only the accent svg it added</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-accent-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-accent-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>shape</code></td><td><code>data-aurora-accent</code></td><td>enum</td><td><code>underline</code></td><td>Shape<br><small><code>underline</code> <code>circle</code> <code>zigzag</code> <code>strike</code> <code>frame</code></small></td></tr>
+<tr><td><code>color</code></td><td><code>data-aurora-accent-color</code></td><td>color</td><td><code>#ff7a2f</code></td><td>Color</td></tr>
+<tr><td><code>color2</code></td><td><code>data-aurora-accent-color2</code></td><td>color</td><td><code>#ff7a2f</code></td><td>Blended into the first along the stroke. Equal to Color by default for a flat line.</td></tr>
+<tr><td><code>strokeWidth</code></td><td><code>data-aurora-accent-stroke-width</code></td><td>number (px)</td><td><code>6</code></td><td>Stroke width</td></tr>
+<tr><td><code>duration</code></td><td><code>data-aurora-accent-duration</code></td><td>number (ms)</td><td><code>700</code></td><td>Duration</td></tr>
+<tr><td><code>easing</code></td><td><code>data-aurora-accent-easing</code></td><td>enum</td><td><code>ease-out</code></td><td>&quot;Ease out&quot; reads like a pen decelerating at the end of the stroke.<br><small><code>ease-out</code> <code>linear</code> <code>ease-in-out</code></small></td></tr>
+<tr><td><code>delay</code></td><td><code>data-aurora-accent-delay</code></td><td>number (ms)</td><td><code>0</code></td><td>Delay</td></tr>
+<tr><td><code>trigger</code></td><td><code>data-aurora-accent-trigger</code></td><td>enum</td><td><code>scroll</code></td><td>Trigger<br><small><code>scroll</code> <code>load</code> <code>hover</code></small></td></tr>
+<tr><td><code>threshold</code></td><td><code>data-aurora-accent-threshold</code></td><td>number</td><td><code>0.2</code></td><td>Capped at 5% internally so accents above the fold still draw in.</td></tr>
+<tr><td><code>target</code></td><td><code>data-aurora-accent-target</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node to decorate. Empty uses the element itself; its existing content is never touched.</td></tr>
+</tbody></table></div></div></section>
+</div>
+<section class="cta-section section-gap-lg">
+    <div class="container">
+      <div class="cta-box">
+        <div class="eyebrow" style="margin-bottom:1.5rem">Get Started</div>
+        <h2 class="display-2">Ready to <span class="text-gradient">animate?</span></h2>
+        <p>Aurora is the open-source Swiss Army knife for animated web design. Add it to your site in minutes:
+          paste two script tags, drop in the Webflow snippet, or install the Elementor plugin. Free, with no strings attached.</p>
+        <div class="cta-actions">
+          <a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener" class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Aurora Free
+          </a>
+          <a href="../index.html#install" class="btn-ghost">
+            Read the Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <img src="../assets/logo_aurora_animated.svg" class="footer__logo" alt="Aurora">
+          <p class="footer__tagline">The open-source Swiss Army knife for animated web design. Color and motion, unleashed.
+          </p>
+        </div>
+        <div>
+          <p class="footer__col-title">Toolkit</p>
+          <ul class="footer__links">
+            <li><a href="../modules/text.html">Text Effects</a></li>
+            <li><a href="../index.html#install">Install</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="https://github.com/zmdy/aurora" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">Resources</p>
+          <ul class="footer__links">
+            <li><a href="../index.html#install">Documentation</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a></li>
+            <li><a href="https://github.com/zmdy/aurora/issues" target="_blank" rel="noopener">Report an Issue</a></li>
+            <li><a href="https://github.com/zmdy/aurora/blob/main/README.md#contributing" target="_blank"
+                rel="noopener">Contributing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Aurora. Open source, forever.</p>
+        <span class="footer__badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.645.35-1.085.636-1.335-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.698 1.028 1.59 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0 0 22 12c0-5.523-4.477-10-10-10z" />
+          </svg>
+          MIT · Made in Brazil
+        </span>
+      </div>
+    </div>
+  </footer>
+
+
+  <div class="snippet-overlay" id="snippet-overlay" role="dialog" aria-modal="true" aria-label="Copy animation snippet">
+    <div class="snippet-modal">
+      <div class="snippet-modal__header">
+        <div class="snippet-modal__title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          HTML + JS Snippet
+        </div>
+        <button class="snippet-close" id="snippet-close" aria-label="Close snippet modal">×</button>
+      </div>
+
+      <div class="snippet-modal__body">
+        <pre class="snippet-code" id="snippet-raw"></pre>
+      </div>
+
+      <div class="snippet-modal__footer">
+        <p class="snippet-info">Preview shows full readable HTML.<br>The button copies only the <strong
+            style="color:rgba(255,255,255,.55)">element + CDN tags + minified init script</strong> — ready to paste.</p>
+        <button class="btn-copy-snippet" id="btn-copy-final" aria-label="Copy lean snippet to clipboard">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          Copy Snippet
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ══════════════════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════════════════ -->
+  <script type="application/json" id="schema">{"primary":"shape","options":{"shape":{"type":"enum","default":"underline","values":["underline","circle","zigzag","strike","frame"],"label":"Shape","group":"Appearance"},"color":{"type":"color","default":"#ff7a2f","label":"Color","group":"Appearance"},"color2":{"type":"color","default":"#ff7a2f","label":"Second color","description":"Blended into the first along the stroke. Equal to Color by default for a flat line.","group":"Appearance"},"strokeWidth":{"type":"number","default":6,"min":1,"max":40,"unit":"px","label":"Stroke width","group":"Appearance"},"duration":{"type":"number","default":700,"min":50,"max":10000,"unit":"ms","label":"Duration","group":"Timing"},"easing":{"type":"enum","default":"ease-out","values":["ease-out","linear","ease-in-out"],"label":"Easing","description":"\"Ease out\" reads like a pen decelerating at the end of the stroke.","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Delay","group":"Timing"},"trigger":{"type":"enum","default":"scroll","values":["scroll","load","hover"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally so accents above the fold still draw in.","group":"Trigger","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Target element","description":"CSS selector, relative to the element, of the node to decorate. Empty uses the element itself; its existing content is never touched.","group":"Advanced"}}}</script>
+<script type="application/json" id="demo-config">{"css":"","revision":"6313-2658","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js","integrity":"sha384-KkzhElFooK1A0i5tfSF9DJbMd6K1A7irTX7rMgIDdzqYsjqNmdZCNJ4X97WFRLJz"}]}</script>
+<script src="../aurora.core.min.js?v=3"></script>
+<script src="../aurora.accent.min.js?v=3"></script>
+<script src="../assets/site.js?v=3"></script>
+</body>
+
+</html>

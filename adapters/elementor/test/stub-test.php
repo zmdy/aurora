@@ -61,6 +61,14 @@ namespace {
 	$ca=$rc->invoke($c,$con->settings,$con); echo json_encode($ca)."\n";
 	check(strpos($ca['data-aurora-children-options']??'','.elementor-widget')!==false,'children selector');
 
+	$ac=$mods['accent']??null; check($ac!==null,'accent module loaded');
+	$rac=new ReflectionMethod($ac,'get_render_attributes'); $rac->setAccessible(true);
+	$hac=new Elementor\Element_Base('heading',['aurora_accent_enable'=>'yes','aurora_accent_shape'=>'zigzag']);
+	$aa=$rac->invoke($ac,$hac->settings,$hac); echo json_encode($aa)."\n";
+	check(($aa['data-aurora-accent']??null)==='zigzag','accent primary attr: '.json_encode($aa));
+	check(!empty($GLOBALS['enq']['aurora-accent']),'accent script enqueued');
+	$aoff=$rac->invoke($ac,['aurora_accent_enable'=>''],$hac); check($aoff===[],'accent disabled renders nothing');
+
 	$w=new Aurora\Morph_Card_Widget();
 	$o=Aurora\Morph_Card_Widget::options_from_settings(['loop'=>'','states'=>[['template'=>'profile','username'=>'ana','likes'=>'','photo'=>['url'=>'a.jpg'],'duration_ms'=>2000]],'label_follow'=>'Seguir']);
 	echo json_encode($o)."\n";

@@ -43,6 +43,14 @@ fx.destroy();
 
 Page settings go in `window.AuroraConfig = { autoInit, observe, nonce, debug }`, defined before the scripts.
 
+Each module sets its target to `opacity:0` itself once it is ready to animate — but only once its script has run, so on a slow connection or a page with scripts in `<head>`, the text can flash at full opacity for a moment first. If that matters for a given page, hide the target with CSS up front and let the module reveal it:
+
+```html
+<style>[data-aurora-text]{opacity:0}</style>
+```
+
+Scope the selector to what you are actually animating (an attribute, a class, an id) and keep it in sync with it — a rule this broad only works because every element on the page that has `data-aurora-text` is guaranteed to get a module attached. If the script can fail to load or run (blocked by an ad blocker, `AuroraConfig.autoInit: false` with nothing else calling the module, a CDN outage), this leaves the text invisible instead of flashing, so pair it with a `<noscript>{[data-aurora-text]{opacity:1}}</noscript>` fallback, or skip it — a brief flash is usually the safer default.
+
 The website (`npm run build:site`) has a page per module with a live playground, a complete copy-paste HTML file, and the options table.
 
 ### Webflow

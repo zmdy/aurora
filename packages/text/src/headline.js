@@ -132,7 +132,7 @@ export function initHeadline(el, options, ctx) {
                 { transform: 'scaleX(1) rotate(-1deg)', opacity: 1, offset: 1 - 220 / duration },
                 { transform: 'scaleX(1) rotate(-1deg)', opacity: 0, offset: 1 }
             );
-            animate(marker, frames, 0, { duration: duration, easing: 'linear' }, options.headlineLoop ? function () { marker.style.opacity = '0'; } : undefined);
+            animate(marker, frames, 0, { duration: duration, easing: 'cubic-bezier(.16,1,.3,1)' }, options.headlineLoop ? function () { marker.style.opacity = '0'; } : undefined);
         } else if (options.animationStyle === 'highlighted') {
             paths.forEach(function (path, i) {
                 var delay = i * options.duration * .8;
@@ -149,7 +149,7 @@ export function initHeadline(el, options, ctx) {
                     { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: alpha, offset: 1 - 220 / duration },
                     { strokeDasharray: '100 100', strokeDashoffset: '0', opacity: 0, offset: 1 }
                 );
-                animate(path, frames, delay, { duration: duration, easing: 'linear' }, options.headlineLoop ? function () { path.style.opacity = '0'; } : undefined);
+                animate(path, frames, delay, { duration: duration, easing: 'cubic-bezier(.16,1,.3,1)' }, options.headlineLoop ? function () { path.style.opacity = '0'; } : undefined);
             });
         } else if (ENTRANCES[options.rotationEffect]) animate(wordNodes[index], ENTRANCES[options.rotationEffect]);
         else rotateLetters(wordNodes[index], words[index], options, animate);

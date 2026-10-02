@@ -4,7 +4,7 @@
  * so nothing here needs to be reversible.
  */
 
-var CHAR_STYLE = 'display:inline-block;will-change:transform,opacity;text-transform:none;';
+var CHAR_STYLE = 'display:inline-block;will-change:transform,opacity;text-transform:none;line-height:inherit;vertical-align:baseline;';
 
 function applyTransform(text, transform) {
     if (transform === 'capitalize') return text.replace(/\b\w/g, function (c) { return c.toUpperCase(); });
@@ -29,13 +29,13 @@ export function splitIntoChars(el) {
         transform = window.getComputedStyle(el).textTransform || 'none';
     } catch (error) { /* not in a browser */ }
 
-    var words = applyTransform(raw, transform).split(' ');
+    var words = applyTransform(raw, transform).replace(/\s+/g, ' ').trim().split(' ');
     var chars = [];
     el.textContent = '';
 
     words.forEach(function (word, index) {
         var wrap = document.createElement('span');
-        wrap.style.cssText = 'display:inline-block;white-space:nowrap;text-transform:none;';
+        wrap.style.cssText = 'display:inline-block;white-space:nowrap;text-transform:none;line-height:inherit;vertical-align:baseline;';
         wrap.setAttribute('aria-hidden', 'true');
 
         Array.from(word).forEach(function (char) {
@@ -50,7 +50,7 @@ export function splitIntoChars(el) {
 
         if (index < words.length - 1) {
             var space = document.createElement('span');
-            space.style.cssText = 'display:inline-block;text-transform:none;';
+            space.style.cssText = 'display:inline-block;text-transform:none;line-height:inherit;vertical-align:baseline;';
             space.textContent = ' ';
             el.appendChild(space);
         }
@@ -71,7 +71,7 @@ export function splitIntoWords(el) {
     return text.split(/\s+/).filter(Boolean).map(function (word, i, all) {
         var span = document.createElement('span');
         span.className = 'aurora-word';
-        span.style.cssText = 'display:inline-block;will-change:transform,opacity;';
+        span.style.cssText = 'display:inline-block;will-change:transform,opacity;line-height:inherit;vertical-align:baseline;';
         span.setAttribute('aria-hidden', 'true');
         span.textContent = word + (i < all.length - 1 ? ' ' : '');
         el.appendChild(span);
@@ -115,7 +115,7 @@ export function splitIntoLines(el) {
 
         var line = document.createElement('div');
         line.className = 'aurora-line';
-        line.style.cssText = 'display:inline-block;will-change:transform,opacity;';
+        line.style.cssText = 'display:inline-block;will-change:transform,opacity;line-height:inherit;vertical-align:baseline;';
         line.setAttribute('aria-hidden', 'true');
 
         rows[top].forEach(function (span) { line.appendChild(span); });

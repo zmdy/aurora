@@ -1,0 +1,15 @@
+{
+  "name": "@aurora/accent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aurora Accent: a non-destructive SVG underline/circle/zigzag/strike/frame drawn around existing markup, without touching its content.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "dependencies": {
+    "@aurora/core": "*"
+  }
+}

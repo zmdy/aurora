@@ -48,6 +48,18 @@ describe('splitText', () => {
         expect(el().querySelectorAll('.aurora-char')).toHaveLength(chars.length);
     });
 
+    it('collapses newlines and HTML indentation before splitting into chars', () => {
+        // Authored, indented markup (e.g. a <br>-formatted heading) puts
+        // newlines and leading whitespace into textContent — splitIntoChars
+        // must not turn that whitespace into its own sliced "word".
+        el().innerHTML = `Hello
+        brave
+        world`;
+        var chars = splitText(el(), 'chars');
+        chars.forEach((c) => expect(c.textContent.trim().length).toBeGreaterThan(0));
+        expect(chars.map((c) => c.textContent).join('')).toBe('Hellobraveworld');
+    });
+
     it('splits into words', () => {
         var words = splitText(el(), 'words');
         expect(words.map((w) => w.textContent.trim())).toEqual(['Hello', 'brave', 'world']);

@@ -1280,7 +1280,7 @@ var effect$z = {
   selfManaged: true,
   run: function(units, opts, textEl, fx) {
     var original = fx.original || textEl.textContent || "";
-    var accent = getComputedStyle(textEl).color || "#ffffff";
+    var accent2 = getComputedStyle(textEl).color || "#ffffff";
     textEl.innerHTML = "";
     textEl.style.opacity = "1";
     var wrap2 = document.createElement("span");
@@ -1288,7 +1288,7 @@ var effect$z = {
     var shadow = document.createElement("span");
     shadow.textContent = original;
     shadow.setAttribute("aria-hidden", "true");
-    shadow.style.cssText = "position:absolute;top:0;left:0;z-index:0;color:transparent;-webkit-text-stroke:1.5px " + accent + ";text-stroke:1.5px " + accent + ";opacity:.55;will-change:transform;";
+    shadow.style.cssText = "position:absolute;top:0;left:0;z-index:0;color:transparent;-webkit-text-stroke:1.5px " + accent2 + ";text-stroke:1.5px " + accent2 + ";opacity:.55;will-change:transform;";
     var main = document.createElement("span");
     main.textContent = original;
     main.style.cssText = "position:relative;z-index:1;";
@@ -2845,7 +2845,7 @@ var headlineOptions = {
   headlineAutoplay: { type: "boolean", default: true, label: "Autoplay headline", group: "Headline playback", when: { mode: "headline" } },
   pauseOnHover: { type: "boolean", default: true, label: "Pause on hover / focus", group: "Headline playback", when: { mode: "headline" } }
 };
-var schema$4 = {
+var schema$5 = {
   primary: "effect",
   options: {
     ...headlineOptions,
@@ -2989,11 +2989,11 @@ var schema$4 = {
     }
   }
 };
-Object.keys(schema$4.options).forEach(function(key2) {
+Object.keys(schema$5.options).forEach(function(key2) {
   if (key2 in headlineOptions || ["duration", "delay", "trigger", "threshold", "replay", "target"].indexOf(key2) >= 0) return;
-  schema$4.options[key2].when = Object.assign({}, schema$4.options[key2].when, { mode: "effects" });
+  schema$5.options[key2].when = Object.assign({}, schema$5.options[key2].when, { mode: "effects" });
 });
-var CHAR_STYLE = "display:inline-block;will-change:transform,opacity;text-transform:none;";
+var CHAR_STYLE = "display:inline-block;will-change:transform,opacity;text-transform:none;line-height:inherit;vertical-align:baseline;";
 function applyTransform(text2, transform) {
   if (transform === "capitalize") return text2.replace(/\b\w/g, function(c) {
     return c.toUpperCase();
@@ -3010,12 +3010,12 @@ function splitIntoChars(el) {
     transform = window.getComputedStyle(el).textTransform || "none";
   } catch (error) {
   }
-  var words = applyTransform(raw, transform).split(" ");
+  var words = applyTransform(raw, transform).replace(/\s+/g, " ").trim().split(" ");
   var chars = [];
   el.textContent = "";
   words.forEach(function(word, index) {
     var wrap2 = document.createElement("span");
-    wrap2.style.cssText = "display:inline-block;white-space:nowrap;text-transform:none;";
+    wrap2.style.cssText = "display:inline-block;white-space:nowrap;text-transform:none;line-height:inherit;vertical-align:baseline;";
     wrap2.setAttribute("aria-hidden", "true");
     Array.from(word).forEach(function(char) {
       var span2 = document.createElement("span");
@@ -3028,7 +3028,7 @@ function splitIntoChars(el) {
     el.appendChild(wrap2);
     if (index < words.length - 1) {
       var space = document.createElement("span");
-      space.style.cssText = "display:inline-block;text-transform:none;";
+      space.style.cssText = "display:inline-block;text-transform:none;line-height:inherit;vertical-align:baseline;";
       space.textContent = " ";
       el.appendChild(space);
     }
@@ -3042,7 +3042,7 @@ function splitIntoWords(el) {
   return text2.split(/\s+/).filter(Boolean).map(function(word, i, all) {
     var span2 = document.createElement("span");
     span2.className = "aurora-word";
-    span2.style.cssText = "display:inline-block;will-change:transform,opacity;";
+    span2.style.cssText = "display:inline-block;will-change:transform,opacity;line-height:inherit;vertical-align:baseline;";
     span2.setAttribute("aria-hidden", "true");
     span2.textContent = word + (i < all.length - 1 ? " " : "");
     el.appendChild(span2);
@@ -3080,7 +3080,7 @@ function splitIntoLines(el) {
     wrap2.style.cssText = "overflow:hidden;display:block;";
     var line = document.createElement("div");
     line.className = "aurora-line";
-    line.style.cssText = "display:inline-block;will-change:transform,opacity;";
+    line.style.cssText = "display:inline-block;will-change:transform,opacity;line-height:inherit;vertical-align:baseline;";
     line.setAttribute("aria-hidden", "true");
     rows[top2].forEach(function(span2) {
       line.appendChild(span2);
@@ -7603,9 +7603,9 @@ function rotateLetters(node, value, options, animate2) {
     }
   });
 }
-var nextId = 0;
-var NS = "http://www.w3.org/2000/svg";
-var SHAPES$1 = {
+var nextId$1 = 0;
+var NS$1 = "http://www.w3.org/2000/svg";
+var SHAPES$2 = {
   underline: ["M8 85 C112 79 258 80 391 84"],
   "double-underline": ["M8 82 C118 77 267 79 392 82", "M26 92 C135 88 260 88 376 90"],
   circle: ["M204 7 C89 2 5 19 6 49 C7 80 105 95 207 93 C322 91 395 76 394 47 C393 22 310 6 204 7"],
@@ -7679,8 +7679,8 @@ function initHeadline(el, options, ctx) {
   root.appendChild(visual);
   while (target.firstChild) target.removeChild(target.firstChild);
   target.appendChild(root);
-  function svgNode(tag, attributes) {
-    var node = document.createElementNS(NS, tag);
+  function svgNode2(tag, attributes) {
+    var node = document.createElementNS(NS$1, tag);
     Object.keys(attributes).forEach(function(key2) {
       node.setAttribute(key2, String(attributes[key2]));
     });
@@ -7694,15 +7694,15 @@ function initHeadline(el, options, ctx) {
     center2.appendChild(marker);
     wordNodes[0].textContent = words[0];
   } else if (options.animationStyle === "highlighted") {
-    var id = "aurora-headline-gradient-" + ++nextId;
-    var svg = svgNode("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", class: "aurora-headline__shape", "aria-hidden": "true", focusable: "false" });
-    var defs = svgNode("defs", {}), gradient2 = svgNode("linearGradient", { id, x1: "0%", y1: "0%", x2: "100%", y2: "60%" });
-    gradient2.appendChild(svgNode("stop", { offset: "0%", "stop-color": options.headlineColor }));
-    gradient2.appendChild(svgNode("stop", { offset: "100%", "stop-color": options.headlineColor2 }));
+    var id = "aurora-headline-gradient-" + ++nextId$1;
+    var svg = svgNode2("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", class: "aurora-headline__shape", "aria-hidden": "true", focusable: "false" });
+    var defs = svgNode2("defs", {}), gradient2 = svgNode2("linearGradient", { id, x1: "0%", y1: "0%", x2: "100%", y2: "60%" });
+    gradient2.appendChild(svgNode2("stop", { offset: "0%", "stop-color": options.headlineColor }));
+    gradient2.appendChild(svgNode2("stop", { offset: "100%", "stop-color": options.headlineColor2 }));
     defs.appendChild(gradient2);
     svg.appendChild(defs);
-    SHAPES$1[options.animationShape].forEach(function(d, i) {
-      var path = svgNode("path", { d, fill: "none", stroke: "url(#" + id + ")", "stroke-width": options.strokeWidth, "stroke-linecap": "round", "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke", pathLength: "100" });
+    SHAPES$2[options.animationShape].forEach(function(d, i) {
+      var path = svgNode2("path", { d, fill: "none", stroke: "url(#" + id + ")", "stroke-width": options.strokeWidth, "stroke-linecap": "round", "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke", pathLength: "100" });
       if (i) {
         path.setAttribute("stroke-width", String(options.strokeWidth * 0.7));
         path.setAttribute("opacity", ".65");
@@ -7769,7 +7769,7 @@ function initHeadline(el, options, ctx) {
         { transform: "scaleX(1) rotate(-1deg)", opacity: 1, offset: 1 - 220 / duration },
         { transform: "scaleX(1) rotate(-1deg)", opacity: 0, offset: 1 }
       );
-      animate2(marker, frames, 0, { duration, easing: "linear" }, options.headlineLoop ? function() {
+      animate2(marker, frames, 0, { duration, easing: "cubic-bezier(.16,1,.3,1)" }, options.headlineLoop ? function() {
         marker.style.opacity = "0";
       } : void 0);
     } else if (options.animationStyle === "highlighted") {
@@ -7788,7 +7788,7 @@ function initHeadline(el, options, ctx) {
           { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: alpha, offset: 1 - 220 / duration2 },
           { strokeDasharray: "100 100", strokeDashoffset: "0", opacity: 0, offset: 1 }
         );
-        animate2(path, frames2, delay, { duration: duration2, easing: "linear" }, options.headlineLoop ? function() {
+        animate2(path, frames2, delay, { duration: duration2, easing: "cubic-bezier(.16,1,.3,1)" }, options.headlineLoop ? function() {
           path.style.opacity = "0";
         } : void 0);
       });
@@ -7927,7 +7927,7 @@ function initHeadline(el, options, ctx) {
 }
 var text = defineModule({
   name: "text",
-  schema: schema$4,
+  schema: schema$5,
   init: function(el, options, ctx) {
     if (options.mode === "headline") return initHeadline(el, options, ctx);
     var effect2 = effects[options.effect];
@@ -8207,7 +8207,7 @@ function buildKeyframes(family, direction, distance) {
   if (!make) return [];
   return make(direction, distance);
 }
-var schema$3 = {
+var schema$4 = {
   primary: "animation",
   options: {
     animation: {
@@ -8547,7 +8547,7 @@ function mountHover(root, children2, options, ctx, instant) {
 }
 var children = defineModule({
   name: "children",
-  schema: schema$3,
+  schema: schema$4,
   init: function(el, options, ctx) {
     var root = options.root && el.querySelector(options.root) || el;
     var targets = resolveChildren(root, options);
@@ -8609,7 +8609,7 @@ var children = defineModule({
     };
   }
 });
-var schema$2 = {
+var schema$3 = {
   options: {
     dotColor: {
       type: "color",
@@ -8692,7 +8692,7 @@ var schema$2 = {
     }
   }
 };
-var css = [
+var css$1 = [
   ".aurora-cursor-dot,.aurora-cursor-ring{",
   "position:fixed;top:0;left:0;z-index:var(--aurora-cursor-z,9999);",
   "pointer-events:none;opacity:0;transition:opacity 200ms ease;will-change:transform;",
@@ -8931,9 +8931,9 @@ function mountZone(el, options) {
 }
 var cursor = defineModule({
   name: "cursor",
-  schema: schema$2,
+  schema: schema$3,
   init: function(el, options, ctx) {
-    ctx.style("cursor", css);
+    ctx.style("cursor", css$1);
     var zone = mountZone(el, options);
     return {
       update: function(next) {
@@ -9205,7 +9205,7 @@ function getFragmentShader(style) {
   }
 }
 var MESH_STYLES = ["paper", "liquid", "wave", "silk", "stripe", "aurora", "curtains"];
-var schema$1 = {
+var schema$2 = {
   primary: "type",
   options: {
     type: {
@@ -9555,7 +9555,7 @@ function paintText(textEl, trackEl, options, stops, painter, animated) {
   }
 }
 var SVG_NS = "http://www.w3.org/2000/svg";
-var SHAPES = "path, circle, rect, polygon, ellipse, line, polyline";
+var SHAPES$1 = "path, circle, rect, polygon, ellipse, line, polyline";
 var counter = 0;
 function paintIcon(glyph, trackEl, options, stops, painter, animated) {
   if (glyph.tagName.toLowerCase() === "svg") {
@@ -9613,7 +9613,7 @@ function paintSvg(svg, options, stops, painter, animated) {
     gradient2.remove();
   });
   var fill = "url(#" + id + ")";
-  Array.prototype.forEach.call(svg.querySelectorAll(SHAPES), function(shape) {
+  Array.prototype.forEach.call(svg.querySelectorAll(SHAPES$1), function(shape) {
     painter.style(shape, "fill", fill);
   });
   painter.style(svg, "fill", fill);
@@ -9816,7 +9816,7 @@ function mountMesh(el, options, stops, animated) {
 }
 var gradient = defineModule({
   name: "gradient",
-  schema: schema$1,
+  schema: schema$2,
   init: function(el, initial, ctx) {
     ctx.style("gradient", STYLESHEET$1);
     var options = initial;
@@ -10066,7 +10066,7 @@ function contentFor(state2, labels) {
     }
   }
 }
-var schema = {
+var schema$1 = {
   options: {
     states: {
       type: "json",
@@ -10396,7 +10396,7 @@ function buildDom(el) {
 }
 var morphCard = defineModule({
   name: "morph-card",
-  schema,
+  schema: schema$1,
   init: function(el, options, ctx) {
     var states = Array.isArray(options.states) ? options.states.filter(function(s) {
       return s && typeof s === "object";
@@ -10478,15 +10478,208 @@ var morphCard = defineModule({
     };
   }
 });
+var SHAPES = {
+  underline: function(w, h) {
+    var y = h * 0.86, dip = h * 0.07;
+    return "M" + w * 0.02 + " " + y + " C" + w * 0.28 + " " + (y - dip) + " " + w * 0.68 + " " + (y - dip) + " " + w * 0.98 + " " + y;
+  },
+  circle: function(w, h) {
+    var top2 = h * 0.06, bottom = h * 0.96, midL = w * -0.03;
+    return "M" + w * 0.06 + " " + h * 0.5 + " C" + w * 0.04 + " " + top2 + " " + w * 0.96 + " " + top2 + " " + w * 0.97 + " " + h * 0.5 + " C" + w * 0.98 + " " + bottom + " " + w * 0.05 + " " + bottom + " " + (midL < 0 ? w * 0.03 : w * 0.03) + " " + h * 0.5;
+  },
+  zigzag: function(w, h) {
+    var top2 = h * 0.68, bottom = h * 0.88, steps = Math.max(4, Math.round(w / 32)), seg = w / steps;
+    var d = "M0 " + bottom;
+    for (var i = 1; i <= steps; i++) d += " L" + seg * i + " " + (i % 2 ? top2 : bottom);
+    return d;
+  },
+  strike: function(w, h) {
+    var y = h * 0.5;
+    return "M" + w * 0.02 + " " + y + " C" + w * 0.35 + " " + (y - h * 0.03) + " " + w * 0.65 + " " + (y - h * 0.03) + " " + w * 0.98 + " " + y;
+  },
+  frame: function(w, h) {
+    var r = Math.min(w, h) * 0.18;
+    return "M" + r + " 2 L2 2 L2 " + r + " M" + (w - r) + " 2 L" + (w - 2) + " 2 L" + (w - 2) + " " + r + " M" + (w - 2) + " " + (h - r) + " L" + (w - 2) + " " + (h - 2) + " L" + (w - r) + " " + (h - 2) + " M" + r + " " + (h - 2) + " L2 " + (h - 2) + " L2 " + (h - r);
+  }
+};
+var SHAPE_NAMES = Object.keys(SHAPES);
+var schema = {
+  primary: "shape",
+  options: {
+    shape: {
+      type: "enum",
+      default: "underline",
+      values: SHAPE_NAMES,
+      label: "Shape",
+      group: "Appearance"
+    },
+    color: { type: "color", default: "#ff7a2f", label: "Color", group: "Appearance" },
+    color2: {
+      type: "color",
+      default: "#ff7a2f",
+      label: "Second color",
+      description: "Blended into the first along the stroke. Equal to Color by default for a flat line.",
+      group: "Appearance"
+    },
+    strokeWidth: { type: "number", default: 6, min: 1, max: 40, unit: "px", label: "Stroke width", group: "Appearance" },
+    duration: { type: "number", default: 700, min: 50, max: 1e4, unit: "ms", label: "Duration", group: "Timing" },
+    easing: {
+      type: "enum",
+      default: "ease-out",
+      values: ["ease-out", "linear", "ease-in-out"],
+      label: "Easing",
+      description: '"Ease out" reads like a pen decelerating at the end of the stroke.',
+      group: "Timing"
+    },
+    delay: { type: "number", default: 0, min: 0, max: 1e4, unit: "ms", label: "Delay", group: "Timing" },
+    trigger: {
+      type: "enum",
+      default: "scroll",
+      values: ["scroll", "load", "hover"],
+      label: "Trigger",
+      group: "Trigger"
+    },
+    threshold: {
+      type: "number",
+      default: 0.2,
+      min: 0,
+      max: 1,
+      step: 0.05,
+      label: "Visible ratio",
+      description: "Capped at 5% internally so accents above the fold still draw in.",
+      group: "Trigger",
+      when: { trigger: "scroll" }
+    },
+    target: {
+      type: "selector",
+      default: "",
+      label: "Target element",
+      description: "CSS selector, relative to the element, of the node to decorate. Empty uses the element itself; its existing content is never touched.",
+      group: "Advanced"
+    }
+  }
+};
+var css = `
+.aurora-accent{position:absolute;inset:0;overflow:visible;pointer-events:none;z-index:0}
+.aurora-accent path{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:1 1;stroke-dashoffset:1}
+.aurora-accent.is-visible path{animation-name:aurora-accent-draw;animation-duration:var(--aurora-accent-duration,700ms);animation-timing-function:var(--aurora-accent-easing,cubic-bezier(.16,1,.3,1));animation-delay:var(--aurora-accent-delay,0ms);animation-fill-mode:forwards}
+.aurora-accent.is-drawn path{stroke-dashoffset:0}
+@keyframes aurora-accent-draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.aurora-accent path{stroke-dashoffset:0;animation:none}}
+`;
+var NS = "http://www.w3.org/2000/svg";
+var nextId = 0;
+var EASINGS = { "ease-out": "cubic-bezier(.16,1,.3,1)", linear: "linear", "ease-in-out": "cubic-bezier(.65,0,.35,1)" };
+function svgNode(tag, attrs) {
+  var node = document.createElementNS(NS, tag);
+  Object.keys(attrs).forEach(function(key2) {
+    node.setAttribute(key2, String(attrs[key2]));
+  });
+  return node;
+}
+function mountAccent(el, options, ctx) {
+  var target = options.target ? el.querySelector(options.target) || el : el;
+  var ownsPosition = false;
+  var svg = null, path = null, drawn = false, destroyed = false, resizeTimer = null;
+  function measure() {
+    var rect = target.getBoundingClientRect();
+    return { w: Math.max(1, Math.round(rect.width)), h: Math.max(1, Math.round(rect.height)) };
+  }
+  function build() {
+    var size = measure();
+    var id = "aurora-accent-gradient-" + ++nextId;
+    var next = svgNode("svg", { viewBox: "0 0 " + size.w + " " + size.h, class: "aurora-accent", "aria-hidden": "true", focusable: "false" });
+    var defs = svgNode("defs", {});
+    var gradient2 = svgNode("linearGradient", { id, x1: "0%", y1: "0%", x2: "100%", y2: "60%" });
+    gradient2.appendChild(svgNode("stop", { offset: "0%", "stop-color": options.color }));
+    gradient2.appendChild(svgNode("stop", { offset: "100%", "stop-color": options.color2 }));
+    defs.appendChild(gradient2);
+    next.appendChild(defs);
+    var shapeFn = SHAPES[options.shape] || SHAPES.underline;
+    path = svgNode("path", { d: shapeFn(size.w, size.h), stroke: "url(#" + id + ")", "stroke-width": options.strokeWidth, pathLength: "1" });
+    next.appendChild(path);
+    next.style.setProperty("--aurora-accent-duration", options.duration + "ms");
+    next.style.setProperty("--aurora-accent-delay", options.delay + "ms");
+    next.style.setProperty("--aurora-accent-easing", EASINGS[options.easing] || EASINGS["ease-out"]);
+    if (drawn) next.classList.add("is-drawn");
+    if (svg && svg.parentNode) svg.parentNode.replaceChild(next, svg);
+    else target.appendChild(next);
+    svg = next;
+  }
+  function draw() {
+    if (destroyed || drawn) return;
+    drawn = true;
+    if (ctx.reducedMotion) {
+      svg.classList.add("is-drawn");
+      return;
+    }
+    void svg.getBoundingClientRect();
+    svg.classList.add("is-visible");
+  }
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (!destroyed) build();
+    }, 120);
+  }
+  ctx.style("accent", css);
+  var computedPosition = "static";
+  try {
+    computedPosition = window.getComputedStyle(target).position || "static";
+  } catch (error) {
+  }
+  if (computedPosition === "static") {
+    target.style.position = "relative";
+    ownsPosition = true;
+  }
+  build();
+  if (typeof ResizeObserver !== "undefined") {
+    var observer = new ResizeObserver(onResize);
+    observer.observe(target);
+    ctx.onDestroy(function() {
+      observer.disconnect();
+      clearTimeout(resizeTimer);
+    });
+  }
+  if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === "function") {
+    document.fonts.ready.then(function() {
+      if (!destroyed) build();
+    });
+  }
+  if (options.trigger === "load") draw();
+  else if (options.trigger === "hover") ctx.on(el, "pointerenter", draw);
+  else ctx.observe(el, { threshold: Math.min(options.threshold, 0.05), once: true, onEnter: draw });
+  ctx.onDestroy(function() {
+    destroyed = true;
+    if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
+    if (ownsPosition) target.style.position = "";
+  });
+  return {
+    update: function(next) {
+      options = next;
+      drawn = false;
+      build();
+      if (options.trigger === "load") draw();
+    }
+  };
+}
+var accent = defineModule({
+  name: "accent",
+  schema,
+  init: function(el, options, ctx) {
+    return mountAccent(el, options, ctx);
+  }
+});
 function createFullAurora(config) {
   var aurora = createAurora(config);
-  [text, children, cursor, gradient, morphCard].forEach(function(definition) {
+  [text, children, cursor, gradient, morphCard, accent].forEach(function(definition) {
     aurora.register(definition);
   });
   return aurora;
 }
 export {
   VERSION,
+  accent,
   children,
   createAurora,
   createFullAurora,

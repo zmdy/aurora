@@ -68,6 +68,13 @@ final class Module_Manager {
 				'elements'    => [ 'section', 'column', 'container', 'image', 'icon-box', 'button' ],
 				'priority'    => 40,
 			],
+			'accent'   => [
+				'label'       => esc_html__( 'Accent', 'aurora-for-elementor' ),
+				'description' => esc_html__( 'A hand-drawn-feeling SVG underline, circle, zigzag, strike or frame drawn around the element, without touching its existing content.', 'aurora-for-elementor' ),
+				'class'       => Accent_Module::class,
+				'elements'    => [ 'heading', 'text-editor', 'button', 'icon-box', 'image-box', 'testimonial', 'alert' ],
+				'priority'    => 50,
+			],
 		];
 	}
 
