@@ -2994,6 +2994,13 @@ Object.keys(schema$5.options).forEach(function(key2) {
   schema$5.options[key2].when = Object.assign({}, schema$5.options[key2].when, { mode: "effects" });
 });
 var CHAR_STYLE = "display:inline-block;will-change:transform,opacity;text-transform:none;line-height:inherit;vertical-align:baseline;";
+function textWithBreaks(el) {
+  var clone = el.cloneNode(true);
+  Array.prototype.forEach.call(clone.querySelectorAll("br"), function(br) {
+    br.replaceWith(" ");
+  });
+  return clone.textContent;
+}
 function applyTransform(text2, transform) {
   if (transform === "capitalize") return text2.replace(/\b\w/g, function(c) {
     return c.toUpperCase();
@@ -3003,7 +3010,7 @@ function applyTransform(text2, transform) {
   return text2;
 }
 function splitIntoChars(el) {
-  var raw = el.textContent;
+  var raw = textWithBreaks(el);
   el.setAttribute("aria-label", raw);
   var transform = "none";
   try {
@@ -3036,7 +3043,7 @@ function splitIntoChars(el) {
   return chars;
 }
 function splitIntoWords(el) {
-  var text2 = el.textContent;
+  var text2 = textWithBreaks(el);
   el.setAttribute("aria-label", text2);
   el.textContent = "";
   return text2.split(/\s+/).filter(Boolean).map(function(word, i, all) {
@@ -3050,7 +3057,7 @@ function splitIntoWords(el) {
   });
 }
 function splitIntoLines(el) {
-  var text2 = el.textContent;
+  var text2 = textWithBreaks(el);
   el.setAttribute("aria-label", text2);
   el.textContent = "";
   var spans = text2.split(/\s+/).filter(Boolean).map(function(word, i, all) {
@@ -7939,7 +7946,7 @@ var text = defineModule({
     var pristineHTML = textEl.innerHTML;
     var pristineStyle = textEl.getAttribute("style");
     var pristineLabel = textEl.getAttribute("aria-label");
-    var original = textEl.textContent;
+    var original = textWithBreaks(textEl);
     var fx = null;
     var units = [];
     var played = false;

@@ -6,6 +6,26 @@
 
 var CHAR_STYLE = 'display:inline-block;will-change:transform,opacity;text-transform:none;line-height:inherit;vertical-align:baseline;';
 
+/**
+ * Like `el.textContent`, but treats `<br>` as a word boundary.
+ *
+ * `textContent` concatenates text nodes with nothing in between, so a `<br>`
+ * (which has no text node of its own) silently vanishes: "um<br>dois" reads
+ * back as "umdois", gluing the words it was meant to separate. Other inline
+ * tags (`<strong>`, `<span>`...) are left alone on purpose -- unlike `<br>`
+ * they carry no inherent line break, so inserting a synthetic space there
+ * would wrongly split text deliberately styled mid-word (e.g.
+ * "Im<strong>port</strong>ant") and would stop matching how the same
+ * markup renders with JavaScript disabled.
+ */
+export function textWithBreaks(el) {
+    var clone = el.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('br'), function (br) {
+        br.replaceWith(' ');
+    });
+    return clone.textContent;
+}
+
 function applyTransform(text, transform) {
     if (transform === 'capitalize') return text.replace(/\b\w/g, function (c) { return c.toUpperCase(); });
     if (transform === 'uppercase') return text.toUpperCase();
@@ -21,7 +41,7 @@ function applyTransform(text, transform) {
  * as a word start and be upper-cased.
  */
 export function splitIntoChars(el) {
-    var raw = el.textContent;
+    var raw = textWithBreaks(el);
     el.setAttribute('aria-label', raw);
 
     var transform = 'none';
@@ -64,7 +84,7 @@ export function splitIntoChars(el) {
  * cannot collapse it once a transform is applied to the span.
  */
 export function splitIntoWords(el) {
-    var text = el.textContent;
+    var text = textWithBreaks(el);
     el.setAttribute('aria-label', text);
     el.textContent = '';
 
@@ -83,7 +103,7 @@ export function splitIntoWords(el) {
  * Splits into lines by measuring where the words wrap.
  */
 export function splitIntoLines(el) {
-    var text = el.textContent;
+    var text = textWithBreaks(el);
     el.setAttribute('aria-label', text);
     el.textContent = '';
 

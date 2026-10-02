@@ -1,7 +1,7 @@
 import { defineModule } from '@aurora/core';
 import { schema } from './schema.js';
 import { effects, EFFECT_IDS } from './effects/index.js';
-import { splitText } from './split.js';
+import { splitText, textWithBreaks } from './split.js';
 import { createFx } from './fx.js';
 import { initHeadline } from './headline.js';
 
@@ -31,7 +31,11 @@ export var text = defineModule({
         var pristineHTML = textEl.innerHTML;
         var pristineStyle = textEl.getAttribute('style');
         var pristineLabel = textEl.getAttribute('aria-label');
-        var original = textEl.textContent;
+        // textWithBreaks, not textContent: a bare <br> contributes no
+        // character to textContent, so "um<br>dois" would otherwise read back
+        // as "umdois" for every self-managed effect that falls back to
+        // fx.original (cinema-title, gradient-flow-text, mesh-text, ...).
+        var original = textWithBreaks(textEl);
 
         var fx = null;
         var units = [];
