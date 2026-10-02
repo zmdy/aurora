@@ -163,10 +163,10 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;h2 data-aurora-accent=&quot;underline&quot; data-aurora-accent-trigger=&quot;load&quot;&gt;Ship &lt;em&gt;beautiful&lt;/em&gt; motion.&lt;/h2&gt;
 
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
-        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js&quot;
-        integrity=&quot;sha384-KkzhElFooK1A0i5tfSF9DJbMd6K1A7irTX7rMgIDdzqYsjqNmdZCNJ4X97WFRLJz&quot;
+        integrity=&quot;sha384-SdaFmQaAsCTBM3LQPIosMDMH0FqBoyEohUrYWG2xAtECacNcFMJa1f09/vIGEz1K&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -288,7 +288,7 @@ fx.destroy();          // removes only the accent svg it added</code></pre></div
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
   <script type="application/json" id="schema">{"primary":"shape","options":{"shape":{"type":"enum","default":"underline","values":["underline","circle","zigzag","strike","frame"],"label":"Shape","group":"Appearance"},"color":{"type":"color","default":"#ff7a2f","label":"Color","group":"Appearance"},"color2":{"type":"color","default":"#ff7a2f","label":"Second color","description":"Blended into the first along the stroke. Equal to Color by default for a flat line.","group":"Appearance"},"strokeWidth":{"type":"number","default":6,"min":1,"max":40,"unit":"px","label":"Stroke width","group":"Appearance"},"duration":{"type":"number","default":700,"min":50,"max":10000,"unit":"ms","label":"Duration","group":"Timing"},"easing":{"type":"enum","default":"ease-out","values":["ease-out","linear","ease-in-out"],"label":"Easing","description":"\"Ease out\" reads like a pen decelerating at the end of the stroke.","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Delay","group":"Timing"},"trigger":{"type":"enum","default":"scroll","values":["scroll","load","hover"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally so accents above the fold still draw in.","group":"Trigger","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Target element","description":"CSS selector, relative to the element, of the node to decorate. Empty uses the element itself; its existing content is never touched.","group":"Advanced"}}}</script>
-<script type="application/json" id="demo-config">{"css":"","revision":"6313-2658","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js","integrity":"sha384-KkzhElFooK1A0i5tfSF9DJbMd6K1A7irTX7rMgIDdzqYsjqNmdZCNJ4X97WFRLJz"}]}</script>
+<script type="application/json" id="demo-config">{"css":"","revision":"6267-2626","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js","integrity":"sha384-SdaFmQaAsCTBM3LQPIosMDMH0FqBoyEohUrYWG2xAtECacNcFMJa1f09/vIGEz1K"}]}</script>
 <script src="../aurora.core.min.js?v=3"></script>
 <script src="../aurora.accent.min.js?v=3"></script>
 <script src="../assets/site.js?v=3"></script>

@@ -11,6 +11,12 @@
  * runtime script exposes, so the core is not duplicated in each of them.
  */
 
+// No .map files are ever published alongside these bundles (tools/pack-elementor.mjs
+// and tools/build-site.mjs both filter them out, and dist/ itself is gitignored), so
+// sourcemaps stay off here too -- otherwise every published aurora.*.min.js carries a
+// "//# sourceMappingURL=...map" comment that 404s in the browser of anyone who
+// vendors these files (e.g. a plain script-tag integration), with nothing to disable it.
+
 import { build } from 'vite';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -42,7 +48,7 @@ async function buildIife(target) {
         build: {
             outDir: dist,
             emptyOutDir: false,
-            sourcemap: true,
+            sourcemap: false,
             minify: 'esbuild',
             target: 'es2018',
             lib: { entry: target.entry, name: target.name, formats: ['iife'], fileName: () => target.file },
@@ -65,7 +71,7 @@ async function buildEsm() {
         build: {
             outDir: dist,
             emptyOutDir: false,
-            sourcemap: true,
+            sourcemap: false,
             minify: false,
             target: 'es2018',
             lib: { entry: src('index.js'), formats: ['es'], fileName: () => 'aurora.esm.js' },

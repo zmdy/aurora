@@ -149,7 +149,7 @@
      ═══════════════════════════════════════════════════════════════════ -->
   
 
-  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/cursor.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 2.7 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/cursor.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 2.6 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -169,10 +169,10 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;/section&gt;
 
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
-        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.cursor.min.js&quot;
-        integrity=&quot;sha384-Ka9zBVV5ojm16QM/qIsTBBLVqH1w/TwIhggfwsD4fOVSEO1agS1Bna/eAbSPTzZN&quot;
+        integrity=&quot;sha384-LTCwjaSjVn2P3iyAb61NC+FBewbFAR1/Ywv+5pqPvO1MJzTcHZT72vzRDoXHbiYK&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -293,7 +293,7 @@ fx.destroy();</code></pre></div></div></section>
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
   <script type="application/json" id="schema">{"options":{"dotColor":{"type":"color","default":"#ff7a2f","label":"Dot color","group":"Appearance"},"ringColor":{"type":"color","default":"#7c6cff","label":"Ring color","group":"Appearance"},"dotSize":{"type":"number","default":8,"min":2,"max":64,"unit":"px","label":"Dot size","group":"Appearance"},"ringSize":{"type":"number","default":24,"min":4,"max":200,"unit":"px","label":"Ring size","group":"Appearance"},"trailDelay":{"type":"number","default":150,"min":0,"max":1000,"unit":"ms","label":"Ring trail delay","description":"Approximate time the ring takes to catch up with the dot. 0 makes it follow instantly.","group":"Motion"},"interactiveSelector":{"type":"selector","default":"a, button, .cursor-pointer","label":"Interactive elements","description":"CSS selector for elements that shrink the dot and scale the ring on hover.","group":"Hover states"},"interactiveScale":{"type":"number","default":1.5,"min":0.5,"max":5,"step":0.01,"label":"Interactive ring scale","group":"Hover states"},"imageSelector":{"type":"selector","default":"img, .zoom-target","label":"Image elements","description":"CSS selector for elements that grow the ring and tint it with the dot color on hover.","group":"Hover states"},"imageScale":{"type":"number","default":2.33,"min":0.5,"max":5,"step":0.01,"label":"Image ring scale","group":"Hover states"},"hideNative":{"type":"boolean","default":false,"label":"Hide the native cursor","description":"Hides the system cursor inside the zone (except over form fields). Off by default for accessibility.","group":"Accessibility"}}}</script>
-<script type="application/json" id="demo-config">{"css":".demo-box { width: 100%; min-height: 200px; display: grid; place-items: center; text-align: center; padding: 28px; border-radius: 12px; background: #1b1b29; color: #fff; }\n.demo-box a { color: #ff7a2f; }","revision":"7377-2719","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.cursor.min.js","integrity":"sha384-Ka9zBVV5ojm16QM/qIsTBBLVqH1w/TwIhggfwsD4fOVSEO1agS1Bna/eAbSPTzZN"}]}</script>
+<script type="application/json" id="demo-config">{"css":".demo-box { width: 100%; min-height: 200px; display: grid; place-items: center; text-align: center; padding: 28px; border-radius: 12px; background: #1b1b29; color: #fff; }\n.demo-box a { color: #ff7a2f; }","revision":"7331-2686","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.cursor.min.js","integrity":"sha384-LTCwjaSjVn2P3iyAb61NC+FBewbFAR1/Ywv+5pqPvO1MJzTcHZT72vzRDoXHbiYK"}]}</script>
 <script src="../aurora.core.min.js?v=3"></script>
 <script src="../aurora.cursor.min.js?v=3"></script>
 <script src="../assets/site.js?v=3"></script>

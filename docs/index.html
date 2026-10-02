@@ -2948,15 +2948,15 @@
   <!-- INSTALLATION:START -->
 <section id="install" class="module-documentation installation-section section-gap-lg" aria-labelledby="install-title"><div class="container"><div class="section-header"><div class="eyebrow">Get started</div><h2 id="install-title" class="display-2">Install Aurora</h2><p>Aurora is plain JavaScript. Pick the setup that fits your site.</p></div></div>
 <section class="block"><div class="wrap"><h3>Standalone</h3><p class="sub">Paste the scripts before <code>&lt;/body&gt;</code>. The core must come first; modules can follow in any order.</p><h4>Only the modules you use</h4><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
-        integrity=&quot;sha384-/KWw2EHGQJKduEEYQl03x2DHIL61ZvlQuAffo/x4KSTbJrnW8aWNaLhW9Eh2IU8w&quot;
+        integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.text.min.js&quot;
-        integrity=&quot;sha384-P5lkZJtZ1ZTNKh5UP7ej3ORXcy40VlfYpFv7ZxexaLFez9okN0y3kflE+5kBHm+w&quot;
+        integrity=&quot;sha384-LC817O2+ozKj0h5xhZck5ivZRqPp/kcn1KSP20kOELtKLEf2SK2/wso/MKcnmjmw&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.gradient.min.js&quot;
-        integrity=&quot;sha384-LgENekgTRviccsDYVKcaA3rleugln8EIaHOLQ0nOgY89d44HJJBdGTd+dY+bS59T&quot;
+        integrity=&quot;sha384-mXLAM+jFcZRWB+wr0NWvr6F5nx0G7VlOlYqJXCUeqQw+Gt7uEMf709/m5gkT3ShF&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre></div><h4>Everything in one script (64.2 KB gzipped)</h4><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.min.js&quot;
-        integrity=&quot;sha384-xzYpbapFjML8z4fc05I3VNBziES11/8UOuVGDrgF9KmCrnW1vN95tx7TEfBBWHtl&quot;
+        integrity=&quot;sha384-jtPKaRBvt6MKn7pV2b5aaVTu7Z7I+5EHBeH1vuNZVEgjodauWJFzup7qbkj06CDn&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre></div><p>Then mark elements with attributes:</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;h2 data-aurora-text=&quot;slide-in&quot;&gt;Hello&lt;/h2&gt;
 &lt;div data-aurora-gradient=&quot;linear&quot; data-aurora-gradient-animation=&quot;flow&quot;&gt;...&lt;/div&gt;</code></pre></div><div class="note">The CDN links point to the tag <code>v1.0.0</code> of the repository. You can also download the files from the <code>dist/</code> folder of a release and host them yourself: they have no other dependencies.</div></div></section>
 <section class="block"><div class="wrap"><h3>Configuration</h3><p class="sub">Define <code>window.AuroraConfig</code> before the scripts.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;script&gt;
