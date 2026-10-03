@@ -121,9 +121,20 @@ var MODULES = {
         stage: '',
         replay: false,
     },
+    accent: {
+        title: 'Accent',
+        summary: 'A hand-drawn-feeling SVG underline, circle, zigzag, strike or frame around existing markup.',
+        lead: 'Draws an SVG accent around a target without touching its content \u2014 any markup already inside (a nested span, an icon, a manual highlight) survives untouched.',
+        markup: function (id) {
+            return '<h2' + id + ' data-aurora-accent="underline" data-aurora-accent-trigger="load">Ship <em>beautiful</em> motion.</h2>';
+        },
+        css: '',
+        stage: '',
+        replay: true,
+    },
 };
 
-var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card'];
+var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card', 'accent'];
 
 // ── Standalone documents ────────────────────────────────────────────────
 
@@ -165,6 +176,7 @@ var NAV = [
     ['modules/gradient.html', 'Gradient'],
     ['modules/cursor.html', 'Cursor'],
     ['modules/morph-card.html', 'Morph Card'],
+    ['modules/accent.html', 'Accent'],
     ['index.html#install', 'Install'],
     ['webflow.html', 'Webflow'],
     ['elementor.html', 'Elementor'],
@@ -245,6 +257,7 @@ var API_SNIPPETS = {
     gradient: "var fx = Aurora.gradient(document.querySelector('.hero'), {\n  type: 'radial',\n  stops: '#7c6cff;#ff7a2f;#2af598',\n  followMouse: true\n});\nfx.destroy();          // removes every style it added",
     cursor: "var fx = Aurora.cursor(document.querySelector('.area'), { dotColor: '#ff7a2f', hideNative: false });\nfx.destroy();",
     'morph-card': "var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });\nfx.api.next();         // go to the next state\nfx.api.goTo(2);        // jump to a state\nfx.destroy();",
+    accent: "var fx = Aurora.accent(document.querySelector('h2'), { shape: 'circle', color: '#ff7a2f', trigger: 'load' });\nfx.update({ shape: 'zigzag' }); // change options, including shape\nfx.destroy();          // removes only the accent svg it added",
 };
 
 function modulePage(name) {
@@ -413,4 +426,4 @@ ORDER.forEach(function (name) {
     write('examples/' + name + '.html', standalone(name, 'local', false));
 });
 
-console.log('Site built in docs/ (home installation section, 5 module pages, 5 examples and 2 adapter guides).');
+console.log('Site built in docs/ (home installation section, ' + ORDER.length + ' module pages, ' + ORDER.length + ' examples and 2 adapter guides).');

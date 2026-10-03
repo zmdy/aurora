@@ -28,7 +28,8 @@
         children: ['animation', 'direction', 'distance', 'duration', 'stagger', 'delay', 'hover', 'hoverPreset', 'hoverDuration', 'proximity', 'proximityIntensity'],
         gradient: ['type', 'stops', 'angle', 'animation', 'speed', 'meshStyle', 'distortion', 'swirl', 'scale', 'grain', 'grainIntensity', 'followMouse', 'spotlightRadius', 'liquidCursor', 'cursorRadius'],
         cursor: ['dotColor', 'ringColor', 'dotSize', 'ringSize', 'trailDelay', 'interactiveScale', 'imageScale', 'hideNative'],
-        'morph-card': ['captionEffect', 'initialDelay', 'autoplay', 'loop', 'float']
+        'morph-card': ['captionEffect', 'initialDelay', 'autoplay', 'loop', 'float'],
+        accent: ['shape', 'color', 'color2', 'strokeWidth', 'duration', 'easing', 'trigger']
     }[name];
     var hidden = ['selector', 'root', 'states', 'labels'];
     var copyButton = document.getElementById('btn-snippet-2');

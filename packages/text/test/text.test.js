@@ -48,6 +48,18 @@ describe('splitText', () => {
         expect(el().querySelectorAll('.aurora-char')).toHaveLength(chars.length);
     });
 
+    it('collapses newlines and HTML indentation before splitting into chars', () => {
+        // Authored, indented markup (e.g. a <br>-formatted heading) puts
+        // newlines and leading whitespace into textContent — splitIntoChars
+        // must not turn that whitespace into its own sliced "word".
+        el().innerHTML = `Hello
+        brave
+        world`;
+        var chars = splitText(el(), 'chars');
+        chars.forEach((c) => expect(c.textContent.trim().length).toBeGreaterThan(0));
+        expect(chars.map((c) => c.textContent).join('')).toBe('Hellobraveworld');
+    });
+
     it('splits into words', () => {
         var words = splitText(el(), 'words');
         expect(words.map((w) => w.textContent.trim())).toEqual(['Hello', 'brave', 'world']);
@@ -56,6 +68,32 @@ describe('splitText', () => {
     it('splits into lines (jsdom has no layout, so everything is one line)', () => {
         var lines = splitText(el(), 'lines');
         expect(lines).toHaveLength(1);
+    });
+
+    it('treats <br> as a word boundary instead of gluing the surrounding words', () => {
+        // textContent drops <br> entirely (it has no text node of its own), so
+        // "um<br>dois" used to read back as "umdois" -- see the bug report this
+        // regression-tests: chars and aria-label both have to keep the words apart.
+        el().innerHTML = 'Solicite um<br>atendimento<br>personalizado';
+        var chars = splitText(el(), 'chars');
+        expect(chars.map((c) => c.textContent).join('')).toBe('Solicite' + 'um' + 'atendimento' + 'personalizado');
+        expect(el().getAttribute('aria-label')).toBe('Solicite um atendimento personalizado');
+    });
+
+    it('collapses consecutive <br><br> into a single word boundary', () => {
+        el().innerHTML = 'T\u00edtulo<br><br>Subt\u00edtulo';
+        var words = splitText(el(), 'words');
+        expect(words.map((w) => w.textContent.trim())).toEqual(['T\u00edtulo', 'Subt\u00edtulo']);
+    });
+
+    it('does not insert a space at other inline tag boundaries, matching how the markup renders with JS disabled', () => {
+        // Unlike <br>, a <strong>/<span>/... boundary carries no inherent line
+        // break: with no space in the source, the browser renders no gap either.
+        // Treating every tag boundary as a word break would wrongly split text
+        // deliberately styled mid-word, e.g. "Im<strong>port</strong>ant".
+        el().innerHTML = 'Im<strong>port</strong>ant';
+        var words = splitText(el(), 'words');
+        expect(words.map((w) => w.textContent.trim())).toEqual(['Important']);
     });
 });
 
@@ -86,6 +124,23 @@ describe('text module', () => {
         effects['slide-in'].run = run;
         return { run: run, restore: function () { effects['slide-in'].run = original; } };
     }
+
+    it('passes a <br>-aware original to self-managed effects, not just to split effects', () => {
+        // cinema-title is selfManaged: it skips splitText entirely and reads
+        // fx.original directly. That capture used to read el.textContent too,
+        // so it had the exact same <br>-swallowing bug as splitText. Spying on
+        // .run (like withFakeEffect does for 'slide-in') checks the value the
+        // effect actually receives without invoking real Anime.js, which the
+        // real cinema-title.run would otherwise kick off here.
+        el().innerHTML = 'Solicite um<br>atendimento';
+        var original = effects['cinema-title'].run;
+        var captured;
+        effects['cinema-title'].run = function (units, opts, textEl, fx) { captured = fx.original; };
+        var instance = aurora.text(el(), { trigger: 'load', effect: 'cinema-title' });
+        effects['cinema-title'].run = original;
+        expect(captured).toBe('Solicite um atendimento');
+        instance.destroy();
+    });
 
     it('splits, hides the units and plays on load', () => {
         var fake = withFakeEffect();

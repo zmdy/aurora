@@ -36,9 +36,10 @@ describe('headline composition and lifecycle', () => {
     it('animates the marker through draw, hold and fade and pauses its native animation', () => {
         const originalAnimate = Element.prototype.animate;
         const handle = { pause: vi.fn(), play: vi.fn(), cancel: vi.fn() };
-        Element.prototype.animate = vi.fn((frames) => {
+        let timing;
+        Element.prototype.animate = vi.fn((frames, t) => {
             expect(frames.map(f => f.offset)).toEqual(frames.map(f => f.offset).sort((a,b) => a-b));
-            return handle;
+            timing = t; return handle;
         });
         try {
             const instance = mount({ animationShape: 'text-highlighter' });
@@ -47,6 +48,7 @@ describe('headline composition and lifecycle', () => {
             instance.api.play(); expect(handle.play).toHaveBeenCalled();
             handle.onfinish(); expect(el.querySelector('.aurora-headline__marker').style.opacity).toBe('0');
             instance.replay(); expect(el.querySelector('.aurora-headline__marker').style.opacity).toBe('');
+            expect(timing.easing).toBe('cubic-bezier(.16,1,.3,1)');
         } finally { Element.prototype.animate = originalAnimate; }
     });
     it.each(['airport-flip', 'scramble', 'sparkles-text', 'text-reveal-wall', 'letter-swap', 'echo-clone', 'typewriter', 'wave-pop'])('rotates with %s and cleans up its animations and decorations', effect => {
@@ -102,6 +104,7 @@ describe('headline composition and lifecycle', () => {
             expect(timings).toHaveLength(2);
             expect(timings[1].delay).toBeGreaterThan(0);
             expect(timings.every(t => t.fill === 'backwards')).toBe(true);
+            expect(timings.every(t => t.easing === 'cubic-bezier(.16,1,.3,1)')).toBe(true);
         } finally { Element.prototype.animate = originalAnimate; }
     });
     it('only animates the center, escapes text and has a stable accessible sentence', () => {

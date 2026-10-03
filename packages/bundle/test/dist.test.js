@@ -21,7 +21,7 @@ function page(scripts, html, beforeScripts) {
 }
 
 describe.skipIf(!built)('built scripts', () => {
-    var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card'];
+    var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card', 'accent'];
 
     it('the all-in-one bundle exposes Aurora with every module', () => {
         var window = page(['aurora.min.js']);
@@ -43,7 +43,7 @@ describe.skipIf(!built)('built scripts', () => {
 
     it('loading module scripts in any order after the runtime registers all of them', () => {
         var window = page(['aurora.core.min.js'].concat(MODULES.map((m) => 'aurora.' + m + '.min.js')));
-        expect(window.Aurora.modules()).toHaveLength(5);
+        expect(window.Aurora.modules()).toHaveLength(MODULES.length);
     });
 
     it('loading the all-in-one bundle twice does not create a second runtime', () => {
