@@ -33,7 +33,7 @@ var src = (name) => resolve(root, 'packages/bundle/src', name);
 // Gzipped size budgets in bytes. The build fails when a file grows past its budget.
 var BUDGETS = JSON.parse(readFileSync(resolve(root, 'tools/budgets.json'), 'utf8'));
 
-var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card'];
+var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card', 'highlight'];
 
 var targets = [
     { file: 'aurora.min.js', entry: src('entry-all.js'), name: 'Aurora' },
@@ -97,6 +97,7 @@ async function collectSchemas() {
         cursor: '@aurora/cursor',
         gradient: '@aurora/gradient',
         'morph-card': '@aurora/morph-card',
+        highlight: '@aurora/highlight',
     };
     for (var name of Object.keys(entries)) {
         var mod = await import(entries[name]);

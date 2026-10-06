@@ -26,5 +26,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@vianetz/animated-headlines-vanilla": "file:../animated-headlines-vanilla"
+  }
 }

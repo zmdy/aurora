@@ -6,5 +6,6 @@
     "aurora.cursor.min.js": 3200,
     "aurora.gradient.min.js": 9500,
     "aurora.morph-card.min.js": 9500,
-    "aurora.esm.js": 91500
+    "aurora.esm.js": 91500,
+    "aurora.highlight.min.js": 4500
 }

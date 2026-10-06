@@ -1,0 +1,16 @@
+{
+  "name": "@aurora/highlight",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aurora Highlight Shapes: a hand-drawn marker drawn over a phrase, with rotating phrases.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "dependencies": {
+    "@aurora/core": "*",
+    "@vianetz/animated-headlines-vanilla": "*"
+  }
+}
