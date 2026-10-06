@@ -59,7 +59,7 @@ final class Asset_Manager {
 	public function register_scripts(): void {
 		wp_register_script( 'aurora-core', $this->file_url( 'aurora.core.min.js' ), [], self::ver( 'assets/js/aurora/aurora.core.min.js' ), true );
 
-		foreach ( [ 'text', 'children', 'cursor', 'gradient', 'morph-card', 'accent' ] as $module ) {
+		foreach ( [ 'text', 'children', 'cursor', 'gradient', 'morph-card' ] as $module ) {
 			wp_register_script(
 				self::handle( $module ),
 				$this->file_url( 'aurora.' . $module . '.min.js' ),

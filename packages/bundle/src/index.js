@@ -5,7 +5,6 @@ export { children } from '@aurora/children';
 export { cursor } from '@aurora/cursor';
 export { gradient } from '@aurora/gradient';
 export { morphCard } from '@aurora/morph-card';
-export { accent } from '@aurora/accent';
 
 import { createAurora } from '@aurora/core';
 import { text } from '@aurora/text';
@@ -13,11 +12,10 @@ import { children } from '@aurora/children';
 import { cursor } from '@aurora/cursor';
 import { gradient } from '@aurora/gradient';
 import { morphCard } from '@aurora/morph-card';
-import { accent } from '@aurora/accent';
 
 /** Creates a runtime with every module registered. */
 export function createFullAurora(config) {
     var aurora = createAurora(config);
-    [text, children, cursor, gradient, morphCard, accent].forEach(function (definition) { aurora.register(definition); });
+    [text, children, cursor, gradient, morphCard].forEach(function (definition) { aurora.register(definition); });
     return aurora;
 }

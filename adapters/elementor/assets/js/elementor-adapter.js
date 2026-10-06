@@ -116,24 +116,6 @@
         var Aurora = window.Aurora;
         if (!Aurora || !node) return;
 
-        if (elementName === 'aurora-animated-headline') {
-            var heading = node.querySelector('.aurora-headline-heading');
-            if (!heading || !Aurora.text) return;
-            var headline = { mode: 'headline', trigger: 'load' };
-            var contentDefaults = { beforeText: 'Create', highlightedText: 'extraordinary', afterText: 'experiences.', rotatingText: 'memorable\noriginal' };
-            Object.keys(data.schemas.text.options).forEach(function (key) {
-                var spec = data.schemas.text.options[key];
-                if (!(spec.when && spec.when.mode === 'headline') && key !== 'duration' && key !== 'delay') return;
-                var value = settings[key];
-                if (value === undefined || value === null) value = key in contentDefaults ? contentDefaults[key] : spec.default;
-                if (spec.type === 'boolean') value = value === true || value === 'yes';
-                else if (spec.type === 'number') value = value === '' || !isFinite(Number(value)) ? spec.default : Number(value);
-                headline[key] = value;
-            });
-            Aurora.text(heading, headline);
-            return;
-        }
-
         MODULES.forEach(function (module) {
             var api = Aurora[camel(module)];
             if (!api) return;
@@ -185,7 +167,7 @@
         };
 
         AuroraHandler.prototype.onElementChange = function (propertyName) {
-            if ((propertyName && propertyName.indexOf('aurora_') === 0) || elementNameOf(this.$element) === 'aurora-animated-headline') {
+            if (propertyName && propertyName.indexOf('aurora_') === 0) {
                 this.syncAurora();
             }
         };

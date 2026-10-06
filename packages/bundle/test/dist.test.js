@@ -21,7 +21,7 @@ function page(scripts, html, beforeScripts) {
 }
 
 describe.skipIf(!built)('built scripts', () => {
-    var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card', 'accent'];
+    var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card'];
 
     it('the all-in-one bundle exposes Aurora with every module', () => {
         var window = page(['aurora.min.js']);

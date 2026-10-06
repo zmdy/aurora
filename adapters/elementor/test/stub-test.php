@@ -61,34 +61,14 @@ namespace {
 	$ca=$rc->invoke($c,$con->settings,$con); echo json_encode($ca)."\n";
 	check(strpos($ca['data-aurora-children-options']??'','.elementor-widget')!==false,'children selector');
 
-	$ac=$mods['accent']??null; check($ac!==null,'accent module loaded');
-	$rac=new ReflectionMethod($ac,'get_render_attributes'); $rac->setAccessible(true);
-	$hac=new Elementor\Element_Base('heading',['aurora_accent_enable'=>'yes','aurora_accent_shape'=>'zigzag']);
-	$aa=$rac->invoke($ac,$hac->settings,$hac); echo json_encode($aa)."\n";
-	check(($aa['data-aurora-accent']??null)==='zigzag','accent primary attr: '.json_encode($aa));
-	check(!empty($GLOBALS['enq']['aurora-accent']),'accent script enqueued');
-	$aoff=$rac->invoke($ac,['aurora_accent_enable'=>''],$hac); check($aoff===[],'accent disabled renders nothing');
-
 	$w=new Aurora\Morph_Card_Widget();
 	$o=Aurora\Morph_Card_Widget::options_from_settings(['loop'=>'','states'=>[['template'=>'profile','username'=>'ana','likes'=>'','photo'=>['url'=>'a.jpg'],'duration_ms'=>2000]],'label_follow'=>'Seguir']);
 	echo json_encode($o)."\n";
 	check($o['loop']===false && $o['states'][0]['photo']==='a.jpg' && $o['labels']['follow']==='Seguir','morph-card options');
 	$rw=new ReflectionMethod($w,'register_controls'); $rw->setAccessible(true); $rw->invoke($w);
 
-    $headline = new Aurora\Animated_Headline_Widget();
-    $rh = new ReflectionMethod($headline, 'register_controls'); $rh->setAccessible(true); $rh->invoke($headline);
-    check(isset($headline->controls['beforeText'], $headline->controls['highlightedText'], $headline->controls['afterText']), 'headline content controls');
-    check(($headline->controls['animationShape']['condition']['animationStyle'] ?? '') === 'highlighted', 'headline shape condition');
-    check(($headline->controls['rotatingText']['type'] ?? '') === 'textarea', 'headline multiline rotating phrases');
-    $ho = Aurora\Animated_Headline_Widget::options_from_settings(['animationStyle'=>'rotating','beforeText'=>'Build','highlightedText'=>'better','afterText'=>'sites','rotatingText'=>"brighter\noriginal",'headlineLoop'=>'','duration'=>-4]);
-    check($ho['mode']==='headline' && $ho['headlineLoop']===false && $ho['duration']===50 && $ho['trigger']==='load', 'headline shared options and bounds');
-    check($headline->get_script_depends()===['aurora-text'], 'headline reuses text module');
-    $headline->settings=['html_tag'=>'script', 'beforeText'=>'Build', 'highlightedText'=>'better', 'afterText'=>'sites'];
-    $render = new ReflectionMethod($headline,'render'); $render->setAccessible(true);
-    ob_start(); $render->invoke($headline); $markup=ob_get_clean();
-    check(strpos($markup,'<h2 ')===0 && strpos($markup,'Build better sites')!==false && strpos($markup,'data-aurora-text-mode="headline"')!==false, 'headline semantic fallback and safe tag');
     $manager = new class { public $widgets=[]; function register($w){$this->widgets[]=$w->get_name();} };
     Aurora\Plugin_Core::instance()->register_widgets($manager);
-    check(in_array('aurora-animated-headline',$manager->widgets,true), 'headline widget registered');
+    check(in_array('aurora-morph-card',$manager->widgets,true), 'morph-card widget registered');
 	exit(empty($GLOBALS['fail'])?0:1);
 }
