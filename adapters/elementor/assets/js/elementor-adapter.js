@@ -15,7 +15,7 @@
     var data = window.AuroraElementor;
     if (!data) return;
 
-    var MODULES = ['text', 'children', 'cursor', 'gradient'];
+    var MODULES = ['text', 'children', 'cursor', 'gradient', 'highlight'];
 
     function snake(name) {
         return name.replace(/([A-Z])/g, '_$1').toLowerCase();
@@ -63,6 +63,7 @@
 
         Object.keys(schema.options).forEach(function (name) {
             if (module === 'children' && (name === 'root' || name === 'selector')) return;
+            if ((module === 'highlight') && name === 'target') return;
             if (module === 'gradient' && (name === 'target' || name === 'selector' || name === 'textSelector' || name === 'stops')) return;
             var spec = schema.options[name];
             var value = readOption(module, name, spec, settings);
@@ -70,7 +71,9 @@
             if (name === schema.primary || value !== spec.default) options[name] = value;
         });
 
-        if (module === 'text') {
+        // Both modules decorate the element's text node, not the widget
+        // wrapper Elementor hands over.
+        if (module === 'text' || module === 'highlight') {
             var text = targets.text[elementName];
             if (text) options.target = text;
         }

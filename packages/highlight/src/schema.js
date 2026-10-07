@@ -64,6 +64,14 @@ var options = {
         group: 'Content',
     },
     hold: fromManifest('hold', { group: 'Timing' }),
+    target: {
+        type: 'selector',
+        default: '',
+        label: 'Text element',
+        description: 'CSS selector, relative to the element, of the node holding the text. '
+            + 'Empty draws over the element itself.',
+        group: 'Advanced',
+    },
 };
 
 THEME.highlight.forEach(function (spec) {

@@ -31,7 +31,18 @@ final class Asset_Manager {
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ], 5 );
 		add_action( 'elementor/preview/enqueue_scripts', [ $this, 'enqueue_preview' ] );
 		add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'enqueue_editor' ] );
+		add_filter( 'script_loader_tag', [ $this, 'as_module' ], 10, 2 );
 	}
+
+	/**
+	 * Handle of the animated-headlines engine, shared by every module built on
+	 * it. It is a component library of its own, so it is registered once and
+	 * depended on rather than bundled into each module.
+	 */
+	public const ENGINE = 'aurora-animated-headlines';
+
+	/** Modules that need the shared engine on the page. */
+	private const ENGINE_MODULES = [ 'highlight' ];
 
 	/** Script handle of a module ("text" => "aurora-text"). */
 	public static function handle( string $module ): string {
@@ -58,16 +69,41 @@ final class Asset_Manager {
 
 	public function register_scripts(): void {
 		wp_register_script( 'aurora-core', $this->file_url( 'aurora.core.min.js' ), [], self::ver( 'assets/js/aurora/aurora.core.min.js' ), true );
+		self::register_engine();
 
-		foreach ( [ 'text', 'children', 'cursor', 'gradient', 'morph-card' ] as $module ) {
+		foreach ( [ 'text', 'children', 'cursor', 'gradient', 'morph-card', 'highlight' ] as $module ) {
 			wp_register_script(
 				self::handle( $module ),
 				$this->file_url( 'aurora.' . $module . '.min.js' ),
-				[ 'aurora-core' ],
+				self::script_deps( $module ),
 				self::ver( 'assets/js/aurora/aurora.' . $module . '.min.js' ),
 				true
 			);
 		}
+	}
+
+	/**
+	 * The engine is an ES module, so it is registered with `type="module"` via
+	 * the loader filter below; its stylesheet carries the keyframes and is
+	 * enqueued with it.
+	 */
+	public static function register_engine(): void {
+		if ( wp_script_is( self::ENGINE, 'registered' ) ) {
+			return;
+		}
+
+		wp_register_script( self::ENGINE, AURORA_URL . 'assets/vendor/animated-headline.js', [], self::ver( 'assets/vendor/animated-headline.js' ), true );
+		wp_register_style( self::ENGINE, AURORA_URL . 'assets/vendor/animated-headline.css', [], self::ver( 'assets/vendor/animated-headline.css' ) );
+	}
+
+	/** @return string[] */
+	private static function script_deps( string $module ): array {
+		$deps = [ 'aurora-core' ];
+		if ( in_array( $module, self::ENGINE_MODULES, true ) ) {
+			$deps[] = self::ENGINE;
+		}
+
+		return $deps;
 	}
 
 	/**
@@ -82,6 +118,11 @@ final class Asset_Manager {
 			wp_register_script( 'aurora-core', AURORA_URL . 'assets/js/aurora/aurora.core.min.js', [], self::ver( 'assets/js/aurora/aurora.core.min.js' ), true );
 			wp_register_script( self::handle( $module ), AURORA_URL . 'assets/js/aurora/aurora.' . $module . '.min.js', [ 'aurora-core' ], self::ver( 'assets/js/aurora/aurora.' . $module . '.min.js' ), true );
 		}
+		if ( in_array( $module, self::ENGINE_MODULES, true ) ) {
+			self::register_engine();
+			wp_enqueue_style( self::ENGINE );
+		}
+
 		wp_enqueue_script( self::handle( $module ) );
 	}
 
@@ -100,6 +141,17 @@ final class Asset_Manager {
 		}
 		if ( Module_Manager::is_active( 'morph-card' ) ) {
 			$handles[] = self::handle( 'morph-card' );
+		}
+
+		// On the front end the stylesheet rides along with need(), which only
+		// runs while an element renders. The preview enqueues the module
+		// scripts directly, so the engine's stylesheet has to be asked for
+		// here as well or the drawings arrive unstyled in the editor.
+		foreach ( self::ENGINE_MODULES as $module ) {
+			if ( Module_Manager::is_active( $module ) ) {
+				wp_enqueue_style( self::ENGINE );
+				break;
+			}
 		}
 
 		wp_register_script( 'aurora-elementor-adapter', AURORA_URL . 'assets/js/elementor-adapter.js', $handles, self::ver( 'assets/js/elementor-adapter.js' ), true );
@@ -127,5 +179,21 @@ final class Asset_Manager {
 			self::ver( 'assets/js/elementor-editor.js' ),
 			true
 		);
+	}
+
+	/**
+	 * The engine is published as an ES module, so a classic <script src> would
+	 * fetch it and then fail on the first `export`. WordPress has no API for
+	 * this, so the tag is rewritten on the way out.
+	 *
+	 * @param string $tag    The script tag.
+	 * @param string $handle Script handle.
+	 */
+	public function as_module( $tag, $handle ) {
+		if ( self::ENGINE !== $handle ) {
+			return $tag;
+		}
+
+		return str_replace( '<script ', '<script type="module" ', $tag );
 	}
 }

@@ -27,6 +27,7 @@ namespace {
 	function esc_html__($s){return $s;} function esc_html($s){return $s;} function esc_attr($s){return $s;} function __($s){return $s;}
 	function wp_json_encode($v){return json_encode($v,JSON_UNESCAPED_SLASHES);}
 	function wp_register_script($h){$GLOBALS['reg'][]=$h;} function wp_enqueue_script($h){$GLOBALS['enq'][$h]=1;} function wp_script_is($h,$w){return in_array($h,$GLOBALS['reg']??[]);}
+	function wp_register_style($h){$GLOBALS['reg_style'][]=$h;} function wp_enqueue_style($h){$GLOBALS['enq_style'][$h]=1;}
 	function is_admin(){return false;} function get_option($n,$d=false){return $d;} function register_setting(){} function wp_localize_script(){}
 	spl_autoload_register(function($c){ if(strpos($c,'Aurora\\')!==0)return; $n=substr($c,7); $f=AURORA_PATH.'includes/class-'.strtolower(str_replace('_','-',$n)).'.php'; if(file_exists($f))require $f; });
 	function check($ok,$m){echo ($ok?'ok   ':'FAIL ').$m."\n"; if(!$ok)$GLOBALS['fail']=1;}
@@ -60,6 +61,15 @@ namespace {
 	$con=new Elementor\Element_Base('container',['aurora_children_enable'=>'yes','aurora_children_choice'=>'widgets']);
 	$ca=$rc->invoke($c,$con->settings,$con); echo json_encode($ca)."\n";
 	check(strpos($ca['data-aurora-children-options']??'','.elementor-widget')!==false,'children selector');
+
+	$hl=$mods['highlight']; $rhl=new ReflectionMethod($hl,'get_render_attributes'); $rhl->setAccessible(true);
+	$hel=new Elementor\Element_Base('heading',['aurora_highlight_enable'=>'yes','aurora_highlight_shape'=>'circle','aurora_highlight_highlight_color'=>'#7c5cff']);
+	$ha=$rhl->invoke($hl,$hel->settings,$hel); echo json_encode($ha)."
+";
+	check(($ha['data-aurora-highlight']??null)==='circle','highlight primary attr');
+	check(strpos($ha['data-aurora-highlight-options']??'','#7c5cff')!==false,'highlight theme option passed through');
+	check(!empty($GLOBALS['enq']['aurora-highlight']),'highlight script enqueued');
+	check(!empty($GLOBALS['enq_style']['aurora-animated-headlines']),'engine stylesheet enqueued with the module');
 
 	$w=new Aurora\Morph_Card_Widget();
 	$o=Aurora\Morph_Card_Widget::options_from_settings(['loop'=>'','states'=>[['template'=>'profile','username'=>'ana','likes'=>'','photo'=>['url'=>'a.jpg'],'duration_ms'=>2000]],'label_follow'=>'Seguir']);

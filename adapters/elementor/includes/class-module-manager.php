@@ -61,6 +61,13 @@ final class Module_Manager {
 				'elements'    => [ 'section', 'column', 'container', 'heading', 'text-editor', 'icon', 'icon-box', 'icon-list' ],
 				'priority'    => 30,
 			],
+			'highlight' => [
+				'label'       => esc_html__( 'Highlight Shapes', 'aurora-for-elementor' ),
+				'description' => esc_html__( 'A hand-drawn marker - underline, circle, scribble, marker pen and twelve more - drawn over a phrase, with phrases that can rotate.', 'aurora-for-elementor' ),
+				'class'       => Highlight_Module::class,
+				'elements'    => [ 'heading', 'text-editor', 'button', 'icon-box', 'image-box', 'testimonial', 'alert' ],
+				'priority'    => 50,
+			],
 			'cursor'   => [
 				'label'       => esc_html__( 'Cursor Follow', 'aurora-for-elementor' ),
 				'description' => esc_html__( 'A custom dot-and-ring cursor inside the element, with hover states for links and images.', 'aurora-for-elementor' ),

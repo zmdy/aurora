@@ -57,5 +57,20 @@ manifest.files
     .filter((file) => file.endsWith('.min.js'))
     .forEach((file) => copyFileSync(resolve(dist, file), resolve(target, file)));
 
+// The animated-headlines engine ships as its own pair of files: the modules
+// built on it (highlight, and the counter and headline work that follows)
+// share one copy rather than each bundling the component library.
+var engine = resolve(root, 'node_modules/@vianetz/animated-headlines-vanilla/dist');
+if (!existsSync(engine)) {
+    console.error('animated-headlines is not installed; run npm install first.');
+    process.exit(1);
+}
+var engineTarget = resolve(plugin, 'assets/vendor');
+rmSync(engineTarget, { recursive: true, force: true });
+mkdirSync(engineTarget, { recursive: true });
+['animated-headline.js', 'animated-headline.css'].forEach(function (file) {
+    copyFileSync(resolve(engine, file), resolve(engineTarget, file));
+});
+
 writeFileSync(resolve(target, 'version.json'), JSON.stringify({ version: manifest.version }) + '\n');
 console.log('Elementor plugin prepared with Aurora ' + manifest.version + '.');

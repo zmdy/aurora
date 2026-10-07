@@ -63,16 +63,19 @@ export var highlight = defineModule({
             return {};
         }
 
-        var pristineHTML = el.innerHTML;
+        // A builder hands us the widget wrapper, not the heading inside it, so
+        // without this the whole widget would be replaced by the drawing.
+        var target = options.target ? el.querySelector(options.target) || el : el;
+        var pristineHTML = target.innerHTML;
 
         function build(current) {
             // Always start from the markup the author wrote: build() replaces
             // part of it, so reading the target from an already-built element
             // would compound.
-            el.innerHTML = pristineHTML;
+            target.innerHTML = pristineHTML;
 
-            var target = readTarget(el, current);
-            if (!target.phrases.length) {
+            var found = readTarget(target, current);
+            if (!found.phrases.length) {
                 ctx.warn('Nothing to highlight: no phrases and no text in the element.');
                 return;
             }
@@ -87,25 +90,25 @@ export var highlight = defineModule({
                 if (value) host.style.setProperty(entry.variable, value);
             });
 
-            target.phrases.forEach(function (text, index) {
+            found.phrases.forEach(function (text, index) {
                 var phrase = document.createElement('b');
                 phrase.textContent = text;
                 if (index) phrase.setAttribute('hidden', '');
                 host.appendChild(phrase);
             });
 
-            if (target.anchor) {
-                target.anchor[0].replaceWith(host);
-                target.anchor.slice(1).forEach(function (node) { node.remove(); });
+            if (found.anchor) {
+                found.anchor[0].replaceWith(host);
+                found.anchor.slice(1).forEach(function (node) { node.remove(); });
             } else {
-                el.innerHTML = '';
-                el.appendChild(host);
+                target.innerHTML = '';
+                target.appendChild(host);
             }
         }
 
         build(options);
 
-        ctx.onDestroy(function () { el.innerHTML = pristineHTML; });
+        ctx.onDestroy(function () { target.innerHTML = pristineHTML; });
 
         return {
             // The component reads its options once, when it is connected, so a
