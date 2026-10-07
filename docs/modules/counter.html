@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A card that morphs between layouts on its own. Pass the states as JSON, or drive it from code with next() and goTo().">
-  <title>Morph Card | Aurora</title>
+  <meta name="description" content="Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.">
+  <title>Counter | Aurora</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 
   <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
@@ -21,9 +21,10 @@
   <link rel="stylesheet" href="../assets/modules.css?v=3">
   <link rel="stylesheet" href="../assets/interactive-demo.css?v=3">
 <link rel="stylesheet" href="../assets/module-documentation.css?v=3">
+<link rel="stylesheet" href="../vendor/animated-headline.css">
 </head>
 
-<body data-module="morph-card">
+<body data-module="counter">
   <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
   <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
 
@@ -58,7 +59,7 @@
                 <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
                 <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Dot + ring zones</span></span>
               </a>
-              <a href="../modules/morph-card.html" role="menuitem" aria-current="page">
+              <a href="../modules/morph-card.html" role="menuitem">
                 <span class="nav__dropdown-icon nav__dropdown-icon--teal">🪪</span>
                 <span><span class="nav__dropdown-title">Morph Card</span><span class="nav__dropdown-desc">Post, profile, polaroid</span></span>
               </a>
@@ -90,8 +91,8 @@
     <div class="container">
       <div class="section-header">
         <div class="eyebrow">Interactive Demo</div>
-        <h1 class="display-2" style="margin-top:1rem">Live Morph Card Playground</h1>
-        <p>A card that morphs between layouts on its own. Pass the states as JSON, or drive it from code with next() and goTo().</p>
+        <h1 class="display-2" style="margin-top:1rem">Live Counter Playground</h1>
+        <p>Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.</p>
       </div>
 
       <div class="pg-layout">
@@ -101,17 +102,18 @@
             <div class="pg-preview__dot"></div>
             <div class="pg-preview__dot"></div>
             <div class="pg-preview__dot"></div>
-            <div class="pg-preview__title">Aurora.morphCard() · live</div>
+            <div class="pg-preview__title">Aurora.counter() · live</div>
           </div>
 
           <div class="pg-preview__stage" id="pg-stage">
-            <div id="demo" data-aurora-morph-card data-aurora-morph-card-options='{"states":[{"template":"post","username":"aurora","likes":128,"caption":"Cards that morph between layouts.","photo":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ff7a2f%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22140%22%20r%3D%2270%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%22290%22%20cy%3D%22270%22%20r%3D%22110%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.18%22%2F%3E%3C%2Fsvg%3E","durationMs":2600},{"template":"profile","username":"aurora","name":"Aurora","bio":"Animation toolkit for any builder.","posts":"24","followers":"1.2k","following":"80","photo":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232af598%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237c6cff%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22140%22%20r%3D%2270%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%22290%22%20cy%3D%22270%22%20r%3D%22110%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.18%22%2F%3E%3C%2Fsvg%3E","durationMs":2600},{"template":"polaroid","caption":"Hello, standalone!","photo":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff7a2f%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232af598%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22140%22%20r%3D%2270%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%22290%22%20cy%3D%22270%22%20r%3D%22110%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.18%22%2F%3E%3C%2Fsvg%3E","durationMs":2600}]}'></div>
+            <h2 id="demo" data-aurora-counter="progress"
+    data-aurora-counter-to="1250" data-aurora-counter-suffix="+"></h2>
           </div>
 
           <div class="pg-preview__footer">
             <div class="pg-badge-row">
               <span class="pg-badge pg-badge--gsap" id="badge-tag">LIVE</span>
-              <span class="pg-badge pg-badge--split" id="badge-split">morph-card</span>
+              <span class="pg-badge pg-badge--split" id="badge-split">counter</span>
               <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
             </div>
             <div style="display:flex;gap:.5rem">
@@ -147,12 +149,13 @@
      ═══════════════════════════════════════════════════════════════════ -->
   
 
-  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/morph-card.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 7.9 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/counter.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 3.8 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-&lt;title&gt;Aurora Morph Card (standalone)&lt;/title&gt;
+&lt;title&gt;Aurora Counter (standalone)&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.css&quot;&gt;
 &lt;style&gt;
 body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
 h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
@@ -160,29 +163,40 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;/head&gt;
 &lt;body&gt;
 
-&lt;div data-aurora-morph-card data-aurora-morph-card-options='{&quot;states&quot;:[{&quot;template&quot;:&quot;post&quot;,&quot;username&quot;:&quot;aurora&quot;,&quot;likes&quot;:128,&quot;caption&quot;:&quot;Cards that morph between layouts.&quot;,&quot;photo&quot;:&quot;photo-1.jpg&quot;,&quot;durationMs&quot;:2600},{&quot;template&quot;:&quot;profile&quot;,&quot;username&quot;:&quot;aurora&quot;,&quot;name&quot;:&quot;Aurora&quot;,&quot;bio&quot;:&quot;Animation toolkit for any builder.&quot;,&quot;posts&quot;:&quot;24&quot;,&quot;followers&quot;:&quot;1.2k&quot;,&quot;following&quot;:&quot;80&quot;,&quot;photo&quot;:&quot;photo-2.jpg&quot;,&quot;durationMs&quot;:2600},{&quot;template&quot;:&quot;polaroid&quot;,&quot;caption&quot;:&quot;Hello, standalone!&quot;,&quot;photo&quot;:&quot;photo-3.jpg&quot;,&quot;durationMs&quot;:2600}]}'&gt;&lt;/div&gt;
+&lt;h2 data-aurora-counter=&quot;progress&quot;
+    data-aurora-counter-to=&quot;1250&quot; data-aurora-counter-suffix=&quot;+&quot;&gt;&lt;/h2&gt;
 
+&lt;script type=&quot;module&quot; src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
         integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.morph-card.min.js&quot;
-        integrity=&quot;sha384-U+JhwBadqgGCMWwWvHSWtDjzak2G/fUZCkf1yrgtTizDsVg6ChaSxCyts7kZRyNT&quot;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.counter.min.js&quot;
+        integrity=&quot;sha384-3GYpX6Bid47huFGFGr/mWDeV6ksS15PyVovs8mFCLbAYCrsfdXfrZLoHVvpjiW2q&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });
-fx.api.next();         // go to the next state
-fx.api.goTo(2);        // jump to a state
+<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.counter(document.querySelector('h2'), { kind: 'countdown', target: '2026-12-31T23:59' });
+fx.update({ kind: 'clock', format: '24h' });
 fx.destroy();</code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-morph-card-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-morph-card-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>states</code></td><td><code>data-aurora-morph-card-states</code></td><td>json</td><td><code>[]</code></td><td>JSON array of card states. The card shows them in order, morphing from one to the next.</td></tr>
-<tr><td><code>loop</code></td><td><code>data-aurora-morph-card-loop</code></td><td>boolean</td><td><code>true</code></td><td>Loop</td></tr>
-<tr><td><code>autoplay</code></td><td><code>data-aurora-morph-card-autoplay</code></td><td>boolean</td><td><code>true</code></td><td>Off shows the first state and waits for the API (next / goTo).</td></tr>
-<tr><td><code>initialDelay</code></td><td><code>data-aurora-morph-card-initial-delay</code></td><td>number (ms)</td><td><code>0</code></td><td>Initial delay</td></tr>
-<tr><td><code>captionEffect</code></td><td><code>data-aurora-morph-card-caption-effect</code></td><td>enum</td><td><code>typewriter</code></td><td>Polaroid caption effect<br><small><code>typewriter</code> <code>letters</code></small></td></tr>
-<tr><td><code>float</code></td><td><code>data-aurora-morph-card-float</code></td><td>boolean</td><td><code>true</code></td><td>Floating motion</td></tr>
-<tr><td><code>labels</code></td><td><code>data-aurora-morph-card-labels</code></td><td>json</td><td><code>{}</code></td><td>Overrides for the texts inside templates: likes, viewComments, posts, followers, following, follow, message, email.</td></tr>
+<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-counter-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-counter-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>kind</code></td><td><code>data-aurora-counter</code></td><td>enum</td><td><code>progress</code></td><td>Counter<br><small><code>clock</code> <code>countdown</code> <code>timecode</code> <code>progress</code></small></td></tr>
+<tr><td><code>selector</code></td><td><code>data-aurora-counter-selector</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node the counter replaces. Empty uses the element itself.</td></tr>
+<tr><td><code>format</code></td><td><code>data-aurora-counter-format</code></td><td>enum</td><td><code></code></td><td>Clock takes 24h or 12h; countdown and timecode take full or compact.<br><small><code>24h</code> <code>12h</code> <code>full</code> <code>compact</code></small></td></tr>
+<tr><td><code>timezone</code></td><td><code>data-aurora-counter-timezone</code></td><td>string</td><td><code></code></td><td>An IANA zone such as America/Sao_Paulo. Empty uses the one the visitor is in.</td></tr>
+<tr><td><code>target</code></td><td><code>data-aurora-counter-target</code></td><td>string</td><td><code></code></td><td>The moment the countdown runs out.</td></tr>
+<tr><td><code>start</code></td><td><code>data-aurora-counter-start</code></td><td>string</td><td><code>00:00:00:00</code></td><td>Hours, minutes, seconds and frames.</td></tr>
+<tr><td><code>fps</code></td><td><code>data-aurora-counter-fps</code></td><td>number</td><td><code>30</code></td><td>Frames per second</td></tr>
+<tr><td><code>paused</code></td><td><code>data-aurora-counter-paused</code></td><td>boolean</td><td><code>false</code></td><td>Paused</td></tr>
+<tr><td><code>from</code></td><td><code>data-aurora-counter-from</code></td><td>number</td><td><code>0</code></td><td>From</td></tr>
+<tr><td><code>to</code></td><td><code>data-aurora-counter-to</code></td><td>number</td><td><code>100</code></td><td>To</td></tr>
+<tr><td><code>duration</code></td><td><code>data-aurora-counter-duration</code></td><td>number (ms)</td><td><code>1800</code></td><td>Duration</td></tr>
+<tr><td><code>decimals</code></td><td><code>data-aurora-counter-decimals</code></td><td>number</td><td><code>0</code></td><td>Decimals</td></tr>
+<tr><td><code>prefix</code></td><td><code>data-aurora-counter-prefix</code></td><td>string</td><td><code></code></td><td>Prefix</td></tr>
+<tr><td><code>suffix</code></td><td><code>data-aurora-counter-suffix</code></td><td>string</td><td><code></code></td><td>Suffix</td></tr>
+<tr><td><code>locale</code></td><td><code>data-aurora-counter-locale</code></td><td>string</td><td><code></code></td><td>Number formatting, such as pt-BR. Empty uses the page language.</td></tr>
+<tr><td><code>bar</code></td><td><code>data-aurora-counter-bar</code></td><td>boolean</td><td><code>false</code></td><td>Show bar</td></tr>
+<tr><td><code>trigger</code></td><td><code>data-aurora-counter-trigger</code></td><td>enum</td><td><code>view</code></td><td>The &quot;view&quot; setting waits until the counter is scrolled into sight.<br><small><code>view</code> <code>load</code></small></td></tr>
 </tbody></table></div></div></section>
 </div>
 <section class="cta-section section-gap-lg">
@@ -285,10 +299,11 @@ fx.destroy();</code></pre></div></div></section>
   <!-- ══════════════════════════════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
-  <script type="application/json" id="schema">{"options":{"states":{"type":"json","default":[],"label":"States","description":"JSON array of card states. The card shows them in order, morphing from one to the next.","group":"Content"},"loop":{"type":"boolean","default":true,"label":"Loop","group":"Sequence"},"autoplay":{"type":"boolean","default":true,"label":"Autoplay","description":"Off shows the first state and waits for the API (next / goTo).","group":"Sequence"},"initialDelay":{"type":"number","default":0,"min":0,"max":30000,"unit":"ms","label":"Initial delay","group":"Sequence"},"captionEffect":{"type":"enum","default":"typewriter","values":["typewriter","letters"],"label":"Polaroid caption effect","group":"Sequence"},"float":{"type":"boolean","default":true,"label":"Floating motion","group":"Appearance"},"labels":{"type":"json","default":{},"label":"Labels","description":"Overrides for the texts inside templates: likes, viewComments, posts, followers, following, follow, message, email.","group":"Content"}}}</script>
-<script type="application/json" id="demo-config">{"css":"","revision":"28165-8089","styles":[],"scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.morph-card.min.js","integrity":"sha384-U+JhwBadqgGCMWwWvHSWtDjzak2G/fUZCkf1yrgtTizDsVg6ChaSxCyts7kZRyNT"}]}</script>
+  <script type="application/json" id="schema">{"primary":"kind","options":{"kind":{"type":"enum","default":"progress","values":[{"value":"clock","label":"Clock"},{"value":"countdown","label":"Countdown"},{"value":"timecode","label":"Timecode"},{"value":"progress","label":"Counter"}],"label":"Counter","group":"Counter"},"selector":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node the counter replaces. Empty uses the element itself.","group":"Advanced"},"format":{"type":"enum","default":"","label":"Format","group":"Display","when":{"kind":["clock","countdown","timecode"]},"description":"Clock takes 24h or 12h; countdown and timecode take full or compact.","values":["24h","12h","full","compact"]},"timezone":{"type":"string","default":"","label":"Time zone","group":"Display","when":{"kind":["clock"]},"description":"An IANA zone such as America/Sao_Paulo. Empty uses the one the visitor is in."},"target":{"type":"string","default":"","label":"Counts down to","group":"Content","when":{"kind":["countdown"]},"description":"The moment the countdown runs out."},"start":{"type":"string","default":"00:00:00:00","label":"Start at","group":"Content","when":{"kind":["timecode"]},"description":"Hours, minutes, seconds and frames."},"fps":{"type":"number","default":30,"label":"Frames per second","group":"Timing","when":{"kind":["timecode"]},"min":1,"max":120},"paused":{"type":"boolean","default":false,"label":"Paused","group":"Timing","when":{"kind":["timecode"]}},"from":{"type":"number","default":0,"label":"From","group":"Content","when":{"kind":["progress"]}},"to":{"type":"number","default":100,"label":"To","group":"Content","when":{"kind":["progress"]}},"duration":{"type":"number","default":1800,"label":"Duration","group":"Timing","when":{"kind":["progress"]},"unit":"ms","min":0,"max":60000},"decimals":{"type":"number","default":0,"label":"Decimals","group":"Display","when":{"kind":["progress"]},"min":0,"max":6},"prefix":{"type":"string","default":"","label":"Prefix","group":"Content","when":{"kind":["progress"]}},"suffix":{"type":"string","default":"","label":"Suffix","group":"Content","when":{"kind":["progress"]}},"locale":{"type":"string","default":"","label":"Locale","group":"Display","when":{"kind":["progress"]},"description":"Number formatting, such as pt-BR. Empty uses the page language."},"bar":{"type":"boolean","default":false,"label":"Show bar","group":"Display","when":{"kind":["progress"]}},"trigger":{"type":"enum","default":"view","label":"Starts","group":"Timing","when":{"kind":["progress"]},"description":"The \"view\" setting waits until the counter is scrolled into sight.","values":["view","load"]}}}</script>
+<script type="application/json" id="demo-config">{"css":"","revision":"8931-3862","styles":["https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.css"],"scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js","type":"module"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.counter.min.js","integrity":"sha384-3GYpX6Bid47huFGFGr/mWDeV6ksS15PyVovs8mFCLbAYCrsfdXfrZLoHVvpjiW2q"}]}</script>
+<script type="module" src="../vendor/animated-headline.js"></script>
 <script src="../aurora.core.min.js?v=3"></script>
-<script src="../aurora.morph-card.min.js?v=3"></script>
+<script src="../aurora.counter.min.js?v=3"></script>
 <script src="../assets/site.js?v=5"></script>
 </body>
 

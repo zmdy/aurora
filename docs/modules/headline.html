@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A card that morphs between layouts on its own. Pass the states as JSON, or drive it from code with next() and goTo().">
-  <title>Morph Card | Aurora</title>
+  <meta name="description" content="Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.">
+  <title>Animated Headline | Aurora</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 
   <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
@@ -21,9 +21,10 @@
   <link rel="stylesheet" href="../assets/modules.css?v=3">
   <link rel="stylesheet" href="../assets/interactive-demo.css?v=3">
 <link rel="stylesheet" href="../assets/module-documentation.css?v=3">
+<link rel="stylesheet" href="../vendor/animated-headline.css">
 </head>
 
-<body data-module="morph-card">
+<body data-module="headline">
   <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
   <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
 
@@ -58,7 +59,7 @@
                 <span class="nav__dropdown-icon nav__dropdown-icon--green">🖱️</span>
                 <span><span class="nav__dropdown-title">Cursor Follow</span><span class="nav__dropdown-desc">Dot + ring zones</span></span>
               </a>
-              <a href="../modules/morph-card.html" role="menuitem" aria-current="page">
+              <a href="../modules/morph-card.html" role="menuitem">
                 <span class="nav__dropdown-icon nav__dropdown-icon--teal">🪪</span>
                 <span><span class="nav__dropdown-title">Morph Card</span><span class="nav__dropdown-desc">Post, profile, polaroid</span></span>
               </a>
@@ -90,8 +91,8 @@
     <div class="container">
       <div class="section-header">
         <div class="eyebrow">Interactive Demo</div>
-        <h1 class="display-2" style="margin-top:1rem">Live Morph Card Playground</h1>
-        <p>A card that morphs between layouts on its own. Pass the states as JSON, or drive it from code with next() and goTo().</p>
+        <h1 class="display-2" style="margin-top:1rem">Live Animated Headline Playground</h1>
+        <p>Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.</p>
       </div>
 
       <div class="pg-layout">
@@ -101,17 +102,20 @@
             <div class="pg-preview__dot"></div>
             <div class="pg-preview__dot"></div>
             <div class="pg-preview__dot"></div>
-            <div class="pg-preview__title">Aurora.morphCard() · live</div>
+            <div class="pg-preview__title">Aurora.headline() · live</div>
           </div>
 
           <div class="pg-preview__stage" id="pg-stage">
-            <div id="demo" data-aurora-morph-card data-aurora-morph-card-options='{"states":[{"template":"post","username":"aurora","likes":128,"caption":"Cards that morph between layouts.","photo":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ff7a2f%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22140%22%20r%3D%2270%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%22290%22%20cy%3D%22270%22%20r%3D%22110%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.18%22%2F%3E%3C%2Fsvg%3E","durationMs":2600},{"template":"profile","username":"aurora","name":"Aurora","bio":"Animation toolkit for any builder.","posts":"24","followers":"1.2k","following":"80","photo":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232af598%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237c6cff%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22140%22%20r%3D%2270%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%22290%22%20cy%3D%22270%22%20r%3D%22110%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.18%22%2F%3E%3C%2Fsvg%3E","durationMs":2600},{"template":"polaroid","caption":"Hello, standalone!","photo":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff7a2f%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232af598%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22140%22%20r%3D%2270%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%22290%22%20cy%3D%22270%22%20r%3D%22110%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.18%22%2F%3E%3C%2Fsvg%3E","durationMs":2600}]}'></div>
+            <h2 id="demo" data-aurora-headline="rotate-1"
+    data-aurora-headline-phrases="beautiful&#10;effortless&#10;yours">
+  Make it beautiful
+</h2>
           </div>
 
           <div class="pg-preview__footer">
             <div class="pg-badge-row">
               <span class="pg-badge pg-badge--gsap" id="badge-tag">LIVE</span>
-              <span class="pg-badge pg-badge--split" id="badge-split">morph-card</span>
+              <span class="pg-badge pg-badge--split" id="badge-split">headline</span>
               <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
             </div>
             <div style="display:flex;gap:.5rem">
@@ -147,12 +151,13 @@
      ═══════════════════════════════════════════════════════════════════ -->
   
 
-  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/morph-card.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 7.9 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/headline.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 4.5 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-&lt;title&gt;Aurora Morph Card (standalone)&lt;/title&gt;
+&lt;title&gt;Aurora Animated Headline (standalone)&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.css&quot;&gt;
 &lt;style&gt;
 body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
 h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
@@ -160,29 +165,45 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;/head&gt;
 &lt;body&gt;
 
-&lt;div data-aurora-morph-card data-aurora-morph-card-options='{&quot;states&quot;:[{&quot;template&quot;:&quot;post&quot;,&quot;username&quot;:&quot;aurora&quot;,&quot;likes&quot;:128,&quot;caption&quot;:&quot;Cards that morph between layouts.&quot;,&quot;photo&quot;:&quot;photo-1.jpg&quot;,&quot;durationMs&quot;:2600},{&quot;template&quot;:&quot;profile&quot;,&quot;username&quot;:&quot;aurora&quot;,&quot;name&quot;:&quot;Aurora&quot;,&quot;bio&quot;:&quot;Animation toolkit for any builder.&quot;,&quot;posts&quot;:&quot;24&quot;,&quot;followers&quot;:&quot;1.2k&quot;,&quot;following&quot;:&quot;80&quot;,&quot;photo&quot;:&quot;photo-2.jpg&quot;,&quot;durationMs&quot;:2600},{&quot;template&quot;:&quot;polaroid&quot;,&quot;caption&quot;:&quot;Hello, standalone!&quot;,&quot;photo&quot;:&quot;photo-3.jpg&quot;,&quot;durationMs&quot;:2600}]}'&gt;&lt;/div&gt;
+&lt;h2 data-aurora-headline=&quot;rotate-1&quot;
+    data-aurora-headline-phrases=&quot;beautiful&amp;#10;effortless&amp;#10;yours&quot;&gt;
+  Make it beautiful
+&lt;/h2&gt;
 
+&lt;script type=&quot;module&quot; src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
         integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.morph-card.min.js&quot;
-        integrity=&quot;sha384-U+JhwBadqgGCMWwWvHSWtDjzak2G/fUZCkf1yrgtTizDsVg6ChaSxCyts7kZRyNT&quot;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.headline.min.js&quot;
+        integrity=&quot;sha384-vuOMVM2hWZXP78tdBAp45ujvTwoCUBJsyIH2tcVKVFa/9X+REFvl0TXFN8MHfdak&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });
-fx.api.next();         // go to the next state
-fx.api.goTo(2);        // jump to a state
-fx.destroy();</code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-morph-card-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-morph-card-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>states</code></td><td><code>data-aurora-morph-card-states</code></td><td>json</td><td><code>[]</code></td><td>JSON array of card states. The card shows them in order, morphing from one to the next.</td></tr>
-<tr><td><code>loop</code></td><td><code>data-aurora-morph-card-loop</code></td><td>boolean</td><td><code>true</code></td><td>Loop</td></tr>
-<tr><td><code>autoplay</code></td><td><code>data-aurora-morph-card-autoplay</code></td><td>boolean</td><td><code>true</code></td><td>Off shows the first state and waits for the API (next / goTo).</td></tr>
-<tr><td><code>initialDelay</code></td><td><code>data-aurora-morph-card-initial-delay</code></td><td>number (ms)</td><td><code>0</code></td><td>Initial delay</td></tr>
-<tr><td><code>captionEffect</code></td><td><code>data-aurora-morph-card-caption-effect</code></td><td>enum</td><td><code>typewriter</code></td><td>Polaroid caption effect<br><small><code>typewriter</code> <code>letters</code></small></td></tr>
-<tr><td><code>float</code></td><td><code>data-aurora-morph-card-float</code></td><td>boolean</td><td><code>true</code></td><td>Floating motion</td></tr>
-<tr><td><code>labels</code></td><td><code>data-aurora-morph-card-labels</code></td><td>json</td><td><code>{}</code></td><td>Overrides for the texts inside templates: likes, viewComments, posts, followers, following, follow, message, email.</td></tr>
+<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.headline(document.querySelector('h2'), {
+  effect: 'rotate-1',
+  phrases: 'beautiful
+
+neffortless
+
+nyours'
+});
+fx.update({ effect: 'flipboard' }); // swap the animation
+fx.destroy();          // puts the original heading back</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-headline-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-headline-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>effect</code></td><td><code>data-aurora-headline</code></td><td>enum</td><td><code>rotate-1</code></td><td>Animation<br><small>27 values</small></td></tr>
+<tr><td><code>phrases</code></td><td><code>data-aurora-headline-phrases</code></td><td>string</td><td><code></code></td><td>One per line. The first is shown first; the rest rotate. Empty keeps the text already in the element, which then has nothing to rotate to.</td></tr>
+<tr><td><code>target</code></td><td><code>data-aurora-headline-target</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.</td></tr>
+<tr><td><code>hold</code></td><td><code>data-aurora-headline-hold</code></td><td>number (ms)</td><td><code>2500</code></td><td>How long a phrase stays before the next one takes over.</td></tr>
+<tr><td><code>delay</code></td><td><code>data-aurora-headline-delay</code></td><td>number (ms)</td><td><code>50</code></td><td>Gap between one letter and the next.</td></tr>
+<tr><td><code>selection</code></td><td><code>data-aurora-headline-selection</code></td><td>number (ms)</td><td><code>500</code></td><td>How long the finished phrase stays selected before it is replaced.</td></tr>
+<tr><td><code>erase</code></td><td><code>data-aurora-headline-erase</code></td><td>number (ms)</td><td><code>30</code></td><td>Gap between backspaces. Erasing is normally quicker than typing.</td></tr>
+<tr><td><code>speed</code></td><td><code>data-aurora-headline-speed</code></td><td>number (ms)</td><td><code>420</code></td><td>How long a single character takes to change.</td></tr>
+<tr><td><code>steps</code></td><td><code>data-aurora-headline-steps</code></td><td>number</td><td><code>7</code></td><td>How many characters are cycled through before the real one lands.</td></tr>
+<tr><td><code>tick</code></td><td><code>data-aurora-headline-tick</code></td><td>number (ms)</td><td><code>45</code></td><td>How long each cycled character is shown.</td></tr>
+<tr><td><code>charset</code></td><td><code>data-aurora-headline-charset</code></td><td>string</td><td><code>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&amp;@*?</code></td><td>Characters cycled through on the way to the real one.</td></tr>
+<tr><td><code>sparkles</code></td><td><code>data-aurora-headline-sparkles</code></td><td>number</td><td><code>7</code></td><td>How many twinkles are scattered around each phrase.</td></tr>
+<tr><td><code>shape</code></td><td><code>data-aurora-headline-shape</code></td><td>enum</td><td><code>marker</code></td><td>Which marker is drawn over the phrase.<br><small><code>underline</code> <code>double-underline</code> <code>scribble</code> <code>circle</code> <code>zigzag</code> <code>sawtooth</code> <code>strikethrough</code> <code>cross-out</code> <code>diagonal</code> <code>box</code> <code>brackets</code> <code>arc</code> <code>wave</code> <code>marker</code> <code>spark</code> <code>corner-ticks</code></small></td></tr>
 </tbody></table></div></div></section>
 </div>
 <section class="cta-section section-gap-lg">
@@ -285,10 +306,11 @@ fx.destroy();</code></pre></div></div></section>
   <!-- ══════════════════════════════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
-  <script type="application/json" id="schema">{"options":{"states":{"type":"json","default":[],"label":"States","description":"JSON array of card states. The card shows them in order, morphing from one to the next.","group":"Content"},"loop":{"type":"boolean","default":true,"label":"Loop","group":"Sequence"},"autoplay":{"type":"boolean","default":true,"label":"Autoplay","description":"Off shows the first state and waits for the API (next / goTo).","group":"Sequence"},"initialDelay":{"type":"number","default":0,"min":0,"max":30000,"unit":"ms","label":"Initial delay","group":"Sequence"},"captionEffect":{"type":"enum","default":"typewriter","values":["typewriter","letters"],"label":"Polaroid caption effect","group":"Sequence"},"float":{"type":"boolean","default":true,"label":"Floating motion","group":"Appearance"},"labels":{"type":"json","default":{},"label":"Labels","description":"Overrides for the texts inside templates: likes, viewComments, posts, followers, following, follow, message, email.","group":"Content"}}}</script>
-<script type="application/json" id="demo-config">{"css":"","revision":"28165-8089","styles":[],"scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.morph-card.min.js","integrity":"sha384-U+JhwBadqgGCMWwWvHSWtDjzak2G/fUZCkf1yrgtTizDsVg6ChaSxCyts7kZRyNT"}]}</script>
+  <script type="application/json" id="schema">{"primary":"effect","options":{"effect":{"type":"enum","default":"rotate-1","values":[{"value":"rotate-1","label":"Rotate"},{"value":"slide","label":"Slide"},{"value":"push","label":"Push"},{"value":"zoom","label":"Zoom"},{"value":"blur","label":"Blur"},{"value":"bounce","label":"Bounce"},{"value":"glitch","label":"Glitch"},{"value":"mirror","label":"Mirror"},{"value":"rotate-2","label":"Rotate 2"},{"value":"rotate-3","label":"Rotate 3"},{"value":"scale","label":"Scale"},{"value":"wave","label":"Wave"},{"value":"rise","label":"Rise"},{"value":"pop","label":"Pop"},{"value":"roll","label":"Roll"},{"value":"rolling","label":"Rolling"},{"value":"shuffle","label":"Shuffle"},{"value":"clip","label":"Clip"},{"value":"clip-caret","label":"Clip caret"},{"value":"marker-caret","label":"Marker caret"},{"value":"loading-bar","label":"Loading bar"},{"value":"highlight","label":"Highlight"},{"value":"sparkle","label":"Sparkle"},{"value":"type","label":"Type"},{"value":"type-delete","label":"Type and delete"},{"value":"swap","label":"Swap"},{"value":"flipboard","label":"Flip board"}],"label":"Animation","group":"Effect"},"phrases":{"type":"string","default":"","ui":"textarea","label":"Phrases","description":"One per line. The first is shown first; the rest rotate. Empty keeps the text already in the element, which then has nothing to rotate to.","group":"Content"},"target":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node holding the text. Empty uses the element itself.","group":"Advanced"},"hold":{"type":"number","default":2500,"label":"Hold","group":"Timing","when":{"effect":["rotate-1","slide","push","zoom","blur","bounce","glitch","mirror","rotate-2","rotate-3","scale","wave","rise","pop","roll","rolling","shuffle","clip","clip-caret","marker-caret","loading-bar","highlight","sparkle","type","type-delete","swap","flipboard"]},"description":"How long a phrase stays before the next one takes over.","unit":"ms","min":300,"max":30000},"delay":{"type":"number","default":50,"label":"Letter delay","group":"Timing","when":{"effect":["rotate-2","rotate-3","scale","wave","rise","pop","roll","rolling","shuffle","clip","clip-caret","marker-caret","loading-bar","type","type-delete","swap","flipboard"]},"description":"Gap between one letter and the next.","unit":"ms","min":0,"max":1000},"selection":{"type":"number","default":500,"label":"Selection","group":"Timing","when":{"effect":["type"]},"description":"How long the finished phrase stays selected before it is replaced.","unit":"ms","min":50,"max":5000},"erase":{"type":"number","default":30,"label":"Backspace speed","group":"Timing","when":{"effect":["type-delete"]},"description":"Gap between backspaces. Erasing is normally quicker than typing.","unit":"ms","min":20,"max":500},"speed":{"type":"number","default":420,"label":"Change speed","group":"Timing","when":{"effect":["swap","flipboard"]},"description":"How long a single character takes to change.","unit":"ms","min":20,"max":2000},"steps":{"type":"number","default":7,"label":"Steps","group":"Effect","when":{"effect":["shuffle","flipboard"]},"description":"How many characters are cycled through before the real one lands.","min":1,"max":60},"tick":{"type":"number","default":45,"label":"Tick","group":"Timing","when":{"effect":["shuffle"]},"description":"How long each cycled character is shown.","unit":"ms","min":10,"max":500},"charset":{"type":"string","default":"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&@*?","label":"Character set","group":"Effect","when":{"effect":["shuffle","flipboard"]},"description":"Characters cycled through on the way to the real one.","ui":"textarea"},"sparkles":{"type":"number","default":7,"label":"Sparkles","group":"Effect","when":{"effect":["sparkle"]},"description":"How many twinkles are scattered around each phrase.","min":0,"max":30},"shape":{"type":"enum","default":"marker","label":"Shape","group":"Effect","when":{"effect":["marker-caret","highlight"]},"description":"Which marker is drawn over the phrase.","values":["underline","double-underline","scribble","circle","zigzag","sawtooth","strikethrough","cross-out","diagonal","box","brackets","arc","wave","marker","spark","corner-ticks"]}}}</script>
+<script type="application/json" id="demo-config">{"css":"","revision":"11819-4625","styles":["https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.css"],"scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js","type":"module"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.headline.min.js","integrity":"sha384-vuOMVM2hWZXP78tdBAp45ujvTwoCUBJsyIH2tcVKVFa/9X+REFvl0TXFN8MHfdak"}]}</script>
+<script type="module" src="../vendor/animated-headline.js"></script>
 <script src="../aurora.core.min.js?v=3"></script>
-<script src="../aurora.morph-card.min.js?v=3"></script>
+<script src="../aurora.headline.min.js?v=3"></script>
 <script src="../assets/site.js?v=5"></script>
 </body>
 

@@ -132,9 +132,42 @@ var MODULES = {
         stage: '',
         replay: true,
     },
+    headline: {
+        title: 'Animated Headline',
+        summary: 'Phrases that rotate through one of 27 animations.',
+        lead: 'Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.',
+        engine: true,
+        markup: function (id) {
+            return '<h2' + id + ' data-aurora-headline="rotate-1"\n    data-aurora-headline-phrases="beautiful&#10;effortless&#10;yours">\n  Make it beautiful\n</h2>';
+        },
+        css: '',
+        stage: '',
+        replay: true,
+    },
+    counter: {
+        title: 'Counter',
+        summary: 'A clock, a countdown, a timecode or a counting number.',
+        lead: 'Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.',
+        engine: true,
+        markup: function (id) {
+            return '<h2' + id + ' data-aurora-counter="progress"\n    data-aurora-counter-to="1250" data-aurora-counter-suffix="+"></h2>';
+        },
+        css: '',
+        stage: '',
+        replay: true,
+    },
 };
 
-var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card', 'highlight'];
+var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card', 'highlight', 'headline', 'counter'];
+
+/** Where the shared animated-headlines engine is loaded from, per script source. */
+function engineTags(scripts) {
+    var base = scripts === 'cdn' ? CDN + 'vendor/' : '../vendor/';
+    return {
+        style: '<link rel="stylesheet" href="' + base + 'animated-headline.css">',
+        script: '<script type="module" src="' + base + 'animated-headline.js"></script>',
+    };
+}
 
 // ── Standalone documents ────────────────────────────────────────────────
 
@@ -163,9 +196,13 @@ function standalone(name, scripts, forDisplay) {
     }
     var css = BASE_CSS + (mod.css ? '\n' + mod.css : '');
 
+    // The headline and counter modules mount the animated-headlines component,
+    // so the page needs that library as well as the Aurora scripts.
+    var engine = mod.engine ? engineTags(scripts) : null;
+
     return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-        '<title>Aurora ' + mod.title + ' (standalone)</title>\n<style>\n' + css + '\n</style>\n</head>\n<body>\n\n' +
-        markup + '\n\n' + tags + '\n</body>\n</html>\n';
+        '<title>Aurora ' + mod.title + ' (standalone)</title>\n' + (engine ? engine.style + '\n' : '') + '<style>\n' + css + '\n</style>\n</head>\n<body>\n\n' +
+        markup + '\n\n' + (engine ? engine.script + '\n' : '') + tags + '\n</body>\n</html>\n';
 }
 
 // ── Page shell ──────────────────────────────────────────────────────────
@@ -177,6 +214,8 @@ var NAV = [
     ['modules/cursor.html', 'Cursor'],
     ['modules/morph-card.html', 'Morph Card'],
     ['modules/highlight.html', 'Highlight Shapes'],
+    ['modules/headline.html', 'Animated Headline'],
+    ['modules/counter.html', 'Counter'],
     ['index.html#install', 'Install'],
     ['webflow.html', 'Webflow'],
     ['elementor.html', 'Elementor'],
@@ -258,6 +297,8 @@ var API_SNIPPETS = {
     cursor: "var fx = Aurora.cursor(document.querySelector('.area'), { dotColor: '#ff7a2f', hideNative: false });\nfx.destroy();",
     'morph-card': "var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });\nfx.api.next();         // go to the next state\nfx.api.goTo(2);        // jump to a state\nfx.destroy();",
     highlight: "var fx = Aurora.highlight(document.querySelector('h2'), { shape: 'circle', highlightColor: '#ff7a2f', trigger: 'load' });\nfx.update({ shape: 'zigzag' }); // change options, including the shape\nfx.replay();           // draw it again\nfx.destroy();          // removes only the overlay it added",
+    headline: "var fx = Aurora.headline(document.querySelector('h2'), {\n  effect: 'rotate-1',\n  phrases: 'beautiful\n\nneffortless\n\nnyours'\n});\nfx.update({ effect: 'flipboard' }); // swap the animation\nfx.destroy();          // puts the original heading back",
+    counter: "var fx = Aurora.counter(document.querySelector('h2'), { kind: 'countdown', target: '2026-12-31T23:59' });\nfx.update({ kind: 'clock', format: '24h' });\nfx.destroy();",
 };
 
 function modulePage(name) {
@@ -277,8 +318,14 @@ function modulePage(name) {
         name, title: mod.title, lead: mod.lead, markup: mod.markup(' id="demo"'),
         documentation: '<div class="wrap"><div class="module-links"><a href="../examples/' + name + '.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div>' + body,
         schema,
-        headlineDemo: name === 'text' ? readFileSync(resolve(root, 'site/templates/headline.html'), 'utf8') : '',
-        config: { css: mod.css, revision: info.bytes + '-' + info.gzip, scripts: ['aurora.core.min.js', file].map(function (f) { return { src: CDN + f, integrity: sri[f].integrity }; }) }
+        engine: mod.engine ? engineTags('local') : null,
+        config: {
+            css: mod.css,
+            revision: info.bytes + '-' + info.gzip,
+            styles: mod.engine ? [CDN + 'vendor/animated-headline.css'] : [],
+            scripts: (mod.engine ? [{ src: CDN + 'vendor/animated-headline.js', type: 'module' }] : [])
+                .concat(['aurora.core.min.js', file].map(function (f) { return { src: CDN + f, integrity: sri[f].integrity }; })),
+        }
     });
 }
 
@@ -294,7 +341,7 @@ function homePage() {
         '<h1 data-aurora-text="blur-reveal" data-aurora-text-split="words">Animated web design, for any builder.</h1>' +
         '<p class="lead">Aurora is an open-source toolkit of animation modules. Paste a script into plain HTML, drop it into Webflow, or install the Elementor plugin. Same modules, same attributes.</p>' +
         '<div class="cta"><a class="btn primary" href="index.html#install">Get started</a><a class="btn" href="' + REPO + '">View on GitHub</a></div></div></section>\n' +
-        '<section class="block"><div class="wrap"><h2>Five modules</h2><p class="sub">Use one or all of them. Each is a separate script that loads after the small core.</p><div class="grid">\n' + cards + '\n</div></div></section>\n' +
+        '<section class="block"><div class="wrap"><h2>' + ORDER.length + ' modules</h2><p class="sub">Use one or all of them. Each is a separate script that loads after the small core.</p><div class="grid">\n' + cards + '\n</div></div></section>\n' +
         '<section class="block"><div class="wrap"><h2>Three ways to use it</h2><div class="grid">' +
         '<a class="card" href="index.html#install"><h3>Standalone</h3><p>Copy two script tags into any HTML page. No build step.</p></a>' +
         '<a class="card" href="webflow.html"><h3>Webflow</h3><p>Add the script in Custom Code, then use Custom Attributes in the Designer.</p></a>' +
@@ -395,7 +442,7 @@ function elementorPage() {
 
 // The home is hand-maintained except its marked installation section.
 // Module pages use site/templates/module.html. Only generated files are removed.
-['modules', 'examples', 'assets', 'install.html', 'webflow.html', 'elementor.html'].concat(
+['modules', 'examples', 'assets', 'vendor', 'install.html', 'webflow.html', 'elementor.html'].concat(
     manifest.files.map(function (f) { return f.file; })
 ).forEach(function (name) { rmSync(resolve(out, name), { recursive: true, force: true }); });
 mkdirSync(out, { recursive: true });
@@ -404,7 +451,13 @@ manifest.files.forEach(function (f) { copyFileSync(resolve(dist, f.file), resolv
 mkdirSync(resolve(out, 'assets'), { recursive: true });
 copyFileSync(resolve(root, 'site/assets/site.css'), resolve(out, 'assets/site.css'));
 copyFileSync(resolve(root, 'site/assets/site.js'), resolve(out, 'assets/site.js'));
-['modules.css', 'interactive-demo.css', 'module-documentation.css', 'headline-demo.css', 'headline-demo.js', 'effect-guide.css', 'effect-guide.js'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
+['modules.css', 'interactive-demo.css', 'module-documentation.css', 'effect-guide.css', 'effect-guide.js'].forEach(function (file) { copyFileSync(resolve(root, 'site/assets', file), resolve(out, 'assets', file)); });
+
+// The animated-headlines engine, beside the bundles, exactly as the CDN serves it.
+mkdirSync(resolve(out, 'vendor'), { recursive: true });
+['animated-headline.js', 'animated-headline.css'].forEach(function (file) {
+    copyFileSync(resolve(dist, 'vendor', file), resolve(out, 'vendor', file));
+});
 write('data/text-effects.json', readFileSync(resolve(root, 'site/data/text-effects.json'), 'utf8'));
 copyFileSync(resolve(root, 'assets/branding/aurora_favicon.svg'), resolve(out, 'assets/favicon.svg'));
 

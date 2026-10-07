@@ -1,6 +1,6 @@
 import { textEffectGuide } from './text-effect-guide.mjs';
 /** Module pages use the actual Text Effects document, not a parallel demo shell. */
-export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config, headlineDemo = '' }) {
+export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config, engine = null }) {
     const escape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
     const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
     let page = reference
@@ -8,7 +8,7 @@ export function moduleDemoPage(reference, { name, title, lead, markup, documenta
         .replace('href="./" aria-current="page"', 'href="../modules/text.html"')
         .replaceAll('href="./"', 'href="../modules/text.html"')
         .replace('href="../modules/' + name + '.html" role="menuitem"', 'href="../modules/' + name + '.html" role="menuitem" aria-current="page"')
-        .replace('</head>', '<link rel="stylesheet" href="../assets/module-documentation.css?v=3">\n</head>');
+        .replace('</head>', '<link rel="stylesheet" href="../assets/module-documentation.css?v=3">\n' + (engine ? engine.style + '\n' : '') + '</head>');
 
     if (name !== 'text') {
         const section = page.match(/<section id="playground"[\s\S]*?<\/section>/)[0];
@@ -28,8 +28,9 @@ export function moduleDemoPage(reference, { name, title, lead, markup, documenta
             .replace(/<script src="\.\.\/aurora\.core\.min\.js"><\/script>[\s\S]*<\/body>/,
                 '<script type="application/json" id="schema">' + json(schema) + '</script>\n' +
                 '<script type="application/json" id="demo-config">' + json(config) + '</script>\n' +
+                (engine ? engine.script + '\n' : '') +
                 '<script src="../aurora.core.min.js?v=3"></script>\n<script src="../aurora.' + name + '.min.js?v=3"></script>\n' +
-                '<script src="../assets/site.js?v=3"></script>\n</body>');
+                '<script src="../assets/site.js?v=5"></script>\n</body>');
     } else {
         const guide = textEffectGuide(schema);
         page = page.replace('<div class="pg-preview__footer">', guide.panel + '\n<div class="pg-preview__footer">')
@@ -39,10 +40,8 @@ export function moduleDemoPage(reference, { name, title, lead, markup, documenta
         // Keep the original text demo, catalog, modal and runtime completely intact.
         page = page.replace(/var CORE_SRI = '[^']*';/, 'var CORE_SRI = ' + JSON.stringify(config.scripts[0].integrity) + ';')
             .replace(/var TEXT_SRI = '[^']*';/, 'var TEXT_SRI = ' + JSON.stringify(config.scripts[1].integrity) + ';')
-            .replace('<section id="effects"', headlineDemo + '\n<section id="effects"')
-            .replace('</head>', '<link rel="stylesheet" href="../assets/headline-demo.css?v=1">\n</head>')
             .replace('<script src="../aurora.text.min.js"></script>', '<script src="../aurora.text.min.js?v=' + config.revision + '"></script>')
-            .replace(/<\/body>\s*<\/html>\s*$/, '<script type="application/json" id="headline-schema">' + json(schema) + '</script>\n<script type="application/json" id="headline-config">' + json(config) + '</script>\n<script src="../assets/headline-demo.js?v=2"></script>\n<script src="../assets/site.js?v=3"></script>\n</body>\n</html>');
+            .replace(/<\/body>\s*<\/html>\s*$/, '<script src="../assets/site.js?v=5"></script>\n</body>\n</html>');
     }
     page = page.replace('<section class="cta-section', '<div class="module-documentation">' + documentation + '</div>\n<section class="cta-section');
     return page;

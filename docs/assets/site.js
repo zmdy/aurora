@@ -29,8 +29,11 @@
         gradient: ['type', 'stops', 'angle', 'animation', 'speed', 'meshStyle', 'distortion', 'swirl', 'scale', 'grain', 'grainIntensity', 'followMouse', 'spotlightRadius', 'liquidCursor', 'cursorRadius'],
         cursor: ['dotColor', 'ringColor', 'dotSize', 'ringSize', 'trailDelay', 'interactiveScale', 'imageScale', 'hideNative'],
         'morph-card': ['captionEffect', 'initialDelay', 'autoplay', 'loop', 'float'],
-        accent: ['shape', 'color', 'color2', 'strokeWidth', 'duration', 'easing', 'trigger']
-    }[name];
+    }[name] || Object.keys(schema.options).filter(function (key) {
+        // Modules whose schema carries its own grouping need no hand-kept list:
+        // everything but the Advanced group is shown, the rest folds away.
+        return (schema.options[key].group || '') !== 'Advanced';
+    });
     var hidden = ['selector', 'root', 'states', 'labels'];
     var copyButton = document.getElementById('btn-snippet-2');
     function kebab(key) { return key.replace(/([A-Z])/g, '-$1').toLowerCase(); }
@@ -65,9 +68,13 @@
         var output = original.cloneNode(true);
         output.removeAttribute('id');
         Object.keys(state).forEach(function (key) { output.setAttribute(attr(key), state[key]); });
-        snippet = (config.css ? '<style>\n' + config.css + '\n</style>\n\n' : '') + output.outerHTML;
+        snippet = (config.styles || []).map(function (href) { return '<link rel="stylesheet" href="' + href + '">\n\n'; }).join('') +
+            (config.css ? '<style>\n' + config.css + '\n</style>\n\n' : '') + output.outerHTML;
         config.scripts.forEach(function (script) {
-            snippet += '\n\n<script src="' + script.src + '" integrity="' + script.integrity + '" crossorigin="anonymous"><\/script>';
+            // The animated-headlines engine is published as an ES module and is
+            // not one of Aurora's own files, so it carries no integrity hash.
+            snippet += '\n\n<script ' + (script.type ? 'type="' + script.type + '" ' : '') + 'src="' + script.src + '"' +
+                (script.integrity ? ' integrity="' + script.integrity + '" crossorigin="anonymous"' : '') + '><\/script>';
         });
         document.getElementById('badge-tag').textContent = schema.primary ? state[schema.primary] : 'LIVE';
     }
@@ -90,6 +97,13 @@
                 option.value = value;
                 field.appendChild(option);
             });
+            field.value = state[key];
+            group.appendChild(field);
+        } else if (spec.ui === 'textarea') {
+            // A list the author writes one item per line; an <input> would
+            // silently fold those newlines into one line.
+            field = node('textarea', 'ctrl-input');
+            field.rows = 3;
             field.value = state[key];
             group.appendChild(field);
         } else if (spec.type === 'boolean') {
