@@ -76,6 +76,21 @@ var options = {
             + 'Empty keeps the text already in the element, which then has nothing to rotate to.',
         group: 'Content',
     },
+    beforeText: {
+        type: 'string',
+        default: '',
+        label: 'Text before',
+        description: 'Plain text shown right before the rotating phrase, like "This page is" '
+            + 'in front of a rotating word. Empty shows none.',
+        group: 'Content',
+    },
+    afterText: {
+        type: 'string',
+        default: '',
+        label: 'Text after',
+        description: 'Plain text shown right after the rotating phrase. Empty shows none.',
+        group: 'Content',
+    },
     target: {
         type: 'selector',
         default: '',

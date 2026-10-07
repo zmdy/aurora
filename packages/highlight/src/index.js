@@ -16,6 +16,11 @@ function svgNode(tag, attributes) {
     return node;
 }
 
+/** `beforeText`/`highlightedText`/`afterText` ask the module to compose the text itself. */
+function isComposed(current) {
+    return !!(current.beforeText || current.highlightedText || current.afterText);
+}
+
 /**
  * Aurora Highlight Shapes.
  *
@@ -31,6 +36,14 @@ function svgNode(tag, attributes) {
  *
  * Rotating phrases belong to the headline module, which does mount that
  * component, because rotation needs the markup it builds.
+ *
+ * `beforeText`/`highlightedText`/`afterText` are the one exception: the same
+ * "before the text / highlighted text / after the text" framing the old
+ * Elementor widget offered. Left empty (the default) the module never
+ * touches the element's content, exactly as before. Set any of them and the
+ * module wraps the highlighted term in its own `<span>` and measures the
+ * shape against that span instead of the whole element, so only the term is
+ * marked, not the surrounding words.
  */
 export var highlight = defineModule({
     name: 'highlight',
@@ -47,6 +60,9 @@ export var highlight = defineModule({
             return {};
         }
 
+        var pristineHTML = target.innerHTML;
+        var pristineText = (target.textContent || '').trim();
+
         // Only claim positioning if the element has none of its own, and put
         // it back on destroy.
         // The overlay hangs off the outer element, never off the text node,
@@ -55,8 +71,34 @@ export var highlight = defineModule({
         var pristinePosition = anchor.style.position;
         if (getComputedStyle(anchor).position === 'static') anchor.style.position = 'relative';
 
+        // The node the shape is actually measured against: `target` itself,
+        // or the `<span>` wrapping just the highlighted term once composed.
+        var contentNode = target;
+
+        function composeContent(current) {
+            if (!isComposed(current)) {
+                if (contentNode !== target) {
+                    target.innerHTML = pristineHTML;
+                    contentNode = target;
+                }
+                return;
+            }
+
+            target.innerHTML = '';
+            if (current.beforeText) target.appendChild(document.createTextNode(current.beforeText.trim() + ' '));
+
+            var span = document.createElement('span');
+            span.className = 'aurora-highlight-text';
+            span.textContent = current.highlightedText ? current.highlightedText.trim() : pristineText;
+            target.appendChild(span);
+
+            if (current.afterText) target.appendChild(document.createTextNode(' ' + current.afterText.trim()));
+
+            contentNode = span;
+        }
+
         function place(node) {
-            if (target === anchor) {
+            if (contentNode === anchor) {
                 node.style.left = '50%';
                 node.style.top = '50%';
                 node.style.width = '';
@@ -64,7 +106,7 @@ export var highlight = defineModule({
                 return;
             }
 
-            var box = target.getBoundingClientRect();
+            var box = contentNode.getBoundingClientRect();
             var base = anchor.getBoundingClientRect();
             node.style.left = (box.left - base.left + box.width / 2) + 'px';
             node.style.top = (box.top - base.top + box.height / 2) + 'px';
@@ -74,8 +116,18 @@ export var highlight = defineModule({
 
         var svg = null;
         var drawn = false;
+        var observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(function () { if (svg) place(svg); }) : null;
+
+        function watch() {
+            if (!observer) return;
+            observer.disconnect();
+            observer.observe(contentNode);
+            if (contentNode !== anchor) observer.observe(anchor);
+        }
 
         function build(current) {
+            composeContent(current);
+
             var shape = HIGHLIGHT_SHAPES[current.shape] || HIGHLIGHT_SHAPES[schema.options.shape.default];
             var next = svgNode('svg', {
                 viewBox: VIEW_BOX,
@@ -99,6 +151,7 @@ export var highlight = defineModule({
             else anchor.appendChild(next);
             svg = next;
             place(svg);
+            watch();
         }
 
         function draw() {
@@ -110,15 +163,6 @@ export var highlight = defineModule({
 
         build(options);
 
-        // Text reflows (a breakpoint, a web font arriving, the Text module
-        // splitting the phrase) move the box the marker is drawn over.
-        var observer = null;
-        if (typeof ResizeObserver !== 'undefined') {
-            observer = new ResizeObserver(function () { if (svg) place(svg); });
-            observer.observe(target);
-            if (target !== anchor) observer.observe(anchor);
-        }
-
         if (options.trigger === 'load') draw();
         else ctx.observe(el, { threshold: Math.min(options.threshold, 0.05), once: true, onEnter: draw });
 
@@ -126,6 +170,7 @@ export var highlight = defineModule({
             if (observer) observer.disconnect();
             if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
             svg = null;
+            if (contentNode !== target) target.innerHTML = pristineHTML;
             if (pristinePosition) anchor.style.position = pristinePosition;
             else anchor.style.removeProperty('position');
         });

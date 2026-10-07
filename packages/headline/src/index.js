@@ -26,6 +26,12 @@ function lines(value) {
  * component: rotating phrases needs the markup that component builds, and
  * there is no way to rotate text without owning it. The trade is that the
  * Text module cannot split the same phrase - both would be rewriting it.
+ *
+ * `beforeText`/`afterText` are plain words placed around the mounted
+ * component - the same "before the text / highlighted text / after the
+ * text" framing the old Elementor headline widget offered. The component
+ * itself has no notion of surrounding text, so this is composed here with
+ * plain text nodes rather than passed through to it.
  */
 export var headline = defineModule({
     name: 'headline',
@@ -94,7 +100,9 @@ export var headline = defineModule({
             });
 
             target.innerHTML = '';
+            if (current.beforeText) target.appendChild(document.createTextNode(current.beforeText.trim() + ' '));
             target.appendChild(host);
+            if (current.afterText) target.appendChild(document.createTextNode(' ' + current.afterText.trim()));
         }
 
         // The engine is an ES module, so it is usually defined a moment after

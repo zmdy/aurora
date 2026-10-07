@@ -54,6 +54,27 @@ var options = {
         group: 'Drawing',
         description: 'Which marker is drawn over the phrase.',
     }),
+    beforeText: {
+        type: 'string',
+        default: '',
+        label: 'Text before',
+        description: 'Plain text shown right before the highlighted term. Empty shows none.',
+        group: 'Content',
+    },
+    highlightedText: {
+        type: 'string',
+        default: '',
+        label: 'Highlighted text',
+        description: 'The term the shape is drawn over. Empty keeps the text already in the element.',
+        group: 'Content',
+    },
+    afterText: {
+        type: 'string',
+        default: '',
+        label: 'Text after',
+        description: 'Plain text shown right after the highlighted term. Empty shows none.',
+        group: 'Content',
+    },
     trigger: {
         type: 'enum',
         default: 'scroll',
