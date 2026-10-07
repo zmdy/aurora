@@ -54,16 +54,25 @@ var options = {
         group: 'Drawing',
         description: 'Which marker is drawn over the phrase.',
     }),
-    phrases: {
-        type: 'string',
-        default: '',
-        ui: 'textarea',
-        label: 'Phrases',
-        description: 'One per line. More than one rotates them; a single one loops the drawing. '
-            + 'Empty keeps the text already in the element.',
-        group: 'Content',
+    trigger: {
+        type: 'enum',
+        default: 'scroll',
+        values: ['scroll', 'load'],
+        label: 'Draw when',
+        description: '"scroll" waits until the phrase is in sight.',
+        group: 'Timing',
     },
-    hold: fromManifest('hold', { group: 'Timing' }),
+    threshold: {
+        type: 'number',
+        default: 0.2,
+        min: 0,
+        max: 1,
+        step: 0.05,
+        label: 'Visible ratio',
+        description: 'Capped at 5% internally, so a tall heading still draws.',
+        group: 'Timing',
+        when: { trigger: 'scroll' },
+    },
     target: {
         type: 'selector',
         default: '',
@@ -74,7 +83,12 @@ var options = {
     },
 };
 
-THEME.highlight.forEach(function (spec) {
+// The overlay draws once, so the library's loop and dissolve knobs (hold,
+// easing, fade blur) have nothing to act on here.
+var DRAWN_BY_OVERLAY = ['--ah-highlight-color', '--ah-highlight-width', '--ah-draw-duration',
+    '--ah-highlight-bleed-x', '--ah-highlight-bleed-y'];
+
+THEME.highlight.filter(function (spec) { return DRAWN_BY_OVERLAY.indexOf(spec.variable) >= 0; }).forEach(function (spec) {
     // --ah-highlight-color -> highlightColor
     var name = spec.variable.replace(/^--ah-/, '').replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
     options[name] = fromTheme(spec);
@@ -87,7 +101,9 @@ export var schema = {
 };
 
 /** The subset of options that map onto CSS custom properties. */
-export var themeOptions = THEME.highlight.map(function (spec) {
+export var themeOptions = THEME.highlight
+    .filter(function (spec) { return DRAWN_BY_OVERLAY.indexOf(spec.variable) >= 0; })
+    .map(function (spec) {
     return {
         option: spec.variable.replace(/^--ah-/, '').replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); }),
         variable: spec.variable,

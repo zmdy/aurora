@@ -1,120 +1,142 @@
 import { defineModule } from '@aurora/core';
+import { HIGHLIGHT_SHAPES } from '@vianetz/animated-headlines-vanilla/manifest';
 import { schema, themeOptions } from './schema.js';
+import { css } from './styles.js';
 
 export { schema };
+
+var NS = 'http://www.w3.org/2000/svg';
+
+/** The box the shapes are authored in; stretched to the phrase on mount. */
+var VIEW_BOX = '0 0 500 150';
+
+function svgNode(tag, attributes) {
+    var node = document.createElementNS(NS, tag);
+    Object.keys(attributes).forEach(function (key) { node.setAttribute(key, String(attributes[key])); });
+    return node;
+}
 
 /**
  * Aurora Highlight Shapes.
  *
  * Usage:
- *   <h2 data-aurora-highlight="circle">Pick the <b>right one</b></h2>
+ *   <h2 data-aurora-highlight="circle">Pick the right one</h2>
  *   Aurora.highlight(document.querySelector('h2'), { shape: 'marker' });
  *
- * The drawing itself is the animated-headlines component; this module owns the
- * authoring surface - the attributes, the schema and therefore the builder
- * controls - so a highlight is written the same way here as every other Aurora
- * module, in plain HTML, in Webflow or through the Elementor widget.
+ * The marker is drawn over text the author already wrote and never rewrites
+ * it: the SVG is an absolutely-positioned overlay, so the children are left
+ * alone. It is also mounted beside the text node rather than inside it -
+ * the Text module restores that node's innerHTML whenever it splits or
+ * replays, which would carry an overlay nested within it away.
  *
- * That component is deliberately NOT imported here. It ships as its own shared
- * script, so the modules built on it load one copy between them instead of one
- * each - and, just as importantly, this file stays free of DOM side effects so
- * the build can read the schema under Node.
+ * Rotating phrases belong to the headline module, which does mount that
+ * component, because rotation needs the markup it builds.
  */
-
-var ENGINE = 'via-animated-headline';
-
-function lines(value) {
-    return value.split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean);
-}
-
-/**
- * What gets drawn over, and what is left alone.
- *
- * A <b> marks the phrase to highlight, so the words around it stay put:
- * "Pick the <b>right one</b>" keeps "Pick the". Several <b> elements, or extra
- * lines in the `phrases` option, become phrases to rotate through. With no <b>
- * at all the whole element is the phrase, which is the simplest case and needs
- * no markup.
- */
-function readTarget(el, options) {
-    var marked = Array.prototype.slice.call(el.querySelectorAll('b'));
-    var phrases = marked.map(function (node) { return node.textContent.trim(); })
-        .concat(lines(options.phrases))
-        .filter(Boolean);
-
-    if (!marked.length) {
-        // Without a <b> there is no way to tell which part of the text should
-        // be drawn over, so the whole of it is the first phrase and any listed
-        // ones follow. The text the author wrote is never silently dropped.
-        var own = (el.textContent || '').trim();
-        return { anchor: null, phrases: own ? [own].concat(phrases) : phrases };
-    }
-
-    return { anchor: marked, phrases: phrases };
-}
-
 export var highlight = defineModule({
     name: 'highlight',
     schema: schema,
 
     init: function (el, options, ctx) {
-        if (typeof customElements === 'undefined' || !customElements.get(ENGINE)) {
-            ctx.warn('The animated-headlines script is not on the page, so nothing will be drawn.');
+        ctx.style('highlight', css);
+
+        // A builder hands the module its widget wrapper, not the heading
+        // inside it, so the drawing would otherwise be sized to the wrapper.
+        var target = options.target ? el.querySelector(options.target) || el : el;
+        if (!HIGHLIGHT_SHAPES[options.shape]) {
+            ctx.warn('Unknown shape "' + options.shape + '".');
             return {};
         }
 
-        // A builder hands us the widget wrapper, not the heading inside it, so
-        // without this the whole widget would be replaced by the drawing.
-        var target = options.target ? el.querySelector(options.target) || el : el;
-        var pristineHTML = target.innerHTML;
+        // Only claim positioning if the element has none of its own, and put
+        // it back on destroy.
+        // The overlay hangs off the outer element, never off the text node,
+        // and is positioned over whatever box that node occupies.
+        var anchor = el;
+        var pristinePosition = anchor.style.position;
+        if (getComputedStyle(anchor).position === 'static') anchor.style.position = 'relative';
 
-        function build(current) {
-            // Always start from the markup the author wrote: build() replaces
-            // part of it, so reading the target from an already-built element
-            // would compound.
-            target.innerHTML = pristineHTML;
-
-            var found = readTarget(target, current);
-            if (!found.phrases.length) {
-                ctx.warn('Nothing to highlight: no phrases and no text in the element.');
+        function place(node) {
+            if (target === anchor) {
+                node.style.left = '50%';
+                node.style.top = '50%';
+                node.style.width = '';
+                node.style.height = '';
                 return;
             }
 
-            var host = document.createElement(ENGINE);
-            host.setAttribute('animation', 'highlight');
-            host.setAttribute('shape', current.shape);
-            if (current.hold !== schema.options.hold.default) host.setAttribute('hold', String(current.hold));
+            var box = target.getBoundingClientRect();
+            var base = anchor.getBoundingClientRect();
+            node.style.left = (box.left - base.left + box.width / 2) + 'px';
+            node.style.top = (box.top - base.top + box.height / 2) + 'px';
+            node.style.width = 'calc(' + box.width + 'px + var(--ah-highlight-bleed-x, .35em) * 2)';
+            node.style.height = 'calc(' + box.height + 'px + var(--ah-highlight-bleed-y, .3em) * 2)';
+        }
+
+        var svg = null;
+        var drawn = false;
+
+        function build(current) {
+            var shape = HIGHLIGHT_SHAPES[current.shape] || HIGHLIGHT_SHAPES[schema.options.shape.default];
+            var next = svgNode('svg', {
+                viewBox: VIEW_BOX,
+                preserveAspectRatio: 'none',
+                class: 'aurora-highlight',
+                'data-shape': current.shape,
+                'aria-hidden': 'true',
+                focusable: 'false',
+            });
+
+            shape.forEach(function (definition) {
+                next.appendChild(svgNode('path', { d: definition, pathLength: '100' }));
+            });
 
             themeOptions.forEach(function (entry) {
-                var value = current[entry.option];
-                if (value) host.style.setProperty(entry.variable, value);
+                if (current[entry.option]) next.style.setProperty(entry.variable, current[entry.option]);
             });
+            if (drawn) next.classList.add('is-drawn');
 
-            found.phrases.forEach(function (text, index) {
-                var phrase = document.createElement('b');
-                phrase.textContent = text;
-                if (index) phrase.setAttribute('hidden', '');
-                host.appendChild(phrase);
-            });
+            if (svg && svg.parentNode) svg.parentNode.replaceChild(next, svg);
+            else anchor.appendChild(next);
+            svg = next;
+            place(svg);
+        }
 
-            if (found.anchor) {
-                found.anchor[0].replaceWith(host);
-                found.anchor.slice(1).forEach(function (node) { node.remove(); });
-            } else {
-                target.innerHTML = '';
-                target.appendChild(host);
-            }
+        function draw() {
+            if (drawn || !svg) return;
+            drawn = true;
+            if (ctx.reducedMotion) { svg.classList.add('is-drawn'); return; }
+            svg.classList.add('is-visible');
         }
 
         build(options);
 
-        ctx.onDestroy(function () { target.innerHTML = pristineHTML; });
+        // Text reflows (a breakpoint, a web font arriving, the Text module
+        // splitting the phrase) move the box the marker is drawn over.
+        var observer = null;
+        if (typeof ResizeObserver !== 'undefined') {
+            observer = new ResizeObserver(function () { if (svg) place(svg); });
+            observer.observe(target);
+            if (target !== anchor) observer.observe(anchor);
+        }
+
+        if (options.trigger === 'load') draw();
+        else ctx.observe(el, { threshold: Math.min(options.threshold, 0.05), once: true, onEnter: draw });
+
+        ctx.onDestroy(function () {
+            if (observer) observer.disconnect();
+            if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
+            svg = null;
+            if (pristinePosition) anchor.style.position = pristinePosition;
+            else anchor.style.removeProperty('position');
+        });
 
         return {
-            // The component reads its options once, when it is connected, so a
-            // changed option means a fresh element rather than an attribute
-            // rewrite.
             update: function (next) { build(next); },
+            replay: function () {
+                drawn = false;
+                if (svg) svg.classList.remove('is-visible', 'is-drawn');
+                draw();
+            },
         };
     },
 });

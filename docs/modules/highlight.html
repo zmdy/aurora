@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Draws an SVG accent around a target without touching its content — any markup already inside (a nested span, an icon, a manual highlight) survives untouched.">
-  <title>Accent | Aurora</title>
+  <meta name="description" content="Draws a marker over a phrase without ever rewriting it: the shape is an SVG overlay, so any markup already inside survives, and the Text module can split the same words at the same time.">
+  <title>Highlight Shapes | Aurora</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 
   <!-- Distinctive Display & UI Fonts from Google Fonts: Syne, Space Grotesk, Inter, JetBrains Mono -->
@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../assets/module-documentation.css?v=3">
 </head>
 
-<body data-module="accent">
+<body data-module="highlight">
   <div class="gcursor-dot" id="gcursor-dot" aria-hidden="true"></div>
   <div class="gcursor-ring" id="gcursor-ring" aria-hidden="true"></div>
 
@@ -90,8 +90,8 @@
     <div class="container">
       <div class="section-header">
         <div class="eyebrow">Interactive Demo</div>
-        <h1 class="display-2" style="margin-top:1rem">Live Accent Playground</h1>
-        <p>Draws an SVG accent around a target without touching its content — any markup already inside (a nested span, an icon, a manual highlight) survives untouched.</p>
+        <h1 class="display-2" style="margin-top:1rem">Live Highlight Shapes Playground</h1>
+        <p>Draws a marker over a phrase without ever rewriting it: the shape is an SVG overlay, so any markup already inside survives, and the Text module can split the same words at the same time.</p>
       </div>
 
       <div class="pg-layout">
@@ -101,17 +101,17 @@
             <div class="pg-preview__dot"></div>
             <div class="pg-preview__dot"></div>
             <div class="pg-preview__dot"></div>
-            <div class="pg-preview__title">Aurora.accent() · live</div>
+            <div class="pg-preview__title">Aurora.highlight() · live</div>
           </div>
 
           <div class="pg-preview__stage" id="pg-stage">
-            <h2 id="demo" data-aurora-accent="underline" data-aurora-accent-trigger="load">Ship <em>beautiful</em> motion.</h2>
+            <h2 id="demo" data-aurora-highlight="circle" data-aurora-highlight-trigger="load">Ship <em>beautiful</em> motion.</h2>
           </div>
 
           <div class="pg-preview__footer">
             <div class="pg-badge-row">
               <span class="pg-badge pg-badge--gsap" id="badge-tag">LIVE</span>
-              <span class="pg-badge pg-badge--split" id="badge-split">accent</span>
+              <span class="pg-badge pg-badge--split" id="badge-split">highlight</span>
               <span class="pg-badge pg-badge--anime" id="badge-anim" style="display:none">—</span>
             </div>
             <div style="display:flex;gap:.5rem">
@@ -147,12 +147,12 @@
      ═══════════════════════════════════════════════════════════════════ -->
   
 
-  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/accent.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 2.6 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/highlight.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 5.0 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-&lt;title&gt;Aurora Accent (standalone)&lt;/title&gt;
+&lt;title&gt;Aurora Highlight Shapes (standalone)&lt;/title&gt;
 &lt;style&gt;
 body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b12; color: #ecebf5; font: 16px/1.5 system-ui, sans-serif; }
 h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
@@ -160,31 +160,31 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;/head&gt;
 &lt;body&gt;
 
-&lt;h2 data-aurora-accent=&quot;underline&quot; data-aurora-accent-trigger=&quot;load&quot;&gt;Ship &lt;em&gt;beautiful&lt;/em&gt; motion.&lt;/h2&gt;
+&lt;h2 data-aurora-highlight=&quot;circle&quot; data-aurora-highlight-trigger=&quot;load&quot;&gt;Ship &lt;em&gt;beautiful&lt;/em&gt; motion.&lt;/h2&gt;
 
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js&quot;
         integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js&quot;
-        integrity=&quot;sha384-SdaFmQaAsCTBM3LQPIosMDMH0FqBoyEohUrYWG2xAtECacNcFMJa1f09/vIGEz1K&quot;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.highlight.min.js&quot;
+        integrity=&quot;sha384-9RYTNGbkDfNAiKPm39C6RCPIxAqLF0V+0CkKKpGJVc/dcTmYVzP2cN0bIh555gEr&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.accent(document.querySelector('h2'), { shape: 'circle', color: '#ff7a2f', trigger: 'load' });
-fx.update({ shape: 'zigzag' }); // change options, including shape
-fx.destroy();          // removes only the accent svg it added</code></pre></div></div></section>
-<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-accent-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-accent-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>shape</code></td><td><code>data-aurora-accent</code></td><td>enum</td><td><code>underline</code></td><td>Shape<br><small><code>underline</code> <code>circle</code> <code>zigzag</code> <code>strike</code> <code>frame</code></small></td></tr>
-<tr><td><code>color</code></td><td><code>data-aurora-accent-color</code></td><td>color</td><td><code>#ff7a2f</code></td><td>Color</td></tr>
-<tr><td><code>color2</code></td><td><code>data-aurora-accent-color2</code></td><td>color</td><td><code>#ff7a2f</code></td><td>Blended into the first along the stroke. Equal to Color by default for a flat line.</td></tr>
-<tr><td><code>strokeWidth</code></td><td><code>data-aurora-accent-stroke-width</code></td><td>number (px)</td><td><code>6</code></td><td>Stroke width</td></tr>
-<tr><td><code>duration</code></td><td><code>data-aurora-accent-duration</code></td><td>number (ms)</td><td><code>700</code></td><td>Duration</td></tr>
-<tr><td><code>easing</code></td><td><code>data-aurora-accent-easing</code></td><td>enum</td><td><code>ease-out</code></td><td>&quot;Ease out&quot; reads like a pen decelerating at the end of the stroke.<br><small><code>ease-out</code> <code>linear</code> <code>ease-in-out</code></small></td></tr>
-<tr><td><code>delay</code></td><td><code>data-aurora-accent-delay</code></td><td>number (ms)</td><td><code>0</code></td><td>Delay</td></tr>
-<tr><td><code>trigger</code></td><td><code>data-aurora-accent-trigger</code></td><td>enum</td><td><code>scroll</code></td><td>Trigger<br><small><code>scroll</code> <code>load</code> <code>hover</code></small></td></tr>
-<tr><td><code>threshold</code></td><td><code>data-aurora-accent-threshold</code></td><td>number</td><td><code>0.2</code></td><td>Capped at 5% internally so accents above the fold still draw in.</td></tr>
-<tr><td><code>target</code></td><td><code>data-aurora-accent-target</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node to decorate. Empty uses the element itself; its existing content is never touched.</td></tr>
+<section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.highlight(document.querySelector('h2'), { shape: 'circle', highlightColor: '#ff7a2f', trigger: 'load' });
+fx.update({ shape: 'zigzag' }); // change options, including the shape
+fx.replay();           // draw it again
+fx.destroy();          // removes only the overlay it added</code></pre></div></div></section>
+<section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-highlight-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-highlight-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>shape</code></td><td><code>data-aurora-highlight</code></td><td>enum</td><td><code>underline</code></td><td>Which marker is drawn over the phrase.<br><small><code>underline</code> <code>double-underline</code> <code>scribble</code> <code>circle</code> <code>zigzag</code> <code>sawtooth</code> <code>strikethrough</code> <code>cross-out</code> <code>diagonal</code> <code>box</code> <code>brackets</code> <code>arc</code> <code>wave</code> <code>marker</code> <code>spark</code> <code>corner-ticks</code></small></td></tr>
+<tr><td><code>trigger</code></td><td><code>data-aurora-highlight-trigger</code></td><td>enum</td><td><code>scroll</code></td><td>&quot;scroll&quot; waits until the phrase is in sight.<br><small><code>scroll</code> <code>load</code></small></td></tr>
+<tr><td><code>threshold</code></td><td><code>data-aurora-highlight-threshold</code></td><td>number</td><td><code>0.2</code></td><td>Capped at 5% internally, so a tall heading still draws.</td></tr>
+<tr><td><code>target</code></td><td><code>data-aurora-highlight-target</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node holding the text. Empty draws over the element itself.</td></tr>
+<tr><td><code>highlightColor</code></td><td><code>data-aurora-highlight-highlight-color</code></td><td>color</td><td><code></code></td><td>Empty keeps #e63946.</td></tr>
+<tr><td><code>highlightWidth</code></td><td><code>data-aurora-highlight-highlight-width</code></td><td>string</td><td><code></code></td><td>Kept even as the drawing is stretched to the phrase. Empty keeps 7px.</td></tr>
+<tr><td><code>drawDuration</code></td><td><code>data-aurora-highlight-draw-duration</code></td><td>string</td><td><code></code></td><td>Empty keeps 1.1s.</td></tr>
+<tr><td><code>highlightBleedX</code></td><td><code>data-aurora-highlight-highlight-bleed-x</code></td><td>string</td><td><code></code></td><td>Empty keeps 0.35em.</td></tr>
+<tr><td><code>highlightBleedY</code></td><td><code>data-aurora-highlight-highlight-bleed-y</code></td><td>string</td><td><code></code></td><td>Empty keeps 0.3em.</td></tr>
 </tbody></table></div></div></section>
 </div>
 <section class="cta-section section-gap-lg">
@@ -287,10 +287,10 @@ fx.destroy();          // removes only the accent svg it added</code></pre></div
   <!-- ══════════════════════════════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
-  <script type="application/json" id="schema">{"primary":"shape","options":{"shape":{"type":"enum","default":"underline","values":["underline","circle","zigzag","strike","frame"],"label":"Shape","group":"Appearance"},"color":{"type":"color","default":"#ff7a2f","label":"Color","group":"Appearance"},"color2":{"type":"color","default":"#ff7a2f","label":"Second color","description":"Blended into the first along the stroke. Equal to Color by default for a flat line.","group":"Appearance"},"strokeWidth":{"type":"number","default":6,"min":1,"max":40,"unit":"px","label":"Stroke width","group":"Appearance"},"duration":{"type":"number","default":700,"min":50,"max":10000,"unit":"ms","label":"Duration","group":"Timing"},"easing":{"type":"enum","default":"ease-out","values":["ease-out","linear","ease-in-out"],"label":"Easing","description":"\"Ease out\" reads like a pen decelerating at the end of the stroke.","group":"Timing"},"delay":{"type":"number","default":0,"min":0,"max":10000,"unit":"ms","label":"Delay","group":"Timing"},"trigger":{"type":"enum","default":"scroll","values":["scroll","load","hover"],"label":"Trigger","group":"Trigger"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally so accents above the fold still draw in.","group":"Trigger","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Target element","description":"CSS selector, relative to the element, of the node to decorate. Empty uses the element itself; its existing content is never touched.","group":"Advanced"}}}</script>
-<script type="application/json" id="demo-config">{"css":"","revision":"6267-2626","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.accent.min.js","integrity":"sha384-SdaFmQaAsCTBM3LQPIosMDMH0FqBoyEohUrYWG2xAtECacNcFMJa1f09/vIGEz1K"}]}</script>
+  <script type="application/json" id="schema">{"primary":"shape","options":{"shape":{"type":"enum","default":"underline","label":"Shape","group":"Drawing","description":"Which marker is drawn over the phrase.","values":["underline","double-underline","scribble","circle","zigzag","sawtooth","strikethrough","cross-out","diagonal","box","brackets","arc","wave","marker","spark","corner-ticks"]},"trigger":{"type":"enum","default":"scroll","values":["scroll","load"],"label":"Draw when","description":"\"scroll\" waits until the phrase is in sight.","group":"Timing"},"threshold":{"type":"number","default":0.2,"min":0,"max":1,"step":0.05,"label":"Visible ratio","description":"Capped at 5% internally, so a tall heading still draws.","group":"Timing","when":{"trigger":"scroll"}},"target":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node holding the text. Empty draws over the element itself.","group":"Advanced"},"highlightColor":{"type":"color","default":"","label":"Ink colour","description":"Empty keeps #e63946.","group":"Appearance","variable":"--ah-highlight-color"},"highlightWidth":{"type":"string","default":"","label":"Pen width","description":"Kept even as the drawing is stretched to the phrase. Empty keeps 7px.","group":"Appearance","variable":"--ah-highlight-width"},"drawDuration":{"type":"string","default":"","label":"Draw duration","description":"Empty keeps 1.1s.","group":"Appearance","variable":"--ah-draw-duration"},"highlightBleedX":{"type":"string","default":"","label":"Horizontal overshoot","description":"Empty keeps 0.35em.","group":"Appearance","variable":"--ah-highlight-bleed-x"},"highlightBleedY":{"type":"string","default":"","label":"Vertical overshoot","description":"Empty keeps 0.3em.","group":"Appearance","variable":"--ah-highlight-bleed-y"}}}</script>
+<script type="application/json" id="demo-config">{"css":"","revision":"13226-5143","scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.highlight.min.js","integrity":"sha384-9RYTNGbkDfNAiKPm39C6RCPIxAqLF0V+0CkKKpGJVc/dcTmYVzP2cN0bIh555gEr"}]}</script>
 <script src="../aurora.core.min.js?v=3"></script>
-<script src="../aurora.accent.min.js?v=3"></script>
+<script src="../aurora.highlight.min.js?v=3"></script>
 <script src="../assets/site.js?v=3"></script>
 </body>
 

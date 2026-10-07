@@ -69,7 +69,6 @@ namespace {
 	check(($ha['data-aurora-highlight']??null)==='circle','highlight primary attr');
 	check(strpos($ha['data-aurora-highlight-options']??'','#7c5cff')!==false,'highlight theme option passed through');
 	check(!empty($GLOBALS['enq']['aurora-highlight']),'highlight script enqueued');
-	check(!empty($GLOBALS['enq_style']['aurora-animated-headlines']),'engine stylesheet enqueued with the module');
 
 	$w=new Aurora\Morph_Card_Widget();
 	$o=Aurora\Morph_Card_Widget::options_from_settings(['loop'=>'','states'=>[['template'=>'profile','username'=>'ana','likes'=>'','photo'=>['url'=>'a.jpg'],'duration_ms'=>2000]],'label_follow'=>'Seguir']);

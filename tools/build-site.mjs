@@ -121,12 +121,12 @@ var MODULES = {
         stage: '',
         replay: false,
     },
-    accent: {
-        title: 'Accent',
-        summary: 'A hand-drawn-feeling SVG underline, circle, zigzag, strike or frame around existing markup.',
-        lead: 'Draws an SVG accent around a target without touching its content \u2014 any markup already inside (a nested span, an icon, a manual highlight) survives untouched.',
+    highlight: {
+        title: 'Highlight Shapes',
+        summary: 'A hand-drawn marker — underline, circle, scribble, marker pen and twelve more — drawn over a phrase.',
+        lead: 'Draws a marker over a phrase without ever rewriting it: the shape is an SVG overlay, so any markup already inside survives, and the Text module can split the same words at the same time.',
         markup: function (id) {
-            return '<h2' + id + ' data-aurora-accent="underline" data-aurora-accent-trigger="load">Ship <em>beautiful</em> motion.</h2>';
+            return '<h2' + id + ' data-aurora-highlight="circle" data-aurora-highlight-trigger="load">Ship <em>beautiful</em> motion.</h2>';
         },
         css: '',
         stage: '',
@@ -134,7 +134,7 @@ var MODULES = {
     },
 };
 
-var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card', 'accent'];
+var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card', 'highlight'];
 
 // ── Standalone documents ────────────────────────────────────────────────
 
@@ -176,7 +176,7 @@ var NAV = [
     ['modules/gradient.html', 'Gradient'],
     ['modules/cursor.html', 'Cursor'],
     ['modules/morph-card.html', 'Morph Card'],
-    ['modules/accent.html', 'Accent'],
+    ['modules/highlight.html', 'Highlight Shapes'],
     ['index.html#install', 'Install'],
     ['webflow.html', 'Webflow'],
     ['elementor.html', 'Elementor'],
@@ -257,7 +257,7 @@ var API_SNIPPETS = {
     gradient: "var fx = Aurora.gradient(document.querySelector('.hero'), {\n  type: 'radial',\n  stops: '#7c6cff;#ff7a2f;#2af598',\n  followMouse: true\n});\nfx.destroy();          // removes every style it added",
     cursor: "var fx = Aurora.cursor(document.querySelector('.area'), { dotColor: '#ff7a2f', hideNative: false });\nfx.destroy();",
     'morph-card': "var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });\nfx.api.next();         // go to the next state\nfx.api.goTo(2);        // jump to a state\nfx.destroy();",
-    accent: "var fx = Aurora.accent(document.querySelector('h2'), { shape: 'circle', color: '#ff7a2f', trigger: 'load' });\nfx.update({ shape: 'zigzag' }); // change options, including shape\nfx.destroy();          // removes only the accent svg it added",
+    highlight: "var fx = Aurora.highlight(document.querySelector('h2'), { shape: 'circle', highlightColor: '#ff7a2f', trigger: 'load' });\nfx.update({ shape: 'zigzag' }); // change options, including the shape\nfx.replay();           // draw it again\nfx.destroy();          // removes only the overlay it added",
 };
 
 function modulePage(name) {

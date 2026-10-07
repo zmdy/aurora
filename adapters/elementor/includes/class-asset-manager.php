@@ -41,8 +41,14 @@ final class Asset_Manager {
 	 */
 	public const ENGINE = 'aurora-animated-headlines';
 
-	/** Modules that need the shared engine on the page. */
-	private const ENGINE_MODULES = [ 'highlight' ];
+	/**
+	 * Modules that need the shared engine on the page.
+	 *
+	 * Highlight draws its own overlay and does not, so that it can sit on the
+	 * same element as the Text module. The counter and headline modules will,
+	 * because they mount the component itself.
+	 */
+	private const ENGINE_MODULES = [];
 
 	/** Script handle of a module ("text" => "aurora-text"). */
 	public static function handle( string $module ): string {
