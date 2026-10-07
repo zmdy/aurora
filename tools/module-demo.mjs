@@ -1,13 +1,16 @@
 import { textEffectGuide } from './text-effect-guide.mjs';
 /** Module pages use the actual Text Effects document, not a parallel demo shell. */
-export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config, engine = null }) {
+export function moduleDemoPage(reference, { name, title, lead, markup, documentation, schema, config, nav = '', engine = null }) {
     const escape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
     const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
     let page = reference
         .replace('<title>Text Effects — 53 Live Animations | Aurora</title>', '<title>' + escape(title) + ' | Aurora</title>')
         .replace('href="./" aria-current="page"', 'href="../modules/text.html"')
         .replaceAll('href="./"', 'href="../modules/text.html"')
-        .replace('href="../modules/' + name + '.html" role="menuitem"', 'href="../modules/' + name + '.html" role="menuitem" aria-current="page"')
+        .replace(/<div class="nav__dropdown-menu"([^>]*)>[\s\S]*?<\/div>/, '<div class="nav__dropdown-menu"$1>\n              ' + nav + '\n            </div>')
+        // Only the Text page is the Text page.
+        .replace('<a href="../modules/text.html" aria-current="page">Text Effects</a>',
+            '<a href="../modules/text.html"' + (name === 'text' ? ' aria-current="page"' : '') + '>Text Effects</a>')
         .replace('</head>', '<link rel="stylesheet" href="../assets/module-documentation.css?v=3">\n' + (engine ? engine.style + '\n' : '') + '</head>');
 
     if (name !== 'text') {

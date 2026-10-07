@@ -65,6 +65,7 @@ var CARD_STATES = [
 var MODULES = {
     text: {
         title: 'Text',
+        nav: ['✨', 'green', 'Text', '53 scroll &amp; load effects'],
         summary: manifest.schemas.text.options.effect.values.length + ' effects that split text into characters, words or lines.',
         lead: 'Split any text into characters, words or lines and animate it on scroll or on load. Built on Anime.js v4.',
         markup: function (id) {
@@ -76,6 +77,7 @@ var MODULES = {
     },
     children: {
         title: 'Animate Children',
+        nav: ['🎬', 'teal', 'Animate Children', 'Stagger, hover, proximity'],
         summary: 'Staggered entrances, hover and proximity effects for the children of any element.',
         lead: 'Animate the children of an element one after another. Uses the Web Animations API: no library needed.',
         markup: function (id) {
@@ -89,6 +91,7 @@ var MODULES = {
     },
     gradient: {
         title: 'Gradient',
+        nav: ['🌈', 'violet', 'Gradient', 'Multi-stop, mesh, follow mouse'],
         summary: 'Multi-stop gradients for backgrounds, text and icons, plus WebGL mesh styles.',
         lead: 'Paint backgrounds, text or icons with animated gradients, a cursor spotlight or a WebGL mesh (with a CSS fallback).',
         markup: function (id) {
@@ -100,6 +103,7 @@ var MODULES = {
     },
     cursor: {
         title: 'Cursor Follow',
+        nav: ['🖱️', 'green', 'Cursor Follow', 'Dot + ring zones'],
         summary: 'A dot-and-ring cursor inside an element, with hover states.',
         lead: 'A custom cursor scoped to an element: a dot that follows instantly and a ring that trails behind. The native cursor stays visible unless you turn it off.',
         markup: function (id) {
@@ -111,6 +115,7 @@ var MODULES = {
     },
     'morph-card': {
         title: 'Morph Card',
+        nav: ['🪪', 'teal', 'Morph Card', 'Post, profile, polaroid'],
         summary: 'A card that morphs between post, profile and polaroid layouts.',
         lead: 'A card that morphs between layouts on its own. Pass the states as JSON, or drive it from code with next() and goTo().',
         markup: function (id) {
@@ -123,6 +128,7 @@ var MODULES = {
     },
     highlight: {
         title: 'Highlight Shapes',
+        nav: ['✏️', 'violet', 'Highlight Shapes', '16 hand-drawn markers'],
         summary: 'A hand-drawn marker — underline, circle, scribble, marker pen and twelve more — drawn over a phrase.',
         lead: 'Draws a marker over a phrase without ever rewriting it: the shape is an SVG overlay, so any markup already inside survives, and the Text module can split the same words at the same time.',
         markup: function (id) {
@@ -134,6 +140,7 @@ var MODULES = {
     },
     headline: {
         title: 'Animated Headline',
+        nav: ['🔄', 'green', 'Animated Headline', '27 rotating animations'],
         summary: 'Phrases that rotate through one of 27 animations.',
         lead: 'Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.',
         engine: true,
@@ -146,6 +153,7 @@ var MODULES = {
     },
     counter: {
         title: 'Counter',
+        nav: ['⏱️', 'teal', 'Counter', 'Clock, countdown, numbers'],
         summary: 'A clock, a countdown, a timecode or a counting number.',
         lead: 'Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.',
         engine: true,
@@ -159,6 +167,23 @@ var MODULES = {
 };
 
 var ORDER = ['text', 'children', 'gradient', 'cursor', 'morph-card', 'highlight', 'headline', 'counter'];
+
+/**
+ * The Modules dropdown, built from ORDER so a new module appears in the menu of
+ * every page by being listed there - it used to be copied into each template by
+ * hand, and three modules were missing from it.
+ *
+ * @param {string} current Module whose page this is, marked as the current item.
+ */
+function navMenu(current) {
+    return ORDER.map(function (name) {
+        var nav = MODULES[name].nav;
+        return '<a href="../modules/' + name + '.html" role="menuitem"' + (name === current ? ' aria-current="page"' : '') + '>' +
+            '<span class="nav__dropdown-icon nav__dropdown-icon--' + nav[1] + '">' + nav[0] + '</span>' +
+            '<span><span class="nav__dropdown-title">' + esc(nav[2]) + '</span>' +
+            '<span class="nav__dropdown-desc">' + nav[3] + '</span></span></a>';
+    }).join('\n              ');
+}
 
 /** Where the shared animated-headlines engine is loaded from, per script source. */
 function engineTags(scripts) {
@@ -318,6 +343,7 @@ function modulePage(name) {
         name, title: mod.title, lead: mod.lead, markup: mod.markup(' id="demo"'),
         documentation: '<div class="wrap"><div class="module-links"><a href="../examples/' + name + '.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div>' + body,
         schema,
+        nav: navMenu(name),
         engine: mod.engine ? engineTags('local') : null,
         config: {
             css: mod.css,
