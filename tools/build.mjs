@@ -18,7 +18,7 @@
 // vendors these files (e.g. a plain script-tag integration), with nothing to disable it.
 
 import { build } from 'vite';
-import { readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, statSync, copyFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { resolve, dirname } from 'node:path';
@@ -33,7 +33,7 @@ var src = (name) => resolve(root, 'packages/bundle/src', name);
 // Gzipped size budgets in bytes. The build fails when a file grows past its budget.
 var BUDGETS = JSON.parse(readFileSync(resolve(root, 'tools/budgets.json'), 'utf8'));
 
-var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card', 'highlight'];
+var MODULES = ['text', 'children', 'cursor', 'gradient', 'morph-card', 'highlight', 'headline', 'counter'];
 
 var targets = [
     { file: 'aurora.min.js', entry: src('entry-all.js'), name: 'Aurora' },
@@ -98,6 +98,8 @@ async function collectSchemas() {
         gradient: '@aurora/gradient',
         'morph-card': '@aurora/morph-card',
         highlight: '@aurora/highlight',
+        headline: '@aurora/headline',
+        counter: '@aurora/counter',
     };
     for (var name of Object.keys(entries)) {
         var mod = await import(entries[name]);
@@ -106,8 +108,29 @@ async function collectSchemas() {
     return schemas;
 }
 
+/**
+ * The animated-headlines engine, which the headline and counter modules mount
+ * rather than bundle. It is a component library of its own, published as an ES
+ * module with a stylesheet, so it is copied beside the bundles and loaded once
+ * instead of being inlined into both of them.
+ */
+var ENGINE_FILES = ['animated-headline.js', 'animated-headline.css'];
+
+function copyEngine() {
+    var from = resolve(root, 'node_modules/@vianetz/animated-headlines-vanilla/dist');
+    if (!existsSync(resolve(from, ENGINE_FILES[0]))) {
+        console.error('animated-headlines is not installed; run npm install first.');
+        process.exit(1);
+    }
+    mkdirSync(resolve(dist, 'vendor'), { recursive: true });
+    ENGINE_FILES.forEach(function (file) {
+        copyFileSync(resolve(from, file), resolve(dist, 'vendor', file));
+    });
+}
+
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
+copyEngine();
 
 for (var target of targets) await buildIife(target);
 await buildEsm();

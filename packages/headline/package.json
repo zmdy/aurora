@@ -1,0 +1,17 @@
+{
+  "name": "@aurora/headline",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aurora headline module, built on the animated-headlines engine.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "dependencies": {
+    "@aurora/core": "*",
+    "@vianetz/animated-headlines-vanilla": "*",
+    "@aurora/engine": "*"
+  }
+}
