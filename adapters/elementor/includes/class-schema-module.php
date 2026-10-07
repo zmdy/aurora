@@ -41,13 +41,56 @@ class Schema_Module extends Animation_Module {
 	/** @var array Module definition from Module_Manager. */
 	protected $config;
 
+	/**
+	 * @var bool One effect of a suite rather than a tool of its own: the suite
+	 *           owns the panel section and the render pass, so this instance
+	 *           registers no hooks and is driven through fields()/attributes().
+	 */
+	protected $part = false;
+
 	public function __construct( string $key, array $schema, array $config ) {
 		$this->key    = $key;
 		$this->schema = $schema;
 		$this->config = $config;
+		$this->part    = ! empty( $config['part'] );
 
 		// Must run last: the parent constructor already calls get_controls_hooks().
 		parent::__construct();
+	}
+
+	/**
+	 * Builds one effect of a suite: the same module, minus its own hooks.
+	 *
+	 * @param string $key    Module name as registered in JS.
+	 * @param array  $schema Generated schema of the module.
+	 * @param array  $config Part definition from Module_Manager.
+	 */
+	public static function part( string $key, array $schema, array $config ): self {
+		$config['part'] = true;
+		return new static( $key, $schema, $config );
+	}
+
+	// ── Driven by the owning suite ────────────────────────────────────────
+
+	/** Whether this effect is offered on an element at all. */
+	public function handles( Element_Base $element ): bool {
+		return $this->applies_to_element( $element );
+	}
+
+	/** Adds this effect's switch and controls inside the suite's section. */
+	public function fields( Element_Base $element ): void {
+		$this->register_fields( $element );
+	}
+
+	/**
+	 * This effect's data-attributes, or an empty array when its switch is off.
+	 *
+	 * @param array             $settings Element settings.
+	 * @param Element_Base|null $element  Element instance.
+	 * @return array<string, string>
+	 */
+	public function attributes( array $settings, ?Element_Base $element = null ): array {
+		return $this->get_render_attributes( $settings, $element );
 	}
 
 	// ── Naming ────────────────────────────────────────────────────────────
@@ -125,6 +168,10 @@ class Schema_Module extends Animation_Module {
 	];
 
 	protected function get_controls_hooks(): array {
+		if ( $this->part ) {
+			return [];
+		}
+
 		$priority = $this->config['priority'] ?? 10;
 		$hooks    = [];
 		foreach ( $this->config['elements'] as $element ) {
@@ -138,6 +185,10 @@ class Schema_Module extends Animation_Module {
 	}
 
 	protected function get_render_hooks(): array {
+		if ( $this->part ) {
+			return [];
+		}
+
 		return [
 			'elementor/frontend/before_render',
 			'elementor/frontend/widget/before_render',
@@ -199,6 +250,9 @@ class Schema_Module extends Animation_Module {
 				'return_value'       => 'yes',
 				'default'            => '',
 				'render_type'        => 'template',
+				// One of several effects in a suite panel: a rule above the
+				// switch separates it from the one before.
+				'separator'          => $this->part ? 'before' : '',
 				// The editor adapter reads settings through the frontend handler's
 				// getElementSettings(), which only exposes frontend_available
 				// controls — without this every Aurora option is undefined there

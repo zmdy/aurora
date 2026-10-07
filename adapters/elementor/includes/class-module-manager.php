@@ -61,12 +61,31 @@ final class Module_Manager {
 				'elements'    => [ 'section', 'column', 'container', 'heading', 'text-editor', 'icon', 'icon-box', 'icon-list' ],
 				'priority'    => 30,
 			],
-			'highlight' => [
-				'label'       => esc_html__( 'Highlight Shapes', 'aurora-for-elementor' ),
-				'description' => esc_html__( 'A hand-drawn marker - underline, circle, scribble, marker pen and twelve more - drawn over a phrase, with phrases that can rotate.', 'aurora-for-elementor' ),
-				'class'       => Highlight_Module::class,
+			'headline' => [
+				'label'       => esc_html__( 'Animated Headline', 'aurora-for-elementor' ),
+				'description' => esc_html__( 'Rotating phrases with 27 animations, sixteen hand-drawn highlight shapes and four counters - one panel, three effects that can be combined on the same element.', 'aurora-for-elementor' ),
+				'class'       => Headline_Suite_Module::class,
+				// The union of the effects below; each one still appears only
+				// on the elements it understands.
 				'elements'    => [ 'heading', 'text-editor', 'button', 'icon-box', 'image-box', 'testimonial', 'alert' ],
 				'priority'    => 50,
+				'parts'       => [
+					'headline'  => [
+						'label'    => esc_html__( 'Rotating phrases', 'aurora-for-elementor' ),
+						'class'    => Headline_Module::class,
+						'elements' => [ 'heading', 'text-editor', 'button' ],
+					],
+					'highlight' => [
+						'label'    => esc_html__( 'Highlight shape', 'aurora-for-elementor' ),
+						'class'    => Highlight_Module::class,
+						'elements' => [ 'heading', 'text-editor', 'button', 'icon-box', 'image-box', 'testimonial', 'alert' ],
+					],
+					'counter'   => [
+						'label'    => esc_html__( 'Counter', 'aurora-for-elementor' ),
+						'class'    => Counter_Module::class,
+						'elements' => [ 'heading', 'text-editor', 'button' ],
+					],
+				],
 			],
 			'cursor'   => [
 				'label'       => esc_html__( 'Cursor Follow', 'aurora-for-elementor' ),
@@ -90,6 +109,20 @@ final class Module_Manager {
 				'description' => esc_html__( 'A card widget that morphs between post, profile, polaroid and custom layouts.', 'aurora-for-elementor' ),
 			],
 		];
+	}
+
+	/**
+	 * Every runtime module the adapter can switch on, including the effects
+	 * that are folded into a suite in the panel but remain separate scripts.
+	 *
+	 * @return string[]
+	 */
+	public static function get_script_modules(): array {
+		$keys = [];
+		foreach ( self::get_modules() as $key => $config ) {
+			$keys = array_merge( $keys, array_keys( $config['parts'] ?? [ $key => true ] ) );
+		}
+		return array_values( array_unique( array_merge( $keys, array_keys( self::get_widget_modules() ) ) ) );
 	}
 
 	/**

@@ -45,10 +45,10 @@ final class Asset_Manager {
 	 * Modules that need the shared engine on the page.
 	 *
 	 * Highlight draws its own overlay and does not, so that it can sit on the
-	 * same element as the Text module. The counter and headline modules will,
+	 * same element as the Text module. The headline and counter modules do,
 	 * because they mount the component itself.
 	 */
-	private const ENGINE_MODULES = [];
+	private const ENGINE_MODULES = [ 'headline', 'counter' ];
 
 	/** Script handle of a module ("text" => "aurora-text"). */
 	public static function handle( string $module ): string {
@@ -77,7 +77,7 @@ final class Asset_Manager {
 		wp_register_script( 'aurora-core', $this->file_url( 'aurora.core.min.js' ), [], self::ver( 'assets/js/aurora/aurora.core.min.js' ), true );
 		self::register_engine();
 
-		foreach ( [ 'text', 'children', 'cursor', 'gradient', 'morph-card', 'highlight' ] as $module ) {
+		foreach ( Module_Manager::get_script_modules() as $module ) {
 			wp_register_script(
 				self::handle( $module ),
 				$this->file_url( 'aurora.' . $module . '.min.js' ),
@@ -139,25 +139,31 @@ final class Asset_Manager {
 	public function enqueue_preview(): void {
 		$this->register_scripts();
 
-		$handles = [ 'aurora-core' ];
-		foreach ( array_keys( Module_Manager::get_modules() ) as $module ) {
-			if ( Module_Manager::is_active( $module ) ) {
-				$handles[] = self::handle( $module );
+		// A tool switched off in the settings is left out; the effects folded
+		// into one tool share its switch, so each of their scripts is kept or
+		// dropped with the tool that offers them.
+		$active  = [];
+		foreach ( Module_Manager::get_modules() as $key => $config ) {
+			if ( ! Module_Manager::is_active( $key ) ) {
+				continue;
 			}
+			$active = array_merge( $active, array_keys( $config['parts'] ?? [ $key => true ] ) );
 		}
 		if ( Module_Manager::is_active( 'morph-card' ) ) {
-			$handles[] = self::handle( 'morph-card' );
+			$active[] = 'morph-card';
+		}
+
+		$handles = [ 'aurora-core' ];
+		foreach ( $active as $module ) {
+			$handles[] = self::handle( $module );
 		}
 
 		// On the front end the stylesheet rides along with need(), which only
 		// runs while an element renders. The preview enqueues the module
 		// scripts directly, so the engine's stylesheet has to be asked for
 		// here as well or the drawings arrive unstyled in the editor.
-		foreach ( self::ENGINE_MODULES as $module ) {
-			if ( Module_Manager::is_active( $module ) ) {
-				wp_enqueue_style( self::ENGINE );
-				break;
-			}
+		if ( array_intersect( $active, self::ENGINE_MODULES ) ) {
+			wp_enqueue_style( self::ENGINE );
 		}
 
 		wp_register_script( 'aurora-elementor-adapter', AURORA_URL . 'assets/js/elementor-adapter.js', $handles, self::ver( 'assets/js/elementor-adapter.js' ), true );

@@ -62,13 +62,51 @@ namespace {
 	$ca=$rc->invoke($c,$con->settings,$con); echo json_encode($ca)."\n";
 	check(strpos($ca['data-aurora-children-options']??'','.elementor-widget')!==false,'children selector');
 
-	$hl=$mods['highlight']; $rhl=new ReflectionMethod($hl,'get_render_attributes'); $rhl->setAccessible(true);
+	// One tool, three effects: rotating phrases, highlight shapes and counters
+	// share a single panel but keep their own attributes and scripts.
+	$suite=$mods['headline'];
+	$panel=new Elementor\Element_Base('heading'); $suite->add_controls($panel,[]);
+	check(isset($panel->controls['aurora_headline_section']),'suite: one section');
+	foreach(['headline','highlight','counter'] as $part)
+		check(isset($panel->controls['aurora_'.$part.'_enable']),'suite: '.$part.' switch in the panel');
+	check(isset($panel->controls['aurora_headline_effect']) && isset($panel->controls['aurora_highlight_shape']) && isset($panel->controls['aurora_counter_kind']),'suite: every effect contributes its controls');
+
+	// The counter has nothing to count on a testimonial; the marker still works.
+	$other=new Elementor\Element_Base('testimonial'); $suite->add_controls($other,[]);
+	check(isset($other->controls['aurora_highlight_enable']) && !isset($other->controls['aurora_counter_enable']),'suite: effects scoped per element');
+
+	$rs=new ReflectionMethod($suite,'get_render_attributes'); $rs->setAccessible(true);
 	$hel=new Elementor\Element_Base('heading',['aurora_highlight_enable'=>'yes','aurora_highlight_shape'=>'circle','aurora_highlight_highlight_color'=>'#7c5cff']);
-	$ha=$rhl->invoke($hl,$hel->settings,$hel); echo json_encode($ha)."
+	$ha=$rs->invoke($suite,$hel->settings,$hel); echo json_encode($ha)."
 ";
 	check(($ha['data-aurora-highlight']??null)==='circle','highlight primary attr');
 	check(strpos($ha['data-aurora-highlight-options']??'','#7c5cff')!==false,'highlight theme option passed through');
+	check(strpos($ha['data-aurora-highlight-options']??'','.elementor-heading-title')!==false,'highlight target derived');
+	check(!isset($ha['data-aurora-headline']) && !isset($ha['data-aurora-counter']),'effects that are off render nothing');
 	check(!empty($GLOBALS['enq']['aurora-highlight']),'highlight script enqueued');
+
+	// Combined on the same heading: a phrase that rotates with a marker on it.
+	$both=new Elementor\Element_Base('heading',[
+		'aurora_highlight_enable'=>'yes','aurora_highlight_shape'=>'underline',
+		'aurora_headline_enable'=>'yes','aurora_headline_effect'=>'flipboard','aurora_headline_phrases'=>"fast
+sharp",
+	]);
+	$ba=$rs->invoke($suite,$both->settings,$both); echo json_encode($ba)."
+";
+	check(($ba['data-aurora-headline']??null)==='flipboard' && ($ba['data-aurora-highlight']??null)==='underline','suite: two effects on one element');
+	check(strpos($ba['data-aurora-headline-options']??'','.elementor-heading-title')!==false,'headline target derived');
+	check(!empty($GLOBALS['enq']['aurora-headline']),'headline script enqueued');
+
+	$cnt=new Elementor\Element_Base('heading',['aurora_counter_enable'=>'yes','aurora_counter_kind'=>'countdown','aurora_counter_target'=>'2026-12-31T23:59']);
+	$ca2=$rs->invoke($suite,$cnt->settings,$cnt); echo json_encode($ca2)."
+";
+	check(($ca2['data-aurora-counter']??null)==='countdown','counter primary attr');
+	check(strpos($ca2['data-aurora-counter-options']??'','2026-12-31T23:59')!==false,'counter target date passed through');
+	check(strpos($ca2['data-aurora-counter-options']??'','"selector":".elementor-heading-title"')!==false,'counter selector derived');
+	check(!empty($GLOBALS['enq']['aurora-counter']),'counter script enqueued');
+
+	// Every effect is still its own script, even though they share one panel.
+	check(count(array_diff(['headline','highlight','counter'],Aurora\Module_Manager::get_script_modules()))===0,'suite: each effect keeps its own script');
 
 	$w=new Aurora\Morph_Card_Widget();
 	$o=Aurora\Morph_Card_Widget::options_from_settings(['loop'=>'','states'=>[['template'=>'profile','username'=>'ana','likes'=>'','photo'=>['url'=>'a.jpg'],'duration_ms'=>2000]],'label_follow'=>'Seguir']);

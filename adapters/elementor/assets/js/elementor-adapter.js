@@ -15,7 +15,7 @@
     var data = window.AuroraElementor;
     if (!data) return;
 
-    var MODULES = ['text', 'children', 'cursor', 'gradient', 'highlight'];
+    var MODULES = ['text', 'children', 'cursor', 'gradient', 'highlight', 'headline', 'counter'];
 
     function snake(name) {
         return name.replace(/([A-Z])/g, '_$1').toLowerCase();
@@ -63,7 +63,8 @@
 
         Object.keys(schema.options).forEach(function (name) {
             if (module === 'children' && (name === 'root' || name === 'selector')) return;
-            if ((module === 'highlight') && name === 'target') return;
+            if ((module === 'highlight' || module === 'headline') && name === 'target') return;
+            if (module === 'counter' && name === 'selector') return;
             if (module === 'gradient' && (name === 'target' || name === 'selector' || name === 'textSelector' || name === 'stops')) return;
             var spec = schema.options[name];
             var value = readOption(module, name, spec, settings);
@@ -71,11 +72,15 @@
             if (name === schema.primary || value !== spec.default) options[name] = value;
         });
 
-        // Both modules decorate the element's text node, not the widget
-        // wrapper Elementor hands over.
-        if (module === 'text' || module === 'highlight') {
-            var text = targets.text[elementName];
-            if (text) options.target = text;
+        // These modules act on the element's text node, not the widget wrapper
+        // Elementor hands over. The counter names it `selector`, because its
+        // own `target` is the date a countdown counts down to.
+        var text = targets.text[elementName];
+        if (text && (module === 'text' || module === 'highlight' || module === 'headline')) {
+            options.target = text;
+        }
+        if (text && module === 'counter') {
+            options.selector = text;
         }
 
         if (module === 'children') {
