@@ -163,10 +163,10 @@ var MODULES = {
         title: 'Counter',
         nav: ['⏱️', 'teal', 'Counter', 'Clock, countdown, numbers'],
         summary: 'A clock, a countdown, a timecode or a counting number.',
-        lead: 'Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.',
+        lead: 'Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second - and they travel the way the number is going: up as it grows, down as it falls.',
         engine: true,
         markup: function (id) {
-            return '<h2' + id + ' data-aurora-counter="progress"\n    data-aurora-counter-to="1250" data-aurora-counter-suffix="+"\n    data-aurora-counter-target="' + NEW_YEAR + '"></h2>';
+            return '<h2' + id + ' data-aurora-counter="progress"\n    data-aurora-counter-to="1250" data-aurora-counter-suffix="+" data-aurora-counter-roll="true"\n    data-aurora-counter-target="' + NEW_YEAR + '"></h2>';
         },
         css: '',
         stage: '',
@@ -331,7 +331,7 @@ var API_SNIPPETS = {
     'morph-card': "var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });\nfx.api.next();         // go to the next state\nfx.api.goTo(2);        // jump to a state\nfx.destroy();",
     highlight: "var fx = Aurora.highlight(document.querySelector('h2'), { shape: 'circle', highlightColor: '#ff7a2f', trigger: 'load' });\nfx.update({ shape: 'zigzag' }); // change options, including the shape\nfx.replay();           // draw it again\nfx.destroy();          // removes only the overlay it added",
     headline: "var fx = Aurora.headline(document.querySelector('h2'), {\n  effect: 'rotate-1',\n  phrases: 'beautiful\n\nneffortless\n\nnyours'\n});\nfx.update({ effect: 'flipboard' }); // swap the animation\nfx.destroy();          // puts the original heading back",
-    counter: "var fx = Aurora.counter(document.querySelector('h2'), { kind: 'countdown', target: '2026-12-31T23:59' });\nfx.update({ kind: 'clock', format: '24h' });\nfx.destroy();",
+    counter: "var fx = Aurora.counter(document.querySelector('h2'), { kind: 'countdown', target: '2026-12-31T23:59' });\nfx.update({ kind: 'progress', to: 1250, roll: true }); // digits flip like a clock's\nfx.destroy();",
 };
 
 function modulePage(name) {

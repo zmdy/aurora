@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.">
+  <meta name="description" content="Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second - and they travel the way the number is going: up as it grows, down as it falls.">
   <title>Counter | Aurora</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 
@@ -80,7 +80,7 @@
       <div class="section-header">
         <div class="eyebrow">Interactive Demo</div>
         <h1 class="display-2" style="margin-top:1rem">Live Counter Playground</h1>
-        <p>Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.</p>
+        <p>Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second - and they travel the way the number is going: up as it grows, down as it falls.</p>
       </div>
 
       <div class="pg-layout">
@@ -95,7 +95,7 @@
 
           <div class="pg-preview__stage" id="pg-stage">
             <h2 id="demo" data-aurora-counter="progress"
-    data-aurora-counter-to="1250" data-aurora-counter-suffix="+"
+    data-aurora-counter-to="1250" data-aurora-counter-suffix="+" data-aurora-counter-roll="true"
     data-aurora-counter-target="2027-01-01T00:00"></h2>
           </div>
 
@@ -138,7 +138,7 @@
      ═══════════════════════════════════════════════════════════════════ -->
   
 
-  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/counter.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 3.9 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
+  <div class="module-documentation"><div class="wrap"><div class="module-links"><a href="../examples/counter.html">Standalone example ↗</a><a href="#module-options">All options ↓</a></div></div><section class="block"><div class="wrap"><h2>Copy and paste</h2><p class="sub">This is a complete HTML file. It needs no build step and no framework. The two scripts weigh 4.4 KB + 4.1 KB gzipped.</p><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -153,7 +153,7 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;body&gt;
 
 &lt;h2 data-aurora-counter=&quot;progress&quot;
-    data-aurora-counter-to=&quot;1250&quot; data-aurora-counter-suffix=&quot;+&quot;
+    data-aurora-counter-to=&quot;1250&quot; data-aurora-counter-suffix=&quot;+&quot; data-aurora-counter-roll=&quot;true&quot;
     data-aurora-counter-target=&quot;2027-01-01T00:00&quot;&gt;&lt;/h2&gt;
 
 &lt;script type=&quot;module&quot; src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js&quot;&gt;&lt;/script&gt;
@@ -161,18 +161,18 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
         integrity=&quot;sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.counter.min.js&quot;
-        integrity=&quot;sha384-8f7poEdZr6vqZgtFiE/DA66lFuU8YeEC7Q5hlHrMlT0wUuZypEqqUzP7ku8uF3wh&quot;
+        integrity=&quot;sha384-L5ZJzPa8rOUnLX9S1qKxc739G3zVN24dUoyPt8Xl1hmUqbotB1Ci/g+xBV+yPU05&quot;
         crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre></div></div></section>
 <section class="block"><div class="wrap"><h2>JavaScript API</h2><div class="codebox"><button class="copy" type="button">Copy</button><pre><code class="language-js">var fx = Aurora.counter(document.querySelector('h2'), { kind: 'countdown', target: '2026-12-31T23:59' });
-fx.update({ kind: 'clock', format: '24h' });
+fx.update({ kind: 'progress', to: 1250, roll: true }); // digits flip like a clock's
 fx.destroy();</code></pre></div></div></section>
 <section class="block"><div class="wrap"><h2 id="module-options">Options</h2><p class="sub">Set them as <code>data-aurora-counter-&lt;option&gt;</code> attributes, as one JSON attribute (<code>data-aurora-counter-options</code>) or as an object in JavaScript.</p><div class="table-scroll"><table class="options"><thead><tr><th>Option</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>kind</code></td><td><code>data-aurora-counter</code></td><td>enum</td><td><code>progress</code></td><td>Counter<br><small><code>clock</code> <code>countdown</code> <code>timecode</code> <code>progress</code></small></td></tr>
 <tr><td><code>selector</code></td><td><code>data-aurora-counter-selector</code></td><td>selector</td><td><code></code></td><td>CSS selector, relative to the element, of the node the counter replaces. Empty uses the element itself.</td></tr>
-<tr><td><code>format</code></td><td><code>data-aurora-counter-format</code></td><td>enum</td><td><code></code></td><td>Clock takes 24h or 12h; countdown and timecode take full or compact.<br><small><code></code> <code>24h</code> <code>12h</code> <code>full</code> <code>compact</code></small></td></tr>
+<tr><td><code>format</code></td><td><code>data-aurora-counter-format</code></td><td>enum</td><td><code></code></td><td>clock takes 24h, 12h; countdown takes compact, labeled, minimal; timecode takes full, compact. Empty leaves each one its own.<br><small><code></code> <code>24h</code> <code>12h</code> <code>compact</code> <code>labeled</code> <code>minimal</code> <code>full</code></small></td></tr>
 <tr><td><code>timezone</code></td><td><code>data-aurora-counter-timezone</code></td><td>string</td><td><code></code></td><td>An IANA zone such as America/Sao_Paulo. Empty uses the one the visitor is in.</td></tr>
 <tr><td><code>target</code></td><td><code>data-aurora-counter-target</code></td><td>string</td><td><code></code></td><td>The moment the countdown runs out.</td></tr>
 <tr><td><code>start</code></td><td><code>data-aurora-counter-start</code></td><td>string</td><td><code>00:00:00:00</code></td><td>Hours, minutes, seconds and frames.</td></tr>
@@ -187,6 +187,8 @@ fx.destroy();</code></pre></div></div></section>
 <tr><td><code>locale</code></td><td><code>data-aurora-counter-locale</code></td><td>string</td><td><code></code></td><td>Number formatting, such as pt-BR. Empty uses the page language.</td></tr>
 <tr><td><code>bar</code></td><td><code>data-aurora-counter-bar</code></td><td>boolean</td><td><code>false</code></td><td>Show bar</td></tr>
 <tr><td><code>trigger</code></td><td><code>data-aurora-counter-trigger</code></td><td>enum</td><td><code>view</code></td><td>The &quot;view&quot; setting waits until the counter is scrolled into sight.<br><small><code>view</code> <code>load</code></small></td></tr>
+<tr><td><code>roll</code></td><td><code>data-aurora-counter-roll</code></td><td>boolean</td><td><code>false</code></td><td>Each digit flips to the next the way a clock's does, instead of the figure being redrawn.</td></tr>
+<tr><td><code>direction</code></td><td><code>data-aurora-counter-direction</code></td><td>enum</td><td><code></code></td><td>Which way a digit travels as it changes. Empty follows the value: up as it grows, down as it falls.<br><small><code></code> <code>up</code> <code>down</code></small></td></tr>
 </tbody></table></div></div></section>
 </div>
 <section class="cta-section section-gap-lg">
@@ -289,8 +291,8 @@ fx.destroy();</code></pre></div></div></section>
   <!-- ══════════════════════════════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
-  <script type="application/json" id="schema">{"primary":"kind","options":{"kind":{"type":"enum","default":"progress","values":[{"value":"clock","label":"Clock"},{"value":"countdown","label":"Countdown"},{"value":"timecode","label":"Timecode"},{"value":"progress","label":"Counter"}],"label":"Counter","group":"Counter"},"selector":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node the counter replaces. Empty uses the element itself.","group":"Advanced"},"format":{"type":"enum","default":"","label":"Format","group":"Display","when":{"kind":["clock","countdown","timecode"]},"description":"Clock takes 24h or 12h; countdown and timecode take full or compact.","values":[{"value":"","label":"Default"},{"value":"24h","label":"24h"},{"value":"12h","label":"12h"},{"value":"full","label":"full"},{"value":"compact","label":"compact"}]},"timezone":{"type":"string","default":"","label":"Time zone","group":"Display","when":{"kind":["clock"]},"description":"An IANA zone such as America/Sao_Paulo. Empty uses the one the visitor is in."},"target":{"type":"string","default":"","label":"Counts down to","group":"Content","when":{"kind":["countdown"]},"description":"The moment the countdown runs out."},"start":{"type":"string","default":"00:00:00:00","label":"Start at","group":"Content","when":{"kind":["timecode"]},"description":"Hours, minutes, seconds and frames."},"fps":{"type":"number","default":30,"label":"Frames per second","group":"Timing","when":{"kind":["timecode"]},"min":1,"max":120},"paused":{"type":"boolean","default":false,"label":"Paused","group":"Timing","when":{"kind":["timecode"]}},"from":{"type":"number","default":0,"label":"From","group":"Content","when":{"kind":["progress"]}},"to":{"type":"number","default":100,"label":"To","group":"Content","when":{"kind":["progress"]}},"duration":{"type":"number","default":1800,"label":"Duration","group":"Timing","when":{"kind":["progress"]},"unit":"ms","min":0,"max":60000},"decimals":{"type":"number","default":0,"label":"Decimals","group":"Display","when":{"kind":["progress"]},"min":0,"max":6},"prefix":{"type":"string","default":"","label":"Prefix","group":"Content","when":{"kind":["progress"]}},"suffix":{"type":"string","default":"","label":"Suffix","group":"Content","when":{"kind":["progress"]}},"locale":{"type":"string","default":"","label":"Locale","group":"Display","when":{"kind":["progress"]},"description":"Number formatting, such as pt-BR. Empty uses the page language."},"bar":{"type":"boolean","default":false,"label":"Show bar","group":"Display","when":{"kind":["progress"]}},"trigger":{"type":"enum","default":"view","label":"Starts","group":"Timing","when":{"kind":["progress"]},"description":"The \"view\" setting waits until the counter is scrolled into sight.","values":["view","load"]}}}</script>
-<script type="application/json" id="demo-config">{"css":"","revision":"9215-3987","styles":["https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.css"],"scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js","type":"module"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.counter.min.js","integrity":"sha384-8f7poEdZr6vqZgtFiE/DA66lFuU8YeEC7Q5hlHrMlT0wUuZypEqqUzP7ku8uF3wh"}]}</script>
+  <script type="application/json" id="schema">{"primary":"kind","options":{"kind":{"type":"enum","default":"progress","values":[{"value":"clock","label":"Clock"},{"value":"countdown","label":"Countdown"},{"value":"timecode","label":"Timecode"},{"value":"progress","label":"Counter"}],"label":"Counter","group":"Counter"},"selector":{"type":"selector","default":"","label":"Text element","description":"CSS selector, relative to the element, of the node the counter replaces. Empty uses the element itself.","group":"Advanced"},"format":{"type":"enum","default":"","label":"Format","group":"Display","when":{"kind":["clock","countdown","timecode"]},"description":"clock takes 24h, 12h; countdown takes compact, labeled, minimal; timecode takes full, compact. Empty leaves each one its own.","values":[{"value":"","label":"Default"},{"value":"24h","label":"24h"},{"value":"12h","label":"12h"},{"value":"compact","label":"compact"},{"value":"labeled","label":"labeled"},{"value":"minimal","label":"minimal"},{"value":"full","label":"full"}]},"timezone":{"type":"string","default":"","label":"Time zone","group":"Display","when":{"kind":["clock"]},"description":"An IANA zone such as America/Sao_Paulo. Empty uses the one the visitor is in."},"target":{"type":"string","default":"","label":"Counts down to","group":"Content","when":{"kind":["countdown"]},"description":"The moment the countdown runs out."},"start":{"type":"string","default":"00:00:00:00","label":"Start at","group":"Content","when":{"kind":["timecode"]},"description":"Hours, minutes, seconds and frames."},"fps":{"type":"number","default":30,"label":"Frames per second","group":"Timing","when":{"kind":["timecode"]},"min":1,"max":120},"paused":{"type":"boolean","default":false,"label":"Paused","group":"Timing","when":{"kind":["timecode"]}},"from":{"type":"number","default":0,"label":"From","group":"Content","when":{"kind":["progress"]}},"to":{"type":"number","default":100,"label":"To","group":"Content","when":{"kind":["progress"]}},"duration":{"type":"number","default":1800,"label":"Duration","group":"Timing","when":{"kind":["progress"]},"unit":"ms","min":0,"max":60000},"decimals":{"type":"number","default":0,"label":"Decimals","group":"Display","when":{"kind":["progress"]},"min":0,"max":6},"prefix":{"type":"string","default":"","label":"Prefix","group":"Content","when":{"kind":["progress"]}},"suffix":{"type":"string","default":"","label":"Suffix","group":"Content","when":{"kind":["progress"]}},"locale":{"type":"string","default":"","label":"Locale","group":"Display","when":{"kind":["progress"]},"description":"Number formatting, such as pt-BR. Empty uses the page language."},"bar":{"type":"boolean","default":false,"label":"Show bar","group":"Display","when":{"kind":["progress"]}},"trigger":{"type":"enum","default":"view","label":"Starts","group":"Timing","when":{"kind":["progress"]},"description":"The \"view\" setting waits until the counter is scrolled into sight.","values":["view","load"]},"roll":{"type":"boolean","default":false,"label":"Roll the digits","group":"Counter","when":{"kind":["progress"]},"description":"Each digit flips to the next the way a clock's does, instead of the figure being redrawn."},"direction":{"type":"enum","default":"","label":"Roll direction","group":"Counter","when":{"kind":["clock","countdown","timecode","progress"]},"description":"Which way a digit travels as it changes. Empty follows the value: up as it grows, down as it falls.","values":[{"value":"","label":"Follow the value"},{"value":"up","label":"up"},{"value":"down","label":"down"}]}}}</script>
+<script type="application/json" id="demo-config">{"css":"","revision":"9811-4202","styles":["https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.css"],"scripts":[{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/vendor/animated-headline.js","type":"module"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.core.min.js","integrity":"sha384-cNukjliWJQINb/7IidarMpJehTi/HKffI/BiUGbrfTQ6VAFnDn0Of9M/Anq1FfDO"},{"src":"https://cdn.jsdelivr.net/gh/zmdy/aurora@v1.0.0/dist/aurora.counter.min.js","integrity":"sha384-L5ZJzPa8rOUnLX9S1qKxc739G3zVN24dUoyPt8Xl1hmUqbotB1Ci/g+xBV+yPU05"}]}</script>
 <script type="module" src="../vendor/animated-headline.js"></script>
 <script src="../aurora.core.min.js?v=3"></script>
 <script src="../aurora.counter.min.js?v=3"></script>

@@ -103,7 +103,17 @@ options.format.values = Object.keys(COUNTER_FORMATS).reduce(function (all, count
     return all;
 }, [{ value: '', label: 'Default' }]);
 options.format.default = '';
-options.format.description = 'Clock takes 24h or 12h; countdown and timecode take full or compact.';
+// Spelled out from the manifest rather than by hand, so it cannot describe
+// choices a counter has stopped understanding.
+options.format.description = Object.keys(COUNTER_FORMATS).map(function (counter) {
+    return counter + ' takes ' + COUNTER_FORMATS[counter].join(', ');
+}).join('; ') + '. Empty leaves each one its own.';
+
+// An empty enum value is a real choice, not a blank line in the select: it
+// hands the decision back to the counter.
+options.direction.values = options.direction.values.map(function (value) {
+    return { value: value, label: value || 'Follow the value' };
+});
 
 export var schema = {
     primary: 'kind',
