@@ -91,12 +91,17 @@ Object.keys(OPTIONS).forEach(function (name) {
 
 // `format` means something different for each counter, so it is offered as the
 // union and the module only passes it on when the chosen counter knows it.
+// Empty is one of the choices, not the absence of one: it leaves the counter
+// to its own default, and the schema would otherwise reject the value it ships
+// with.
 options.format.values = Object.keys(COUNTER_FORMATS).reduce(function (all, counter) {
     COUNTER_FORMATS[counter].forEach(function (value) {
-        if (all.indexOf(value) < 0) all.push(value);
+        if (all.every(function (entry) { return entry.value !== value; })) {
+            all.push({ value: value, label: value });
+        }
     });
     return all;
-}, []);
+}, [{ value: '', label: 'Default' }]);
 options.format.default = '';
 options.format.description = 'Clock takes 24h or 12h; countdown and timecode take full or compact.';
 

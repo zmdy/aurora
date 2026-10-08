@@ -10,6 +10,13 @@ var ENGINE = 'via-animated-counter';
 var SPEC = {};
 COUNTERS.forEach(function (counter) { SPEC[counter.id] = counter; });
 
+/** The component reads a date or epoch milliseconds; anything else is a typo. */
+function validDate(value) {
+    if (!value) return false;
+    if (/^\d+$/.test(String(value))) return true;
+    return !isNaN(Date.parse(String(value)));
+}
+
 /**
  * Aurora Counter.
  *
@@ -36,6 +43,15 @@ export var counter = defineModule({
             var spec = SPEC[current.kind];
             if (!spec) {
                 ctx.warn('Unknown counter "' + current.kind + '".');
+                return;
+            }
+
+            // A countdown with no date to count to would mount and then say so
+            // itself, once a second. Better to say it here, once, and leave the
+            // author's text alone until a date is set.
+            if (current.kind === 'countdown' && !validDate(current.target)) {
+                ctx.warn('A countdown needs a date to count to; set the "target" option.');
+                host.innerHTML = pristineHTML;
                 return;
             }
 
