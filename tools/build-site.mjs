@@ -56,6 +56,14 @@ function photo(a, b) {
 
 // ── What each module demonstrates ───────────────────────────────────────
 
+/**
+ * A date for the countdown in the demo. The counter the page opens on does not
+ * use it, but switching to the countdown in the playground should show one
+ * counting rather than an empty box, so it is written into the markup and
+ * stays a year ahead of whenever the site was built.
+ */
+var NEW_YEAR = new Date(Date.UTC(new Date().getUTCFullYear() + 1, 0, 1)).toISOString().slice(0, 16);
+
 var CARD_STATES = [
     { template: 'post', username: 'aurora', likes: 128, caption: 'Cards that morph between layouts.', photo: photo('#7c6cff', '#ff7a2f'), durationMs: 2600 },
     { template: 'profile', username: 'aurora', name: 'Aurora', bio: 'Animation toolkit for any builder.', posts: '24', followers: '1.2k', following: '80', photo: photo('#2af598', '#7c6cff'), durationMs: 2600 },
@@ -158,7 +166,7 @@ var MODULES = {
         lead: 'Numbers that roll. Only the digits that actually changed move, so a clock ticks one character at a time rather than redrawing itself every second.',
         engine: true,
         markup: function (id) {
-            return '<h2' + id + ' data-aurora-counter="progress"\n    data-aurora-counter-to="1250" data-aurora-counter-suffix="+"></h2>';
+            return '<h2' + id + ' data-aurora-counter="progress"\n    data-aurora-counter-to="1250" data-aurora-counter-suffix="+"\n    data-aurora-counter-target="' + NEW_YEAR + '"></h2>';
         },
         css: '',
         stage: '',
