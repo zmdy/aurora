@@ -46,6 +46,7 @@ var TYPES = { datetime: 'string' };
 
 var GROUPS = {
     hold: 'Timing',
+    transition: 'Timing',
     delay: 'Timing',
     selection: 'Timing',
     erase: 'Timing',
