@@ -150,10 +150,10 @@ var MODULES = {
         title: 'Animated Headline',
         nav: ['🔄', 'green', 'Animated Headline', '27 rotating animations'],
         summary: 'Phrases that rotate through one of 27 animations.',
-        lead: 'Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.',
+        lead: 'Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls, and one number that scales how quickly any of them plays.',
         engine: true,
         markup: function (id) {
-            return '<h2' + id + ' data-aurora-headline="rotate-1"\n    data-aurora-headline-phrases="beautiful&#10;effortless&#10;yours">\n  Make it beautiful\n</h2>';
+            return '<h2' + id + ' data-aurora-headline="rotate-1"\n    data-aurora-headline-phrases="beautiful&#10;effortless&#10;yours" data-aurora-headline-transition="700">\n  Make it beautiful\n</h2>';
         },
         css: '',
         stage: '',
@@ -330,7 +330,7 @@ var API_SNIPPETS = {
     cursor: "var fx = Aurora.cursor(document.querySelector('.area'), { dotColor: '#ff7a2f', hideNative: false });\nfx.destroy();",
     'morph-card': "var fx = Aurora.morphCard(document.querySelector('#card'), { states: [/* see the options table */] });\nfx.api.next();         // go to the next state\nfx.api.goTo(2);        // jump to a state\nfx.destroy();",
     highlight: "var fx = Aurora.highlight(document.querySelector('h2'), { shape: 'circle', highlightColor: '#ff7a2f', trigger: 'load' });\nfx.update({ shape: 'zigzag' }); // change options, including the shape\nfx.replay();           // draw it again\nfx.destroy();          // removes only the overlay it added",
-    headline: "var fx = Aurora.headline(document.querySelector('h2'), {\n  effect: 'rotate-1',\n  phrases: 'beautiful\n\nneffortless\n\nnyours'\n});\nfx.update({ effect: 'flipboard' }); // swap the animation\nfx.destroy();          // puts the original heading back",
+    headline: "var fx = Aurora.headline(document.querySelector('h2'), {\n  effect: 'rotate-1',\n  phrases: 'beautiful\n\nneffortless\n\nnyours',\n  transition: 700   // how quickly it plays; 0 keeps the effect's own pace\n});\nfx.update({ effect: 'flipboard' }); // swap the animation\nfx.destroy();          // puts the original heading back",
     counter: "var fx = Aurora.counter(document.querySelector('h2'), { kind: 'countdown', target: '2026-12-31T23:59' });\nfx.update({ kind: 'progress', to: 1250, roll: true }); // digits flip like a clock's\nfx.destroy();",
 };
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.">
+  <meta name="description" content="Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls, and one number that scales how quickly any of them plays.">
   <title>Animated Headline | Aurora</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 
@@ -80,7 +80,7 @@
       <div class="section-header">
         <div class="eyebrow">Interactive Demo</div>
         <h1 class="display-2" style="margin-top:1rem">Live Animated Headline Playground</h1>
-        <p>Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls.</p>
+        <p>Rotates a headline through a list of phrases. Flips, slides, a typewriter that backspaces, a split-flap board - 27 animations, each with its own timing controls, and one number that scales how quickly any of them plays.</p>
       </div>
 
       <div class="pg-layout">
@@ -95,7 +95,7 @@
 
           <div class="pg-preview__stage" id="pg-stage">
             <h2 id="demo" data-aurora-headline="rotate-1"
-    data-aurora-headline-phrases="beautiful&#10;effortless&#10;yours">
+    data-aurora-headline-phrases="beautiful&#10;effortless&#10;yours" data-aurora-headline-transition="700">
   Make it beautiful
 </h2>
           </div>
@@ -154,7 +154,7 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 &lt;body&gt;
 
 &lt;h2 data-aurora-headline=&quot;rotate-1&quot;
-    data-aurora-headline-phrases=&quot;beautiful&amp;#10;effortless&amp;#10;yours&quot;&gt;
+    data-aurora-headline-phrases=&quot;beautiful&amp;#10;effortless&amp;#10;yours&quot; data-aurora-headline-transition=&quot;700&quot;&gt;
   Make it beautiful
 &lt;/h2&gt;
 
@@ -174,7 +174,8 @@ h2 { font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; text-align: center; }
 
 neffortless
 
-nyours'
+nyours',
+  transition: 700   // how quickly it plays; 0 keeps the effect's own pace
 });
 fx.update({ effect: 'flipboard' }); // swap the animation
 fx.destroy();          // puts the original heading back</code></pre></div></div></section>
