@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "aurora/morph-card",
+	"title": "Morph Card",
+	"category": "media",
+	"icon": "images-alt2",
+	"description": "A card that morphs between social-media style post, profile and polaroid layouts. By Aurora.",
+	"keywords": [ "aurora", "card", "polaroid", "profile", "animation" ],
+	"textdomain": "aurora-for-blocks",
+	"attributes": {
+		"states": {
+			"type": "array",
+			"default": [
+				{ "template": "post" },
+				{ "template": "profile" },
+				{ "template": "polaroid" }
+			]
+		},
+		"loop": { "type": "boolean", "default": true },
+		"autoplay": { "type": "boolean", "default": true },
+		"float": { "type": "boolean", "default": true },
+		"initialDelay": { "type": "number", "default": 0 },
+		"captionEffect": { "type": "string", "default": "typewriter", "enum": [ "typewriter", "letters" ] },
+		"labels": { "type": "object", "default": {} }
+	},
+	"supports": {
+		"align": [ "left", "center", "right", "wide", "full" ],
+		"anchor": true,
+		"html": false,
+		"spacing": { "margin": true, "padding": true }
+	},
+	"editorScript": "aurora-blocks-morph-card-editor"
+}

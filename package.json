@@ -9,9 +9,12 @@
     "build": "node tools/build.mjs",
     "build:elementor": "node tools/generate-elementor.mjs",
     "pack": "node tools/pack-elementor.mjs",
+    "build:blocks": "node tools/build-blocks.mjs",
+    "pack:blocks": "node tools/pack-blocks.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:php": "php adapters/elementor/test/stub-test.php",
+    "test:php:blocks": "php adapters/blocks/test/smoke-test.php",
     "build:site": "node tools/build-site.mjs"
   },
   "devDependencies": {

@@ -1,0 +1,62 @@
+/* Aurora for Blocks: inspector panel. */
+.aurora-blocks .aurora-blocks__module + .aurora-blocks__module {
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid #e0e0e0;
+}
+
+.aurora-blocks .aurora-blocks__group {
+	margin-top: 12px;
+	border-top: 1px solid #f0f0f0;
+}
+
+.aurora-blocks .components-button.aurora-blocks__group-toggle {
+	width: 100%;
+	justify-content: space-between;
+	padding: 8px 0;
+	height: auto;
+	font-weight: 600;
+	color: #1e1e1e;
+}
+
+.aurora-blocks .aurora-blocks__group.is-open .aurora-blocks__controls {
+	padding: 4px 0 8px;
+}
+
+.aurora-blocks .aurora-blocks__note {
+	margin: 16px 0 0;
+	padding-top: 12px;
+	border-top: 1px solid #e0e0e0;
+	font-size: 12px;
+	color: #757575;
+}
+
+/* Morph Card block */
+.aurora-mc-image {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.aurora-mc-image__thumb {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: 4px;
+	border: 1px solid #e0e0e0;
+}
+
+.aurora-mc-actions {
+	gap: 6px;
+}
+
+.aurora-mc-help {
+	margin: 0 0 12px;
+	font-size: 12px;
+	color: #757575;
+}
+
+.aurora-mc-add {
+	margin-top: 12px;
+}

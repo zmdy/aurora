@@ -61,6 +61,12 @@ Add the scripts in *Custom code*, then use *Custom attributes* on any element. S
 
 `npm run pack` builds `build/aurora-for-elementor.zip`. Install it from *Plugins, Add New, Upload Plugin*. Every option appears as a control in the Advanced tab; controls are generated from the module schemas.
 
+### Block editor (Gutenberg and the Site Editor)
+
+`npm run pack:blocks` builds `build/aurora-for-blocks.zip`. Install it from *Plugins, Add New, Upload Plugin*, select a supported core block (heading, paragraph, button, group, columns, cover, gallery, site title…) and open the *Aurora* panel in the block settings. It offers the `text`, `children`, `gradient` and `cursor` modules, plus a *Morph Card* block; controls are generated from the module schemas.
+
+Options are saved in the block's settings (the `aurora` attribute) and the data-attributes are added when the block renders, so the block's saved HTML never changes and works the same in posts, templates and template parts. Each module's script loads only on pages that use it. Animations play on the page and in Preview, not inside the editor.
+
 ## Repository
 
 ```
@@ -74,6 +80,7 @@ packages/
   bundle/       entry points for the distributable scripts
 adapters/
   elementor/    WordPress plugin (PHP, generated controls)
+  blocks/       WordPress plugin for the block editor (PHP + editor script, generated controls)
 site/           website sources (pages are generated from the schemas)
 tools/          build, pack and site scripts
 ```
@@ -89,6 +96,9 @@ npm run test:php    # Elementor adapter smoke test (needs PHP)
 npm run build       # dist/: one script per module, an all-in-one script, an ES module, SRI hashes
 npm run build:site  # docs/ (the GitHub Pages source)
 npm run pack        # build/aurora-for-elementor.zip
+npm run build:blocks     # block adapter: module scripts + schemas.json
+npm run pack:blocks      # build/aurora-for-blocks.zip
+npm run test:php:blocks  # block adapter smoke test (needs PHP; run build:blocks first)
 ```
 
 Gzip size budgets per script are enforced by `npm run build` (`tools/budgets.json`).
